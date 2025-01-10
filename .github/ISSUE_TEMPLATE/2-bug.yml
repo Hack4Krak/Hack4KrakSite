@@ -2,7 +2,6 @@ name: 🐛 Bug
 description: Report a bug.
 title: "[Bug]: "
 labels: ["type: bug"]
-type: "bug"
 body:
   - type: textarea
     id: description
@@ -19,8 +18,8 @@ body:
       label: Steps to reproduce
       description: Provide an unambiguous set of steps to reproduce this bug.
       placeholder: |
-        1. Join CrabCraft server.
-        2. Try placing block.
+        1. Open browser
+        2. Go to
       value: |
         1.
         2.
