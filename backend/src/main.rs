@@ -7,12 +7,9 @@ use migration::{Migrator, MigratorTrait};
 use sea_orm::{Database, DatabaseConnection};
 use std::path::Path;
 use tracing::info;
-use utoipa::OpenApi;
-use utoipa_redoc::{Redoc, Servable};
-
-#[derive(OpenApi)]
-#[openapi(paths(routes::index::index))]
-struct ApiDoc;
+use utoipa::openapi::{Info, License};
+use utoipa_actix_web::AppExt;
+use utoipa_scalar::{Scalar, Servable};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -29,12 +26,21 @@ async fn main() -> std::io::Result<()> {
 
     info!("Starting server...");
     let server = HttpServer::new(move || {
-        App::new()
+        let (app, mut api) = App::new()
+            .into_utoipa_app()
             .app_data(web::Data::new(AppState {
                 database: db.clone(),
             }))
-            .service(Redoc::with_url("/openapi", ApiDoc::openapi()))
-            .configure(routes::index::config)
+            .service(routes::index::index)
+            .split_for_parts();
+
+        api.info = Info::builder()
+            .title("Hack4Krak")
+            .license(Some(License::new("GPL")))
+            .version(env!("CARGO_PKG_VERSION"))
+            .build();
+
+        app.service(Scalar::with_url("/docs", api))
     })
     .bind(("127.0.0.1", 8080))?
     .run();
