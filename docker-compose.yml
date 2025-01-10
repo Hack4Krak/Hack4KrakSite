@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  db:
+    container_name: hack4krak_postgres
+    image: postgres:latest
+    restart: on-failure
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: backend
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: hack4krak
+    ports:
+      - "5432:5432"
+    volumes:
+      - database:/var/lib/postgresql/data
+
+volumes:
+  database:

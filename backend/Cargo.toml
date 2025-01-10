@@ -1,0 +1,29 @@
+[package]
+name = "hack4krak-backend"
+version.workspace = true
+edition = "2021"
+
+[workspace]
+members = [".", "entity", "migration"]
+
+[workspace.package]
+version = "0.0.1"
+
+[dependencies]
+actix-web = "4.9.0"
+dotenvy = "0.15"
+thiserror = "2.0.10"
+
+utoipa = { version = "5.3.1", features = ["actix_extras", "macros"] }
+utoipa-actix-web = "0.1.2"
+utoipa-redoc = { version = "5", features = ["actix-web"] }
+
+sea-orm = { version = "1.1.3", features = [ "sqlx-postgres", "runtime-tokio-rustls", "macros" ] }
+
+# Custom crates
+entity = { path = "entity" }
+migration = { path = "migration" }
+
+serde = { version = "1.0.217", features = ["derive"] }
+tracing = "0.1.41"
+tracing-subscriber = "0.3.19"
