@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
+    "test": "echo Tests not yet implemented",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
