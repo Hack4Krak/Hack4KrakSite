@@ -7,9 +7,10 @@
     "frontend:dev": "pnpm --prefix ./frontend/ dev",
     "frontend:lint": "pnpm --prefix ./frontend/ lint .",
     "frontend:lint:fix": "pnpm --prefix ./frontend/ lint:fix",
-    "backend:dev": "cd backend/ && cargo run",
-    "backend:lint": "cd backend/ && cargo fmt && cargo clippy",
-    "backend:lint:fix": "cd backend/ && cargo fmt && cargo clippy --fix",
+    "backend:build": "pnpm --prefix ./backend/ build",
+    "backend:dev": "pnpm --prefix ./backend/ dev",
+    "backend:lint": "pnpm --prefix ./backend/ lint",
+    "backend:lint:fix": "pnpm --prefix ./backend/ lint:fix",
     "dev": "pnpm run /:dev$/",
     "lint": "pnpm run /:lint$/",
     "lint:fix": "pnpm run /:lint:fix/",
@@ -19,5 +20,11 @@
   "devDependencies": {
     "husky": "^9.1.7"
   },
-  "packageManager": "pnpm@9.15.2"
+  "packageManager": "pnpm@9.15.3",
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": ["*"],
+      "allowAny": ["*"]
+    }
+  }
 }
