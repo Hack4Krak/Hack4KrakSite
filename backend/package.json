@@ -3,8 +3,10 @@
   "private": true,
   "scripts": {
     "install": "cargo fetch",
+    "build": "cargo build",
     "dev": "cargo run",
     "lint": "cargo fmt -- --check && cargo clippy",
-    "lint:fix": "cargo fmt && cargo clippy --fix"
+    "lint:fix": "cargo fmt && cargo clippy --fix",
+    "test": "cargo test"
   }
 }

@@ -4,17 +4,19 @@
   "type": "module",
   "scripts": {
     "frontend:build": "pnpm --prefix ./frontend/ build",
+    "frontend:test": "pnpm --prefix ./frontend/ test",
     "frontend:dev": "pnpm --prefix ./frontend/ dev",
     "frontend:lint": "pnpm --prefix ./frontend/ lint .",
     "frontend:lint:fix": "pnpm --prefix ./frontend/ lint:fix",
     "backend:build": "pnpm --prefix ./backend/ build",
+    "backend:test": "pnpm --prefix ./backend/ test",
     "backend:dev": "pnpm --prefix ./backend/ dev",
     "backend:lint": "pnpm --prefix ./backend/ lint",
     "backend:lint:fix": "pnpm --prefix ./backend/ lint:fix",
+    "test": "pnpm run /:test$/",
     "dev": "pnpm run /:dev$/",
     "lint": "pnpm run /:lint$/",
     "lint:fix": "pnpm run /:lint:fix/",
-    "test": "pnpm run /:test$/",
     "prepare": "husky"
   },
   "devDependencies": {
@@ -23,8 +25,12 @@
   "packageManager": "pnpm@9.15.3",
   "pnpm": {
     "peerDependencyRules": {
-      "ignoreMissing": ["*"],
-      "allowAny": ["*"]
+      "ignoreMissing": [
+        "*"
+      ],
+      "allowAny": [
+        "*"
+      ]
     }
   }
 }
