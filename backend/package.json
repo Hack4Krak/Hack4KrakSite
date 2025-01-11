@@ -1,0 +1,10 @@
+{
+  "name": "hack4krak-backend",
+  "private": true,
+  "scripts": {
+    "install": "cargo fetch",
+    "dev": "cargo run",
+    "lint": "cargo fmt -- --check && cargo clippy",
+    "lint:fix": "cargo fmt && cargo clippy --fix"
+  }
+}
