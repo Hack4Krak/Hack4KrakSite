@@ -1,0 +1,60 @@
+name: CI
+on: push
+
+env:
+  DATABASE_URL: postgres://backend:password@localhost:5432/hack4krak
+  CARGO_TERM_COLOR: always
+  # Make sure CI fails on all warnings, including Clippy lints
+  RUSTFLAGS: "-Dwarnings"
+
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.3
+          run_install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: 'Install dependencies'
+        run: | 
+          pnpm install
+
+      - name: "Run tests"
+        run: pnpm frontend:test
+
+      - name: "Run lint"
+        run: pnpm frontend:lint
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          components: rustfmt, clippy
+
+      - name: Install dependencies
+        run: |
+          cd backend/
+          cargo build
+          cd ..
+
+      - name: "Run tests"
+        run: |
+            cd backend/
+            cargo test
+            cd ..
+      - name: "Run lint"
+        run: |
+            cd backend/
+            cargo fmt && cargo clippy
+            cd ..
