@@ -1,4 +1,4 @@
-# ![Modrinth Monorepo Cover](/.github/assets/banner.png)
+# ![Hack4Krak Repository Cover](/.github/assets/banner.png)
 
 ![Issues](https://img.shields.io/github/issues-raw/Hack4Krak/Hack4KrakSite?color=f0750f&label=issues&style=for-the-badge)
 ![Pull Requests](https://img.shields.io/github/issues-pr-raw/Hack4Krak/Hack4KrakSite?color=f0750f&label=PRs&style=for-the-badge)
@@ -39,4 +39,6 @@ pnpm backend:dev
 pnpm dev
 ```
 
+## Stats
 
+![Repobeats analytics image](https://repobeats.axiom.co/api/embed/b2a0612285a5cfef1231975dc94e601dc5f0b983.svg "Repobeats analytics image")
