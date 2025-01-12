@@ -24,11 +24,13 @@ async fn main() -> std::io::Result<()> {
     let db: DatabaseConnection = Database::connect(database_url).await.unwrap();
     Migrator::up(&db, None).await.unwrap();
 
-    let ip_env = std::env::var("BACKEND_IP").unwrap();
-    let mut ip_addr: Vec<&str> = vec![];
-    for addr_part in ip_env.split(":") {
-        ip_addr.push(addr_part);
-    }
+    let address_env: String =
+        std::env::var("BACKEND_ADDRESS").unwrap_or("127.0.0.1:8080".to_string());
+    let address_vec: Vec<&str> = address_env.split(":").collect();
+    let ip = address_vec[0];
+    let port = address_vec[1]
+        .parse::<u16>()
+        .expect("The port in BACKEND_IP must be a valid u16 integer");
 
     info!("Starting server...");
     let server = HttpServer::new(move || {
@@ -48,10 +50,10 @@ async fn main() -> std::io::Result<()> {
 
         app.service(Scalar::with_url("/docs", api))
     })
-    .bind((ip_addr[0], ip_addr[1].parse::<u16>().unwrap()))?
+    .bind((ip, port))?
     .run();
 
-    info!("Server is running on {}", ip_env);
+    info!("Server is running on {}", address_vec.join(":"));
     server.await?;
 
     info!("Server stopped");
