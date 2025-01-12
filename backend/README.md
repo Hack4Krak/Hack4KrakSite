@@ -4,6 +4,7 @@
 
 - `DATABASE_URL`: The URL of the database to connect to. Example: `postgres://user:password@localhost:5432/database`
 - `BACKEND_ADDRESS`: The address to bind the backend server to. Example: `127.0.0.1:8080`
+- `OPENAPI_JSON_FRONTEND_PATH`: The path to write openapi json in frontend, relative to backend/ directory. Example: `../frontend/openapi/api/openapi.json`
 
 
 ## Running Migrator CLI
