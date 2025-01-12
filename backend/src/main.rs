@@ -24,6 +24,12 @@ async fn main() -> std::io::Result<()> {
     let db: DatabaseConnection = Database::connect(database_url).await.unwrap();
     Migrator::up(&db, None).await.unwrap();
 
+    let ip_env = std::env::var("BACKEND_IP").unwrap();
+    let mut ip_addr: Vec<&str> = vec![];
+    for addr_part in ip_env.split(":") {
+        ip_addr.push(addr_part);
+    }
+
     info!("Starting server...");
     let server = HttpServer::new(move || {
         let (app, mut api) = App::new()
@@ -42,10 +48,10 @@ async fn main() -> std::io::Result<()> {
 
         app.service(Scalar::with_url("/docs", api))
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind((ip_addr[0], ip_addr[1].parse::<u16>().unwrap()))?
     .run();
 
-    info!("Server is running on 127.0.0.1:8080");
+    info!("Server is running on {}", ip_env);
     server.await?;
 
     info!("Server stopped");
