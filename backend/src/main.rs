@@ -5,8 +5,12 @@ use crate::utils::app_state::AppState;
 use actix_web::{web, App, HttpServer};
 use migration::{Migrator, MigratorTrait};
 use sea_orm::{Database, DatabaseConnection};
+use std::env;
+use std::fs::File;
+use std::io::Write;
 use std::path::Path;
 use tracing::info;
+use utoipa::gen::serde_json::to_string;
 use utoipa::openapi::{Info, License};
 use utoipa_actix_web::AppExt;
 use utoipa_scalar::{Scalar, Servable};
@@ -20,17 +24,16 @@ async fn main() -> std::io::Result<()> {
         .init();
 
     info!("Connecting to db...");
-    let database_url = std::env::var("DATABASE_URL").unwrap();
+    let database_url = env::var("DATABASE_URL").unwrap();
     let db: DatabaseConnection = Database::connect(database_url).await.unwrap();
     Migrator::up(&db, None).await.unwrap();
 
-    let address_env: String =
-        std::env::var("BACKEND_ADDRESS").unwrap_or("127.0.0.1:8080".to_string());
+    let address_env: String = env::var("BACKEND_ADDRESS").unwrap_or("127.0.0.1:8080".to_string());
     let address_vec: Vec<&str> = address_env.split(":").collect();
     let ip = address_vec[0];
     let port = address_vec[1]
         .parse::<u16>()
-        .expect("The port in BACKEND_IP must be a valid u16 integer");
+        .expect("The port in BACKEND_ADDRESS must be a valid u16 integer");
 
     info!("Starting server...");
     let server = HttpServer::new(move || {
@@ -48,6 +51,12 @@ async fn main() -> std::io::Result<()> {
             .version(env!("CARGO_PKG_VERSION"))
             .build();
 
+        let path: String = env::var("OPENAPI_JSON_FRONTEND_PATH")
+            .unwrap_or("../frontend/openapi/api/openapi.json".to_string());
+        let mut openapi_json = File::create(path).unwrap();
+        openapi_json
+            .write_all(to_string(&api).unwrap().as_bytes())
+            .unwrap();
         app.service(Scalar::with_url("/docs", api))
     })
     .bind((ip, port))?

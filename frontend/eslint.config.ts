@@ -7,5 +7,8 @@ export default withNuxt(
     vue: true,
     typescript: true,
     formatters: true,
+    rules: {
+      'node/prefer-global/process': ['off'],
+    },
   }),
 )

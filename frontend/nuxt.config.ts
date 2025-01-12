@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     '@nuxt/scripts',
     '@formkit/auto-animate/nuxt',
     '@nuxt/content',
+    'nuxt-open-fetch',
   ],
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
@@ -21,6 +22,15 @@ export default defineNuxtConfig({
   eslint: {
     config: {
       standalone: false,
+    },
+  },
+
+  openFetch: {
+    clients: {
+      api: {
+        baseURL: process.env.BACKEND_ADDRESS || 'http://localhost:8080/',
+        schema: '../openapi/api/openapi.json',
+      },
     },
   },
 })
