@@ -8,6 +8,8 @@ export default defineNuxtConfig({
     '@nuxt/scripts',
     '@formkit/auto-animate/nuxt',
     '@nuxt/content',
+    '@nuxt/fonts',
+    '@nuxt/image',
   ],
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
@@ -21,6 +23,11 @@ export default defineNuxtConfig({
   eslint: {
     config: {
       standalone: false,
+    },
+  },
+  fonts: {
+    experimental: {
+      processCSSVariables: true,
     },
   },
 })

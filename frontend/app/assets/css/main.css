@@ -4,17 +4,9 @@
 
 @theme {
   --font-sans: 'Public Sans', sans-serif;
+  --font-logotype: Quantico;
 }
 
 body {
   @apply bg-gray-100 dark:bg-gray-950;
-}
-
-.quantico {
-  font-family: Quantico;
-}
-
-@font-face {
-  font-family: Quantico;
-  src: url('/Quantico-Bold.ttf');
 }
