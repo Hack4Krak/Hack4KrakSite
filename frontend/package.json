@@ -1,7 +1,7 @@
 {
   "name": "hack4krak-frontend",
-  "private": true,
   "type": "module",
+  "private": true,
   "scripts": {
     "build": "nuxt build",
     "test": "echo Tests not yet implemented",
@@ -22,12 +22,15 @@
     "nuxt": "^3.15.1"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^3.14.0",
     "@nuxt/devtools": "latest",
     "@nuxt/eslint": "^0.7.2",
     "@nuxt/test-utils": "3.9.0-alpha.3",
     "@vue/test-utils": "^2.4.6",
     "eslint": "^9.15.0",
+    "eslint-plugin-format": "^1.0.1",
     "happy-dom": "^16.0.1",
+    "jiti": "^2.4.2",
     "playwright-core": "^1.49.1",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
