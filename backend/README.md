@@ -1,4 +1,15 @@
-# Running Migrator CLI
+# Backend Readme
+
+## Environment Variables
+
+- `DATABASE_URL`: The URL of the database to connect to. Example: `postgres://user:password@localhost:5432/database`
+- `BACKEND_ADDRESS`: The address to bind the backend server to. Example: `127.0.0.1:8080`
+
+
+## Running Migrator CLI
+
+> All of those commands should be run from the `backend/migration` directory
+> You have to set the `DATABASE_URL` environment variable before.
 
 - Generate a new migration file
     ```sh
@@ -38,4 +49,20 @@
 - Check the status of all migrations
     ```sh
     cargo run -- status
+    ```
+
+
+## Generating SeaORM Entities
+
+- Requires to install the `sea-orm-cli` tool
+  ```shell
+    cargo install sea-orm-cli@1.1.0
+  ```
+
+> All following commands should be run from the `backend/entity/src` directory.
+> You have to set the `DATABASE_URL` environment variable before.
+ 
+- Generate entities from the database
+    ```sh
+    sea-orm-cli generate entity
     ```
