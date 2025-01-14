@@ -12,41 +12,59 @@
 > You have to set the `DATABASE_URL` environment variable before.
 
 - Generate a new migration file
+
     ```sh
     cargo run -- generate MIGRATION_NAME
     ```
+  
 - Apply all pending migrations
+
     ```sh
     cargo run
     ```
+  
     ```sh
     cargo run -- up
     ```
+  
 - Apply first 10 pending migrations
+
     ```sh
     cargo run -- up -n 10
     ```
+  
 - Rollback last applied migrations
+
     ```sh
     cargo run -- down
     ```
+
 - Rollback last 10 applied migrations
+
     ```sh
     cargo run -- down -n 10
     ```
+
 - Drop all tables from the database, then reapply all migrations
+
     ```sh
     cargo run -- fresh
     ```
+
 - Rollback all applied migrations, then reapply all migrations
+
     ```sh
     cargo run -- refresh
     ```
+
 - Rollback all applied migrations
+
     ```sh
     cargo run -- reset
     ```
+
 - Check the status of all migrations
+
     ```sh
     cargo run -- status
     ```
@@ -55,7 +73,8 @@
 ## Generating SeaORM Entities
 
 - Requires to install the `sea-orm-cli` tool
-  ```shell
+
+  ```sh
   cargo install sea-orm-cli
   ```
 
@@ -63,6 +82,7 @@
 > You have to set the `DATABASE_URL` environment variable before.
  
 - Generate entities from the database
+
     ```sh
     sea-orm-cli generate entity
     ```
