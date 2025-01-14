@@ -52,6 +52,3 @@ const items = [
     </UCard>
   </UContainer>
 </template>
-
-<script setup lang="ts">
-</script>
