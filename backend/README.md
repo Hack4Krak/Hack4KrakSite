@@ -56,7 +56,7 @@
 
 - Requires to install the `sea-orm-cli` tool
   ```shell
-    cargo install sea-orm-cli@1.1.0
+  cargo install sea-orm-cli
   ```
 
 > All following commands should be run from the `backend/entity/src` directory.
