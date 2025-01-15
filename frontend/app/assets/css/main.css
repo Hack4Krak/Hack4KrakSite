@@ -1,10 +1,11 @@
-@import "tailwindcss";
-@import "@nuxt/ui";
+@import 'tailwindcss';
+@import '@nuxt/ui';
 @tailwind utilities;
 
 @theme {
   --font-sans: 'Public Sans', sans-serif;
   --font-logotype: Quantico;
+  --font-pixelify: Pixelify Sans;
 }
 
 body {

@@ -1,7 +1,7 @@
 <template>
   <NuxtLoadingIndicator />
-  <MainNavbar />
-  <div class="min-h-[calc(100vh-var(--header-height))]">
+  <Navbar />
+  <div class="mt-20">
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
