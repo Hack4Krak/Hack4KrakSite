@@ -4,6 +4,7 @@ use sea_orm::QueryFilter;
 use sea_orm::{ColumnTrait, DatabaseConnection, TransactionTrait};
 
 use crate::models::entities::users;
+use crate::routes::auth::{LoginModel, RegisterModel};
 use migration::Condition;
 use sea_orm::ActiveValue::Set;
 use sea_orm::{ActiveModelTrait, EntityTrait};
@@ -12,7 +13,7 @@ impl users::Model {
     pub async fn create_with_password(
         database: &DatabaseConnection,
         password_hash: String,
-        register_json: &crate::routes::auth::RegisterModel,
+        register_json: &RegisterModel,
     ) -> Result<(), Error> {
         let transaction = database.begin().await?;
 
@@ -45,7 +46,7 @@ impl users::Model {
 
     pub async fn verify_credentials(
         database: &DatabaseConnection,
-        login_json: &crate::routes::auth::LoginModel,
+        login_json: &LoginModel,
     ) -> Result<Option<String>, Error> {
         let user_data = users::Entity::find()
             .filter(Condition::all().add(users::Column::Email.eq(&login_json.email)))

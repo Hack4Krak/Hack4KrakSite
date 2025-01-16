@@ -8,7 +8,7 @@ use utoipa::gen::serde_json::json;
 use utoipa_actix_web::scope;
 
 #[actix_web::test]
-async fn auth_flow() {
+async fn register() {
     let db = MockDatabase::new(DatabaseBackend::Postgres)
         .append_query_results([
             Vec::<users::Model>::new(),
@@ -51,4 +51,31 @@ async fn auth_flow() {
     let resp = test::call_service(&app, req).await;
 
     assert!(resp.status().is_success());
+}
+
+#[actix_web::test]
+async fn register_invalid_email() {
+    let db = MockDatabase::new(DatabaseBackend::Postgres).into_connection();
+    let data = Data::new(AppState { database: db });
+    let app = test::init_service(
+        App::new()
+            .app_data(data.clone())
+            .service(scope("/auth").configure(routes::auth::config)),
+    )
+    .await;
+
+    let register_payload = json!({
+        "email": "this_!isn'taemaill",
+        "name": "test_user",
+        "password": "password123"
+    });
+
+    let req = test::TestRequest::post()
+        .uri("/auth/register")
+        .set_json(&register_payload)
+        .to_request();
+
+    let resp = test::call_service(&app, req).await;
+
+    assert!(resp.status().is_client_error());
 }
