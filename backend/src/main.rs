@@ -1,8 +1,8 @@
-mod routes;
-mod utils;
-
-use crate::utils::app_state::AppState;
-use actix_web::{web, App, HttpServer};
+use actix_web::middleware::from_fn;
+use actix_web::web::Data;
+use actix_web::{App, HttpServer};
+use hack4krak_backend::utils::app_state::AppState;
+use hack4krak_backend::{middlewares, routes};
 use migration::{Migrator, MigratorTrait};
 use sea_orm::{Database, DatabaseConnection};
 use std::env;
@@ -11,8 +11,9 @@ use std::io::Write;
 use std::path::Path;
 use tracing::info;
 use utoipa::gen::serde_json::to_string;
+use utoipa::openapi::security::{HttpAuthScheme, HttpBuilder, SecurityScheme};
 use utoipa::openapi::{Info, License};
-use utoipa_actix_web::AppExt;
+use utoipa_actix_web::{scope, AppExt};
 use utoipa_scalar::{Scalar, Servable};
 
 #[actix_web::main]
@@ -35,14 +36,20 @@ async fn main() -> std::io::Result<()> {
         .parse::<u16>()
         .expect("The port in BACKEND_ADDRESS must be a valid u16 integer");
 
+    let data = Data::new(AppState { database: db });
+
     info!("Starting server...");
     let server = HttpServer::new(move || {
         let (app, mut api) = App::new()
             .into_utoipa_app()
-            .app_data(web::Data::new(AppState {
-                database: db.clone(),
-            }))
+            .app_data(data.clone())
             .service(routes::index::index)
+            .service(scope("/auth").configure(routes::auth::config))
+            .service(
+                scope("/user")
+                    .wrap(from_fn(middlewares::auth_middleware::check_auth_middleware))
+                    .configure(routes::user::config),
+            )
             .split_for_parts();
 
         api.info = Info::builder()
@@ -50,6 +57,18 @@ async fn main() -> std::io::Result<()> {
             .license(Some(License::new("GPL")))
             .version(env!("CARGO_PKG_VERSION"))
             .build();
+
+        if let Some(ref mut components) = api.components {
+            components.add_security_scheme(
+                "access_token",
+                SecurityScheme::Http(
+                    HttpBuilder::new()
+                        .scheme(HttpAuthScheme::Bearer)
+                        .bearer_format("JWT")
+                        .build(),
+                ),
+            );
+        }
 
         let path: String = env::var("OPENAPI_JSON_FRONTEND_PATH")
             .unwrap_or("../frontend/openapi/api/openapi.json".to_string());
