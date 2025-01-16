@@ -11,7 +11,6 @@ use utoipa_actix_web::scope;
 async fn auth_flow() {
     let db = MockDatabase::new(DatabaseBackend::Postgres)
         .append_query_results([
-            //     // First query result
             Vec::<users::Model>::new(),
             vec![users::Model {
                 username: "".to_string(),
@@ -31,7 +30,6 @@ async fn auth_flow() {
 
     let data = Data::new(AppState { database: db });
 
-    // todo: is init_serive required
     let app = test::init_service(
         App::new()
             .app_data(data.clone())
