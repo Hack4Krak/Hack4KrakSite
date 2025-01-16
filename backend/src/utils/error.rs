@@ -15,25 +15,27 @@ pub enum Error {
     InvalidCredentials,
     #[error("Invalid email address")]
     InvalidEmailAddress,
+    #[error("Password & email authentication is not available for this account")]
+    PasswordAuthNotAvailable,
     #[error("Invalid Json Web Token")]
     InvalidJsonWebToken,
     #[error("Unauthorized")]
     Unauthorized,
-    #[error("User doesn't exist")]
-    UserDoesNotExist,
 }
 
 impl error::ResponseError for Error {
     fn status_code(&self) -> StatusCode {
         match *self {
-            Error::UserAlreadyExists => StatusCode::BAD_REQUEST,
+            // 4xx: Client Errors
             Error::InvalidEmailAddress => StatusCode::BAD_REQUEST,
             Error::InvalidCredentials => StatusCode::UNAUTHORIZED,
-            Error::Unauthorized => StatusCode::UNAUTHORIZED,
-            Error::InvalidJsonWebToken => StatusCode::INTERNAL_SERVER_ERROR,
+            Error::InvalidJsonWebToken => StatusCode::UNAUTHORIZED,
+            Error::Unauthorized => StatusCode::FORBIDDEN,
+            Error::PasswordAuthNotAvailable => StatusCode::FORBIDDEN,
+            Error::UserAlreadyExists => StatusCode::CONFLICT,
+            // 5xx: Server Errors
             Error::HashPasswordFailed(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::DatabaseOperation(_) => StatusCode::INTERNAL_SERVER_ERROR,
-            Error::UserDoesNotExist => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 

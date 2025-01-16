@@ -34,10 +34,7 @@ pub async fn login(
     app_state: web::Data<app_state::AppState>,
     login_json: web::Json<LoginModel>,
 ) -> Result<HttpResponse, Error> {
-    let Some(email) = users::Model::verify_credentials(&app_state.database, &login_json).await?
-    else {
-        return Err(Error::InvalidCredentials);
-    };
+    let email = users::Model::verify_credentials(&app_state.database, &login_json).await?;
 
     let access_token = encode_jwt(email.clone(), Duration::minutes(10))?;
     let refresh_token = encode_jwt(email, Duration::days(14))?;

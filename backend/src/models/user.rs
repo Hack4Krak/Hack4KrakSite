@@ -47,24 +47,24 @@ impl users::Model {
     pub async fn verify_credentials(
         database: &DatabaseConnection,
         login_json: &LoginModel,
-    ) -> Result<Option<String>, Error> {
+    ) -> Result<String, Error> {
         let user_data = users::Entity::find()
             .filter(Condition::all().add(users::Column::Email.eq(&login_json.email)))
             .one(database)
             .await?
-            .unwrap();
+            .ok_or(Error::InvalidCredentials)?;
 
-        let password = user_data.password.unwrap();
-        let parsed_hash = PasswordHash::new(&password).unwrap();
+        let password = user_data.password.ok_or(Error::PasswordAuthNotAvailable)?;
+        let parsed_hash = PasswordHash::new(&password).map_err(Error::HashPasswordFailed)?;
 
         let is_verified = Argon2::default()
             .verify_password(login_json.password.as_bytes(), &parsed_hash)
             .is_ok();
 
         if !is_verified {
-            return Ok(None);
+            return Err(Error::InvalidCredentials);
         }
 
-        Ok(Some(user_data.email))
+        Ok(user_data.email)
     }
 }
