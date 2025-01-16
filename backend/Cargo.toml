@@ -13,7 +13,7 @@ version = "0.0.1"
 sea-orm = { version = "1.1.4", features = [ "sqlx-postgres", "runtime-tokio-rustls", "macros", "mock" ] }
 
 [dependencies]
-actix-web = { version = "4.9.0", features = ["cookies"] }
+actix-web = "4.9.0"
 dotenvy = "0.15"
 thiserror = "2.0.10"
 serde = { version = "1.0.217", features = ["derive"] }
