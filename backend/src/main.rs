@@ -19,9 +19,9 @@ use utoipa_scalar::{Scalar, Servable};
 async fn main() -> std::io::Result<()> {
     dotenvy::from_path(Path::new("../.env")).unwrap();
 
-    tracing_subscriber::fmt()
-        .with_env_filter("hack4krak_backend=trace")
-        .init();
+    let filter = env::var("RUST_LOG").unwrap_or("hack4krak_backend=trace".to_string());
+
+    tracing_subscriber::fmt().with_env_filter(filter).init();
 
     info!("Connecting to db...");
     let database_url = env::var("DATABASE_URL").unwrap();
