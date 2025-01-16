@@ -1,11 +1,8 @@
-mod middlewares;
-mod models;
-mod routes;
-mod utils;
-
-use crate::utils::app_state::AppState;
 use actix_web::middleware::from_fn;
-use actix_web::{web, App, HttpServer};
+use actix_web::web::Data;
+use actix_web::{App, HttpServer};
+use hack4krak_backend::utils::app_state::AppState;
+use hack4krak_backend::{middlewares, routes};
 use migration::{Migrator, MigratorTrait};
 use sea_orm::{Database, DatabaseConnection};
 use std::env;
@@ -39,13 +36,13 @@ async fn main() -> std::io::Result<()> {
         .parse::<u16>()
         .expect("The port in BACKEND_ADDRESS must be a valid u16 integer");
 
+    let data = Data::new(AppState { database: db });
+
     info!("Starting server...");
     let server = HttpServer::new(move || {
         let (app, mut api) = App::new()
             .into_utoipa_app()
-            .app_data(web::Data::new(AppState {
-                database: db.clone(),
-            }))
+            .app_data(data.clone())
             .service(routes::index::index)
             .service(scope("/auth").configure(routes::auth::config))
             .service(

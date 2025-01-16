@@ -10,6 +10,7 @@ use crate::models::entities::users;
 use crate::utils::app_state;
 use crate::utils::jwt::{decode_jwt, encode_jwt};
 use serde::{Deserialize, Serialize};
+use utoipa::gen::serde_json::json;
 use utoipa::ToSchema;
 
 const EMAIL_REGEX: &str = r#"(?m)(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])"#;
@@ -52,7 +53,9 @@ pub async fn register(
 
     users::Model::create_with_password(&app_state.database, password_hash, &register_json).await?;
 
-    Ok(HttpResponse::Ok().body(""))
+    Ok(HttpResponse::Ok().json(json!({
+        "status": "ok"
+    })))
 }
 
 #[derive(Serialize, Deserialize, ToSchema)]

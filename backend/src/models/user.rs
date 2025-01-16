@@ -16,6 +16,7 @@ impl users::Model {
     ) -> Result<(), Error> {
         let transaction = database.begin().await?;
 
+        println!("a");
         if users::Entity::find()
             .filter(
                 users::Column::Email
@@ -28,6 +29,7 @@ impl users::Model {
         {
             return Err(Error::UserAlreadyExists {});
         }
+        println!("b");
 
         users::ActiveModel {
             username: Set(register_json.name.clone()),
@@ -37,6 +39,7 @@ impl users::Model {
         }
         .insert(&transaction)
         .await?;
+        println!("c");
 
         transaction.commit().await?;
 

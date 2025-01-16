@@ -10,7 +10,7 @@ members = [".", "migration"]
 version = "0.0.1"
 
 [workspace.dependencies]
-sea-orm = { version = "1.1.4", features = [ "sqlx-postgres", "runtime-tokio-rustls", "macros" ] }
+sea-orm = { version = "1.1.4", features = [ "sqlx-postgres", "runtime-tokio-rustls", "macros", "mock" ] }
 
 [dependencies]
 actix-web = { version = "4.9.0", features = ["cookies"] }
