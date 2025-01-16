@@ -79,11 +79,12 @@
   cargo install sea-orm-cli
   ```
 
-> All following commands should be run from the `backend/entity/src` directory.
+> All following commands should be run from the `backend/` directory.
 > You have to set the `DATABASE_URL` environment variable before.
  
 - Generate entities from the database
 
     ```sh
-    sea-orm-cli generate entity
+    sea-orm-cli generate entity -o src/models/entities/
+
     ```

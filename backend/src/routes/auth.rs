@@ -13,7 +13,8 @@ use serde::{Deserialize, Serialize};
 use utoipa::gen::serde_json::json;
 use utoipa::ToSchema;
 
-const EMAIL_REGEX: &str = r"(?m)^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$";
+const EMAIL_REGEX: &str =
+    r"^([a-z0-9_+]([a-z0-9_+.]*[a-z0-9_+])?)@([a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6})$";
 
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct RegisterModel {
