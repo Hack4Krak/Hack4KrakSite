@@ -10,5 +10,8 @@ export default withNuxt(
     rules: {
       'node/prefer-global/process': ['off'],
     },
+    ignores: [
+      'openapi/api/openapi.json',
+    ],
   }),
 )
