@@ -1,5 +1,5 @@
-use actix_web::middleware::from_fn;
 use actix_web::web::Data;
+use actix_web::{middleware::from_fn, middleware::Logger};
 use actix_web::{App, HttpServer};
 use hack4krak_backend::utils::app_state::AppState;
 use hack4krak_backend::{middlewares, routes};
@@ -21,7 +21,7 @@ async fn main() -> std::io::Result<()> {
     dotenvy::from_path(Path::new("../.env")).unwrap();
 
     tracing_subscriber::fmt()
-        .with_env_filter("hack4krak_backend=trace")
+        .with_env_filter("actix_web=info,hack4krak_backend=trace")
         .init();
 
     info!("Connecting to db...");
@@ -41,6 +41,7 @@ async fn main() -> std::io::Result<()> {
     info!("Starting server...");
     let server = HttpServer::new(move || {
         let (app, mut api) = App::new()
+            .wrap(Logger::default())
             .into_utoipa_app()
             .app_data(data.clone())
             .service(routes::index::index)
