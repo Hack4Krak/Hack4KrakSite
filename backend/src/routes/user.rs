@@ -13,10 +13,15 @@ pub struct UserInformationResponse {
     pub email: String,
 }
 
-#[utoipa::path(get, path = "/", request_body = UserInformationResponse,  responses(
-        (status = 200, description = "Use information received."),
+#[utoipa::path(
+    responses(
+        (status = 200, description = "Use information received.", body = UserInformationResponse),
         (status = 500, description = "Internal server error.")
-    ))]
+    ),
+    security(
+        ("access_token" = [])
+    )
+)]
 #[get("/")]
 pub async fn user(
     app_state: web::Data<app_state::AppState>,

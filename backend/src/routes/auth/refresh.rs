@@ -1,3 +1,4 @@
+use crate::routes::auth::TokensResponse;
 use crate::utils::error::Error;
 use crate::utils::jwt::{decode_jwt, get_default_tokens};
 use actix_web::{post, web, HttpResponse};
@@ -10,11 +11,9 @@ pub struct RefreshToken {
 }
 
 #[utoipa::path(
-    post,
-    path = "/refresh",
     request_body = RefreshToken,
     responses(
-        (status = 200, description = "New tokens received"),
+        (status = 200, description = "New tokens received", body = TokensResponse),
         (status = 401, description = "Invalid credentials."),
     )
 )]

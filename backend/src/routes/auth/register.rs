@@ -21,8 +21,6 @@ pub struct RegisterModel {
 }
 
 #[utoipa::path(
-    post,
-    path = "/register",
     request_body = RegisterModel,
     responses(
         (status = 200, description = "User successfully registered."),
