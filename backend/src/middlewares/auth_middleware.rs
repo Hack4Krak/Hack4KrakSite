@@ -9,23 +9,21 @@ use actix_web::{
 };
 
 pub async fn check_auth_middleware(
-    req: ServiceRequest,
+    request: ServiceRequest,
     next: Next<impl MessageBody>,
 ) -> Result<ServiceResponse<impl MessageBody>, ActixError> {
-    let auth = req.headers().get(AUTHORIZATION);
+    let auth_header = request
+        .headers()
+        .get(AUTHORIZATION)
+        .ok_or(ActixError::from(Error::Unauthorized))?;
 
-    if auth.is_none() {
-        return Err(ActixError::from(Error::Unauthorized));
-    }
-
-    let token = auth
-        .unwrap()
+    let token = auth_header
         .to_str()
-        .unwrap()
-        .replace("Bearer ", "")
-        .to_owned();
-    let claim = decode_jwt(&token).map_err(|_| Error::Unauthorized)?;
-    req.extensions_mut().insert(claim.claims);
+        .map_err(|_| Error::InvalidAuthorizationHeader)?
+        .trim_start_matches("Bearer ");
 
-    next.call(req).await
+    let claims = decode_jwt(token).map_err(|_| Error::Unauthorized)?;
+    request.extensions_mut().insert(claims.claims);
+
+    next.call(request).await
 }

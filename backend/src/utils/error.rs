@@ -25,6 +25,8 @@ pub enum Error {
     PasswordAuthNotAvailable,
     #[error("Invalid Json Web Token")]
     InvalidJsonWebToken,
+    #[error("Invalid authorization header content")]
+    InvalidAuthorizationHeader,
     #[error("Unauthorized")]
     Unauthorized,
 }
@@ -34,6 +36,7 @@ impl error::ResponseError for Error {
         match *self {
             // 4xx: Client Errors
             Error::InvalidEmailAddress => StatusCode::BAD_REQUEST,
+            Error::InvalidAuthorizationHeader => StatusCode::UNAUTHORIZED,
             Error::InvalidCredentials => StatusCode::UNAUTHORIZED,
             Error::InvalidJsonWebToken => StatusCode::UNAUTHORIZED,
             Error::Unauthorized => StatusCode::FORBIDDEN,
