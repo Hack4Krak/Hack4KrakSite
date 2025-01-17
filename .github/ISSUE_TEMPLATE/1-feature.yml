@@ -1,7 +1,7 @@
 name: ✨ Feature
 description: Suggest a feature or improvement!
 title: "[Feat]: "
-labels: ["type: feature"]
+type: "feature"
 body:
   - type: textarea
     id: howitworks
