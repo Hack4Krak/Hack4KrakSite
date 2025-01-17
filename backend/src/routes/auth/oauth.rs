@@ -1,5 +1,5 @@
 use crate::models::entities::users;
-use crate::routes::auth::refresh::RefreshToken;
+use crate::routes::auth::TokensResponse;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::{get, web, HttpResponse};
@@ -19,9 +19,11 @@ struct GitHubUser {
 }
 
 #[utoipa::path(
-    request_body = RefreshToken,
+    params(
+        ("code" = String, Path)
+    ),
     responses(
-        (status = 200, description = "OAuth2 flow completed successfully"),
+        (status = 200, description = "OAuth2 flow completed successfully", body = TokensResponse),
         (status = 500, description = "Internal server errors."),
     )
 )]
@@ -59,11 +61,9 @@ pub async fn github_callback(
     Ok(HttpResponse::Ok().json(tokens))
 }
 
-#[utoipa::path(
-    responses(
-        (status = 200, description = "Address to verify using oauth"),
-    )
-)]
+#[utoipa::path(responses(
+    (status = 200, description = "Address to verify using oauth"),
+))]
 #[get("/oauth/github")]
 pub async fn github(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
     let (auth_url, _) = app_state

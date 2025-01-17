@@ -19,11 +19,9 @@ pub struct TokensResponse {
 }
 
 #[utoipa::path(
-    post,
-    path = "/login",
     request_body = LoginModel,
     responses(
-        (status = 200, description = "User successfully logged in."),
+        (status = 200, description = "User successfully logged in.", body = LoginModel),
         (status = 401, description = "Invalid credentials."),
         (status = 500, description = "Internal server error.")
     )
