@@ -34,7 +34,7 @@ async fn register() {
 
     let app = test::init_service(
         App::new()
-            .app_data(Data::new(AppState { database }))
+            .app_data(Data::new(AppState::with_database(database)))
             .service(scope("/auth").configure(routes::auth::config)),
     )
     .await;
@@ -60,7 +60,7 @@ async fn register_invalid_email() {
     let database = MockDatabase::new(DatabaseBackend::Postgres).into_connection();
     let app = test::init_service(
         App::new()
-            .app_data(Data::new(AppState { database }))
+            .app_data(Data::new(AppState::with_database(database)))
             .service(scope("/auth").configure(routes::auth::config)),
     )
     .await;
@@ -99,7 +99,7 @@ async fn auth_flow() {
 
     let app = test::init_service(
         App::new()
-            .app_data(Data::new(AppState { database }))
+            .app_data(Data::new(AppState::with_database(database)))
             .service(scope("/auth").configure(routes::auth::config))
             .service(
                 scope("/user")

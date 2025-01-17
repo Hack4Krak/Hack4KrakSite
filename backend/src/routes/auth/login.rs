@@ -1,9 +1,8 @@
 use crate::models::entities::users;
 use crate::utils::app_state;
 use crate::utils::error::Error;
-use crate::utils::jwt::encode_jwt;
+use crate::utils::jwt::get_default_tokens;
 use actix_web::{post, web, HttpResponse};
-use chrono::Duration;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
@@ -35,12 +34,7 @@ pub async fn login(
     login_json: web::Json<LoginModel>,
 ) -> Result<HttpResponse, Error> {
     let email = users::Model::verify_credentials(&app_state.database, &login_json).await?;
+    let tokens = get_default_tokens(email)?;
 
-    let access_token = encode_jwt(email.clone(), Duration::minutes(10))?;
-    let refresh_token = encode_jwt(email, Duration::days(14))?;
-
-    Ok(HttpResponse::Ok().json(TokensResponse {
-        access_token,
-        refresh_token,
-    }))
+    Ok(HttpResponse::Ok().json(tokens))
 }

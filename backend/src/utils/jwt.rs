@@ -1,6 +1,7 @@
+use crate::routes::auth::TokensResponse;
 use crate::utils::error::Error;
 use actix_web::{FromRequest, HttpMessage};
-use chrono::{TimeDelta, Utc};
+use chrono::{Duration, TimeDelta, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, TokenData, Validation};
 use serde::{Deserialize, Serialize};
 use std::future;
@@ -59,4 +60,14 @@ pub fn decode_jwt(jwt: &str) -> Result<TokenData<Claims>, jsonwebtoken::errors::
     );
 
     claim_data
+}
+
+pub fn get_default_tokens(email: String) -> Result<TokensResponse, Error> {
+    let access_token = encode_jwt(email.clone(), Duration::minutes(10))?;
+    let refresh_token = encode_jwt(email, Duration::days(14))?;
+
+    Ok(TokensResponse {
+        access_token,
+        refresh_token,
+    })
 }
