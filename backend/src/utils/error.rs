@@ -5,8 +5,14 @@ use utoipa::gen::serde_json::json;
 
 #[derive(Debug, Error)]
 pub enum Error {
+    #[error("Response from Github API isn't valid")]
+    InvalidGithubApiResponse,
     #[error("Failed to hash password: {0}")]
     HashPasswordFailed(argon2::password_hash::Error),
+    #[error("Failed to proceed with OAuth flow")]
+    OAuth,
+    #[error("Request error: {0}")]
+    Request(#[from] reqwest::Error),
     #[error("Database operation failed")]
     DatabaseOperation(#[from] sea_orm::DbErr),
     #[error("User already exists")]
@@ -36,6 +42,9 @@ impl error::ResponseError for Error {
             // 5xx: Server Errors
             Error::HashPasswordFailed(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::DatabaseOperation(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Error::InvalidGithubApiResponse => StatusCode::INTERNAL_SERVER_ERROR,
+            Error::OAuth => StatusCode::INTERNAL_SERVER_ERROR,
+            Error::Request(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 

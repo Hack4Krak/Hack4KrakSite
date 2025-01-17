@@ -4,12 +4,41 @@ use sea_orm::QueryFilter;
 use sea_orm::{ColumnTrait, DatabaseConnection, TransactionTrait};
 
 use crate::models::entities::users;
-use crate::routes::auth::{LoginModel, RegisterModel};
+use crate::routes::auth::{LoginModel, RegisterModel, TokensResponse};
+use crate::utils::jwt::get_default_tokens;
 use migration::Condition;
 use sea_orm::ActiveValue::Set;
 use sea_orm::{ActiveModelTrait, EntityTrait};
 
 impl users::Model {
+    pub async fn create_from_oauth(
+        database: &DatabaseConnection,
+        username: String,
+        email: String,
+    ) -> Result<TokensResponse, Error> {
+        let transaction = database.begin().await?;
+
+        if users::Entity::find()
+            .filter(users::Column::Email.eq(&email))
+            .one(&transaction)
+            .await?
+            .is_none()
+        {
+            users::ActiveModel {
+                username: Set(username),
+                email: Set(email.clone()),
+                password: Set(None),
+                ..Default::default()
+            }
+            .insert(&transaction)
+            .await?;
+
+            transaction.commit().await?;
+        }
+
+        get_default_tokens(email)
+    }
+
     pub async fn create_with_password(
         database: &DatabaseConnection,
         password_hash: String,
