@@ -21,7 +21,7 @@
         </div>
         <div>
           <div class="mt-10 flex text-4xl items-center">
-            <a class="h-fit w-60" href="https://discord.gg/fJyZT6EPcY">
+            <a class="h-fit w-60" href="https://discord.gg/ASPqckzEd8">
               <Icon name="logos:discord" class="[&>path]:fill-black dark:[&>path]:fill-white" mode="svg" alt="Official logo of Discord"/>
             </a>
             <a class="h-fit w-12 text-black dark:text-white" href="https://github.com/Hack4Krak/Hack4KrakSite/">
