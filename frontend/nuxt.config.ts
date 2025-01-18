@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     '@formkit/auto-animate/nuxt',
     '@nuxt/content',
     'nuxt-open-fetch',
+    '@nuxt/image',
   ],
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
