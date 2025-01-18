@@ -18,7 +18,6 @@ export default defineNuxtConfig({
   site: {
     url: baseUrl,
     name: 'Hack4Krak CTF',
-    // TODO: Description shall be refactored by some1 from copywriting
     description: 'Krakowski CTF dla uczniów szkół średnich! Zgłoś swoją drużynę, weź udział w wydarzeniu i wygraj atrakcyjne nagrody!',
     defaultLocale: 'pl',
   },
