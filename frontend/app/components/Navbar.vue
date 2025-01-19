@@ -68,7 +68,7 @@ const items = [
           :items="items"
           orientation="vertical"
           variant="link"
-          class="w-full text-3xl overflow-scroll h-[50%]"
+          class="w-full text-3xl"
           :ui="{ link: 'text-lg' }"
         >
           <template #button>
