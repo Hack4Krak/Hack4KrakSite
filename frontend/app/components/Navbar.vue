@@ -36,9 +36,9 @@ const items = [
 <template>
   <UContainer class="top-0 z-1 sticky bg-white dark:bg-black max-w-full">
     <div class="mx-auto flex items-center">
-      <NuxtLink to="/" class="flex items-center space-x-2">
+      <NuxtLink to="/" class="flex items-center space-x-2 py-3">
         <Logo class="size-10 text-black dark:text-white" />
-        <h1 class="md:hidden">
+        <h1 class="md:hidden text-2xl font-semibold">
           Hack4Krak
         </h1>
       </NuxtLink>
@@ -51,7 +51,7 @@ const items = [
       </UNavigationMenu>
 
       <button class="md:hidden p-2 ml-auto cursor-pointer" @click="toggleMobileMenu">
-        <Icon :name="isMobileMenuOpen ? 'i-lucide-menu' : 'i-lucide-minimize-2'" size="20" />
+        <Icon :name="isMobileMenuOpen ? 'mdi:close' : 'mdi:hamburger-menu'" size="24" />
       </button>
     </div>
 
@@ -62,16 +62,19 @@ const items = [
       enter-active-class="transition duration-200"
       leave-active-class="transition duration-200"
     >
-      <div v-if="isMobileMenuOpen" class="md:hidden h-screen overflow-hidden">
-        <USeparator />
+      <div v-if="isMobileMenuOpen" class="md:hidden h-screen [&>a]:text-5xl ">
+        <USeparator class="mb-2" />
         <UNavigationMenu
           :items="items"
           orientation="vertical"
           variant="link"
-          class="w-full items-center justify-center text-center text-3xl"
+          class="w-full text-3xl overflow-scroll h-[50%]"
+          :ui="{ link: 'text-lg' }"
         >
           <template #button>
-            <ElevatedButton message="START GRY" />
+            <div class="items-center justify-center text-center w-full">
+              <ElevatedButton message="START GRY" class="w-70 mt-2" />
+            </div>
           </template>
         </UNavigationMenu>
       </div>
