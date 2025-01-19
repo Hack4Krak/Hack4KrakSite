@@ -24,13 +24,17 @@ export default defineNuxtConfig({
       standalone: false,
     },
   },
-
   openFetch: {
     clients: {
       api: {
         baseURL: process.env.BACKEND_ADDRESS || 'http://localhost:8080/',
         schema: '../openapi/api/openapi.json',
       },
+    },
+  },
+  fonts: {
+    experimental: {
+      processCSSVariables: true,
     },
   },
 })
