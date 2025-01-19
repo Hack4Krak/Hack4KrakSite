@@ -22,7 +22,8 @@ use utoipa_scalar::{Scalar, Servable};
 async fn main() -> std::io::Result<()> {
     dotenvy::from_path(Path::new("../.env")).unwrap();
 
-    let filter = env::var("RUST_LOG").unwrap_or("actix_web=debug,hack4krak_backend=trace".to_string());
+    let filter =
+        env::var("RUST_LOG").unwrap_or("actix_web=debug,hack4krak_backend=trace".to_string());
 
     tracing_subscriber::fmt().with_env_filter(filter).init();
 

@@ -24,6 +24,7 @@ struct GitHubUser {
     ),
     responses(
         (status = 200, description = "OAuth2 flow completed successfully", body = TokensResponse),
+        (status = 401, description = "Invalid credentials"),
         (status = 500, description = "Internal server errors."),
     )
 )]
@@ -62,7 +63,7 @@ pub async fn github_callback(
 }
 
 #[utoipa::path(responses(
-    (status = 200, description = "Address to verify using oauth"),
+    (status = 200, description = "Redirects to GitHub for OAuth authorization"),
 ))]
 #[get("/oauth/github")]
 pub async fn github(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
