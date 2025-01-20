@@ -6,7 +6,6 @@ mod register;
 use actix_web::error;
 use actix_web::http::StatusCode;
 pub use login::LoginModel;
-pub use login::TokensResponse;
 pub use register::RegisterModel;
 use thiserror::Error;
 

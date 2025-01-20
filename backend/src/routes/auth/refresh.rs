@@ -1,29 +1,25 @@
-use actix_web::{post, web, HttpResponse};
-use serde::{Deserialize, Serialize};
-use utoipa::ToSchema;
+use actix_web::{post, HttpRequest, HttpResponse};
 
-use crate::routes::auth::TokensResponse;
+use crate::utils::cookies::REFRESH_TOKEN_COOKIE;
 use crate::utils::error::Error;
-use crate::utils::jwt::{decode_jwt, get_default_tokens};
-
-#[derive(Serialize, Deserialize, ToSchema)]
-pub struct RefreshToken {
-    pub refresh_token: String,
-}
+use crate::utils::jwt::{decode_jwt, get_tokens_http_response};
 
 #[utoipa::path(
-    request_body = RefreshToken,
     responses(
-        (status = 200, description = "New tokens received", body = TokensResponse),
+        (status = 200, description = "New tokens are set as cookies"),
         (status = 401, description = "Invalid credentials."),
     ),
     tag = "auth"
 )]
 #[post("/refresh")]
-pub async fn refresh(data: web::Json<RefreshToken>) -> Result<HttpResponse, Error> {
-    let claim = decode_jwt(&data.refresh_token).map_err(|_| Error::Unauthorized)?;
-    let email = claim.claims.email;
-    let tokens = get_default_tokens(email)?;
+pub async fn refresh(request: HttpRequest) -> Result<HttpResponse, Error> {
+    let Some(refresh_token) = request.cookie(REFRESH_TOKEN_COOKIE) else {
+        return Err(Error::Unauthorized);
+    };
 
-    Ok(HttpResponse::Ok().json(tokens))
+    let claim = decode_jwt(refresh_token.value()).map_err(|_| Error::Unauthorized)?;
+    let email = claim.claims.email;
+    let response = get_tokens_http_response(email)?;
+
+    Ok(response)
 }

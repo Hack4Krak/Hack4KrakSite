@@ -8,7 +8,8 @@ use hack4krak_backend::utils::app_state::AppState;
 use hack4krak_backend::utils::env::Config;
 use hack4krak_backend::utils::jwt::encode_jwt;
 use sea_orm::{DatabaseBackend, MockDatabase};
-use serde_json::json;
+use std::env;
+use utoipa::gen::serde_json::json;
 use utoipa_actix_web::scope;
 
 #[actix_web::test]
@@ -53,8 +54,8 @@ async fn create_team_user_already_belongs_to_team() {
         .uri("/teams/create_team")
         .set_json(&create_team_payload)
         .insert_header((
-            header::AUTHORIZATION,
-            format!("Bearer {}", access_token.unwrap()),
+            header::COOKIE,
+            format!("access_token={}", access_token.unwrap()),
         ))
         .to_request();
 
@@ -105,8 +106,8 @@ async fn create_duplicate_team() {
         .uri("/teams/create_team")
         .set_json(&create_team_payload)
         .insert_header((
-            header::AUTHORIZATION,
-            format!("Bearer {}", access_token.unwrap()),
+            header::COOKIE,
+            format!("access_token={}", access_token.unwrap()),
         ))
         .to_request();
 
@@ -161,8 +162,8 @@ async fn create_team_success() {
         .uri("/teams/create_team")
         .set_json(&create_team_payload)
         .insert_header((
-            header::AUTHORIZATION,
-            format!("Bearer {}", access_token.unwrap()),
+            header::COOKIE,
+            format!("access_token={}", access_token.unwrap()),
         ))
         .to_request();
 

@@ -2,6 +2,7 @@ use std::env;
 use std::fs::File;
 use std::io::Write;
 
+use actix_cors::Cors;
 use actix_web::web::Data;
 use actix_web::{middleware::from_fn, middleware::Logger};
 use actix_web::{App, HttpServer};
@@ -78,6 +79,15 @@ async fn main() -> std::io::Result<()> {
     let server = HttpServer::new(move || {
         let (app, api) = App::new()
             .wrap(Logger::default())
+            .wrap(
+                Cors::default()
+                    .allowed_origin("http://localhost:3000")
+                    .allowed_origin("https://hack4krak.pl")
+                    .allow_any_method()
+                    .allow_any_header()
+                    .supports_credentials()
+                    .max_age(3600),
+            )
             .into_utoipa_app()
             .openapi(ApiDoc::openapi())
             .app_data(data.clone())

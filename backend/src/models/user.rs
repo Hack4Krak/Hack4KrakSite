@@ -1,4 +1,5 @@
 use argon2::{Argon2, PasswordHash, PasswordVerifier};
+use actix_web::HttpResponse;
 use migration::Condition;
 use sea_orm::ActiveValue::Set;
 use sea_orm::QueryFilter;
@@ -11,14 +12,14 @@ use crate::routes::auth::AuthError::{
 };
 use crate::routes::auth::{LoginModel, RegisterModel, TokensResponse};
 use crate::utils::error::Error;
-use crate::utils::jwt::get_default_tokens;
+use crate::utils::jwt::get_tokens_http_response;
 
 impl users::Model {
     pub async fn create_from_oauth(
         database: &DatabaseConnection,
         username: String,
         email: String,
-    ) -> Result<TokensResponse, Error> {
+    ) -> Result<HttpResponse, Error> {
         let transaction = database.begin().await?;
 
         if users::Entity::find()
@@ -39,7 +40,7 @@ impl users::Model {
             transaction.commit().await?;
         }
 
-        get_default_tokens(email)
+        get_tokens_http_response(email)
     }
 
     pub async fn create_with_password(

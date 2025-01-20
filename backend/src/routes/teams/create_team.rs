@@ -1,7 +1,7 @@
 use actix_web::middleware::from_fn;
 use actix_web::{post, web, HttpResponse};
 use serde::{Deserialize, Serialize};
-use serde_json::json;
+use utoipa::gen::serde_json::json;
 use utoipa::ToSchema;
 
 use crate::models::entities::teams;
