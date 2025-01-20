@@ -26,7 +26,7 @@ pub struct GoogleUser {
         ("code" = String, Path)
     ),
     responses(
-        (status = 200, description = "OAuth2 flow completed successfully", body = TokensResponse),
+        (status = 200, description = "OAuth2 flow completed successfully"),
         (status = 401, description = "Invalid credentials"),
         (status = 500, description = "Internal server errors."),
     ),
@@ -59,11 +59,12 @@ pub async fn google_callback(
         return Err(InvalidCredentials.into());
     }
 
-    let user: GoogleUser = response.json().await.map_err(|_| InvalidCredentials)?;
-    let tokens =
-        users::Model::create_from_oauth(&app_state.database, user.name, user.email).await?;
+    let user: GoogleUser = response
+        .json()
+        .await
+        .map_err(|_| InvalidCredentials)?;
 
-    Ok(HttpResponse::Ok().json(tokens))
+    users::Model::create_from_oauth(&app_state.database, user.name, user.email).await
 }
 
 #[utoipa::path(

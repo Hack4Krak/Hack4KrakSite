@@ -20,6 +20,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "actix-cors"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f9e772b3bcafe335042b5db010ab7c09013dad6eac4915c91d8d50902769f331"
+dependencies = [
+ "actix-utils",
+ "actix-web",
+ "derive_more",
+ "futures-util",
+ "log",
+ "once_cell",
+ "smallvec",
+]
+
+[[package]]
 name = "actix-http"
 version = "3.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1378,6 +1393,7 @@ dependencies = [
 name = "hack4krak-backend"
 version = "0.0.1"
 dependencies = [
+ "actix-cors",
  "actix-web",
  "argon2",
  "chrono",
@@ -1390,7 +1406,6 @@ dependencies = [
  "reqwest",
  "sea-orm",
  "serde",
- "serde_json",
  "thiserror 2.0.11",
  "tracing",
  "tracing-subscriber",

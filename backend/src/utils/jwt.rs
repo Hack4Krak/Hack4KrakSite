@@ -1,16 +1,16 @@
 use std::future;
 
-use actix_web::{FromRequest, HttpMessage};
+use actix_web::{FromRequest, HttpMessage, HttpResponse};
 use chrono::{Duration, TimeDelta, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, TokenData, Validation};
 use serde::{Deserialize, Serialize};
 
+use crate::utils::cookies::{create_cookie, ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE};
 use crate::routes::auth::TokensResponse;
 use crate::utils::env::Config;
 use crate::utils::error::Error;
-use crate::utils::error::Error::InvalidJsonWebToken;
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Claims {
     #[serde(rename = "sub")]
     pub email: String,
@@ -66,12 +66,19 @@ pub fn decode_jwt(jwt: &str) -> Result<TokenData<Claims>, jsonwebtoken::errors::
     claim_data
 }
 
-pub fn get_default_tokens(email: String) -> Result<TokensResponse, Error> {
+pub fn get_tokens_http_response(email: String) -> Result<HttpResponse, Error> {
     let access_token = encode_jwt(email.clone(), Duration::minutes(10))?;
     let refresh_token = encode_jwt(email, Duration::days(14))?;
 
-    Ok(TokensResponse {
-        access_token,
-        refresh_token,
-    })
+    let refresh_cookie = create_cookie(
+        REFRESH_TOKEN_COOKIE,
+        &refresh_token,
+        Some(actix_web::cookie::time::Duration::days(14)),
+    );
+    let access_cookie = create_cookie(ACCESS_TOKEN_COOKIE, &access_token, None);
+
+    Ok(HttpResponse::Ok()
+        .append_header(("Set-Cookie", refresh_cookie))
+        .append_header(("Set-Cookie", access_cookie))
+        .finish())
 }

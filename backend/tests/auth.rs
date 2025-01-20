@@ -1,4 +1,4 @@
-use actix_web::body::MessageBody;
+use actix_web::cookie::Cookie;
 use actix_web::http::header;
 use actix_web::middleware::from_fn;
 use actix_web::web::Data;
@@ -123,14 +123,19 @@ async fn auth_flow() {
 
     let response = test::call_service(&app, request).await;
 
-    let body_bytes = response.into_body().try_into_bytes().unwrap();
-    let body_str = String::from_utf8(body_bytes.to_vec()).unwrap();
-    let parsed_response: serde_json::Value = serde_json::from_str(&body_str).unwrap();
+    let access_token = response
+        .headers()
+        .get_all(header::SET_COOKIE)
+        .map(|set_cookie| Cookie::parse(set_cookie.to_str().unwrap()).unwrap())
+        .find(|cookie| cookie.name() == "access_token")
+        .unwrap();
 
-    let access_token = parsed_response["access_token"].as_str().unwrap();
     let user_request = test::TestRequest::get()
         .uri("/user/")
-        .insert_header((header::AUTHORIZATION, format!("Bearer {}", access_token)))
+        .insert_header((
+            header::COOKIE,
+            format!("access_token={}", access_token.value()),
+        ))
         .to_request();
 
     let user_response = test::call_service(&app, user_request).await;
