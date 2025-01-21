@@ -1,54 +1,23 @@
-<script setup lang="ts">
-const items = [
-  'https://picsum.photos/640/320?random=1',
-  'https://picsum.photos/640/320?random=2',
-  'https://picsum.photos/640/320?random=3',
-  'https://picsum.photos/640/320?random=4',
-  'https://picsum.photos/640/320?random=5',
-  'https://picsum.photos/640/320?random=6',
-]
-</script>
-
 <template>
-  <UContainer>
-    <UCard class="mt-10">
-      <template #header>
-        <div class="flex justify-between">
-          <h1 class="text-2xl font-bold">
-            Welcome to Nuxt UI Starter
-          </h1>
-          <ColorScheme>
-            <USelect
-              v-model="$colorMode.preference"
-              :items="['system', 'light', 'dark']"
-            />
-          </ColorScheme>
-        </div>
-      </template>
-      <UCarousel
-        v-slot="{ item }"
-        dots
-        loop
-        :autoplay="{ delay: 2000 }"
-        :items="items"
-        class="w-full max-w-xs mb-6"
-      >
-        <img
-          :src="item"
-          width="640"
-          height="320"
-          class="rounded-lg"
-        >
-      </UCarousel>
-      <template #footer>
-        <UButton
-          icon="i-lucide-book-open"
-          to="https://ui3.nuxt.dev"
-          target="_blank"
-        >
-          Open Nuxt UI v3 Documentation
-        </UButton>
-      </template>
-    </UCard>
-  </UContainer>
+  <div class="flex flex-col md:flex-row justify-center items-center h-screen bg-gray-100 dark:bg-zinc-900">
+    <Logo class="max-h-48 max-w-48 md:max-h-96 md:max-w-96 md:mr-12" />
+    <USeparator orientation="vertical" class="h-88 md:block hidden" size="lg" :ui="{ border: 'border-black dark:border-white' }" />
+    <div class="mt-5 md:mt-0 md:ml-10 text-center md:text-left dark:text-white">
+      <h1 class="text-5xl md:text-8xl font-semibold">
+        Hack4Krak
+      </h1>
+      <p class="mt-4 mb-10 text-base md:text-lg max-w-xs md:max-w-150">
+        Organization responsible for managing the largest Capture the Flag (CTF) competition for high school students in Kraków, Poland.
+      </p>
+      <div class="mt-10 flex justify-center md:justify-start h-10 text-2xl md:text-4xl items-center ">
+        <a class="mr-5" href="https://discord.gg/ASPqckzEd8" target="_blank">
+          <Icon name="logos:discord" class="[&>path]:fill-black dark:[&>path]:fill-white hover:[&>path]:fill-blue-500" mode="svg" alt="Discord" />
+        </a>
+        <a class="group hover:text-blue-500" href="https://github.com/Hack4Krak/Hack4KrakSite/" target="_blank">
+          <Icon name="mdi:github" class="mr-2" />
+          <Icon name="octicon:logo-github-24" alt="GitHub" />
+        </a>
+      </div>
+    </div>
+  </div>
 </template>
