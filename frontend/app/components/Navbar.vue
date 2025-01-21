@@ -34,7 +34,7 @@ const items = [
 </script>
 
 <template>
-  <UContainer class="top-0 z-1 sticky bg-white dark:bg-black max-w-full">
+  <UContainer class="top-0 z-1 sticky max-w-full border-b-1 border-neutral-600 font-pixelify bg-[var(--ui-bg)]">
     <div class="mx-auto flex items-center">
       <NuxtLink to="/" class="flex items-center space-x-2 py-3">
         <Logo class="size-10 text-black dark:text-white" />
@@ -44,7 +44,7 @@ const items = [
       </NuxtLink>
 
       <!-- Desktop Navigation -->
-      <UNavigationMenu :items="items" class="hidden md:flex w-full" variant="link">
+      <UNavigationMenu :items="items" class="hidden md:flex w-full" variant="link" :ui="{ link: 'text-lg hover:underline underline-offset-5 text-black dark:text-white' }">
         <template #button>
           <ElevatedButton message="START GRY" />
         </template>
@@ -56,7 +56,7 @@ const items = [
     </div>
 
     <!-- Mobile Navigation -->
-    <transition
+    <Transition
       enter-from-class="opacity-0 translate-x-[100%]"
       leave-to-class="opacity-0 translate-x-[100%]"
       enter-active-class="transition duration-200"
@@ -69,7 +69,7 @@ const items = [
           orientation="vertical"
           variant="link"
           class="w-full text-3xl"
-          :ui="{ link: 'text-lg' }"
+          :ui="{ link: 'text-lg text-white text-black dark:text-white' }"
         >
           <template #button>
             <div class="items-center justify-center text-center w-full">
@@ -78,6 +78,6 @@ const items = [
           </template>
         </UNavigationMenu>
       </div>
-    </transition>
+    </Transition>
   </UContainer>
 </template>
