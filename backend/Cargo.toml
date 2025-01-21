@@ -28,7 +28,7 @@ reqwest = { version = "0.12.12", features = ["json"] }
 sea-orm.workspace = true
 
 # Generating OpenAPI
-utoipa = { version = "5.3.1", features = ["actix_extras", "macros"] }
+utoipa = { version = "5.3.1", features = ["actix_extras", "macros", "chrono"] }
 utoipa-actix-web = "0.1.2"
 utoipa-scalar = { version = "0.2.1", features = ["actix-web"] }
 
