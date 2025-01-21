@@ -62,6 +62,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(data.clone())
             .service(routes::index::index)
             .service(scope("/auth").configure(routes::auth::config))
+            .service(scope("/teams").configure(routes::teams::config))
             .service(
                 scope("/user")
                     .wrap(from_fn(middlewares::auth_middleware::check_auth_middleware))

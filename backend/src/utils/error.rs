@@ -1,5 +1,5 @@
 use actix_web::http::StatusCode;
-use actix_web::{error, HttpResponse};
+use actix_web::{error, HttpResponse, HttpResponseBuilder};
 use thiserror::Error;
 use utoipa::gen::serde_json::json;
 
@@ -27,6 +27,14 @@ pub enum Error {
     InvalidAuthorizationHeader,
     #[error("Unauthorized")]
     Unauthorized,
+    #[error("Team already exists")]
+    TeamAlreadyExists,
+    #[error("User already belongs to team: {team_name}")]
+    UserAlreadyBelongsToTeam { team_name: String },
+    #[error("Team not found")]
+    TeamNotFound,
+    #[error("User doesn't belong to any team")]
+    UserDoesntBelongToAnyTeam,
 }
 
 impl error::ResponseError for Error {
@@ -35,16 +43,18 @@ impl error::ResponseError for Error {
             // 4xx: Client Errors
             Error::InvalidEmailAddress => StatusCode::BAD_REQUEST,
             Error::InvalidAuthorizationHeader => StatusCode::UNAUTHORIZED,
-            Error::InvalidCredentials => StatusCode::UNAUTHORIZED,
-            Error::InvalidJsonWebToken => StatusCode::UNAUTHORIZED,
-            Error::Unauthorized => StatusCode::FORBIDDEN,
-            Error::PasswordAuthNotAvailable => StatusCode::FORBIDDEN,
-            Error::UserAlreadyExists => StatusCode::CONFLICT,
+            Error::InvalidCredentials | Error::InvalidJsonWebToken => StatusCode::UNAUTHORIZED,
+            Error::Unauthorized
+            | Error::UserAlreadyBelongsToTeam { team_name: _ }
+            | Error::PasswordAuthNotAvailable
+            | Error::UserDoesntBelongToAnyTeam => StatusCode::FORBIDDEN,
+            Error::UserAlreadyExists | Error::TeamAlreadyExists => StatusCode::CONFLICT,
+            Error::TeamNotFound => StatusCode::NOT_FOUND,
             // 5xx: Server Errors
-            Error::HashPasswordFailed(_) => StatusCode::INTERNAL_SERVER_ERROR,
-            Error::DatabaseOperation(_) => StatusCode::INTERNAL_SERVER_ERROR,
-            Error::OAuth => StatusCode::INTERNAL_SERVER_ERROR,
-            Error::Request(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Error::HashPasswordFailed(_)
+            | Error::DatabaseOperation(_)
+            | Error::OAuth
+            | Error::Request(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 
