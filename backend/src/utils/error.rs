@@ -59,7 +59,7 @@ impl error::ResponseError for Error {
     }
 
     fn error_response(&self) -> HttpResponse {
-        HttpResponse::BadRequest().json(json!({
+        HttpResponseBuilder::new(self.status_code()).json(json!({
             "code": self.status_code().as_u16(),
             "message": self.to_string(),
             "error": format!("{:?}", self),
