@@ -6,10 +6,9 @@ defineProps<{
 
 <template>
   <button
-    class="p-2 rounded-lg duration-300 font-pixelify cursor-pointer
-          drop-shadow-[0px_5px_#987117] text-xl self-center px-4
-          bg-[var(--ui-primary)] hover:brightness-105"
+    class="py-2 px-4 rounded-lg duration-300 cursor-pointer drop-shadow-[0px_5px_#987117]
+    bg-[var(--ui-primary)] self-center text hover:scale-102 decoration-0"
   >
-    <span>{{ message }}</span>
+    <span class="font-pixelify text-xl text-[var(--ui-bg)] font-semibold">{{ message }}</span>
   </button>
 </template>
