@@ -51,9 +51,19 @@ async fn main() -> std::io::Result<()> {
         )
         .set_redirect_uri(redirect_url);
 
+    let google_oauth_client = BasicClient::new(
+        ClientId::new(env::var("GOOGLE_OAUTH_CLIENT_ID").unwrap()),
+        Some(ClientSecret::new(
+            env::var("GOOGLE_OAUTH_CLIENT_SECRET").unwrap(),
+        )),
+        AuthUrl::new("https://accounts.google.com/o/oauth2/v2/auth".to_string()).unwrap(),
+        Some(TokenUrl::new("https://www.googleapis.com/oauth2/v3/token".to_string()).unwrap()),
+    );
+
     let data = Data::new(AppState {
         database: db,
         github_oauth_client,
+        google_oauth_client,
     });
 
     info!("Starting server...");

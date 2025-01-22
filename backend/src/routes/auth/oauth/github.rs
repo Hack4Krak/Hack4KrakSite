@@ -87,11 +87,12 @@ pub async fn github_callback(
         }
     }
 
-    let Some(email) = user.email else {
-        return Err(InvalidCredentials);
-    };
-
-    let tokens = users::Model::create_from_oauth(&app_state.database, user.name, email).await?;
+    let user: GitHubUser = response
+        .json()
+        .await
+        .map_err(|_| Error::InvalidCredentials)?;
+    let tokens =
+        users::Model::create_from_oauth(&app_state.database, user.name, user.email).await?;
 
     Ok(HttpResponse::Ok().json(tokens))
 }
