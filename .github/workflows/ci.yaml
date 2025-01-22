@@ -1,5 +1,5 @@
 name: CI
-on: push
+on: [push, workflow_dispatch, pull_request]
 
 env:
   DATABASE_URL: postgres://backend:password@localhost:5432/hack4krak
