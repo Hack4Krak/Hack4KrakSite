@@ -1,9 +1,9 @@
 <template>
-  <NuxtLoadingIndicator />
+  <NuxtLoadingIndicator color="white" />
   <Navbar />
-  <div class="min-h-[calc(100vh-var(--spacing)*20)] text-black dark:text-white">
+  <main>
     <NuxtLayout>
-      <NuxtPage />
+      <NuxtPage class="min-h-[calc(100vh-var(--spacing)*20)]" />
     </NuxtLayout>
-  </div>
+  </main>
 </template>

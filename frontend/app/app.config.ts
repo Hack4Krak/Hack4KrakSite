@@ -2,13 +2,16 @@ export default defineAppConfig({
   // https://ui3.nuxt.dev/getting-started/theme#design-system
   ui: {
     colors: {
-      primary: 'emerald',
-      neutral: 'slate',
+      primary: 'amber',
+      neutral: 'zinc',
+      warning: 'orange',
+    },
+    theme: {
+      radius: 0.25,
     },
     button: {
-      defaultVariants: {
-        // Set default button color to neutral
-        // color: 'neutral'
+      slots: {
+        base: 'cursor-pointer',
       },
     },
   },

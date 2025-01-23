@@ -6,7 +6,3 @@
   --font-sans: 'Public Sans', sans-serif;
   --font-pixelify: Pixelify Sans;
 }
-
-body {
-  @apply bg-gray-100 dark:bg-gray-950;
-}
