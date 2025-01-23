@@ -1,3 +1,7 @@
+<script setup lang="ts">
+setFavicon()
+</script>
+
 <template>
   <NuxtLoadingIndicator color="white" />
   <Navbar />
