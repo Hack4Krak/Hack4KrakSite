@@ -1,5 +1,6 @@
 <script setup lang="ts">
 setFavicon()
+useOgImage()
 </script>
 
 <template>
