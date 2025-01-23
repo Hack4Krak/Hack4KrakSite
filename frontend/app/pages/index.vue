@@ -3,6 +3,7 @@ useSeoMeta({
   title: 'Strona Główna',
 })
 </script>
+
 <template>
   <div class="flex flex-col md:flex-row justify-center items-center">
     <Logo class="max-h-48 max-w-48 md:max-h-96 md:max-w-96 md:mr-12" />
