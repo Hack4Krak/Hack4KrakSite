@@ -1,4 +1,4 @@
-export function setFavicon() {
+export function useFavicon() {
   const colorMode = useColorMode()
   const favicon = computed(() => {
     return colorMode.value === 'dark' ? '/favicon-dark.ico' : '/favicon-light.ico'

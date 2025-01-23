@@ -1,5 +1,5 @@
 <script setup lang="ts">
-setFavicon()
+useFavicon()
 useOgImage()
 </script>
 
