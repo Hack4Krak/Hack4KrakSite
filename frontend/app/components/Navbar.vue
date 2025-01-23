@@ -4,6 +4,12 @@ function toggleMobileMenu() {
   isMobileMenuOpen.value = !isMobileMenuOpen.value
 }
 
+// Hide navbar on button press
+const router = useRouter()
+watch(() => router.currentRoute.value, () => {
+  isMobileMenuOpen.value = false
+})
+
 const items = [
   [
     {
