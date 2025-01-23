@@ -45,9 +45,8 @@ const items = [
 
       <!-- Desktop Navigation -->
       <UNavigationMenu
-        :items="items" class="hidden md:flex w-full" variant="link" :ui="{
-          link: 'text-lg hover:underline underline-offset-5 text-[var(--ui-bg)] dark:text-white',
-          root: '[&>*:nth-child(2)>ul>li>a]:no-underline' }"
+        :items="items" variant="link" class="hidden md:flex w-full"
+        :ui="{ linkLabel: 'text-lg hover:underline underline-offset-5 text-[var(--ui-bg)] dark:text-white' }"
       >
         <template #button>
           <ElevatedButton message="START GRY" />

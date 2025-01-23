@@ -9,5 +9,10 @@ export default defineAppConfig({
     theme: {
       radius: 0.25,
     },
+    button: {
+      slots: {
+        base: 'cursor-pointer',
+      },
+    },
   },
 })
