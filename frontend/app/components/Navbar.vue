@@ -44,7 +44,11 @@ const items = [
       </NuxtLink>
 
       <!-- Desktop Navigation -->
-      <UNavigationMenu :items="items" class="hidden md:flex w-full" variant="link" :ui="{ link: 'text-lg hover:underline underline-offset-5 text-black dark:text-white' }">
+      <UNavigationMenu
+        :items="items" class="hidden md:flex w-full" variant="link" :ui="{
+          link: 'text-lg hover:underline underline-offset-5 text-[var(--ui-bg)] dark:text-white',
+          root: '[&>*:nth-child(2)>ul>li>a]:no-underline' }"
+      >
         <template #button>
           <ElevatedButton message="START GRY" />
         </template>
