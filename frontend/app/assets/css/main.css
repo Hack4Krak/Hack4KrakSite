@@ -2,6 +2,10 @@
 @import '@nuxt/ui';
 @tailwind utilities;
 
+:root {
+  --default-font-family: 'Roboto', Arial, sans-serif;
+}
+
 @theme {
   --font-sans: 'Public Sans', sans-serif;
   --font-pixelify: Pixelify Sans;
