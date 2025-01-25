@@ -30,7 +30,7 @@ sea-orm.workspace = true
 # Generating OpenAPI
 utoipa = { version = "5.3.1", features = ["actix_extras", "macros", "chrono"] }
 utoipa-actix-web = "0.1.2"
-utoipa-scalar = { version = "0.2.1", features = ["actix-web"] }
+utoipa-scalar = { version = "0.3.0", features = ["actix-web"] }
 
 # Custom crates
 migration = { path = "migration" }
