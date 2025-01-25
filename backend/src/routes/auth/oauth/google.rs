@@ -5,7 +5,6 @@ use serde::Deserialize;
 
 use crate::models::entities::users;
 use crate::routes::auth::AuthError::InvalidCredentials;
-use crate::routes::auth::TokensResponse;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use crate::utils::error::Error::OAuth;
@@ -59,10 +58,7 @@ pub async fn google_callback(
         return Err(InvalidCredentials.into());
     }
 
-    let user: GoogleUser = response
-        .json()
-        .await
-        .map_err(|_| InvalidCredentials)?;
+    let user: GoogleUser = response.json().await.map_err(|_| InvalidCredentials)?;
 
     users::Model::create_from_oauth(&app_state.database, user.name, user.email).await
 }

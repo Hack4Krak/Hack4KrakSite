@@ -6,9 +6,9 @@ use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, TokenData, 
 use serde::{Deserialize, Serialize};
 
 use crate::utils::cookies::{create_cookie, ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE};
-use crate::routes::auth::TokensResponse;
 use crate::utils::env::Config;
 use crate::utils::error::Error;
+use crate::utils::error::Error::InvalidJsonWebToken;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Claims {

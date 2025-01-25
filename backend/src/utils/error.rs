@@ -42,7 +42,6 @@ impl error::ResponseError for Error {
             Error::HashPasswordFailed(_)
             | Error::DatabaseOperation(_)
             | Error::OAuth
-            | Error::InvalidCookie
             | Error::Request(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Unauthorized => StatusCode::FORBIDDEN,
             Error::InvalidJsonWebToken => StatusCode::UNAUTHORIZED,

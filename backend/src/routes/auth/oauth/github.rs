@@ -7,7 +7,6 @@ use serde::Deserialize;
 
 use crate::models::entities::users;
 use crate::routes::auth::AuthError::InvalidCredentials;
-use crate::routes::auth::TokensResponse;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use crate::utils::error::Error::OAuth;
@@ -43,7 +42,7 @@ async fn send_github_request(url: Url, token: &String) -> Result<Response, reqwe
         ("code" = String, Path)
     ),
     responses(
-        (status = 200, description = "OAuth2 flow completed successfully", body = TokensResponse),
+        (status = 200, description = "OAuth2 flow completed successfully"),
         (status = 401, description = "Invalid credentials"),
         (status = 500, description = "Internal server errors."),
     ),
@@ -93,9 +92,7 @@ pub async fn github_callback(
         return Err(Error::Auth(InvalidCredentials));
     };
 
-    let tokens = users::Model::create_from_oauth(&app_state.database, user.name, email).await?;
-
-    Ok(HttpResponse::Ok().json(tokens))
+    users::Model::create_from_oauth(&app_state.database, user.name, email).await
 }
 
 #[utoipa::path(

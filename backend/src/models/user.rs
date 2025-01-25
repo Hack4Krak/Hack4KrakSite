@@ -1,5 +1,5 @@
-use argon2::{Argon2, PasswordHash, PasswordVerifier};
 use actix_web::HttpResponse;
+use argon2::{Argon2, PasswordHash, PasswordVerifier};
 use migration::Condition;
 use sea_orm::ActiveValue::Set;
 use sea_orm::QueryFilter;
@@ -10,7 +10,7 @@ use crate::models::entities::users;
 use crate::routes::auth::AuthError::{
     InvalidCredentials, PasswordAuthNotAvailable, UserAlreadyExists,
 };
-use crate::routes::auth::{LoginModel, RegisterModel, TokensResponse};
+use crate::routes::auth::{LoginModel, RegisterModel};
 use crate::utils::error::Error;
 use crate::utils::jwt::get_tokens_http_response;
 
