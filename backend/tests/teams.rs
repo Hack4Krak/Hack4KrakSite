@@ -8,7 +8,6 @@ use hack4krak_backend::utils::app_state::AppState;
 use hack4krak_backend::utils::env::Config;
 use hack4krak_backend::utils::jwt::encode_jwt;
 use sea_orm::{DatabaseBackend, MockDatabase};
-use std::env;
 use utoipa::gen::serde_json::json;
 use utoipa_actix_web::scope;
 

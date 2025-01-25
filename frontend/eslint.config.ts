@@ -9,6 +9,7 @@ export default withNuxt(
     formatters: true,
     rules: {
       'node/prefer-global/process': ['off'],
+      'style/brace-style': ['warn', '1tbs'],
     },
     ignores: [
       'openapi/api/openapi.json',
