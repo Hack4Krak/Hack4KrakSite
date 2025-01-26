@@ -6,7 +6,7 @@ use hack4krak_backend::utils::openapi::ApiDoc;
 use hack4krak_backend::{middlewares, routes};
 use migration::{Migrator, MigratorTrait};
 use oauth2::basic::BasicClient;
-use oauth2::{AuthUrl, ClientId, ClientSecret, TokenUrl};
+use oauth2::{AuthUrl, ClientId, ClientSecret, RedirectUrl, TokenUrl};
 use sea_orm::{Database, DatabaseConnection};
 use std::env;
 use std::fs::File;
@@ -39,14 +39,16 @@ async fn main() -> std::io::Result<()> {
         .parse::<u16>()
         .expect("The port in BACKEND_ADDRESS must be a valid u16 integer");
 
-    let github_oauth_client = BasicClient::new(
-        ClientId::new(env::var("GITHUB_OAUTH_CLIENT_ID").unwrap()),
-        Some(ClientSecret::new(
-            env::var("GITHUB_OAUTH_CLIENT_SECRET").unwrap(),
-        )),
-        AuthUrl::new("https://github.com/login/oauth/authorize".to_string()).unwrap(),
-        Some(TokenUrl::new("https://github.com/login/oauth/access_token".to_string()).unwrap()),
-    );
+    let client_id = ClientId::new(env::var("GITHUB_OAUTH_CLIENT_ID").unwrap());
+    let client_secret = ClientSecret::new(env::var("GITHUB_OAUTH_CLIENT_SECRET").unwrap());
+    let redirect_url = RedirectUrl::new(env::var("GITHUB_OAUTH_REDIRECT_URL").unwrap()).unwrap();
+    let github_oauth_client = BasicClient::new(client_id)
+        .set_client_secret(client_secret)
+        .set_auth_uri(AuthUrl::new("https://github.com/login/oauth/authorize".to_string()).unwrap())
+        .set_token_uri(
+            TokenUrl::new("https://github.com/login/oauth/access_token".to_string()).unwrap(),
+        )
+        .set_redirect_uri(redirect_url);
 
     let data = Data::new(AppState {
         database: db,
