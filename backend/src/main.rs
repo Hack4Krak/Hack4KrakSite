@@ -34,7 +34,7 @@ async fn main() -> std::io::Result<()> {
     let db: DatabaseConnection = Database::connect(&config.database_url).await.unwrap();
     Migrator::up(&db, None).await.unwrap();
 
-    let address_env = &config.backend_address;
+    let address_env = config.backend_address.clone();
     let address_vec: Vec<&str> = address_env.split(":").collect();
     let ip = address_vec[0];
     let port = address_vec[1]
@@ -42,13 +42,14 @@ async fn main() -> std::io::Result<()> {
         .expect("The port in BACKEND_ADDRESS must be a valid u16 integer");
 
     let github_oauth_client = BasicClient::new(
-        ClientId::new(config.github_oauth_client_id),
-        Some(ClientSecret::new(config.github_oauth_client_secret)),
+        ClientId::new(config.github_oauth_client_id.clone()),
+        Some(ClientSecret::new(config.github_oauth_client_secret.clone())),
         AuthUrl::new("https://github.com/login/oauth/authorize".to_string()).unwrap(),
         Some(TokenUrl::new("https://github.com/login/oauth/access_token".to_string()).unwrap()),
     );
 
     let data = Data::new(AppState {
+        config,
         database: db,
         github_oauth_client,
     });
@@ -71,7 +72,7 @@ async fn main() -> std::io::Result<()> {
             .openapi_service(|api| Scalar::with_url("/docs", api))
             .split_for_parts();
 
-        let path = &config.openapi_json_frontend_path;
+        let path = &data.config.openapi_json_frontend_path;
         let mut openapi_json = File::create(path).unwrap();
         openapi_json
             .write_all(to_string(&api).unwrap().as_bytes())
