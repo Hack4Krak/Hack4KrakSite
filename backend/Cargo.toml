@@ -35,3 +35,4 @@ utoipa-scalar = { version = "0.2.1", features = ["actix-web"] }
 # Custom crates
 migration = { path = "migration" }
 regex = "1.11.1"
+envy = "0.4.2"

@@ -2,6 +2,7 @@ use actix_web::web::Data;
 use actix_web::{middleware::from_fn, middleware::Logger};
 use actix_web::{App, HttpServer};
 use hack4krak_backend::utils::app_state::AppState;
+use hack4krak_backend::utils::env::load_config;
 use hack4krak_backend::utils::openapi::ApiDoc;
 use hack4krak_backend::{middlewares, routes};
 use migration::{Migrator, MigratorTrait};
@@ -22,17 +23,18 @@ use utoipa_scalar::{Scalar, Servable};
 async fn main() -> std::io::Result<()> {
     dotenvy::from_path(Path::new("../.env")).unwrap();
 
+    let config = load_config().unwrap();
+
     let filter =
         env::var("RUST_LOG").unwrap_or("actix_web=debug,hack4krak_backend=trace".to_string());
 
     tracing_subscriber::fmt().with_env_filter(filter).init();
 
     info!("Connecting to db...");
-    let database_url = env::var("DATABASE_URL").unwrap();
-    let db: DatabaseConnection = Database::connect(database_url).await.unwrap();
+    let db: DatabaseConnection = Database::connect(&config.database_url).await.unwrap();
     Migrator::up(&db, None).await.unwrap();
 
-    let address_env: String = env::var("BACKEND_ADDRESS").unwrap_or("127.0.0.1:8080".to_string());
+    let address_env = &config.backend_address;
     let address_vec: Vec<&str> = address_env.split(":").collect();
     let ip = address_vec[0];
     let port = address_vec[1]
@@ -40,10 +42,8 @@ async fn main() -> std::io::Result<()> {
         .expect("The port in BACKEND_ADDRESS must be a valid u16 integer");
 
     let github_oauth_client = BasicClient::new(
-        ClientId::new(env::var("GITHUB_OAUTH_CLIENT_ID").unwrap()),
-        Some(ClientSecret::new(
-            env::var("GITHUB_OAUTH_CLIENT_SECRET").unwrap(),
-        )),
+        ClientId::new(config.github_oauth_client_id),
+        Some(ClientSecret::new(config.github_oauth_client_secret)),
         AuthUrl::new("https://github.com/login/oauth/authorize".to_string()).unwrap(),
         Some(TokenUrl::new("https://github.com/login/oauth/access_token".to_string()).unwrap()),
     );
@@ -71,8 +71,7 @@ async fn main() -> std::io::Result<()> {
             .openapi_service(|api| Scalar::with_url("/docs", api))
             .split_for_parts();
 
-        let path: String = env::var("OPENAPI_JSON_FRONTEND_PATH")
-            .unwrap_or("../frontend/openapi/api/openapi.json".to_string());
+        let path = &config.openapi_json_frontend_path;
         let mut openapi_json = File::create(path).unwrap();
         openapi_json
             .write_all(to_string(&api).unwrap().as_bytes())
