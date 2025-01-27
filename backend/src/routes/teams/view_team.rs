@@ -21,7 +21,8 @@ pub struct TeamWithMembers {
         (status = 200, description = "Team successfully retrieved.", body = TeamWithMembers),
         (status = 404, description = "Team not found."),
         (status = 500, description = "Internal server error.")
-    )
+    ),
+    tag = "teams"
 )]
 #[get("/team/{team_name}")]
 pub async fn view_team(

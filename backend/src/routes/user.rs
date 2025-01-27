@@ -20,7 +20,8 @@ pub struct UserInformationResponse {
     ),
     security(
         ("access_token" = [])
-    )
+    ),
+    tag = "user"
 )]
 #[get("/")]
 pub async fn user(

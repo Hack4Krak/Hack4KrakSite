@@ -17,7 +17,8 @@ use sea_orm::{ColumnTrait, EntityTrait};
     ),
     security(
         ("access_token" = [])
-    )
+    ),
+    tag = "teams"
 )]
 #[get(
     "/my_team",

@@ -15,7 +15,8 @@ pub struct RefreshToken {
     responses(
         (status = 200, description = "New tokens received", body = TokensResponse),
         (status = 401, description = "Invalid credentials."),
-    )
+    ),
+    tag = "auth"
 )]
 #[post("/refresh")]
 pub async fn refresh(data: web::Json<RefreshToken>) -> Result<HttpResponse, Error> {
