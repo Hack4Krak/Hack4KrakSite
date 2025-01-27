@@ -52,11 +52,11 @@ async fn main() -> std::io::Result<()> {
         )
         .set_redirect_uri(github_redirect_url);
 
-    let google_oauth_client_id = ClientId::new(env::var("GOOGLE_OAUTH_CLIENT_ID").unwrap());
+    let google_oauth_client_id = ClientId::new(Config::get().google_oauth_client_id.clone());
     let google_oauth_client_secret =
-        ClientSecret::new(env::var("GOOGLE_OAUTH_CLIENT_SECRET").unwrap());
+        ClientSecret::new(Config::get().google_oauth_client_secret.clone());
     let google_redirect_url =
-        RedirectUrl::new(env::var("GOOGLE_OAUTH_REDIRECT_URL").unwrap()).unwrap();
+        RedirectUrl::new(Config::get().google_oauth_redirect_url.clone()).unwrap();
     let google_oauth_client = BasicClient::new(google_oauth_client_id)
         .set_client_secret(google_oauth_client_secret)
         .set_auth_uri(

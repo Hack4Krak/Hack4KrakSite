@@ -21,7 +21,8 @@ struct QueryParams {
         (status = 200, description = "OAuth2 flow completed successfully", body = TokensResponse),
         (status = 401, description = "Invalid credentials"),
         (status = 500, description = "Internal server errors."),
-    )
+    ),
+    tag = "auth"
 )]
 #[get("/oauth/google/callback")]
 pub async fn google_callback(
@@ -60,9 +61,12 @@ pub async fn google_callback(
     Ok(HttpResponse::Ok().json(tokens))
 }
 
-#[utoipa::path(responses(
-    (status = 200, description = "Redirects to Google for OAuth authorization"),
-))]
+#[utoipa::path(
+    responses(
+        (status = 200, description = "Redirects to Google for OAuth authorization"),
+    ),
+    tag = "auth"
+)]
 #[get("/oauth/google")]
 pub async fn google(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
     let (auth_url, _) = app_state
