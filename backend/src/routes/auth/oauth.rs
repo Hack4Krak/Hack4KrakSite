@@ -2,10 +2,12 @@ use crate::models::entities::users;
 use crate::routes::auth::TokensResponse;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
+use crate::utils::error::Error::{InvalidCredentials, OAuth};
 use actix_web::{get, web, HttpResponse};
 use oauth2::reqwest;
 use oauth2::{AuthorizationCode, CsrfToken, Scope, TokenResponse};
 use reqwest::redirect::Policy;
+use reqwest::{Response, Url};
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
@@ -16,7 +18,22 @@ struct QueryParams {
 #[derive(Deserialize, Debug)]
 struct GitHubUser {
     name: String,
+    email: Option<String>,
+}
+
+#[derive(Deserialize, Debug)]
+struct GitHubEmail {
     email: String,
+    primary: bool,
+}
+
+async fn send_github_request(url: Url, token: &String) -> Result<Response, reqwest::Error> {
+    reqwest::Client::new()
+        .get(url)
+        .header("Authorization", token)
+        .header("User-Agent", "hack4krak-backend")
+        .send()
+        .await
 }
 
 #[utoipa::path(
@@ -47,23 +64,34 @@ pub async fn github_callback(
         .map_err(|_| Error::OAuth)?;
 
     let token = format!("Bearer {}", token_result.access_token().secret());
-    let response = reqwest::Client::new()
-        .get("https://api.github.com/user")
-        .header("Authorization", token)
-        .header("User-Agent", "hack4krak-backend")
-        .send()
-        .await?;
+    let response_user =
+        send_github_request("https://api.github.com/user".parse().unwrap(), &token).await?;
 
-    if !response.status().is_success() {
-        return Err(Error::InvalidCredentials);
+    if !response_user.status().is_success() {
+        return Err(InvalidCredentials);
     }
 
-    let user: GitHubUser = response
+    let mut user: GitHubUser = response_user.json().await.map_err(|_| OAuth)?;
+
+    if user.email.is_none() {
+        let email_response: Vec<GitHubEmail> = send_github_request(
+            "https://api.github.com/user/emails".parse().unwrap(),
+            &token,
+        )
+        .await?
         .json()
-        .await
-        .map_err(|_| Error::InvalidCredentials)?;
-    let tokens =
-        users::Model::create_from_oauth(&app_state.database, user.name, user.email).await?;
+        .await?;
+
+        if let Some(primary_email) = email_response.iter().find(|email| email.primary) {
+            user.email = Some(primary_email.email.clone());
+        }
+    }
+
+    let Some(email) = user.email else {
+        return Err(InvalidCredentials);
+    };
+
+    let tokens = users::Model::create_from_oauth(&app_state.database, user.name, email).await?;
 
     Ok(HttpResponse::Ok().json(tokens))
 }
