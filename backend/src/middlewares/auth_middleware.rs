@@ -1,8 +1,8 @@
+use actix_web::body::BoxBody;
 use actix_web::middleware::Next;
 use actix_web::{
-    body::MessageBody,
     dev::{ServiceRequest, ServiceResponse},
-    Error as ActixError, HttpMessage,
+    Error as ActixError, HttpMessage, ResponseError,
 };
 
 use crate::utils::cookies::ACCESS_TOKEN_COOKIE;
@@ -11,14 +11,16 @@ use crate::utils::jwt::decode_jwt;
 
 pub async fn check_auth_middleware(
     request: ServiceRequest,
-    next: Next<impl MessageBody>,
-) -> Result<ServiceResponse<impl MessageBody>, ActixError> {
+    next: Next<BoxBody>,
+) -> Result<ServiceResponse<BoxBody>, ActixError> {
     let Some(cookie) = request.cookie(ACCESS_TOKEN_COOKIE) else {
-        return Err(ActixError::from(Error::Unauthorized));
+        return Ok(request.into_response(Error::Unauthorized.error_response()));
     };
 
-    let claims = decode_jwt(cookie.value()).map_err(|_| Error::Unauthorized)?;
-    request.extensions_mut().insert(claims.claims);
+    let Ok(claims) = decode_jwt(cookie.value()) else {
+        return Ok(request.into_response(Error::Unauthorized.error_response()));
+    };
 
+    request.extensions_mut().insert(claims.claims);
     next.call(request).await
 }
