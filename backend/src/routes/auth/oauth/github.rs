@@ -61,7 +61,7 @@ pub async fn github_callback(
         .exchange_code(AuthorizationCode::new(data.code.to_string()))
         .request_async(&http_client)
         .await
-        .map_err(|_| Error::OAuth)?;
+        .map_err(|_| OAuth)?;
 
     let token = format!("Bearer {}", token_result.access_token().secret());
     let response_user =
