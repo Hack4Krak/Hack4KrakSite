@@ -53,7 +53,7 @@ pub fn encode_jwt(email: String, expire: TimeDelta) -> Result<String, Error> {
 }
 
 pub fn decode_jwt(jwt: &str) -> Result<TokenData<Claims>, jsonwebtoken::errors::Error> {
-    let secret = std::env::var("JWT_SECRET").unwrap();
+    let secret = &CONFIG.jwt_secret;
     let claim_data: Result<TokenData<Claims>, jsonwebtoken::errors::Error> = decode(
         jwt,
         &DecodingKey::from_secret(secret.as_ref()),

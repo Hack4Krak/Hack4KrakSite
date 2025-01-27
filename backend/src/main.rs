@@ -36,9 +36,9 @@ async fn main() -> std::io::Result<()> {
         .parse::<u16>()
         .expect("The port in BACKEND_ADDRESS must be a valid u16 integer");
 
-    let client_id = ClientId::new(env::var("GITHUB_OAUTH_CLIENT_ID").unwrap());
-    let client_secret = ClientSecret::new(env::var("GITHUB_OAUTH_CLIENT_SECRET").unwrap());
-    let redirect_url = RedirectUrl::new(env::var("GITHUB_OAUTH_REDIRECT_URL").unwrap()).unwrap();
+    let client_id = ClientId::new(CONFIG.github_oauth_client_id.clone());
+    let client_secret = ClientSecret::new(CONFIG.github_oauth_client_secret.clone());
+    let redirect_url = RedirectUrl::new(CONFIG.github_oauth_redirect_url.clone()).unwrap();
     let github_oauth_client = BasicClient::new(client_id)
         .set_client_secret(client_secret)
         .set_auth_uri(AuthUrl::new("https://github.com/login/oauth/authorize".to_string()).unwrap())
