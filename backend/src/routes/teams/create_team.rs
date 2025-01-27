@@ -23,7 +23,8 @@ pub struct CreateTeamModel {
     ),
     security(
         ("access_token" = [])
-    )
+    ),
+    tag = "teams"
 )]
 #[post(
     "/create_team",

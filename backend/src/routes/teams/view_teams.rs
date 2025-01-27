@@ -9,7 +9,8 @@ use sea_orm::EntityTrait;
     responses(
         (status = 200, description = "Teams successfully retrieved.", body = Vec<TeamWithMembers>),
         (status = 500, description = "Internal server error.")
-    )
+    ),
+    tag = "teams"
 )]
 #[get("/")]
 pub async fn view_teams(app_state: web::Data<app_state::AppState>) -> Result<HttpResponse, Error> {

@@ -24,7 +24,8 @@ pub struct TokensResponse {
         (status = 200, description = "User successfully logged in.", body = LoginModel),
         (status = 401, description = "Invalid credentials."),
         (status = 500, description = "Internal server error.")
-    )
+    ),
+    tag = "auth"
 )]
 #[post("/login")]
 pub async fn login(

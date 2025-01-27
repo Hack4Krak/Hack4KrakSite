@@ -26,7 +26,8 @@ pub struct RegisterModel {
         (status = 200, description = "User successfully registered."),
         (status = 400, description = "User already registered."),
         (status = 500, description = "Internal server error.")
-    )
+    ),
+    tag = "auth"
 )]
 #[post("/register")]
 pub async fn register(

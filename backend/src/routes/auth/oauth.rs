@@ -27,7 +27,8 @@ struct GitHubUser {
         (status = 200, description = "OAuth2 flow completed successfully", body = TokensResponse),
         (status = 401, description = "Invalid credentials"),
         (status = 500, description = "Internal server errors."),
-    )
+    ),
+    tag = "auth"
 )]
 #[get("/oauth/github/callback")]
 pub async fn github_callback(
@@ -67,9 +68,12 @@ pub async fn github_callback(
     Ok(HttpResponse::Ok().json(tokens))
 }
 
-#[utoipa::path(responses(
-    (status = 200, description = "Redirects to GitHub for OAuth authorization"),
-))]
+#[utoipa::path(
+    responses(
+        (status = 200, description = "Redirects to GitHub for OAuth authorization")
+    ),
+    tag = "auth"
+)]
 #[get("/oauth/github")]
 pub async fn github(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
     let (auth_url, _) = app_state
