@@ -7,11 +7,14 @@ use hack4krak_backend::models::entities::users;
 use hack4krak_backend::utils::app_state::AppState;
 use hack4krak_backend::{middlewares, routes};
 use sea_orm::{DatabaseBackend, MockDatabase, MockExecResult};
+use std::env;
 use utoipa::gen::serde_json::json;
 use utoipa_actix_web::scope;
 
 #[actix_web::test]
 async fn register() {
+    env::set_var("JWT_SECRET", "secret");
+
     let database = MockDatabase::new(DatabaseBackend::Postgres)
         .append_query_results([
             Vec::<users::Model>::new(),

@@ -1,6 +1,7 @@
 use serde::Deserialize;
 use std::path::Path;
 use std::sync::LazyLock;
+use Default;
 
 fn default_backend_address() -> String {
     "127.0.0.1:8080".to_string()
@@ -9,9 +10,15 @@ fn default_openapi_json_frontend_path() -> String {
     "../frontend/openapi/api/openapi.json".to_string()
 }
 
-pub static CONFIG: LazyLock<Config> = LazyLock::new(|| Config::load_config().unwrap());
+pub static CONFIG: LazyLock<Config> = LazyLock::new(|| {
+    if cfg!(test) {
+        Config::load_test_config()
+    } else {
+        Config::load_config().unwrap()
+    }
+});
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Default)]
 pub struct Config {
     pub database_url: String,
     #[serde(default = "default_backend_address")]
@@ -28,5 +35,12 @@ impl Config {
     pub fn load_config() -> Result<Config, envy::Error> {
         dotenvy::from_path(Path::new("../.env")).unwrap();
         envy::from_env::<Config>()
+    }
+
+    pub fn load_test_config() -> Config {
+        Config {
+            jwt_secret: "skibidi-dziegiel-secret".to_string(),
+            ..Default::default()
+        }
     }
 }

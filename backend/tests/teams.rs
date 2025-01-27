@@ -8,10 +8,13 @@ use hack4krak_backend::utils::app_state::AppState;
 use hack4krak_backend::utils::jwt::encode_jwt;
 use sea_orm::{DatabaseBackend, MockDatabase};
 use serde_json::json;
+use std::env;
 use utoipa_actix_web::scope;
 
 #[actix_web::test]
 async fn create_team_user_already_belongs_to_team() {
+    env::set_var("JWT_SECRET", "secret");
+
     let database = MockDatabase::new(DatabaseBackend::Postgres)
         .append_query_results([vec![users::Model {
             username: "Salieri".to_string(),
