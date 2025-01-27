@@ -1,5 +1,4 @@
 use crate::models::entities::users;
-use crate::routes::auth::oauth::OAuthUser;
 use crate::routes::auth::TokensResponse;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
@@ -11,6 +10,12 @@ use serde::Deserialize;
 #[derive(Deserialize, Debug)]
 struct QueryParams {
     code: String,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct GoogleUser {
+    name: String,
+    email: String,
 }
 
 #[utoipa::path(
@@ -51,7 +56,7 @@ pub async fn google_callback(
         return Err(Error::InvalidCredentials);
     }
 
-    let user: OAuthUser = response
+    let user: GoogleUser = response
         .json()
         .await
         .map_err(|_| Error::InvalidCredentials)?;

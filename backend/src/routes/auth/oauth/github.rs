@@ -1,5 +1,4 @@
 use crate::models::entities::users;
-use crate::routes::auth::oauth::OAuthUser;
 use crate::routes::auth::TokensResponse;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
@@ -62,7 +61,7 @@ pub async fn github_callback(
         .exchange_code(AuthorizationCode::new(data.code.to_string()))
         .request_async(&http_client)
         .await
-        .map_err(|_| Error::OAuth)?;
+        .map_err(|_| OAuth)?;
 
     let token = format!("Bearer {}", token_result.access_token().secret());
     let response_user =
@@ -88,12 +87,11 @@ pub async fn github_callback(
         }
     }
 
-    let user: GitHubUser = response
-        .json()
-        .await
-        .map_err(|_| Error::InvalidCredentials)?;
-    let tokens =
-        users::Model::create_from_oauth(&app_state.database, user.name, user.email).await?;
+    let Some(email) = user.email else {
+        return Err(InvalidCredentials);
+    };
+
+    let tokens = users::Model::create_from_oauth(&app_state.database, user.name, email).await?;
 
     Ok(HttpResponse::Ok().json(tokens))
 }
