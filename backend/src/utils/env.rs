@@ -1,4 +1,6 @@
 use serde::Deserialize;
+use std::path::Path;
+use std::sync::LazyLock;
 
 fn default_backend_address() -> String {
     "127.0.0.1:8080".to_string()
@@ -6,6 +8,8 @@ fn default_backend_address() -> String {
 fn default_openapi_json_frontend_path() -> String {
     "../frontend/openapi/api/openapi.json".to_string()
 }
+
+pub static CONFIG: LazyLock<Config> = LazyLock::new(|| Config::load_config().unwrap());
 
 #[derive(Deserialize, Debug)]
 pub struct Config {
@@ -19,6 +23,9 @@ pub struct Config {
     pub github_oauth_client_secret: String,
 }
 
-pub fn load_config() -> Result<Config, envy::Error> {
-    envy::from_env::<Config>()
+impl Config {
+    pub fn load_config() -> Result<Config, envy::Error> {
+        dotenvy::from_path(Path::new("../.env")).unwrap();
+        envy::from_env::<Config>()
+    }
 }
