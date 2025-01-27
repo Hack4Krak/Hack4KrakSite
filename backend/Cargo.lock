@@ -1384,7 +1384,6 @@ dependencies = [
  "dotenvy",
  "envy",
  "jsonwebtoken",
- "lazy_static",
  "migration",
  "oauth2",
  "regex",
