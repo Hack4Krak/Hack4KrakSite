@@ -40,25 +40,32 @@ async fn main() -> std::io::Result<()> {
         .parse::<u16>()
         .expect("The port in BACKEND_ADDRESS must be a valid u16 integer");
 
-    let client_id = ClientId::new(Config::get().github_oauth_client_id.clone());
-    let client_secret = ClientSecret::new(Config::get().github_oauth_client_secret.clone());
-    let redirect_url = RedirectUrl::new(Config::get().github_oauth_redirect_url.clone()).unwrap();
-    let github_oauth_client = BasicClient::new(client_id)
-        .set_client_secret(client_secret)
+    let github_client_id = ClientId::new(Config::get().github_oauth_client_id.clone());
+    let github_client_secret = ClientSecret::new(Config::get().github_oauth_client_secret.clone());
+    let github_redirect_url =
+        RedirectUrl::new(Config::get().github_oauth_redirect_url.clone()).unwrap();
+    let github_oauth_client = BasicClient::new(github_client_id)
+        .set_client_secret(github_client_secret)
         .set_auth_uri(AuthUrl::new("https://github.com/login/oauth/authorize".to_string()).unwrap())
         .set_token_uri(
             TokenUrl::new("https://github.com/login/oauth/access_token".to_string()).unwrap(),
         )
-        .set_redirect_uri(redirect_url);
+        .set_redirect_uri(github_redirect_url);
 
-    let google_oauth_client = BasicClient::new(
-        ClientId::new(env::var("GOOGLE_OAUTH_CLIENT_ID").unwrap()),
-        Some(ClientSecret::new(
-            env::var("GOOGLE_OAUTH_CLIENT_SECRET").unwrap(),
-        )),
-        AuthUrl::new("https://accounts.google.com/o/oauth2/v2/auth".to_string()).unwrap(),
-        Some(TokenUrl::new("https://www.googleapis.com/oauth2/v3/token".to_string()).unwrap()),
-    );
+    let google_oauth_client_id = ClientId::new(env::var("GOOGLE_OAUTH_CLIENT_ID").unwrap());
+    let google_oauth_client_secret =
+        ClientSecret::new(env::var("GOOGLE_OAUTH_CLIENT_SECRET").unwrap());
+    let google_redirect_url =
+        RedirectUrl::new(env::var("GOOGLE_OAUTH_REDIRECT_URL").unwrap()).unwrap();
+    let google_oauth_client = BasicClient::new(google_oauth_client_id)
+        .set_client_secret(google_oauth_client_secret)
+        .set_auth_uri(
+            AuthUrl::new("https://accounts.google.com/o/oauth2/v2/auth".to_string()).unwrap(),
+        )
+        .set_token_uri(
+            TokenUrl::new("https://www.googleapis.com/oauth2/v3/token".to_string()).unwrap(),
+        )
+        .set_redirect_uri(google_redirect_url);
 
     let data = Data::new(AppState {
         database: db,
