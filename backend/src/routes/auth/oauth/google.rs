@@ -1,4 +1,5 @@
 use crate::models::entities::users;
+use crate::routes::auth::oauth::OAuthUser;
 use crate::routes::auth::TokensResponse;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
@@ -49,7 +50,7 @@ pub async fn google_callback(
         return Err(Error::InvalidCredentials);
     }
 
-    let user: crate::routes::auth::oauth::OAuthUser = response
+    let user: OAuthUser = response
         .json()
         .await
         .map_err(|_| Error::InvalidCredentials)?;
