@@ -7,7 +7,6 @@ use hack4krak_backend::models::entities::users;
 use hack4krak_backend::utils::app_state::AppState;
 use hack4krak_backend::{middlewares, routes};
 use sea_orm::{DatabaseBackend, MockDatabase, MockExecResult};
-use std::env;
 use utoipa::gen::serde_json::json;
 use utoipa_actix_web::scope;
 

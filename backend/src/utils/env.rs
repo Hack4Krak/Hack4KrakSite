@@ -11,7 +11,7 @@ fn default_openapi_json_frontend_path() -> String {
 }
 
 #[cfg(test)]
-pub static CONFIG: LazyLock<Config> = LazyLock::new(|| Config::load_test_config());
+pub static CONFIG: LazyLock<Config> = LazyLock::new(Config::load_test_config);
 
 #[cfg(not(test))]
 pub static CONFIG: LazyLock<Config> = LazyLock::new(|| Config::load_config().unwrap());
