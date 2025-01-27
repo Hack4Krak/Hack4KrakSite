@@ -24,6 +24,7 @@ argon2 = "0.6.0-pre.1"
 jsonwebtoken = "9.3.0"
 chrono = "0.4.39"
 envy = "0.4.2"
+lazy_static = "1.5.0"
 oauth2 = { version = "5.0.0", features = ["reqwest"] }
 reqwest = { version = "0.12.12", features = ["json"] }
 sea-orm.workspace = true

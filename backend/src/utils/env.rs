@@ -1,6 +1,6 @@
+use lazy_static::lazy_static;
 use serde::Deserialize;
 use std::path::Path;
-use std::sync::LazyLock;
 use Default;
 
 fn default_backend_address() -> String {
@@ -10,11 +10,15 @@ fn default_openapi_json_frontend_path() -> String {
     "../frontend/openapi/api/openapi.json".to_string()
 }
 
-#[cfg(test)]
-pub static CONFIG: LazyLock<Config> = LazyLock::new(Config::load_test_config);
-
-#[cfg(not(test))]
-pub static CONFIG: LazyLock<Config> = LazyLock::new(|| Config::load_config().unwrap());
+lazy_static! {
+    pub static ref CONFIG: Config = {
+        if cfg!(test) {
+            Config::load_test_config()
+        } else {
+            Config::load_config().unwrap()
+        }
+    };
+}
 
 #[derive(Deserialize, Debug, Default)]
 pub struct Config {
