@@ -5,6 +5,7 @@ use chrono::Duration;
 use hack4krak_backend::models::entities::{teams, users};
 use hack4krak_backend::routes;
 use hack4krak_backend::utils::app_state::AppState;
+use hack4krak_backend::utils::env::Config;
 use hack4krak_backend::utils::jwt::encode_jwt;
 use sea_orm::{DatabaseBackend, MockDatabase};
 use serde_json::json;
@@ -12,6 +13,8 @@ use utoipa_actix_web::scope;
 
 #[actix_web::test]
 async fn create_team_user_already_belongs_to_team() {
+    Config::load_test_config();
+
     let database = MockDatabase::new(DatabaseBackend::Postgres)
         .append_query_results([vec![users::Model {
             username: "Salieri".to_string(),
@@ -62,6 +65,8 @@ async fn create_team_user_already_belongs_to_team() {
 
 #[actix_web::test]
 async fn create_duplicate_team() {
+    Config::load_test_config();
+
     let database = MockDatabase::new(DatabaseBackend::Postgres)
         .append_query_results([vec![users::Model {
             username: "Salieri".to_string(),
@@ -112,6 +117,8 @@ async fn create_duplicate_team() {
 
 #[actix_web::test]
 async fn create_team_success() {
+    Config::load_test_config();
+
     let example_user = users::Model {
         username: "Salieri".to_string(),
         email: "example@gmail.com".to_string(),

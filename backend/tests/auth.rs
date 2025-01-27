@@ -5,6 +5,7 @@ use actix_web::web::Data;
 use actix_web::{test, App};
 use hack4krak_backend::models::entities::users;
 use hack4krak_backend::utils::app_state::AppState;
+use hack4krak_backend::utils::env::Config;
 use hack4krak_backend::{middlewares, routes};
 use sea_orm::{DatabaseBackend, MockDatabase, MockExecResult};
 use utoipa::gen::serde_json::json;
@@ -82,6 +83,8 @@ async fn register_invalid_email() {
 
 #[actix_web::test]
 async fn auth_flow() {
+    Config::load_test_config();
+
     let example_user = users::Model {
         username: "Developer".to_string(),
         email: "dev@hack4krak.eu".to_string(),
