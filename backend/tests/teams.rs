@@ -8,7 +8,6 @@ use hack4krak_backend::utils::app_state::AppState;
 use hack4krak_backend::utils::jwt::encode_jwt;
 use sea_orm::{DatabaseBackend, MockDatabase};
 use serde_json::json;
-use std::env;
 use utoipa_actix_web::scope;
 
 #[actix_web::test]
@@ -40,8 +39,6 @@ async fn create_team_user_already_belongs_to_team() {
             .service(scope("/teams").configure(routes::teams::config)),
     )
     .await;
-
-    env::set_var("JWT_SECRET", "RHqD49m4ne3ZH0+kwlAxwlO29Tm8ZR6qLRNsIuYWPDM=");
 
     let access_token = encode_jwt("example@gmail.com".to_string(), Duration::minutes(10));
 
@@ -97,8 +94,6 @@ async fn create_duplicate_team() {
         "team_name": "Dziengiel".to_string(),
     });
 
-    env::set_var("JWT_SECRET", "RHqD49m4ne3ZH0+kwlAxwlO29Tm8ZR6qLRNsIuYWPDM=");
-
     let access_token = encode_jwt("example@gmail.com".to_string(), Duration::minutes(10));
 
     let request = test::TestRequest::post()
@@ -152,8 +147,6 @@ async fn create_team_success() {
     let create_team_payload = json!({
         "team_name": "Dziengiel".to_string(),
     });
-
-    env::set_var("JWT_SECRET", "RHqD49m4ne3ZH0+kwlAxwlO29Tm8ZR6qLRNsIuYWPDM=");
 
     let access_token = encode_jwt("example@gmail.com".to_string(), Duration::minutes(10));
 
