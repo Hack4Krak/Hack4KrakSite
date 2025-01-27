@@ -1,6 +1,6 @@
 use serde::Deserialize;
 use std::path::Path;
-use std::sync::LazyLock;
+use std::sync::OnceLock;
 use Default;
 
 fn default_backend_address() -> String {
@@ -10,11 +10,7 @@ fn default_openapi_json_frontend_path() -> String {
     "../frontend/openapi/api/openapi.json".to_string()
 }
 
-#[cfg(test)]
-pub static CONFIG: LazyLock<Config> = LazyLock::new(Config::load_test_config);
-
-#[cfg(not(test))]
-pub static CONFIG: LazyLock<Config> = LazyLock::new(|| Config::load_config().unwrap());
+pub static CONFIG: OnceLock<Config> = OnceLock::new();
 
 #[derive(Deserialize, Debug, Default)]
 pub struct Config {
@@ -30,15 +26,19 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn load_config() -> Result<Config, envy::Error> {
-        dotenvy::from_path(Path::new("../.env")).unwrap();
-        envy::from_env::<Config>()
+    pub fn load_config() {
+        let _ = dotenvy::from_path(Path::new("../.env"));
+        CONFIG.get_or_init(|| envy::from_env::<Config>().unwrap());
     }
 
-    pub fn load_test_config() -> Config {
-        Config {
+    pub fn load_test_config() {
+        CONFIG.get_or_init(|| Config {
             jwt_secret: "skibidi-dziegiel-secret".to_string(),
             ..Default::default()
-        }
+        });
+    }
+
+    pub fn get() -> &'static Config {
+        CONFIG.get().unwrap()
     }
 }
