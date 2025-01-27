@@ -1,4 +1,5 @@
 use crate::routes::auth::TokensResponse;
+use crate::utils::env::Config;
 use crate::utils::error::Error;
 use actix_web::{FromRequest, HttpMessage};
 use chrono::{Duration, TimeDelta, Utc};
@@ -41,7 +42,7 @@ pub fn encode_jwt(email: String, expire: TimeDelta) -> Result<String, Error> {
         email,
     };
 
-    let secret = std::env::var("JWT_SECRET").unwrap();
+    let secret = &Config::get().jwt_secret;
 
     encode(
         &Header::default(),
@@ -52,7 +53,7 @@ pub fn encode_jwt(email: String, expire: TimeDelta) -> Result<String, Error> {
 }
 
 pub fn decode_jwt(jwt: &str) -> Result<TokenData<Claims>, jsonwebtoken::errors::Error> {
-    let secret = std::env::var("JWT_SECRET").unwrap();
+    let secret = &Config::get().jwt_secret;
     let claim_data: Result<TokenData<Claims>, jsonwebtoken::errors::Error> = decode(
         jwt,
         &DecodingKey::from_secret(secret.as_ref()),

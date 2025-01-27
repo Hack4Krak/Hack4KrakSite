@@ -2,6 +2,7 @@ use actix_web::web::Data;
 use actix_web::{middleware::from_fn, middleware::Logger};
 use actix_web::{App, HttpServer};
 use hack4krak_backend::utils::app_state::AppState;
+use hack4krak_backend::utils::env::Config;
 use hack4krak_backend::utils::openapi::ApiDoc;
 use hack4krak_backend::{middlewares, routes};
 use migration::{Migrator, MigratorTrait};
@@ -11,7 +12,6 @@ use sea_orm::{Database, DatabaseConnection};
 use std::env;
 use std::fs::File;
 use std::io::Write;
-use std::path::Path;
 use tracing::info;
 use utoipa::gen::serde_json::to_string;
 use utoipa::OpenApi;
@@ -20,7 +20,7 @@ use utoipa_scalar::{Scalar, Servable};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    dotenvy::from_path(Path::new("../.env")).unwrap();
+    Config::load_config();
 
     let filter =
         env::var("RUST_LOG").unwrap_or("actix_web=debug,hack4krak_backend=trace".to_string());
@@ -28,20 +28,21 @@ async fn main() -> std::io::Result<()> {
     tracing_subscriber::fmt().with_env_filter(filter).init();
 
     info!("Connecting to db...");
-    let database_url = env::var("DATABASE_URL").unwrap();
-    let db: DatabaseConnection = Database::connect(database_url).await.unwrap();
+    let db: DatabaseConnection = Database::connect(&Config::get().database_url)
+        .await
+        .unwrap();
     Migrator::up(&db, None).await.unwrap();
 
-    let address_env: String = env::var("BACKEND_ADDRESS").unwrap_or("127.0.0.1:8080".to_string());
+    let address_env = &Config::get().backend_address;
     let address_vec: Vec<&str> = address_env.split(":").collect();
     let ip = address_vec[0];
     let port = address_vec[1]
         .parse::<u16>()
         .expect("The port in BACKEND_ADDRESS must be a valid u16 integer");
 
-    let client_id = ClientId::new(env::var("GITHUB_OAUTH_CLIENT_ID").unwrap());
-    let client_secret = ClientSecret::new(env::var("GITHUB_OAUTH_CLIENT_SECRET").unwrap());
-    let redirect_url = RedirectUrl::new(env::var("GITHUB_OAUTH_REDIRECT_URL").unwrap()).unwrap();
+    let client_id = ClientId::new(Config::get().github_oauth_client_id.clone());
+    let client_secret = ClientSecret::new(Config::get().github_oauth_client_secret.clone());
+    let redirect_url = RedirectUrl::new(Config::get().github_oauth_redirect_url.clone()).unwrap();
     let github_oauth_client = BasicClient::new(client_id)
         .set_client_secret(client_secret)
         .set_auth_uri(AuthUrl::new("https://github.com/login/oauth/authorize".to_string()).unwrap())
@@ -73,8 +74,7 @@ async fn main() -> std::io::Result<()> {
             .openapi_service(|api| Scalar::with_url("/docs", api))
             .split_for_parts();
 
-        let path: String = env::var("OPENAPI_JSON_FRONTEND_PATH")
-            .unwrap_or("../frontend/openapi/api/openapi.json".to_string());
+        let path = &Config::get().openapi_json_frontend_path;
         let mut openapi_json = File::create(path).unwrap();
         openapi_json
             .write_all(to_string(&api).unwrap().as_bytes())
