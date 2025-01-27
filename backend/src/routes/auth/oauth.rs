@@ -3,8 +3,9 @@ use crate::routes::auth::TokensResponse;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::{get, web, HttpResponse};
-use oauth2::reqwest::async_http_client;
+use oauth2::reqwest;
 use oauth2::{AuthorizationCode, CsrfToken, Scope, TokenResponse};
+use reqwest::redirect::Policy;
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
@@ -33,10 +34,14 @@ pub async fn github_callback(
     app_state: web::Data<AppState>,
     data: web::Query<QueryParams>,
 ) -> Result<HttpResponse, Error> {
+    let http_client = reqwest::ClientBuilder::new()
+        .redirect(Policy::none())
+        .build()?;
+
     let token_result = app_state
         .github_oauth_client
         .exchange_code(AuthorizationCode::new(data.code.to_string()))
-        .request_async(async_http_client)
+        .request_async(&http_client)
         .await
         .map_err(|_| Error::OAuth)?;
 

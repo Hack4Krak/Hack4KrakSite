@@ -17,20 +17,20 @@ actix-web = "4.9.0"
 dotenvy = "0.15"
 thiserror = "2.0.10"
 serde = { version = "1.0.217", features = ["derive"] }
-serde_json = "1.0.135"
+serde_json = "1.0.137"
 tracing = "0.1.41"
 tracing-subscriber = "0.3.19"
 argon2 = "0.6.0-pre.1"
 jsonwebtoken = "9.3.0"
 chrono = "0.4.39"
-oauth2 = "4.4.2"
+oauth2 = { version = "5.0.0", features = ["reqwest"] }
 reqwest = { version = "0.12.12", features = ["json"] }
 sea-orm.workspace = true
 
 # Generating OpenAPI
 utoipa = { version = "5.3.1", features = ["actix_extras", "macros", "chrono"] }
 utoipa-actix-web = "0.1.2"
-utoipa-scalar = { version = "0.2.1", features = ["actix-web"] }
+utoipa-scalar = { version = "0.3.0", features = ["actix-web"] }
 
 # Custom crates
 migration = { path = "migration" }
