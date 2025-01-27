@@ -1,4 +1,5 @@
 use crate::routes::auth::TokensResponse;
+use crate::utils::env::CONFIG;
 use crate::utils::error::Error;
 use actix_web::{FromRequest, HttpMessage};
 use chrono::{Duration, TimeDelta, Utc};
@@ -41,7 +42,7 @@ pub fn encode_jwt(email: String, expire: TimeDelta) -> Result<String, Error> {
         email,
     };
 
-    let secret = std::env::var("JWT_SECRET").unwrap();
+    let secret = &CONFIG.jwt_secret;
 
     encode(
         &Header::default(),

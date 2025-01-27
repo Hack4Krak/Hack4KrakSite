@@ -7,7 +7,6 @@ use hack4krak_backend::models::entities::users;
 use hack4krak_backend::utils::app_state::AppState;
 use hack4krak_backend::{middlewares, routes};
 use sea_orm::{DatabaseBackend, MockDatabase, MockExecResult};
-use std::env;
 use utoipa::gen::serde_json::json;
 use utoipa_actix_web::scope;
 
@@ -108,8 +107,6 @@ async fn auth_flow() {
             ),
     )
     .await;
-
-    env::set_var("JWT_SECRET", "RHqD49m4ne3ZH0+kwlAxwlO29Tm8ZR6qLRNsIuYWPDM=");
 
     let register_payload = json!({
         "email": "test@example.com",
