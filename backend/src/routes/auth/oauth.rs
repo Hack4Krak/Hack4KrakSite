@@ -27,7 +27,7 @@ struct GitHubEmail {
     primary: bool,
 }
 
-pub async fn send_github_request(url: Url, token: &String) -> Result<Response, reqwest::Error> {
+async fn send_github_request(url: Url, token: &String) -> Result<Response, reqwest::Error> {
     reqwest::Client::new()
         .get(url)
         .header("Authorization", token)
