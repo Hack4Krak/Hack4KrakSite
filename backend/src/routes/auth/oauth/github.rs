@@ -1,4 +1,5 @@
 use crate::models::entities::users;
+use crate::routes::auth::oauth::OAuthUser;
 use crate::routes::auth::TokensResponse;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
