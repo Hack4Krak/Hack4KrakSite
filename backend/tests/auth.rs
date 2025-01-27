@@ -13,8 +13,6 @@ use utoipa_actix_web::scope;
 
 #[actix_web::test]
 async fn register() {
-    env::set_var("JWT_SECRET", "secret");
-
     let database = MockDatabase::new(DatabaseBackend::Postgres)
         .append_query_results([
             Vec::<users::Model>::new(),

@@ -13,8 +13,6 @@ use utoipa_actix_web::scope;
 
 #[actix_web::test]
 async fn create_team_user_already_belongs_to_team() {
-    env::set_var("JWT_SECRET", "secret");
-
     let database = MockDatabase::new(DatabaseBackend::Postgres)
         .append_query_results([vec![users::Model {
             username: "Salieri".to_string(),
