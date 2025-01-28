@@ -10,3 +10,11 @@
   --font-sans: 'Public Sans', sans-serif;
   --font-pixelify: Pixelify Sans;
 }
+
+@utility rendering-pixelated {
+  image-rendering: pixelated;
+}
+
+@utility bg-default {
+  background: var(--ui-bg);
+}

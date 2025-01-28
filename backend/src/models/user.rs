@@ -12,7 +12,8 @@ use crate::routes::auth::AuthError::{
 };
 use crate::routes::auth::{LoginModel, RegisterModel};
 use crate::utils::error::Error;
-use crate::utils::jwt::get_tokens_http_response;
+use crate::utils::env::Config;
+use crate::utils::jwt::append_tokens_as_cookies;
 
 impl users::Model {
     pub async fn create_from_oauth(
@@ -40,7 +41,13 @@ impl users::Model {
             transaction.commit().await?;
         }
 
-        get_tokens_http_response(email)
+        let mut response = HttpResponse::Ok();
+        append_tokens_as_cookies(email, &mut response)?;
+        let script = format!(
+            "<script>window.location.href = '{}';</script>",
+            Config::get().oauth_finish_redirect_url
+        );
+        Ok(response.body(script))
     }
 
     pub async fn create_with_password(
