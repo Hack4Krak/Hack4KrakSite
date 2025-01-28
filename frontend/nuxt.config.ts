@@ -50,8 +50,13 @@ export default defineNuxtConfig({
     },
   },
   openFetch: {
+    disableNuxtPlugin: true,
     clients: {
       api: {
+        baseURL: process.env.BACKEND_ADDRESS || 'http://localhost:8080/',
+        schema: '../openapi/api/openapi.json',
+      },
+      auth: {
         baseURL: process.env.BACKEND_ADDRESS || 'http://localhost:8080/',
         schema: '../openapi/api/openapi.json',
       },
@@ -62,4 +67,14 @@ export default defineNuxtConfig({
       processCSSVariables: true,
     },
   },
+  components: [
+    {
+      path: '~/components/',
+      pathPrefix: true,
+    },
+    {
+      path: '~/components/primitive/',
+      pathPrefix: false,
+    },
+  ],
 })

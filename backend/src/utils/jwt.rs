@@ -1,6 +1,6 @@
 use std::future;
 
-use actix_web::{FromRequest, HttpMessage, HttpResponse};
+use actix_web::{FromRequest, HttpMessage, HttpResponse, HttpResponseBuilder};
 use chrono::{Duration, TimeDelta, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, TokenData, Validation};
 use serde::{Deserialize, Serialize};
@@ -66,7 +66,10 @@ pub fn decode_jwt(jwt: &str) -> Result<TokenData<Claims>, jsonwebtoken::errors::
     claim_data
 }
 
-pub fn get_tokens_http_response(email: String) -> Result<HttpResponse, Error> {
+pub fn append_tokens_as_cookies(
+    email: String,
+    http_response: &mut HttpResponseBuilder,
+) -> Result<(), Error> {
     let access_token = encode_jwt(email.clone(), Duration::minutes(10))?;
     let refresh_token = encode_jwt(email, Duration::days(14))?;
 
@@ -77,8 +80,14 @@ pub fn get_tokens_http_response(email: String) -> Result<HttpResponse, Error> {
     );
     let access_cookie = create_cookie(ACCESS_TOKEN_COOKIE, &access_token, None);
 
-    Ok(HttpResponse::Ok()
-        .append_header(("Set-Cookie", refresh_cookie))
-        .append_header(("Set-Cookie", access_cookie))
-        .finish())
+    http_response.append_header(("Set-Cookie", refresh_cookie));
+    http_response.append_header(("Set-Cookie", access_cookie));
+
+    Ok(())
+}
+
+pub fn get_tokens_http_response(email: String) -> Result<HttpResponse, Error> {
+    let mut response = HttpResponse::Ok();
+    append_tokens_as_cookies(email, &mut response)?;
+    Ok(response.finish())
 }
