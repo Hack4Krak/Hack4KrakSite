@@ -4,6 +4,9 @@ use sea_orm::QueryFilter;
 use sea_orm::{ColumnTrait, DatabaseConnection, TransactionTrait};
 
 use crate::models::entities::users;
+use crate::routes::auth::AuthError::{
+    InvalidCredentials, PasswordAuthNotAvailable, UserAlreadyExists,
+};
 use crate::routes::auth::{LoginModel, RegisterModel, TokensResponse};
 use crate::utils::jwt::get_default_tokens;
 use migration::Condition;
@@ -56,7 +59,7 @@ impl users::Model {
             .await?
             .is_some()
         {
-            return Err(Error::UserAlreadyExists {});
+            return Err(Error::Auth(UserAlreadyExists));
         }
 
         users::ActiveModel {
@@ -81,9 +84,11 @@ impl users::Model {
             .filter(Condition::all().add(users::Column::Email.eq(&login_json.email)))
             .one(database)
             .await?
-            .ok_or(Error::InvalidCredentials)?;
+            .ok_or(Error::Auth(InvalidCredentials))?;
 
-        let password = user_data.password.ok_or(Error::PasswordAuthNotAvailable)?;
+        let password = user_data
+            .password
+            .ok_or(Error::Auth(PasswordAuthNotAvailable))?;
         let parsed_hash = PasswordHash::new(&password).map_err(Error::HashPasswordFailed)?;
 
         let is_verified = Argon2::default()
@@ -91,7 +96,7 @@ impl users::Model {
             .is_ok();
 
         if !is_verified {
-            return Err(Error::InvalidCredentials);
+            return Err(Error::Auth(InvalidCredentials));
         }
 
         Ok(user_data.email)

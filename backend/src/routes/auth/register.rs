@@ -1,6 +1,8 @@
 use crate::models::entities::users;
+use crate::routes::auth::AuthError::InvalidEmailAddress;
 use crate::utils::app_state;
 use crate::utils::error::Error;
+use crate::utils::error::Error::HashPasswordFailed;
 use actix_web::{post, web, HttpResponse};
 use argon2::password_hash::rand_core::OsRng;
 use argon2::password_hash::SaltString;
@@ -37,7 +39,7 @@ pub async fn register(
     let regex = Regex::new(EMAIL_REGEX).unwrap();
 
     if !regex.is_match(&register_json.email) {
-        return Err(Error::InvalidEmailAddress);
+        return Err(Error::Auth(InvalidEmailAddress));
     }
 
     let salt = SaltString::generate(&mut OsRng);
@@ -45,7 +47,7 @@ pub async fn register(
 
     let password_hash = argon2
         .hash_password(register_json.password.as_bytes(), &salt)
-        .map_err(Error::HashPasswordFailed)?
+        .map_err(HashPasswordFailed)?
         .to_string();
 
     users::Model::create_with_password(&app_state.database, password_hash, &register_json).await?;

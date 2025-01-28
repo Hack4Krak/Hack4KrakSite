@@ -1,6 +1,7 @@
 use crate::routes::auth::TokensResponse;
 use crate::utils::env::Config;
 use crate::utils::error::Error;
+use crate::utils::error::Error::InvalidJsonWebToken;
 use actix_web::{FromRequest, HttpMessage};
 use chrono::{Duration, TimeDelta, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, TokenData, Validation};
@@ -49,7 +50,7 @@ pub fn encode_jwt(email: String, expire: TimeDelta) -> Result<String, Error> {
         &claims,
         &EncodingKey::from_secret(secret.as_ref()),
     )
-    .map_err(|_| Error::InvalidJsonWebToken)
+    .map_err(|_| InvalidJsonWebToken)
 }
 
 pub fn decode_jwt(jwt: &str) -> Result<TokenData<Claims>, jsonwebtoken::errors::Error> {

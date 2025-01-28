@@ -1,4 +1,5 @@
 use crate::models::entities::{teams, users};
+use crate::routes::teams::TeamError::NotFound;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use actix_web::{get, web, HttpResponse};
@@ -34,7 +35,7 @@ pub async fn view_team(
         .find_also_related(users::Entity)
         .one(&app_state.database)
         .await?
-        .ok_or(Error::TeamNotFound);
+        .ok_or(Error::Team(NotFound));
 
     let (team, users) = team_model?;
 

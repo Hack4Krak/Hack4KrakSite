@@ -1,5 +1,6 @@
 use crate::models::entities::{teams, users};
 use crate::routes::teams::create_team::CreateTeamModel;
+use crate::routes::teams::TeamError::{AlreadyExists, UserAlreadyBelongsToTeam};
 use crate::utils::error::Error;
 use crate::utils::jwt::Claims;
 use chrono::Utc;
@@ -19,7 +20,7 @@ impl teams::Model {
             .ok_or(Error::Unauthorized)?;
 
         if let Some(team_name) = user.team_name {
-            return Err(Error::UserAlreadyBelongsToTeam { team_name });
+            return Err(Error::Team(UserAlreadyBelongsToTeam { team_name }));
         }
 
         if teams::Entity::find()
@@ -28,7 +29,7 @@ impl teams::Model {
             .await?
             .is_some()
         {
-            return Err(Error::TeamAlreadyExists);
+            return Err(Error::Team(AlreadyExists));
         }
 
         let transaction = database.begin().await?;
