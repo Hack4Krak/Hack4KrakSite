@@ -20,7 +20,7 @@ const state = reactive<Partial<Schema>>({
   password: undefined,
 })
 
-const OAuthBaseUrl = `${useRuntimeConfig().public.openFetch.api.baseURL}auth/oauth/`
+const OAuthBaseUrl = `${useRuntimeConfig().public.openFetch.api.baseURL}auth/oauth`
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   event.preventDefault()

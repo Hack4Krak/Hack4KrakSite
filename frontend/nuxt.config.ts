@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
 const baseUrl = process.env.BASE_URL || 'http://localhost:3000'
+const backendAddress = process.env.BACKEND_ADDRESS || 'http://localhost:8080'
 
 export default defineNuxtConfig({
   modules: [
@@ -53,11 +54,11 @@ export default defineNuxtConfig({
     disableNuxtPlugin: true,
     clients: {
       api: {
-        baseURL: process.env.BACKEND_ADDRESS || 'http://localhost:8080/',
+        baseURL: backendAddress,
         schema: '../openapi/api/openapi.json',
       },
       auth: {
-        baseURL: process.env.BACKEND_ADDRESS || 'http://localhost:8080/',
+        baseURL: backendAddress,
         schema: '../openapi/api/openapi.json',
       },
     },
