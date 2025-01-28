@@ -6,7 +6,7 @@ const props = defineProps({
 })
 
 const errorCatImage = computed(() => {
-  return `https://http.cat/${props.error?.statusCode}`
+  return `https://httpcat.us/static/${props.error?.statusCode}.png`
 })
 
 const errorMessage = computed(() => {
@@ -25,17 +25,19 @@ const errorMessage = computed(() => {
   <NuxtLoadingIndicator color="#ffb900" :height="2" />
   <UApp class="font-roboto">
     <Navbar />
-    <main class="bg-gray-200 dark:bg-[#171717] min-h-[calc(100vh-var(--spacing)*19)] content-center items-center justify-center">
+    <main class="min-h-[calc(100vh-var(--spacing)*19)] content-center items-center justify-center">
       <div class="flex content-center items-center justify-center">
-        <div class="flex flex-col ml-12 mr-32 max-w-[600px]">
-          <h1 class="text-balance text-8xl text-yellow-500 font-bold mb-10">
-            {{ props.error?.statusCode }}
+        <div class="flex flex-col md:mr-32 w-3/4 md:max-w-2/5">
+          <h1 class="text-balance text-8xl text-yellow-500 font-bold mb-3">
+            {{ error?.statusCode }}
           </h1>
           <h2 class="whitespace-pre-line text-3xl text-black dark:text-white">
             {{ errorMessage }}
           </h2>
         </div>
-        <img class="border-solid pl-10 border-white-8 rounded-xl object-cover scale-[120%]" :src="errorCatImage" alt="Error Cat">
+        <div class="overflow-hidden border-1 border-white rounded-xl hidden md:block">
+          <img class="w-125 h-90 object-cover scale-[110%]" :src="errorCatImage" alt="Error Cat">
+        </div>
       </div>
     </main>
   </UApp>
