@@ -10,7 +10,6 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     '@nuxt/scripts',
     '@formkit/auto-animate/nuxt',
-    '@nuxt/content',
     'nuxt-open-fetch',
     '@nuxt/image',
   ],
