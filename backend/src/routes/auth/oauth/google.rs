@@ -1,7 +1,9 @@
 use crate::models::entities::users;
+use crate::routes::auth::AuthError::InvalidCredentials;
 use crate::routes::auth::TokensResponse;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
+use crate::utils::error::Error::OAuth;
 use actix_web::{get, web, HttpResponse};
 use oauth2::{AuthorizationCode, CsrfToken, Scope, TokenResponse};
 use reqwest::redirect::Policy;
@@ -43,7 +45,7 @@ pub async fn google_callback(
         .exchange_code(AuthorizationCode::new(data.code.to_string()))
         .request_async(&http_client)
         .await
-        .map_err(|_| Error::OAuth)?;
+        .map_err(|_| OAuth)?;
 
     let token = format!("Bearer {}", token_result.access_token().secret());
     let response = reqwest::Client::new()
@@ -53,13 +55,10 @@ pub async fn google_callback(
         .await?;
 
     if !response.status().is_success() {
-        return Err(Error::InvalidCredentials);
+        return Err(InvalidCredentials.into());
     }
 
-    let user: GoogleUser = response
-        .json()
-        .await
-        .map_err(|_| Error::InvalidCredentials)?;
+    let user: GoogleUser = response.json().await.map_err(|_| InvalidCredentials)?;
     let tokens =
         users::Model::create_from_oauth(&app_state.database, user.name, user.email).await?;
 

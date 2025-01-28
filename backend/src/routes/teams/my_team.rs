@@ -1,5 +1,6 @@
 use crate::models::entities::{teams, users};
 use crate::routes::teams::view_team::TeamWithMembers;
+use crate::routes::teams::TeamError::{NotFound, UserDoesntBelongToAnyTeam};
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::jwt::Claims;
@@ -34,7 +35,7 @@ pub async fn my_team(
         .ok_or(Error::Unauthorized)?;
 
     if user.team_name.is_none() {
-        return Err(Error::UserDoesntBelongToAnyTeam);
+        return Err(Error::Team(UserDoesntBelongToAnyTeam))?;
     }
 
     let team_model = teams::Entity::find()
@@ -42,7 +43,7 @@ pub async fn my_team(
         .find_also_related(users::Entity)
         .one(&app_state.database)
         .await?
-        .ok_or(Error::TeamNotFound);
+        .ok_or(Error::Team(NotFound));
 
     let (team, users) = team_model?;
 

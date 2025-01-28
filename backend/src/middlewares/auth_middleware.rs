@@ -1,4 +1,5 @@
 use crate::utils::error::Error;
+use crate::utils::error::Error::InvalidAuthorizationHeader;
 use crate::utils::jwt::decode_jwt;
 use actix_web::middleware::Next;
 use actix_web::{
@@ -19,7 +20,7 @@ pub async fn check_auth_middleware(
 
     let token = auth_header
         .to_str()
-        .map_err(|_| Error::InvalidAuthorizationHeader)?
+        .map_err(|_| InvalidAuthorizationHeader)?
         .trim_start_matches("Bearer ");
 
     let claims = decode_jwt(token).map_err(|_| Error::Unauthorized)?;

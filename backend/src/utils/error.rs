@@ -1,3 +1,5 @@
+use crate::routes::auth::AuthError;
+use crate::routes::teams::TeamError;
 use actix_web::http::StatusCode;
 use actix_web::{error, HttpResponse, HttpResponseBuilder};
 use thiserror::Error;
@@ -13,56 +15,42 @@ pub enum Error {
     Request(#[from] reqwest::Error),
     #[error("Database operation failed")]
     DatabaseOperation(#[from] sea_orm::DbErr),
-    #[error("User already exists")]
-    UserAlreadyExists,
-    #[error("Invalid username and/or password")]
-    InvalidCredentials,
-    #[error("Invalid email address")]
-    InvalidEmailAddress,
-    #[error("Password & email authentication is not available for this account")]
-    PasswordAuthNotAvailable,
+    #[error("Unauthorized")]
+    Unauthorized,
     #[error("Invalid Json Web Token")]
     InvalidJsonWebToken,
     #[error("Invalid authorization header content")]
     InvalidAuthorizationHeader,
-    #[error("Unauthorized")]
-    Unauthorized,
-    #[error("Team already exists")]
-    TeamAlreadyExists,
-    #[error("User already belongs to team: {team_name}")]
-    UserAlreadyBelongsToTeam { team_name: String },
-    #[error("Team not found")]
-    TeamNotFound,
-    #[error("User doesn't belong to any team")]
-    UserDoesntBelongToAnyTeam,
+    #[error(transparent)]
+    Auth(#[from] AuthError),
+    #[error(transparent)]
+    Team(#[from] TeamError),
+}
+
+pub fn json_error_response<T: error::ResponseError>(err: &T) -> HttpResponse {
+    HttpResponseBuilder::new(err.status_code()).json(json!({
+        "code": err.status_code().as_u16(),
+        "message": err.to_string(),
+        "error": format!("{:?}", err),
+    }))
 }
 
 impl error::ResponseError for Error {
     fn status_code(&self) -> StatusCode {
-        match *self {
-            // 4xx: Client Errors
-            Error::InvalidEmailAddress => StatusCode::BAD_REQUEST,
-            Error::InvalidAuthorizationHeader => StatusCode::UNAUTHORIZED,
-            Error::InvalidCredentials | Error::InvalidJsonWebToken => StatusCode::UNAUTHORIZED,
-            Error::Unauthorized
-            | Error::UserAlreadyBelongsToTeam { team_name: _ }
-            | Error::PasswordAuthNotAvailable
-            | Error::UserDoesntBelongToAnyTeam => StatusCode::FORBIDDEN,
-            Error::UserAlreadyExists | Error::TeamAlreadyExists => StatusCode::CONFLICT,
-            Error::TeamNotFound => StatusCode::NOT_FOUND,
-            // 5xx: Server Errors
+        match self {
             Error::HashPasswordFailed(_)
             | Error::DatabaseOperation(_)
             | Error::OAuth
             | Error::Request(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Error::Unauthorized => StatusCode::FORBIDDEN,
+            Error::InvalidJsonWebToken => StatusCode::UNAUTHORIZED,
+            Error::InvalidAuthorizationHeader => StatusCode::BAD_REQUEST,
+            Error::Team(team_err) => team_err.status_code(),
+            Error::Auth(auth_err) => auth_err.status_code(),
         }
     }
 
     fn error_response(&self) -> HttpResponse {
-        HttpResponseBuilder::new(self.status_code()).json(json!({
-            "code": self.status_code().as_u16(),
-            "message": self.to_string(),
-            "error": format!("{:?}", self),
-        }))
+        json_error_response(self)
     }
 }

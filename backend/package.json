@@ -6,7 +6,7 @@
     "build": "cargo build",
     "dev": "cargo run",
     "lint": "cargo fmt -- --check && cargo clippy",
-    "lint:fix": "cargo fmt && cargo clippy --fix",
+    "lint:fix": "cargo fmt && cargo clippy --fix --allow-staged --allow-dirty",
     "test": "cargo test"
   }
 }
