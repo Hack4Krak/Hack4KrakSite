@@ -1,3 +1,5 @@
+use lettre::transport::smtp::authentication::Credentials;
+use lettre::SmtpTransport;
 use oauth2::basic::*;
 use oauth2::{
     AuthUrl, Client, ClientId, EndpointNotSet, EndpointSet, RedirectUrl, StandardRevocableToken,
@@ -22,6 +24,7 @@ pub struct AppState {
     pub database: DatabaseConnection,
     pub github_oauth_client: OAuthClient,
     pub google_oauth_client: OAuthClient,
+    pub smtp_client: SmtpTransport,
 }
 
 impl AppState {
@@ -34,6 +37,13 @@ impl AppState {
             database,
             github_oauth_client: oauth_client.clone(),
             google_oauth_client: oauth_client,
+            smtp_client: SmtpTransport::relay("smtp.resend.com")
+                .unwrap()
+                .credentials(Credentials::new(
+                    "resend".to_string(),
+                    "resend-api-key".to_string(),
+                ))
+                .build(),
         }
     }
 }
