@@ -8,7 +8,7 @@ fn default_backend_address() -> String {
     "127.0.0.1:8080".to_string()
 }
 fn default_oauth_finish_redirect_url() -> String {
-    "http://localhost:3000/oauth".to_string()
+    "http://localhost:3000/panel".to_string()
 }
 fn default_openapi_json_frontend_path() -> String {
     "../frontend/openapi/api/openapi.json".to_string()

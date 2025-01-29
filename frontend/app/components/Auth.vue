@@ -20,7 +20,7 @@ const state = reactive<Partial<Schema>>({
   password: undefined,
 })
 
-const OAuthBaseUrl = `${useRuntimeConfig().public.openFetch.api.baseURL}auth/oauth`
+const OAuthBaseUrl = `${useRuntimeConfig().public.openFetch.api.baseURL}/auth/oauth`
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   event.preventDefault()
@@ -29,7 +29,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
   try {
     const address = props.isLogin ? '/auth/login' : '/auth/register'
-    await $fetch(address, {
+    await useNuxtApp().$api(address, {
       method: 'POST',
       credentials: 'include',
       body: {
@@ -38,7 +38,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       },
     })
 
-    toast.add({ title: 'Sukces', description: 'Pomyślnie zalogowano!', color: 'success' })
+    await toast.add({ title: 'Sukces', description: 'Pomyślnie zalogowano!', color: 'success' })
     await navigateTo('/panel/')
   } catch (error) {
     console.error(error)
@@ -78,7 +78,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             {{ isLogin ? 'Zaloguj' : 'Zarejestruj' }}
           </UButton>
 
-          <span class="text-sm text-neutral-700">
+          <span class="text-sm text-neutral-500">
             {{ isLogin ? 'Nie masz konta?' : 'Masz już konto?' }}
             <NuxtLink class="underline text-white cursor-pointer hover:text-[var(--ui-primary)]" :to="props.isLogin ? '/register' : '/login'">
               {{ isLogin ? 'Załóż je' : 'Zaloguj się' }}

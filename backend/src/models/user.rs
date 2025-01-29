@@ -11,8 +11,8 @@ use crate::routes::auth::AuthError::{
     InvalidCredentials, PasswordAuthNotAvailable, UserAlreadyExists,
 };
 use crate::routes::auth::{LoginModel, RegisterModel};
-use crate::utils::error::Error;
 use crate::utils::env::Config;
+use crate::utils::error::Error;
 use crate::utils::jwt::append_tokens_as_cookies;
 
 impl users::Model {
@@ -42,12 +42,12 @@ impl users::Model {
         }
 
         let mut response = HttpResponse::Ok();
+        response.append_header((
+            "Refresh",
+            format!("0; {}", Config::get().oauth_finish_redirect_url.clone()),
+        ));
         append_tokens_as_cookies(email, &mut response)?;
-        let script = format!(
-            "<script>window.location.href = '{}';</script>",
-            Config::get().oauth_finish_redirect_url
-        );
-        Ok(response.body(script))
+        Ok(response.body("Redirecting..."))
     }
 
     pub async fn create_with_password(

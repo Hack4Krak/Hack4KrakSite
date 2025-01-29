@@ -19,25 +19,35 @@ export default defineNuxtPlugin((nuxtApp) => {
             return
           }
 
-          const response = await $fetch.raw('/auth/refresh', {
-            method: 'POST',
-            baseURL: clients.auth.baseURL,
-            headers,
-            credentials: 'include',
-            onResponseError() {
-              nuxtApp.runWithContext(() => {
-                navigateTo('login')
-              })
-            },
-          })
+          try {
+            const response = await $fetch.raw('/auth/refresh', {
+              method: 'POST',
+              baseURL: clients.auth.baseURL,
+              headers,
+              credentials: 'include',
+              onResponseError() {
+                nuxtApp.runWithContext(() => {
+                  navigateTo('/login')
+                })
+              },
+            })
 
-          const cookies = (response.headers.get('set-cookie') || '').split(',')
-          context.options.headers.set('cookie', cookies.map(c => c.split(';')[0]).join(';'))
+            if (!response.ok)
+              throw new Error('Refresh token request failed')
 
-          if (import.meta.server) {
-            const cookie = (response.headers.get('set-cookie') || '').split(',')
-            nuxtApp.ssrContext?.event.node.res.setHeader('Set-Cookie', cookie)
+            const cookies = (response.headers.get('set-cookie') || '').split(',')
+            context.options.headers.set('cookie', cookies.map(c => c.split(';')[0]).join(';'))
+
+            if (import.meta.server) {
+              nuxtApp.ssrContext?.event.node.res.setHeader('Set-Cookie', cookies)
+            }
+          } catch (error) {
+            console.error('Auth refresh failed:', error)
+            nuxtApp.runWithContext(() => navigateTo('login'))
           }
+        },
+        onResponseError() {
+          navigateTo('/login')
         },
       }), localFetch),
     },

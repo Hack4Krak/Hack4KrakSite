@@ -1,7 +1,18 @@
 <script setup lang="ts">
+const { $api } = useNuxtApp()
+
 const { data } = await useAuth('/user/', {
   method: 'GET',
 })
+
+async function logout() {
+  $api('/auth/logout', {
+    method: 'POST',
+    credentials: 'include',
+  })
+
+  await navigateTo('/login')
+}
 </script>
 
 <template>
@@ -23,7 +34,7 @@ const { data } = await useAuth('/user/', {
         <h1>
           Ustawienia konta
         </h1>
-        <UButton class="">
+        <UButton @click="logout">
           Wyloguj się
         </UButton>
       </PanelTile>

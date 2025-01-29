@@ -43,7 +43,7 @@ impl error::ResponseError for Error {
             | Error::DatabaseOperation(_)
             | Error::OAuth
             | Error::Request(_) => StatusCode::INTERNAL_SERVER_ERROR,
-            Error::Unauthorized => StatusCode::FORBIDDEN,
+            Error::Unauthorized => StatusCode::UNAUTHORIZED,
             Error::InvalidJsonWebToken => StatusCode::UNAUTHORIZED,
             Error::InvalidAuthorizationHeader => StatusCode::BAD_REQUEST,
             Error::Team(team_err) => team_err.status_code(),
