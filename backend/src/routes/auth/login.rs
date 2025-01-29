@@ -1,11 +1,10 @@
-use actix_web::{post, web, HttpResponse};
-use serde::{Deserialize, Serialize};
-use utoipa::ToSchema;
-
 use crate::models::entities::users;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::jwt::get_tokens_http_response;
+use actix_web::{post, web, HttpResponse};
+use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct LoginModel {
@@ -27,6 +26,6 @@ pub async fn login(
     app_state: web::Data<app_state::AppState>,
     login_json: web::Json<LoginModel>,
 ) -> Result<HttpResponse, Error> {
-    let email = users::Model::verify_credentials(&app_state.database, &login_json).await?;
-    get_tokens_http_response(email)
+    let (uuid, email) = users::Model::verify_credentials(&app_state.database, &login_json).await?;
+    get_tokens_http_response(uuid, email)
 }

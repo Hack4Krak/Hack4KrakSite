@@ -29,7 +29,7 @@ pub async fn user(
     app_state: web::Data<app_state::AppState>,
     claim_data: Claims,
 ) -> Result<HttpResponse, Error> {
-    let user_model = users::Entity::find_by_id(claim_data.email)
+    let user_model = users::Entity::find_by_id(claim_data.id)
         .one(&app_state.database)
         .await?
         .ok_or(Error::Unauthorized)?;

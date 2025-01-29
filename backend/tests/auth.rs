@@ -17,6 +17,7 @@ async fn register() {
         .append_query_results([
             Vec::<users::Model>::new(),
             vec![users::Model {
+                id: Default::default(),
                 username: "".to_string(),
                 email: "".to_string(),
                 created_at: Default::default(),
@@ -86,6 +87,7 @@ async fn auth_flow() {
     Config::load_test_config();
 
     let example_user = users::Model {
+        id: Default::default(),
         username: "Developer".to_string(),
         email: "dev@hack4krak.eu".to_string(),
         created_at: Default::default(),

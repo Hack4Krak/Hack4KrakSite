@@ -2,6 +2,11 @@ use actix_web::{post, HttpRequest, HttpResponse};
 
 use crate::utils::cookies::REFRESH_TOKEN_COOKIE;
 use crate::utils::error::Error;
+use crate::utils::jwt::{decode_jwt, get_default_tokens};
+use actix_web::{post, web, HttpResponse};
+use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
+
 use crate::utils::jwt::{decode_jwt, get_tokens_http_response};
 
 #[utoipa::path(
@@ -21,8 +26,9 @@ pub async fn refresh(request: HttpRequest) -> Result<HttpResponse, Error> {
     };
 
     let claim = decode_jwt(refresh_token.value()).map_err(|_| Error::Unauthorized)?;
+    let uuid = claim.claims.id;
     let email = claim.claims.email;
-    let response = get_tokens_http_response(email)?;
+    let response = get_tokens_http_response(uuid, email)?;
 
     Ok(response)
 }

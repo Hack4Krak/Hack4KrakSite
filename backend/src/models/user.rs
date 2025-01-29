@@ -14,6 +14,14 @@ use crate::routes::auth::{LoginModel, RegisterModel};
 use crate::utils::env::Config;
 use crate::utils::error::Error;
 use crate::utils::jwt::append_tokens_as_cookies;
+use argon2::{Argon2, PasswordHash, PasswordVerifier};
+use migration::Condition;
+use sea_orm::ActiveValue::Set;
+use sea_orm::QueryFilter;
+use sea_orm::{ActiveModelTrait, EntityTrait};
+use sea_orm::{ColumnTrait, DatabaseConnection, TransactionTrait};
+use uuid::Uuid as uuid_gen;
+use sea_orm::prelude::Uuid as SeaOrmUuid;
 
 impl users::Model {
     pub async fn create_from_oauth(
@@ -46,7 +54,7 @@ impl users::Model {
             "Refresh",
             format!("0; {}", Config::get().oauth_finish_redirect_url.clone()),
         ));
-        append_tokens_as_cookies(email, &mut response)?;
+        append_tokens_as_cookies(uuid_gen::new_v4(), email, &mut response)?;
         Ok(response.body("Redirecting..."))
     }
 
@@ -87,7 +95,7 @@ impl users::Model {
     pub async fn verify_credentials(
         database: &DatabaseConnection,
         login_json: &LoginModel,
-    ) -> Result<String, Error> {
+    ) -> Result<(SeaOrmUuid, String), Error> {
         let user_data = users::Entity::find()
             .filter(Condition::all().add(users::Column::Email.eq(&login_json.email)))
             .one(database)
@@ -107,6 +115,6 @@ impl users::Model {
             return Err(Error::Auth(InvalidCredentials));
         }
 
-        Ok(user_data.email)
+        Ok((user_data.id, user_data.email))
     }
 }
