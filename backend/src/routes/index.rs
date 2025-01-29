@@ -1,6 +1,7 @@
-use crate::utils::error::Error;
 use actix_web::{get, HttpResponse};
 use serde::Serialize;
+
+use crate::utils::error::Error;
 
 #[derive(Serialize, utoipa::ToSchema)]
 struct ResponseData<'a> {

@@ -1,13 +1,14 @@
-use crate::models::entities::{teams, users};
-use crate::routes::teams::TeamError::NotFound;
-use crate::utils::app_state;
-use crate::utils::error::Error;
 use actix_web::{get, web, HttpResponse};
 use sea_orm::prelude::DateTime;
 use sea_orm::QueryFilter;
 use sea_orm::{ColumnTrait, EntityTrait};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
+
+use crate::models::entities::{teams, users};
+use crate::routes::teams::TeamError::NotFound;
+use crate::utils::app_state;
+use crate::utils::error::Error;
 
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct TeamWithMembers {

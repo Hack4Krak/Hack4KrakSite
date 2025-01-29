@@ -3,13 +3,14 @@ mod oauth;
 mod refresh;
 mod register;
 
-use crate::utils::error::json_error_response;
 use actix_web::error;
 use actix_web::http::StatusCode;
 pub use login::LoginModel;
 pub use login::TokensResponse;
 pub use register::RegisterModel;
 use thiserror::Error;
+
+use crate::utils::error::json_error_response;
 
 pub fn config(cfg: &mut utoipa_actix_web::service_config::ServiceConfig) {
     cfg.service(register::register);

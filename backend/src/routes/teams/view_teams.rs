@@ -1,9 +1,10 @@
+use actix_web::{get, web, HttpResponse};
+use sea_orm::EntityTrait;
+
 use crate::models::entities::{teams, users};
 use crate::routes::teams::view_team::TeamWithMembers;
 use crate::utils::app_state;
 use crate::utils::error::Error;
-use actix_web::{get, web, HttpResponse};
-use sea_orm::EntityTrait;
 
 #[utoipa::path(
     responses(

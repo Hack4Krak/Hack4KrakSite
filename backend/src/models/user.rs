@@ -1,6 +1,8 @@
-use crate::utils::error::Error;
 use argon2::{Argon2, PasswordHash, PasswordVerifier};
+use migration::Condition;
+use sea_orm::ActiveValue::Set;
 use sea_orm::QueryFilter;
+use sea_orm::{ActiveModelTrait, EntityTrait};
 use sea_orm::{ColumnTrait, DatabaseConnection, TransactionTrait};
 
 use crate::models::entities::users;
@@ -8,10 +10,8 @@ use crate::routes::auth::AuthError::{
     InvalidCredentials, PasswordAuthNotAvailable, UserAlreadyExists,
 };
 use crate::routes::auth::{LoginModel, RegisterModel, TokensResponse};
+use crate::utils::error::Error;
 use crate::utils::jwt::get_default_tokens;
-use migration::Condition;
-use sea_orm::ActiveValue::Set;
-use sea_orm::{ActiveModelTrait, EntityTrait};
 
 impl users::Model {
     pub async fn create_from_oauth(
