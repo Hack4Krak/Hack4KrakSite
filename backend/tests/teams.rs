@@ -15,8 +15,11 @@ use utoipa_actix_web::scope;
 async fn create_team_user_already_belongs_to_team() {
     Config::load_test_config();
 
+    let uuid = uuid::Uuid::new_v4();
+
     let database = MockDatabase::new(DatabaseBackend::Postgres)
         .append_query_results([vec![users::Model {
+            id: uuid,
             username: "Salieri".to_string(),
             email: "example@gmail.com".to_string(),
             created_at: Default::default(),
@@ -26,6 +29,7 @@ async fn create_team_user_already_belongs_to_team() {
             password: None,
         }]])
         .append_query_results([vec![teams::Model {
+            id: Default::default(),
             name: "Dziengiel".to_string(),
             created_at: Default::default(),
             leader_name: "Salieri".to_string(),
@@ -43,14 +47,14 @@ async fn create_team_user_already_belongs_to_team() {
     )
     .await;
 
-    let access_token = encode_jwt("example@gmail.com".to_string(), Duration::minutes(10));
+    let access_token = encode_jwt(uuid, "example@gmail.com".to_string(), Duration::minutes(10));
 
     let create_team_payload = json!({
         "team_name": "team1".to_string(),
     });
 
     let request = test::TestRequest::post()
-        .uri("/teams/create_team")
+        .uri("/teams/manage/create_team")
         .set_json(&create_team_payload)
         .insert_header((
             header::COOKIE,
@@ -67,8 +71,11 @@ async fn create_team_user_already_belongs_to_team() {
 async fn create_duplicate_team() {
     Config::load_test_config();
 
+    let uuid = uuid::Uuid::new_v4();
+
     let database = MockDatabase::new(DatabaseBackend::Postgres)
         .append_query_results([vec![users::Model {
+            id: uuid,
             username: "Salieri".to_string(),
             email: "example@gmail.com".to_string(),
             created_at: Default::default(),
@@ -78,6 +85,7 @@ async fn create_duplicate_team() {
             password: None,
         }]])
         .append_query_results([vec![teams::Model {
+            id: Default::default(),
             name: "Dziengiel".to_string(),
             created_at: Default::default(),
             leader_name: "".to_string(),
@@ -99,10 +107,10 @@ async fn create_duplicate_team() {
         "team_name": "Dziengiel".to_string(),
     });
 
-    let access_token = encode_jwt("example@gmail.com".to_string(), Duration::minutes(10));
+    let access_token = encode_jwt(uuid, "example@gmail.com".to_string(), Duration::minutes(10));
 
     let request = test::TestRequest::post()
-        .uri("/teams/create_team")
+        .uri("/teams/manage/create_team")
         .set_json(&create_team_payload)
         .insert_header((
             header::COOKIE,
@@ -119,7 +127,10 @@ async fn create_duplicate_team() {
 async fn create_team_success() {
     Config::load_test_config();
 
+    let uuid = uuid::Uuid::new_v4();
+
     let example_user = users::Model {
+        id: uuid,
         username: "Salieri".to_string(),
         email: "example@gmail.com".to_string(),
         created_at: Default::default(),
@@ -155,10 +166,10 @@ async fn create_team_success() {
         "team_name": "Dziengiel".to_string(),
     });
 
-    let access_token = encode_jwt("example@gmail.com".to_string(), Duration::minutes(10));
+    let access_token = encode_jwt(uuid, "example@gmail.com".to_string(), Duration::minutes(10));
 
     let request = test::TestRequest::post()
-        .uri("/teams/create_team")
+        .uri("/teams/manage/create_team")
         .set_json(&create_team_payload)
         .insert_header((
             header::COOKIE,

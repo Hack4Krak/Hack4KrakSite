@@ -25,10 +25,10 @@ pub struct CreateTeamModel {
     security(
         ("access_token" = [])
     ),
-    tag = "teams"
+    tag = "teams/management"
 )]
 #[post(
-    "/create_team",
+    "/manage/create_team",
     wrap = "from_fn(crate::middlewares::auth_middleware::check_auth_middleware)"
 )]
 pub async fn create_team(

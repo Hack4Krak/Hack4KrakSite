@@ -3,33 +3,37 @@
 use sea_orm::entity::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq)]
-#[sea_orm(table_name = "teams")]
+#[sea_orm(table_name = "team_invites")]
 pub struct Model {
-    pub name: String,
-    pub created_at: DateTime,
-    #[sea_orm(unique)]
-    pub leader_name: String,
     #[sea_orm(primary_key)]
     pub id: i64,
+    pub user: Uuid,
+    pub team: i64,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(has_many = "super::team_invites::Entity")]
-    TeamInvites,
+    #[sea_orm(
+        belongs_to = "super::teams::Entity",
+        from = "Column::Team",
+        to = "super::teams::Column::Id",
+        on_update = "NoAction",
+        on_delete = "Cascade"
+    )]
+    Teams,
     #[sea_orm(
         belongs_to = "super::users::Entity",
-        from = "Column::LeaderName",
-        to = "super::users::Column::Username",
+        from = "Column::User",
+        to = "super::users::Column::Id",
         on_update = "NoAction",
-        on_delete = "SetDefault"
+        on_delete = "Cascade"
     )]
     Users,
 }
 
-impl Related<super::team_invites::Entity> for Entity {
+impl Related<super::teams::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::TeamInvites.def()
+        Relation::Teams.def()
     }
 }
 

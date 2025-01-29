@@ -3,6 +3,7 @@ use std::future;
 use actix_web::{FromRequest, HttpMessage, HttpResponse, HttpResponseBuilder};
 use chrono::{Duration, TimeDelta, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, TokenData, Validation};
+use sea_orm::prelude::Uuid;
 use serde::{Deserialize, Serialize};
 
 use crate::utils::cookies::{create_cookie, ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE};
@@ -13,6 +14,7 @@ use crate::utils::error::Error::InvalidJsonWebToken;
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Claims {
     #[serde(rename = "sub")]
+    pub id: Uuid,
     pub email: String,
     #[serde(rename = "exp")]
     pub expiration_time: usize,
@@ -36,12 +38,13 @@ impl FromRequest for Claims {
     }
 }
 
-pub fn encode_jwt(email: String, expire: TimeDelta) -> Result<String, Error> {
+pub fn encode_jwt(id: Uuid, email: String, expire: TimeDelta) -> Result<String, Error> {
     let now = Utc::now();
 
     let claims = Claims {
         expiration_time: (now + expire).timestamp() as usize,
         issued_at: now.timestamp() as usize,
+        id,
         email,
     };
 

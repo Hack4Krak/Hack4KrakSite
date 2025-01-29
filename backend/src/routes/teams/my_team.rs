@@ -1,11 +1,10 @@
 use actix_web::middleware::from_fn;
 use actix_web::{get, web, HttpResponse};
-use sea_orm::QueryFilter;
-use sea_orm::{ColumnTrait, EntityTrait};
+use sea_orm::EntityTrait;
 
 use crate::models::entities::{teams, users};
 use crate::routes::teams::view_team::TeamWithMembers;
-use crate::routes::teams::TeamError::{NotFound, UserDoesntBelongToAnyTeam};
+use crate::routes::teams::TeamError::UserDoesntBelongToAnyTeam;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::jwt::Claims;
@@ -30,7 +29,7 @@ pub async fn my_team(
     app_state: web::Data<app_state::AppState>,
     claim_data: Claims,
 ) -> Result<HttpResponse, Error> {
-    let user = users::Entity::find_by_id(claim_data.email)
+    let user = users::Entity::find_by_id(claim_data.id)
         .one(&app_state.database)
         .await?
         .ok_or(Error::Unauthorized)?;
@@ -39,22 +38,8 @@ pub async fn my_team(
         return Err(Error::Team(UserDoesntBelongToAnyTeam))?;
     }
 
-    let team_model = teams::Entity::find()
-        .filter(teams::Column::Name.eq(user.team_name))
-        .find_also_related(users::Entity)
-        .one(&app_state.database)
-        .await?
-        .ok_or(Error::Team(NotFound));
+    let team_response =
+        teams::Model::get_team(&app_state.database, user.team_name.unwrap()).await?;
 
-    let (team, users) = team_model?;
-
-    let member_names: Vec<String> = users.into_iter().map(|user| user.username).collect();
-
-    let team_response = TeamWithMembers {
-        team_name: team.name,
-        leader_name: team.leader_name,
-        created_at: team.created_at,
-        members: member_names,
-    };
     Ok(HttpResponse::Ok().json(team_response))
 }
