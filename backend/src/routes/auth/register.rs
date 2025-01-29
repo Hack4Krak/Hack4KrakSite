@@ -1,8 +1,3 @@
-use crate::models::entities::users;
-use crate::routes::auth::AuthError::InvalidEmailAddress;
-use crate::utils::app_state;
-use crate::utils::error::Error;
-use crate::utils::error::Error::HashPasswordFailed;
 use actix_web::{post, web, HttpResponse};
 use argon2::password_hash::rand_core::OsRng;
 use argon2::password_hash::SaltString;
@@ -11,6 +6,12 @@ use regex::Regex;
 use serde::{Deserialize, Serialize};
 use utoipa::gen::serde_json::json;
 use utoipa::ToSchema;
+
+use crate::models::entities::users;
+use crate::routes::auth::AuthError::InvalidEmailAddress;
+use crate::utils::app_state;
+use crate::utils::error::Error;
+use crate::utils::error::Error::HashPasswordFailed;
 
 const EMAIL_REGEX: &str =
     r"^([a-z0-9_+]([a-z0-9_+.]*[a-z0-9_+])?)@([a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6})$";

@@ -1,3 +1,7 @@
+use std::env;
+use std::fs::File;
+use std::io::Write;
+
 use actix_web::web::Data;
 use actix_web::{middleware::from_fn, middleware::Logger};
 use actix_web::{App, HttpServer};
@@ -9,9 +13,6 @@ use migration::{Migrator, MigratorTrait};
 use oauth2::basic::BasicClient;
 use oauth2::{AuthUrl, ClientId, ClientSecret, RedirectUrl, TokenUrl};
 use sea_orm::{Database, DatabaseConnection};
-use std::env;
-use std::fs::File;
-use std::io::Write;
 use tracing::info;
 use utoipa::gen::serde_json::to_string;
 use utoipa::OpenApi;

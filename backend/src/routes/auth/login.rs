@@ -1,10 +1,11 @@
+use actix_web::{post, web, HttpResponse};
+use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
+
 use crate::models::entities::users;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::jwt::get_default_tokens;
-use actix_web::{post, web, HttpResponse};
-use serde::{Deserialize, Serialize};
-use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct LoginModel {

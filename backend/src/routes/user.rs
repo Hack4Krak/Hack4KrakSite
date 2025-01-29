@@ -1,11 +1,12 @@
-use crate::models::entities::users;
-use crate::utils::app_state;
-use crate::utils::error::Error;
-use crate::utils::jwt::Claims;
 use actix_web::{get, web, HttpResponse};
 use sea_orm::EntityTrait;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
+
+use crate::models::entities::users;
+use crate::utils::app_state;
+use crate::utils::error::Error;
+use crate::utils::jwt::Claims;
 
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct UserInformationResponse {

@@ -1,6 +1,3 @@
-use crate::utils::error::Error;
-use crate::utils::error::Error::InvalidAuthorizationHeader;
-use crate::utils::jwt::decode_jwt;
 use actix_web::middleware::Next;
 use actix_web::{
     body::MessageBody,
@@ -8,6 +5,10 @@ use actix_web::{
     http::header::AUTHORIZATION,
     Error as ActixError, HttpMessage,
 };
+
+use crate::utils::error::Error;
+use crate::utils::error::Error::InvalidAuthorizationHeader;
+use crate::utils::jwt::decode_jwt;
 
 pub async fn check_auth_middleware(
     request: ServiceRequest,

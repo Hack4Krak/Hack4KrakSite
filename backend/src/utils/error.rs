@@ -1,9 +1,10 @@
-use crate::routes::auth::AuthError;
-use crate::routes::teams::TeamError;
 use actix_web::http::StatusCode;
 use actix_web::{error, HttpResponse, HttpResponseBuilder};
 use thiserror::Error;
 use utoipa::gen::serde_json::json;
+
+use crate::routes::auth::AuthError;
+use crate::routes::teams::TeamError;
 
 #[derive(Debug, Error)]
 pub enum Error {

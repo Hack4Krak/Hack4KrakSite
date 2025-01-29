@@ -1,13 +1,14 @@
+use actix_web::{get, web, HttpResponse};
+use oauth2::{AuthorizationCode, CsrfToken, Scope, TokenResponse};
+use reqwest::redirect::Policy;
+use serde::Deserialize;
+
 use crate::models::entities::users;
 use crate::routes::auth::AuthError::InvalidCredentials;
 use crate::routes::auth::TokensResponse;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use crate::utils::error::Error::OAuth;
-use actix_web::{get, web, HttpResponse};
-use oauth2::{AuthorizationCode, CsrfToken, Scope, TokenResponse};
-use reqwest::redirect::Policy;
-use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
 struct QueryParams {

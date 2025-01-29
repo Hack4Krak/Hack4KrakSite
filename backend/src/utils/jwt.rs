@@ -1,12 +1,14 @@
-use crate::routes::auth::TokensResponse;
-use crate::utils::env::Config;
-use crate::utils::error::Error;
-use crate::utils::error::Error::InvalidJsonWebToken;
+use std::future;
+
 use actix_web::{FromRequest, HttpMessage};
 use chrono::{Duration, TimeDelta, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, TokenData, Validation};
 use serde::{Deserialize, Serialize};
-use std::future;
+
+use crate::routes::auth::TokensResponse;
+use crate::utils::env::Config;
+use crate::utils::error::Error;
+use crate::utils::error::Error::InvalidJsonWebToken;
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Claims {

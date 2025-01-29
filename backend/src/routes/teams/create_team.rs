@@ -1,12 +1,13 @@
-use crate::models::entities::teams;
-use crate::utils::app_state;
-use crate::utils::error::Error;
-use crate::utils::jwt::Claims;
 use actix_web::middleware::from_fn;
 use actix_web::{post, web, HttpResponse};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use utoipa::ToSchema;
+
+use crate::models::entities::teams;
+use crate::utils::app_state;
+use crate::utils::error::Error;
+use crate::utils::jwt::Claims;
 
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct CreateTeamModel {

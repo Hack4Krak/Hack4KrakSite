@@ -1,13 +1,14 @@
+use actix_web::middleware::from_fn;
+use actix_web::{get, web, HttpResponse};
+use sea_orm::QueryFilter;
+use sea_orm::{ColumnTrait, EntityTrait};
+
 use crate::models::entities::{teams, users};
 use crate::routes::teams::view_team::TeamWithMembers;
 use crate::routes::teams::TeamError::{NotFound, UserDoesntBelongToAnyTeam};
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::jwt::Claims;
-use actix_web::middleware::from_fn;
-use actix_web::{get, web, HttpResponse};
-use sea_orm::QueryFilter;
-use sea_orm::{ColumnTrait, EntityTrait};
 
 #[utoipa::path(
     responses(

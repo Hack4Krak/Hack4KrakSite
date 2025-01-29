@@ -1,12 +1,13 @@
+use chrono::Utc;
+use sea_orm::ActiveValue::Set;
+use sea_orm::{ActiveModelTrait, QueryFilter};
+use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, TransactionTrait};
+
 use crate::models::entities::{teams, users};
 use crate::routes::teams::create_team::CreateTeamModel;
 use crate::routes::teams::TeamError::{AlreadyExists, UserAlreadyBelongsToTeam};
 use crate::utils::error::Error;
 use crate::utils::jwt::Claims;
-use chrono::Utc;
-use sea_orm::ActiveValue::Set;
-use sea_orm::{ActiveModelTrait, QueryFilter};
-use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, TransactionTrait};
 
 impl teams::Model {
     pub async fn create_team(

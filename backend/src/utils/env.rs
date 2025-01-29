@@ -1,6 +1,7 @@
-use serde::Deserialize;
 use std::path::Path;
 use std::sync::OnceLock;
+
+use serde::Deserialize;
 use Default;
 
 fn default_backend_address() -> String {
