@@ -41,8 +41,7 @@ export default defineNuxtPlugin((nuxtApp) => {
             if (import.meta.server) {
               nuxtApp.ssrContext?.event.node.res.setHeader('Set-Cookie', cookies)
             }
-          } catch (error) {
-            console.error('Auth refresh failed:', error)
+          } catch {
             nuxtApp.runWithContext(() => navigateTo('login'))
           }
         },
