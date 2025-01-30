@@ -28,7 +28,5 @@ pub async fn login(
     login_json: web::Json<LoginModel>,
 ) -> Result<HttpResponse, Error> {
     let email = users::Model::verify_credentials(&app_state.database, &login_json).await?;
-    let response = get_tokens_http_response(email)?;
-
-    Ok(response)
+    get_tokens_http_response(email)
 }

@@ -4,7 +4,6 @@ use argon2::password_hash::SaltString;
 use argon2::{Argon2, PasswordHasher};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
-use utoipa::gen::serde_json::json;
 use utoipa::ToSchema;
 
 use crate::models::entities::users;
@@ -12,6 +11,7 @@ use crate::routes::auth::AuthError::InvalidEmailAddress;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::error::Error::HashPasswordFailed;
+use crate::utils::jwt::get_tokens_http_response;
 
 const EMAIL_REGEX: &str =
     r"^([a-z0-9_+]([a-z0-9_+.]*[a-z0-9_+])?)@([a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6})$";
@@ -53,7 +53,5 @@ pub async fn register(
 
     users::Model::create_with_password(&app_state.database, password_hash, &register_json).await?;
 
-    Ok(HttpResponse::Ok().json(json!({
-        "status": "ok"
-    })))
+    get_tokens_http_response(register_json.email.clone())
 }

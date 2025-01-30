@@ -11,6 +11,7 @@ type Schema = z.output<typeof schema>
 const schema = z.object({
   email: z.string({ required_error: 'Adres e-mail jest wymagany' }).email('Niepoprawny adres e-mail'),
   password: z.string({ required_error: 'Hasło jest wymagane' }).min(8, 'Hasło musi mieć minimum 8 znaków'),
+  ...(props.isLogin ? {} : { name: z.string().min(3, 'Nazwa użytkownika musi mieć co najmniej 3 znaki') }),
 })
 
 const loading = ref(false)
@@ -18,6 +19,7 @@ const toast = useToast()
 const state = reactive<Partial<Schema>>({
   email: undefined,
   password: undefined,
+  name: undefined,
 })
 
 const OAuthBaseUrl = `${useRuntimeConfig().public.openFetch.api.baseURL}/auth/oauth`
@@ -32,10 +34,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     await useNuxtApp().$api(address, {
       method: 'POST',
       credentials: 'include',
-      body: {
-        email: event.data.email,
-        password: event.data.password,
-      },
+      body: event.data,
     })
 
     await toast.add({ title: 'Sukces', description: 'Pomyślnie zalogowano!', color: 'success' })
@@ -65,8 +64,12 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       </h1>
 
       <UForm :schema="schema" :state="state" class="space-y-4 text-center" @submit="onSubmit">
+        <UFormField v-if="!isLogin" label="Nazwa użytkownika" name="name">
+          <TransparentInput v-model="state.name" />
+        </UFormField>
+
         <UFormField label="Email" name="email">
-          <TransparentInput v-model="state.email" />
+          <TransparentInput v-model="state.email" type="email" />
         </UFormField>
 
         <UFormField label="Hasło" name="password">
