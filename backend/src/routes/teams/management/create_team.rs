@@ -1,4 +1,3 @@
-use actix_web::middleware::from_fn;
 use actix_web::{post, web, HttpResponse};
 use serde::{Deserialize, Serialize};
 use utoipa::gen::serde_json::json;
@@ -27,10 +26,7 @@ pub struct CreateTeamModel {
     ),
     tag = "teams/management"
 )]
-#[post(
-    "/manage/create_team",
-    wrap = "from_fn(crate::middlewares::auth_middleware::check_auth_middleware)"
-)]
+#[post("/create_team")]
 pub async fn create_team(
     app_state: web::Data<app_state::AppState>,
     create_team_model: web::Json<CreateTeamModel>,

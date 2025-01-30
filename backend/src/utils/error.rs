@@ -22,6 +22,8 @@ pub enum Error {
     InvalidJsonWebToken,
     #[error("Invalid authorization header content")]
     InvalidAuthorizationHeader,
+    #[error("User not found")]
+    UserNotFound,
     #[error("Placeholder elements are required for this email template")]
     PlaceholdersRequired,
     #[error("Failed to send email: {0}")]
@@ -58,9 +60,10 @@ impl error::ResponseError for Error {
             | Error::Request(_)
             | Error::FailedToSendEmail(_)
             | Error::FailedToBuildEmail(_) => StatusCode::INTERNAL_SERVER_ERROR,
-            Error::Unauthorized
-            | Error::InvalidJsonWebToken
-            | Error::InvalidAuthorizationHeader => StatusCode::UNAUTHORIZED,
+            Error::Unauthorized => StatusCode::UNAUTHORIZED,
+            Error::InvalidJsonWebToken => StatusCode::UNAUTHORIZED,
+            Error::InvalidAuthorizationHeader => StatusCode::BAD_REQUEST,
+            Error::UserNotFound => StatusCode::NOT_FOUND,
             Error::Team(team_err) => team_err.status_code(),
             Error::Auth(auth_err) => auth_err.status_code(),
         }

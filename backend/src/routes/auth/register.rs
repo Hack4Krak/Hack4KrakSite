@@ -5,6 +5,7 @@ use argon2::{Argon2, PasswordHasher};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
+use uuid::Uuid;
 
 use crate::models::entities::users;
 use crate::routes::auth::AuthError::InvalidEmailAddress;
@@ -50,8 +51,9 @@ pub async fn register(
         .hash_password(register_json.password.as_bytes(), &salt)
         .map_err(HashPasswordFailed)?
         .to_string();
+    let uuid = Uuid::new_v4();
+    users::Model::create_with_password(&app_state.database, uuid, password_hash, &register_json)
+        .await?;
 
-    users::Model::create_with_password(&app_state.database, password_hash, &register_json).await?;
-
-    get_tokens_http_response(register_json.email.clone())
+    get_tokens_http_response(uuid, register_json.email.clone())
 }

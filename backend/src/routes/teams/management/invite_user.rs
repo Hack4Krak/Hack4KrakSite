@@ -8,30 +8,30 @@ use serde_json::json;
 use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, ToSchema)]
-pub struct ChangeLeaderModel {
-    pub new_leader_username: String,
+pub struct AddUserModel {
+    pub username: String,
 }
 
 #[utoipa::path(
-    request_body = ChangeLeaderModel,
+    request_body = AddUserModel,
     responses(
-        (status = 200, description = "Team name successfully changed."),
-        (status = 403, description = "User is not the leader of any team."),
-        (status = 404, description = "Team not found."),
+        (status = 200, description = "User successfully invited to team."),
+        (status = 403, description = "User already belongs to team."),
+        (status = 404, description = "User not found."),
         (status = 500, description = "Internal server error.")
     ),
     security(
-        ("access_token" = [])
+        ("access_token" = ["leader"])
     ),
     tag = "teams/management"
 )]
-#[post("/change_name")]
-pub async fn change_leader(
+#[post("/invite_user")]
+pub async fn invite_user(
     app_state: web::Data<app_state::AppState>,
-    change_name_model: web::Json<ChangeLeaderModel>,
+    add_user_model: web::Json<AddUserModel>,
     claim_data: Claims,
 ) -> Result<HttpResponse, Error> {
-    teams::Model::change_leader(&app_state.database, change_name_model.0, claim_data).await?;
+    teams::Model::invite_user(&app_state.database, add_user_model.0, claim_data).await?;
 
     Ok(HttpResponse::Ok().json(json!({
         "status": "ok"

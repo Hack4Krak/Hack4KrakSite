@@ -117,6 +117,16 @@ async fn main() -> std::io::Result<()> {
             )
             .service(scope("/teams").configure(routes::teams::config))
             .service(
+                scope("/teams/invitations")
+                    .wrap(from_fn(middlewares::auth_middleware::check_auth_middleware))
+                    .configure(routes::teams::invitations::config),
+            )
+            .service(
+                scope("/teams/manage")
+                    .wrap(from_fn(middlewares::auth_middleware::check_auth_middleware))
+                    .configure(routes::teams::management::config),
+            )
+            .service(
                 scope("/user")
                     .wrap(from_fn(middlewares::auth_middleware::check_auth_middleware))
                     .configure(routes::user::config),

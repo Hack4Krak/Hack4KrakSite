@@ -35,10 +35,10 @@ impl MigrationTrait for Migration {
                     .table(Teams::Table)
                     .add_column(
                         ColumnDef::new(Teams::Id)
-                            .big_integer()
                             .not_null()
-                            .auto_increment()
-                            .primary_key(),
+                            .uuid()
+                            .primary_key()
+                            .extra("DEFAULT gen_random_uuid()".to_string()),
                     )
                     .to_owned(),
             )
@@ -50,13 +50,13 @@ impl MigrationTrait for Migration {
                     .if_not_exists()
                     .col(
                         ColumnDef::new(TeamInvites::Id)
-                            .big_integer()
                             .not_null()
-                            .auto_increment()
-                            .primary_key(),
+                            .uuid()
+                            .primary_key()
+                            .extra("DEFAULT gen_random_uuid()".to_string()),
                     )
                     .col(ColumnDef::new(TeamInvites::User).uuid().not_null())
-                    .col(ColumnDef::new(TeamInvites::Team).big_integer().not_null())
+                    .col(ColumnDef::new(TeamInvites::Team).uuid().not_null())
                     .to_owned(),
             )
             .await?;
