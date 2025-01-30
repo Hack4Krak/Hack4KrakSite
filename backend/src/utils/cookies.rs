@@ -1,8 +1,16 @@
-use actix_web::cookie::time::Duration;
+use actix_web::cookie::time::{Duration, OffsetDateTime};
 use actix_web::cookie::{Cookie, SameSite};
 
 pub const ACCESS_TOKEN_COOKIE: &str = "access_token";
 pub const REFRESH_TOKEN_COOKIE: &str = "refresh_token";
+
+pub fn reset_cookie(name: &str) -> Cookie {
+    Cookie::build(name, "removed")
+        .expires(OffsetDateTime::UNIX_EPOCH)
+        .path("/")
+        .domain("localhost")
+        .finish()
+}
 
 pub fn create_cookie(name: &str, value: &str, max_age: Option<Duration>) -> String {
     let mut cookie = Cookie::build(name, value)

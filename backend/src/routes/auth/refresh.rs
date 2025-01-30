@@ -9,6 +9,9 @@ use crate::utils::jwt::{decode_jwt, get_tokens_http_response};
         (status = 200, description = "New tokens are set as cookies"),
         (status = 401, description = "Invalid credentials."),
     ),
+    security(
+        ("access_token" = [])
+    ),
     tag = "auth"
 )]
 #[post("/refresh")]
