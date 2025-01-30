@@ -9,7 +9,6 @@ use utoipa::ToSchema;
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct TeamWithMembers {
     pub team_name: String,
-    pub leader_name: String,
     pub created_at: DateTime,
     pub members: Vec<String>,
 }
