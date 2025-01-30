@@ -19,34 +19,36 @@ export default defineNuxtPlugin((nuxtApp) => {
             return
           }
 
-          try {
-            const response = await $fetch.raw('/auth/refresh', {
-              method: 'POST',
-              baseURL: clients.auth.baseURL,
-              headers,
-              credentials: 'include',
-              onResponseError() {
-                nuxtApp.runWithContext(() => {
+          const response = await $fetch.raw('/auth/refresh', {
+            method: 'POST',
+            baseURL: clients.auth.baseURL,
+            headers,
+            credentials: 'include',
+            onResponseError() {
+              nuxtApp.runWithContext(() => {
+                if (context.options.redirect !== 'error') {
                   navigateTo('/login')
-                })
-              },
-            })
+                }
+              })
+            },
+          })
 
-            if (!response.ok)
-              throw new Error('Refresh token request failed')
-
-            const cookies = (response.headers.get('set-cookie') || '').split(',')
-            context.options.headers.set('cookie', cookies.map(c => c.split(';')[0]).join(';'))
-
-            if (import.meta.server) {
-              nuxtApp.ssrContext?.event.node.res.setHeader('Set-Cookie', cookies)
+          if (!response.ok) {
+            if (context.options.redirect !== 'error') {
+              nuxtApp.runWithContext(() => navigateTo('/login'))
             }
-          } catch {
-            nuxtApp.runWithContext(() => navigateTo('login'))
+            return
+          }
+
+          const cookies = (response.headers.get('set-cookie') || '').split(',')
+          context.options.headers.set('cookie', cookies.map(c => c.split(';')[0]).join(';'))
+
+          if (import.meta.server) {
+            nuxtApp.ssrContext?.event.node.res.setHeader('Set-Cookie', cookies)
           }
         },
-        onResponseError() {
-          navigateTo('/login')
+        onResponseError({ error }) {
+          nuxtApp.runWithContext(() => useToast().add({ title: 'Błąd zapytania', description: error?.message ?? 'Nieznany błąd', color: 'error' }))
         },
       }), localFetch),
     },
