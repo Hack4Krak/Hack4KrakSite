@@ -1,19 +1,20 @@
 mod login;
+mod logout;
 mod oauth;
 mod refresh;
 mod register;
 
+use crate::utils::error::json_error_response;
 use actix_web::error;
 use actix_web::http::StatusCode;
 pub use login::LoginModel;
 pub use register::RegisterModel;
 use thiserror::Error;
 
-use crate::utils::error::json_error_response;
-
 pub fn config(cfg: &mut utoipa_actix_web::service_config::ServiceConfig) {
     cfg.service(register::register);
     cfg.service(login::login);
+    cfg.service(logout::logout);
     cfg.service(refresh::refresh);
     cfg.service(oauth::github::github);
     cfg.service(oauth::github::github_callback);
@@ -39,7 +40,7 @@ impl error::ResponseError for AuthError {
             AuthError::UserAlreadyExists => StatusCode::CONFLICT,
             AuthError::InvalidCredentials
             | AuthError::InvalidEmailAddress
-            | AuthError::PasswordAuthNotAvailable => StatusCode::FORBIDDEN,
+            | AuthError::PasswordAuthNotAvailable => StatusCode::UNAUTHORIZED,
         }
     }
 
