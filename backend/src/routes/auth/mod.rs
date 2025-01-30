@@ -32,8 +32,6 @@ pub enum AuthError {
     InvalidEmailAddress,
     #[error("Password & email authentication is not available for this account")]
     PasswordAuthNotAvailable,
-    #[error("User not found")]
-    UserNotFound,
 }
 
 impl error::ResponseError for AuthError {
@@ -43,7 +41,6 @@ impl error::ResponseError for AuthError {
             AuthError::InvalidCredentials
             | AuthError::InvalidEmailAddress
             | AuthError::PasswordAuthNotAvailable => StatusCode::UNAUTHORIZED,
-            AuthError::UserNotFound => StatusCode::NOT_FOUND,
         }
     }
 

@@ -1,15 +1,14 @@
 use std::future;
 
+use crate::utils::cookies::{create_cookie, ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE};
+use crate::utils::env::Config;
+use crate::utils::error::Error;
+use crate::utils::error::Error::InvalidJsonWebToken;
 use actix_web::{FromRequest, HttpMessage, HttpResponse, HttpResponseBuilder};
 use chrono::{Duration, TimeDelta, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, TokenData, Validation};
 use sea_orm::prelude::Uuid;
 use serde::{Deserialize, Serialize};
-
-use crate::utils::cookies::{create_cookie, ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE};
-use crate::utils::env::Config;
-use crate::utils::error::Error;
-use crate::utils::error::Error::InvalidJsonWebToken;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Claims {
@@ -70,11 +69,12 @@ pub fn decode_jwt(jwt: &str) -> Result<TokenData<Claims>, jsonwebtoken::errors::
 }
 
 pub fn append_tokens_as_cookies(
+    uuid: Uuid,
     email: String,
     http_response: &mut HttpResponseBuilder,
 ) -> Result<(), Error> {
-    let access_token = encode_jwt(email.clone(), Duration::minutes(10))?;
-    let refresh_token = encode_jwt(email, Duration::days(14))?;
+    let access_token = encode_jwt(uuid, email.clone(), Duration::minutes(10))?;
+    let refresh_token = encode_jwt(uuid, email, Duration::days(14))?;
 
     let refresh_cookie = create_cookie(
         REFRESH_TOKEN_COOKIE,
@@ -89,8 +89,8 @@ pub fn append_tokens_as_cookies(
     Ok(())
 }
 
-pub fn get_tokens_http_response(email: String) -> Result<HttpResponse, Error> {
+pub fn get_tokens_http_response(uuid: Uuid, email: String) -> Result<HttpResponse, Error> {
     let mut response = HttpResponse::Ok();
-    append_tokens_as_cookies(email, &mut response)?;
+    append_tokens_as_cookies(uuid, email, &mut response)?;
     Ok(response.finish())
 }

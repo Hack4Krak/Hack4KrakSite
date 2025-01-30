@@ -2,10 +2,6 @@ use actix_web::{post, HttpRequest, HttpResponse};
 
 use crate::utils::cookies::REFRESH_TOKEN_COOKIE;
 use crate::utils::error::Error;
-use crate::utils::jwt::{decode_jwt, get_default_tokens};
-use actix_web::{post, web, HttpResponse};
-use serde::{Deserialize, Serialize};
-use utoipa::ToSchema;
 
 use crate::utils::jwt::{decode_jwt, get_tokens_http_response};
 

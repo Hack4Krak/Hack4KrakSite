@@ -8,12 +8,12 @@ pub struct Model {
     pub username: String,
     pub email: String,
     pub created_at: DateTime,
-    pub team_name: Option<String>,
     pub permissions: Option<Vec<String>>,
     pub password: Option<String>,
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
     pub is_leader: bool,
+    pub team: Option<Uuid>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -22,8 +22,8 @@ pub enum Relation {
     TeamInvites,
     #[sea_orm(
         belongs_to = "super::teams::Entity",
-        from = "Column::TeamName",
-        to = "super::teams::Column::Name",
+        from = "Column::Team",
+        to = "super::teams::Column::Id",
         on_update = "SetNull",
         on_delete = "SetNull"
     )]

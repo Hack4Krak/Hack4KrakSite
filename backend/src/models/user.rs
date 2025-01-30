@@ -14,14 +14,8 @@ use crate::routes::auth::{LoginModel, RegisterModel};
 use crate::utils::env::Config;
 use crate::utils::error::Error;
 use crate::utils::jwt::append_tokens_as_cookies;
-use argon2::{Argon2, PasswordHash, PasswordVerifier};
-use migration::Condition;
-use sea_orm::ActiveValue::Set;
-use sea_orm::QueryFilter;
-use sea_orm::{ActiveModelTrait, EntityTrait};
-use sea_orm::{ColumnTrait, DatabaseConnection, TransactionTrait};
-use uuid::Uuid as uuid_gen;
 use sea_orm::prelude::Uuid as SeaOrmUuid;
+use uuid::Uuid as uuid_gen;
 
 impl users::Model {
     pub async fn create_from_oauth(
@@ -31,13 +25,18 @@ impl users::Model {
     ) -> Result<HttpResponse, Error> {
         let transaction = database.begin().await?;
 
-        if users::Entity::find()
+        let user = users::Entity::find()
             .filter(users::Column::Email.eq(&email))
-            .one(&transaction)
+            .one(database)
             .await?
-            .is_none()
-        {
+            .ok_or(Error::Unauthorized)?;
+
+        let uuid = if let Some(uuid) = user.team {
+            uuid
+        } else {
+            let new_uuid = uuid_gen::new_v4();
             users::ActiveModel {
+                id: Set(new_uuid),
                 username: Set(username),
                 email: Set(email.clone()),
                 password: Set(None),
@@ -46,20 +45,21 @@ impl users::Model {
             .insert(&transaction)
             .await?;
 
-            transaction.commit().await?;
-        }
+            new_uuid
+        };
 
         let mut response = HttpResponse::Ok();
         response.append_header((
             "Refresh",
             format!("0; {}", Config::get().oauth_finish_redirect_url.clone()),
         ));
-        append_tokens_as_cookies(uuid_gen::new_v4(), email, &mut response)?;
+        append_tokens_as_cookies(uuid, email, &mut response)?;
         Ok(response.body("Redirecting..."))
     }
 
     pub async fn create_with_password(
         database: &DatabaseConnection,
+        uuid: SeaOrmUuid,
         password_hash: String,
         register_json: &RegisterModel,
     ) -> Result<(), Error> {
@@ -79,6 +79,7 @@ impl users::Model {
         }
 
         users::ActiveModel {
+            id: Set(uuid),
             username: Set(register_json.name.clone()),
             email: Set(register_json.email.clone()),
             password: Set(Some(password_hash)),
