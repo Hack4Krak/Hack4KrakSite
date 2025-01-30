@@ -9,7 +9,7 @@ useOgImage()
   <UApp>
     <main>
       <NuxtLayout>
-        <NuxtPage class="min-h-[calc(100vh-var(--spacing)*20)]" />
+        <NuxtPage class="min-h-[calc(100vh-var(--spacing)*19)]" />
       </NuxtLayout>
     </main>
   </UApp>
