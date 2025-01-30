@@ -23,7 +23,7 @@ async fn register() {
                 created_at: Default::default(),
                 team_name: None,
                 permissions: None,
-                leads: None,
+                is_leader: false,
                 password: None,
             }],
         ])
@@ -93,7 +93,7 @@ async fn auth_flow() {
         created_at: Default::default(),
         team_name: None,
         permissions: None,
-        leads: None,
+        is_leader: false,
         password: Some("$argon2id$v=19$m=19456,t=2,p=1$cLSl6N0HmRupZWoHO/b2EQ$rWWC3cagHlLCO2+awPqSHQCeypMtIM9GhHNqn1dzaik".to_string()),
     };
 

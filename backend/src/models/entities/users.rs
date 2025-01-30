@@ -10,18 +10,23 @@ pub struct Model {
     pub created_at: DateTime,
     pub team_name: Option<String>,
     pub permissions: Option<Vec<String>>,
-    #[sea_orm(unique)]
-    pub leads: Option<String>,
     pub password: Option<String>,
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
+    pub is_leader: bool,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
     #[sea_orm(has_many = "super::team_invites::Entity")]
     TeamInvites,
-    #[sea_orm(has_one = "super::teams::Entity")]
+    #[sea_orm(
+        belongs_to = "super::teams::Entity",
+        from = "Column::TeamName",
+        to = "super::teams::Column::Name",
+        on_update = "SetNull",
+        on_delete = "SetNull"
+    )]
     Teams,
 }
 

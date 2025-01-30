@@ -22,18 +22,15 @@ impl teams::Model {
         create_team_json: CreateTeamModel,
         claim_data: Claims,
     ) -> Result<(), Error> {
-        println!("a {:?}", claim_data);
         let user = users::Entity::find_by_id(claim_data.id)
             .one(database)
             .await?
             .ok_or(Error::Unauthorized)?;
 
-        println!("b");
         if let Some(team_name) = user.team_name {
             return Err(Error::Team(UserAlreadyBelongsToTeam { team_name }));
         }
 
-        println!("c");
         if teams::Entity::find()
             .filter(teams::Column::Name.eq(&create_team_json.team_name))
             .one(database)
@@ -43,31 +40,24 @@ impl teams::Model {
             return Err(Error::Team(AlreadyExists));
         }
 
-        println!("d");
         let transaction = database.begin().await?;
 
-        println!("e");
         let team_name = create_team_json.team_name;
 
-        println!("f");
         teams::Entity::insert(teams::ActiveModel {
             name: Set(team_name.clone()),
-            leader_name: Set(user.username.clone()),
             ..Default::default()
         })
         .exec(&transaction)
         .await?;
 
-        println!("g");
         let mut active_user: users::ActiveModel = user.into();
         active_user.team_name = Set(Some(team_name.clone()));
-        active_user.leads = Set(Some(team_name));
+        active_user.is_leader = Set(true);
         active_user.update(&transaction).await?;
 
-        println!("h");
         transaction.commit().await?;
 
-        println!("i");
         Ok(())
     }
     pub async fn invite_user(
@@ -90,7 +80,7 @@ impl teams::Model {
             .await?
             .ok_or(Error::Team(TeamNotFound))?;
 
-        if user.username != team.leader_name {
+        if !user.is_leader {
             return Err(Error::Unauthorized);
         }
 
@@ -179,7 +169,6 @@ impl teams::Model {
 
         let team_response = TeamWithMembers {
             team_name: team.name,
-            leader_name: team.leader_name,
             created_at: team.created_at,
             members: member_names,
         };
@@ -196,11 +185,11 @@ impl teams::Model {
             .await?
             .ok_or(Error::Unauthorized)?;
 
-        if user.leads.is_none() {
+        if !user.is_leader {
             return Err(Error::Unauthorized);
         }
 
-        let team_name = user.leads.unwrap();
+        let team_name = user.team_name.unwrap();
 
         let removed_user = users::Entity::find()
             .filter(users::Column::Username.eq(remove_user_json.username))
@@ -237,12 +226,12 @@ impl teams::Model {
             .await?
             .ok_or(Error::Unauthorized)?;
 
-        if user.leads.is_none() {
+        if !user.is_leader {
             return Err(Error::Unauthorized);
         };
 
         let team = teams::Entity::find()
-            .filter(teams::Column::Name.eq(user.leads.clone().unwrap()))
+            .filter(teams::Column::Name.eq(user.team_name.clone().unwrap()))
             .one(database)
             .await?
             .ok_or(Error::Team(TeamNotFound))?;
@@ -255,7 +244,7 @@ impl teams::Model {
 
         let mut active_user: users::ActiveModel = user.into();
         active_user.team_name = Set(Some(new_team_name_json.new_name.clone()));
-        active_user.leads = Set(Some(new_team_name_json.new_name));
+        active_user.is_leader = Set(true);
         active_user.update(&transaction).await?;
 
         transaction.commit().await?;
@@ -273,15 +262,9 @@ impl teams::Model {
             .await?
             .ok_or(Error::Unauthorized)?;
 
-        if user.leads.is_none() {
+        if !user.is_leader {
             return Err(Error::Unauthorized);
         };
-
-        let team = teams::Entity::find()
-            .filter(teams::Column::Name.eq(user.leads.clone().unwrap()))
-            .one(database)
-            .await?
-            .ok_or(Error::Team(TeamNotFound))?;
 
         let new_leader = users::Entity::find()
             .filter(users::Column::Username.eq(&new_leader_username_json.new_leader_username))
@@ -291,12 +274,12 @@ impl teams::Model {
 
         let transaction = database.begin().await?;
 
-        let mut active_team: teams::ActiveModel = team.into();
-        active_team.leader_name = Set(new_leader_username_json.new_leader_username);
-        active_team.update(&transaction).await?;
-
         let mut active_user: users::ActiveModel = new_leader.into();
-        active_user.leads = Set(Some(user.leads.clone().unwrap()));
+        active_user.is_leader = Set(true);
+        active_user.update(&transaction).await?;
+
+        let mut active_user: users::ActiveModel = user.into();
+        active_user.is_leader = Set(false);
         active_user.update(&transaction).await?;
 
         transaction.commit().await?;

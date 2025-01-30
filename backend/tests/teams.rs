@@ -25,14 +25,13 @@ async fn create_team_user_already_belongs_to_team() {
             created_at: Default::default(),
             team_name: Some("Dziengiel".to_string()),
             permissions: None,
-            leads: None,
+            is_leader: false,
             password: None,
         }]])
         .append_query_results([vec![teams::Model {
             id: Default::default(),
             name: "Dziengiel".to_string(),
             created_at: Default::default(),
-            leader_name: "Salieri".to_string(),
         }]])
         .append_exec_results([sea_orm::MockExecResult {
             last_insert_id: 15,
@@ -81,14 +80,13 @@ async fn create_duplicate_team() {
             created_at: Default::default(),
             team_name: None,
             permissions: None,
-            leads: None,
+            is_leader: false,
             password: None,
         }]])
         .append_query_results([vec![teams::Model {
             id: Default::default(),
             name: "Dziengiel".to_string(),
             created_at: Default::default(),
-            leader_name: "".to_string(),
         }]])
         .append_exec_results([sea_orm::MockExecResult {
             last_insert_id: 15,
@@ -136,7 +134,7 @@ async fn create_team_success() {
         created_at: Default::default(),
         team_name: None,
         permissions: None,
-        leads: None,
+        is_leader: false,
         password: None,
     };
 
@@ -145,6 +143,7 @@ async fn create_team_success() {
         .append_query_results(vec![Vec::<teams::Model>::new()])
         .append_query_results(vec![vec![example_user.clone()]])
         .append_query_results(vec![vec![example_user]])
+        .append_query_results(vec![Vec::<teams::Model>::new()])
         .append_exec_results([sea_orm::MockExecResult {
             last_insert_id: 15,
             rows_affected: 1,
@@ -179,5 +178,6 @@ async fn create_team_success() {
 
     let response = test::call_service(&app, request).await;
 
+    // panic!("{:?}", response.into_body());
     assert_eq!(response.status(), 200);
 }

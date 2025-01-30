@@ -26,7 +26,6 @@ pub async fn view_teams(app_state: web::Data<app_state::AppState>) -> Result<Htt
             let member_names: Vec<String> = users.into_iter().map(|user| user.username).collect();
             TeamWithMembers {
                 team_name: team.name,
-                leader_name: team.leader_name,
                 created_at: team.created_at,
                 members: member_names,
             }

@@ -5,10 +5,9 @@ use sea_orm::entity::prelude::*;
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq)]
 #[sea_orm(table_name = "teams")]
 pub struct Model {
+    #[sea_orm(unique)]
     pub name: String,
     pub created_at: DateTime,
-    #[sea_orm(unique)]
-    pub leader_name: String,
     #[sea_orm(primary_key)]
     pub id: i64,
 }
@@ -17,13 +16,7 @@ pub struct Model {
 pub enum Relation {
     #[sea_orm(has_many = "super::team_invites::Entity")]
     TeamInvites,
-    #[sea_orm(
-        belongs_to = "super::users::Entity",
-        from = "Column::LeaderName",
-        to = "super::users::Column::Username",
-        on_update = "NoAction",
-        on_delete = "SetDefault"
-    )]
+    #[sea_orm(has_many = "super::users::Entity")]
     Users,
 }
 
