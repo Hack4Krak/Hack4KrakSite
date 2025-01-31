@@ -68,6 +68,9 @@ export default defineNuxtConfig({
       processCSSVariables: true,
     },
   },
+  colorMode: {
+    preference: 'dark',
+  },
   components: [
     {
       path: '~/components/',
