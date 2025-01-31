@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, onMounted, onUnmounted, ref } from 'vue' // Karasie jedza gowno
+import { defineProps, onMounted, onUnmounted, ref } from 'vue'
 
 interface Element {
   x: number
@@ -17,13 +17,12 @@ const startX = ref(0)
 const startPosition = ref(0)
 
 function handleKeyPress(event: KeyboardEvent) {
-  if (event.key === 'd') {
+  if (event.key === 'd' || event.key === 'ArrowRight') {
     mapPosition.value -= 10
-    clamp()
-  } else if (event.key === 'a') {
+  } else if (event.key === 'a' || event.key === 'ArrowLeft') {
     mapPosition.value += 10
-    clamp()
   }
+  clamp()
 }
 
 function handlePointerDown(event: PointerEvent) {
@@ -54,8 +53,8 @@ function handlePointerUp() {
 }
 
 function clamp() {
-  if (mapPosition.value - window.innerWidth < -((92 * 5.31 / 100) * window.innerHeight)) {
-    mapPosition.value = -((92 * 5.31 / 100) * window.innerHeight) + window.innerWidth
+  if (mapPosition.value - window.innerWidth < -((88 * 5.31 / 100) * window.innerHeight)) {
+    mapPosition.value = -((88 * 5.31 / 100) * window.innerHeight) + window.innerWidth
   } else if (mapPosition.value > 0) {
     mapPosition.value = 0
   }
@@ -76,12 +75,12 @@ onUnmounted(() => {
 <template>
   <div class="relative overflow-hidden touch-none">
     <div
-      class="relative h-[92vh] w-[calc(92vh*5.31)] cursor-grab active:cursor-grabbing select-none"
+      class="relative h-[88vh] w-[calc(88vh*5.31)] cursor-grab active:cursor-grabbing select-none"
       :style="{ transform: `translateX(${mapPosition}px)` }"
       style="touch-action: none;"
       @pointerdown="handlePointerDown"
     >
-      <img class="h-auto w-full object-cover rendering-pixelated select-none pointer-events-none" src="/img/mapa.png" alt="map">
+      <img class="h-auto w-full object-cover rendering-pixelated select-none pointer-events-none" src="/img/map.png" alt="map">
       <div
         v-for="(item, index) in elements"
         :key="index"
