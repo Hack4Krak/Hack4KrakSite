@@ -1,0 +1,4 @@
+fly.toml
+.git/
+backend/target/
+node_modules/
