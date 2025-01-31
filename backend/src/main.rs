@@ -102,11 +102,13 @@ async fn main() -> std::io::Result<()> {
             .openapi_service(|api| Scalar::with_url("/docs", api))
             .split_for_parts();
 
-        let path = &Config::get().openapi_json_frontend_path;
-        let mut openapi_json = File::create(path).unwrap();
-        openapi_json
-            .write_all(to_string(&api).unwrap().as_bytes())
-            .unwrap();
+        if cfg!(debug_assertions) {
+            let path = &Config::get().openapi_json_frontend_path;
+            let mut openapi_json = File::create(path).unwrap();
+            openapi_json
+                .write_all(to_string(&api).unwrap().as_bytes())
+                .unwrap();
+        }
 
         app
     })
