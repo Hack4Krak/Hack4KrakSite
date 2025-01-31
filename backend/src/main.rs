@@ -3,10 +3,10 @@ use std::fs::File;
 use std::io::Write;
 
 use actix_cors::Cors;
+use actix_governor::{Governor, GovernorConfigBuilder};
 use actix_web::web::Data;
 use actix_web::{middleware::from_fn, middleware::Logger};
 use actix_web::{App, HttpServer};
-use actix_governor::{Governor, GovernorConfigBuilder};
 use hack4krak_backend::utils::app_state::AppState;
 use hack4krak_backend::utils::env::Config;
 use hack4krak_backend::utils::openapi::ApiDoc;
@@ -99,9 +99,11 @@ async fn main() -> std::io::Result<()> {
             .openapi(ApiDoc::openapi())
             .app_data(data.clone())
             .service(routes::index::index)
-            .service(scope("/auth")
-                .wrap(Governor::new(&governor_conf))
-                .configure(routes::auth::config))
+            .service(
+                scope("/auth")
+                    .wrap(Governor::new(&governor_conf))
+                    .configure(routes::auth::config),
+            )
             .service(scope("/teams").configure(routes::teams::config))
             .service(
                 scope("/user")
