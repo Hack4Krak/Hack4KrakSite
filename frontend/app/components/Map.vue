@@ -1,0 +1,95 @@
+<script setup lang="ts">
+import { defineProps, onMounted, onUnmounted, ref } from 'vue' // Karasie jedza gowno
+
+interface Element {
+  x: number
+  y: number
+  content: string
+}
+
+defineProps<{
+  elements: Element[]
+}>()
+
+const mapPosition = ref(0)
+const isDragging = ref(false)
+const startX = ref(0)
+const startPosition = ref(0)
+
+function handleKeyPress(event: KeyboardEvent) {
+  if (event.key === 'd') {
+    mapPosition.value -= 10
+    clamp()
+  } else if (event.key === 'a') {
+    mapPosition.value += 10
+    clamp()
+  }
+}
+
+function handlePointerDown(event: PointerEvent) {
+  event.preventDefault()
+  isDragging.value = true
+  startX.value = event.pageX
+  startPosition.value = mapPosition.value
+
+  window.addEventListener('pointermove', handlePointerMove)
+  window.addEventListener('pointerup', handlePointerUp)
+  window.addEventListener('pointercancel', handlePointerUp)
+}
+
+function handlePointerMove(event: PointerEvent) {
+  if (!isDragging.value)
+    return
+  event.preventDefault()
+  const deltaX = event.pageX - startX.value
+  mapPosition.value = startPosition.value + deltaX
+  clamp()
+}
+
+function handlePointerUp() {
+  isDragging.value = false
+  window.removeEventListener('pointermove', handlePointerMove)
+  window.removeEventListener('pointerup', handlePointerUp)
+  window.removeEventListener('pointercancel', handlePointerUp)
+}
+
+function clamp() {
+  if (mapPosition.value - window.innerWidth < -((92 * 5.31 / 100) * window.innerHeight)) {
+    mapPosition.value = -((92 * 5.31 / 100) * window.innerHeight) + window.innerWidth
+  } else if (mapPosition.value > 0) {
+    mapPosition.value = 0
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeyPress)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeyPress)
+  window.removeEventListener('pointermove', handlePointerMove)
+  window.removeEventListener('pointerup', handlePointerUp)
+  window.removeEventListener('pointercancel', handlePointerUp)
+})
+</script>
+
+<template>
+  <div class="relative overflow-hidden touch-none">
+    <div
+      class="relative h-[92vh] w-[calc(92vh*5.31)] cursor-grab active:cursor-grabbing select-none"
+      :style="{ transform: `translateX(${mapPosition}px)` }"
+      style="touch-action: none;"
+      @pointerdown="handlePointerDown"
+    >
+      <img class="h-auto w-full object-cover rendering-pixelated select-none pointer-events-none" src="/img/mapa.png" alt="map">
+      <div
+        v-for="(item, index) in elements"
+        :key="index"
+        class="absolute transform -translate-x-1/2 -translate-y-1/2"
+        :style="{ left: `${item.x}vh`, top: `${item.y}vh` }"
+      >
+        {{ item.content }}
+      </div>
+    </div>
+  </div>
+</template>
