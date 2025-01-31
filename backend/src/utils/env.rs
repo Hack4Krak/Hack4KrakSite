@@ -13,6 +13,9 @@ fn default_oauth_finish_redirect_url() -> String {
 fn default_openapi_json_frontend_path() -> String {
     "../frontend/openapi/api/openapi.json".to_string()
 }
+fn default_cookies_domain() -> String {
+    "localhost".to_string()
+}
 
 pub static CONFIG: OnceLock<Config> = OnceLock::new();
 
@@ -25,6 +28,8 @@ pub struct Config {
     pub oauth_finish_redirect_url: String,
     #[serde(default = "default_openapi_json_frontend_path")]
     pub openapi_json_frontend_path: String,
+    #[serde(default = "default_cookies_domain")]
+    pub cookies_domain: String,
     pub jwt_secret: String,
     pub github_oauth_client_id: String,
     pub github_oauth_client_secret: String,
