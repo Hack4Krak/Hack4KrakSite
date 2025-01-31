@@ -6,6 +6,7 @@ use actix_cors::Cors;
 use actix_web::web::Data;
 use actix_web::{middleware::from_fn, middleware::Logger};
 use actix_web::{App, HttpServer};
+use actix_governor::{Governor, GovernorConfigBuilder};
 use hack4krak_backend::utils::app_state::AppState;
 use hack4krak_backend::utils::env::Config;
 use hack4krak_backend::utils::openapi::ApiDoc;
@@ -28,6 +29,12 @@ async fn main() -> std::io::Result<()> {
         env::var("RUST_LOG").unwrap_or("actix_web=debug,hack4krak_backend=trace".to_string());
 
     tracing_subscriber::fmt().with_env_filter(filter).init();
+
+    let governor_conf = GovernorConfigBuilder::default()
+        .seconds_per_request(3)
+        .burst_size(5)
+        .finish()
+        .unwrap();
 
     info!("Connecting to db...");
     let db: DatabaseConnection = Database::connect(&Config::get().database_url)
@@ -92,7 +99,9 @@ async fn main() -> std::io::Result<()> {
             .openapi(ApiDoc::openapi())
             .app_data(data.clone())
             .service(routes::index::index)
-            .service(scope("/auth").configure(routes::auth::config))
+            .service(scope("/auth")
+                .wrap(Governor::new(&governor_conf))
+                .configure(routes::auth::config))
             .service(scope("/teams").configure(routes::teams::config))
             .service(
                 scope("/user")
