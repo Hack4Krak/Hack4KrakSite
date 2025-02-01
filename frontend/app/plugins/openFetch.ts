@@ -8,7 +8,6 @@ export default defineNuxtPlugin((nuxtApp) => {
     provide: {
       api: createOpenFetch(clients.api, localFetch),
       auth: createOpenFetch(localOptions => ({
-        ...localOptions,
         ...clients.auth,
         retryStatusCodes: [401],
         retry: 1,
@@ -55,6 +54,7 @@ export default defineNuxtPlugin((nuxtApp) => {
           const description = `${response.status}: ${error?.message ?? 'Nieznany błąd'}`
           nuxtApp.runWithContext(() => useToast().add({ title: 'Błąd zapytania', description, color: 'error' }))
         },
+        ...localOptions,
       }), localFetch),
     },
   }
