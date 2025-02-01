@@ -47,8 +47,13 @@ export default defineNuxtPlugin((nuxtApp) => {
             nuxtApp.ssrContext?.event.node.res.setHeader('Set-Cookie', cookies)
           }
         },
-        onResponseError({ error }) {
-          nuxtApp.runWithContext(() => useToast().add({ title: 'Błąd zapytania', description: error?.message ?? 'Nieznany błąd', color: 'error' }))
+        onResponseError({ error, response }) {
+          if (response.status !== 401) {
+            return
+          }
+
+          const description = `${response.status}: ${error?.message ?? 'Nieznany błąd'}`
+          nuxtApp.runWithContext(() => useToast().add({ title: 'Błąd zapytania', description, color: 'error' }))
         },
       }), localFetch),
     },
