@@ -26,6 +26,8 @@ pub enum Error {
     PlaceholdersRequired,
     #[error("Failed to send email: {0}")]
     FailedToSendEmail(#[from] lettre::transport::smtp::Error),
+    #[error("Failed to build email: {0}")]
+    FailedToBuildEmail(#[from] lettre::error::Error),
     #[error("Email template not found")]
     EmailTemplateNotFound,
     #[error("Invalid email address while sending email")]
@@ -54,7 +56,8 @@ impl error::ResponseError for Error {
             | Error::DatabaseOperation(_)
             | Error::OAuth
             | Error::Request(_)
-            | Error::FailedToSendEmail(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            | Error::FailedToSendEmail(_)
+            | Error::FailedToBuildEmail(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Unauthorized
             | Error::InvalidJsonWebToken
             | Error::InvalidAuthorizationHeader => StatusCode::UNAUTHORIZED,

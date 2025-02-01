@@ -38,12 +38,20 @@ impl Email {
         let html = self.parse_placeholders()?;
 
         let email = Message::builder()
-            .from(self.sender.parse().unwrap())
-            .to(self.receivers.join(", ").parse().unwrap())
+            .from(
+                self.sender
+                    .parse()
+                    .map_err(|_| Error::InvalidEmailAddressSendingEmail)?,
+            )
+            .to(self
+                .receivers
+                .join(", ")
+                .parse()
+                .map_err(|_| Error::InvalidEmailAddressSendingEmail)?)
             .subject(&self.subject)
             .header(ContentType::TEXT_HTML)
             .body(html)
-            .unwrap();
+            .map_err(Error::FailedToBuildEmail)?;
 
         let _email = smtp_client.send(&email).map_err(Error::FailedToSendEmail)?;
 
