@@ -22,6 +22,10 @@ const state = reactive<Partial<Schema>>({
   name: undefined,
 })
 
+const isButtonEnabled = computed(() => {
+  return schema.safeParse(state).success
+})
+
 const OAuthBaseUrl = `${useRuntimeConfig().public.openFetch.api.baseURL}/auth/oauth`
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
@@ -77,7 +81,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         </UFormField>
 
         <div class="space-y-2">
-          <UButton type="submit" class="w-full text-center inline rounded-3xl py-2 bg-neutral-300" :disabled="loading">
+          <UButton type="submit" class="w-full text-center inline rounded-3xl py-2 bg-neutral-300" :disabled="loading" :class="isButtonEnabled ? 'bg-[var(--ui-primary)]' : ''">
             {{ isLogin ? 'Zaloguj' : 'Zarejestruj' }}
           </UButton>
 
