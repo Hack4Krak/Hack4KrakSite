@@ -11,6 +11,8 @@ use hack4krak_backend::utils::app_state::AppState;
 use hack4krak_backend::utils::env::Config;
 use hack4krak_backend::utils::openapi::ApiDoc;
 use hack4krak_backend::{middlewares, routes};
+use lettre::transport::smtp::authentication::Credentials;
+use lettre::SmtpTransport;
 use migration::{Migrator, MigratorTrait};
 use oauth2::basic::BasicClient;
 use oauth2::{AuthUrl, ClientId, ClientSecret, RedirectUrl, TokenUrl};
@@ -76,10 +78,19 @@ async fn main() -> std::io::Result<()> {
         )
         .set_redirect_uri(google_redirect_url);
 
+    let smtp_client = SmtpTransport::relay("smtp.resend.com")
+        .unwrap()
+        .credentials(Credentials::new(
+            "resend".to_string(),
+            Config::get().resend_api_key.clone(),
+        ))
+        .build();
+
     let data = Data::new(AppState {
         database: db,
         github_oauth_client,
         google_oauth_client,
+        smtp_client,
     });
 
     info!("Starting server...");

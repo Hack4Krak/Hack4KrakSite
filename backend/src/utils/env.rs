@@ -32,6 +32,7 @@ pub struct Config {
     pub google_oauth_client_id: String,
     pub google_oauth_client_secret: String,
     pub google_oauth_redirect_url: String,
+    pub resend_api_key: String,
 }
 
 impl Config {

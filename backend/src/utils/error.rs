@@ -22,6 +22,16 @@ pub enum Error {
     InvalidJsonWebToken,
     #[error("Invalid authorization header content")]
     InvalidAuthorizationHeader,
+    #[error("Placeholder elements are required for this email template")]
+    PlaceholdersRequired,
+    #[error("Failed to send email: {0}")]
+    FailedToSendEmail(#[from] lettre::transport::smtp::Error),
+    #[error("Failed to build email: {0}")]
+    FailedToBuildEmail(#[from] lettre::error::Error),
+    #[error("Email template not found")]
+    EmailTemplateNotFound,
+    #[error("Invalid email address while sending email")]
+    InvalidEmailAddressSendingEmail,
     #[error(transparent)]
     Auth(#[from] AuthError),
     #[error(transparent)]
@@ -39,13 +49,18 @@ pub fn json_error_response<T: error::ResponseError>(err: &T) -> HttpResponse {
 impl error::ResponseError for Error {
     fn status_code(&self) -> StatusCode {
         match self {
+            Error::PlaceholdersRequired
+            | Error::EmailTemplateNotFound
+            | Error::InvalidEmailAddressSendingEmail => StatusCode::BAD_REQUEST,
             Error::HashPasswordFailed(_)
             | Error::DatabaseOperation(_)
             | Error::OAuth
-            | Error::Request(_) => StatusCode::INTERNAL_SERVER_ERROR,
-            Error::Unauthorized => StatusCode::UNAUTHORIZED,
-            Error::InvalidJsonWebToken => StatusCode::UNAUTHORIZED,
-            Error::InvalidAuthorizationHeader => StatusCode::BAD_REQUEST,
+            | Error::Request(_)
+            | Error::FailedToSendEmail(_)
+            | Error::FailedToBuildEmail(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Error::Unauthorized
+            | Error::InvalidJsonWebToken
+            | Error::InvalidAuthorizationHeader => StatusCode::UNAUTHORIZED,
             Error::Team(team_err) => team_err.status_code(),
             Error::Auth(auth_err) => auth_err.status_code(),
         }
