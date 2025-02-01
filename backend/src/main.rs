@@ -30,7 +30,7 @@ async fn main() -> std::io::Result<()> {
 
     tracing_subscriber::fmt().with_env_filter(filter).init();
 
-    let governor_conf = GovernorConfigBuilder::default()
+    let governor_configuration = GovernorConfigBuilder::default()
         .seconds_per_request(3)
         .burst_size(5)
         .finish()
@@ -101,7 +101,7 @@ async fn main() -> std::io::Result<()> {
             .service(routes::index::index)
             .service(
                 scope("/auth")
-                    .wrap(Governor::new(&governor_conf))
+                    .wrap(Governor::new(&governor_configuration))
                     .configure(routes::auth::config),
             )
             .service(scope("/teams").configure(routes::teams::config))
