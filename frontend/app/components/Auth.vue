@@ -11,7 +11,7 @@ type Schema = z.output<typeof schema>
 const schema = z.object({
   email: z.string({ required_error: 'Adres e-mail jest wymagany' }).email('Niepoprawny adres e-mail'),
   password: z.string({ required_error: 'Hasło jest wymagane' }).min(8, 'Hasło musi mieć minimum 8 znaków'),
-  ...(props.isLogin ? {} : { name: z.string().min(3, 'Nazwa użytkownika musi mieć co najmniej 3 znaki') }),
+  ...(props.isLogin ? {} : { name: z.string({ required_error: 'Nawa użytkownika jest wymagana' }).min(3, 'Nazwa użytkownika musi mieć co najmniej 3 znaki') }),
 })
 
 const loading = ref(false)
