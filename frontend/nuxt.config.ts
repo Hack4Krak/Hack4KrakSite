@@ -70,6 +70,7 @@ export default defineNuxtConfig({
   },
   colorMode: {
     preference: 'dark',
+    storageKey: 'nuxt-color-mode-forced',
   },
   components: [
     {
