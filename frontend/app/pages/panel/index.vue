@@ -6,7 +6,7 @@ const { data } = await useAuth('/user/', {
 })
 
 async function logout() {
-  $api('/auth/logout', {
+  await $api('/auth/logout', {
     method: 'POST',
     credentials: 'include',
   })
