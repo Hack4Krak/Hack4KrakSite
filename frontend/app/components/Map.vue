@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, onMounted, onUnmounted, ref } from 'vue'
+import { defineProps } from 'vue'
 
 interface Element {
   x: number
@@ -11,76 +11,52 @@ defineProps<{
   elements: Element[]
 }>()
 
-const mapPosition = ref(0)
-const isDragging = ref(false)
-const startX = ref(0)
-const startPosition = ref(0)
+let isDragging = false
+let initialMousePositionX = 0
+let scrollLeft = 0
+let map_container: HTMLElement | null = null
 
-function handleKeyPress(event: KeyboardEvent) {
-  if (event.key === 'd' || event.key === 'ArrowRight') {
-    mapPosition.value -= 10
-  } else if (event.key === 'a' || event.key === 'ArrowLeft') {
-    mapPosition.value += 10
-  }
-  clamp()
+function onMouseDown(event: MouseEvent) {
+  if (!map_container)
+    return
+  isDragging = true
+  initialMousePositionX = event.pageX
+  scrollLeft = map_container.scrollLeft
 }
 
-function handlePointerDown(event: PointerEvent) {
-  event.preventDefault()
-  isDragging.value = true
-  startX.value = event.pageX
-  startPosition.value = mapPosition.value
-
-  window.addEventListener('pointermove', handlePointerMove)
-  window.addEventListener('pointerup', handlePointerUp)
-  window.addEventListener('pointercancel', handlePointerUp)
-}
-
-function handlePointerMove(event: PointerEvent) {
-  if (!isDragging.value)
+function onMouseMove(event: MouseEvent) {
+  if (!isDragging || !map_container)
     return
   event.preventDefault()
-  const deltaX = event.pageX - startX.value
-  mapPosition.value = startPosition.value + deltaX
-  clamp()
+  const currentMousePositionX = event.pageX
+  const dragDistanceX = (currentMousePositionX - initialMousePositionX) * -1
+  map_container.scrollLeft = scrollLeft + dragDistanceX
 }
 
-function handlePointerUp() {
-  isDragging.value = false
-  window.removeEventListener('pointermove', handlePointerMove)
-  window.removeEventListener('pointerup', handlePointerUp)
-  window.removeEventListener('pointercancel', handlePointerUp)
-}
-
-function clamp() {
-  if (mapPosition.value - window.innerWidth < -((88 * 5.31 / 100) * window.innerHeight)) {
-    mapPosition.value = -((88 * 5.31 / 100) * window.innerHeight) + window.innerWidth
-  } else if (mapPosition.value > 0) {
-    mapPosition.value = 0
-  }
+function onMouseUp() {
+  isDragging = false
 }
 
 onMounted(() => {
-  window.addEventListener('keydown', handleKeyPress)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('keydown', handleKeyPress)
-  window.removeEventListener('pointermove', handlePointerMove)
-  window.removeEventListener('pointerup', handlePointerUp)
-  window.removeEventListener('pointercancel', handlePointerUp)
+  map_container = document.getElementById('map_container')
 })
 </script>
 
 <template>
-  <div class="relative overflow-hidden touch-none">
-    <div
-      class="relative h-[88vh] w-[calc(88vh*5.31)] cursor-grab active:cursor-grabbing select-none"
-      :style="{ transform: `translateX(${mapPosition}px)` }"
-      style="touch-action: none;"
-      @pointerdown="handlePointerDown"
-    >
-      <img class="h-auto w-full object-cover rendering-pixelated select-none pointer-events-none" src="/img/map.png" alt="map">
+  <div
+    id="map_container"
+    class="relative overflow-auto scrollbar-hide cursor-grab active:cursor-grabbing select-none"
+    @mousedown="onMouseDown"
+    @mousemove="onMouseMove"
+    @mouseup="onMouseUp"
+    @mouseleave="onMouseUp"
+  >
+    <div class="relative h-[88vh] w-[calc(88vh*5.31)]">
+      <img
+        class="h-auto w-full object-cover rendering-pixelated select-none pointer-events-none"
+        src="/img/map.png"
+        alt="map"
+      >
       <div
         v-for="(item, index) in elements"
         :key="index"
