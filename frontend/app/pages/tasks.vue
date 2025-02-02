@@ -10,5 +10,5 @@ const elements = ref<Element[]>([
 </script>
 
 <template>
-  <Map :elements="elements" class="mt-1"/>
+  <Map :elements="elements" class="mt-1" />
 </template>
