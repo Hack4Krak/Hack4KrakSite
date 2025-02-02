@@ -1,16 +1,20 @@
+import { usePreferredDark } from '@vueuse/core'
+
 export function useFavicon() {
-  const colorMode = useColorMode()
+  const isDarkMode = usePreferredDark()
   const favicon = computed(() => {
-    return colorMode.value === 'dark' ? '/favicon.ico' : '/favicon-light.ico'
+    return isDarkMode.value ? '/favicon.ico' : '/favicon-light.ico'
   })
 
-  useHead({
-    link: [
-      {
-        rel: 'icon',
-        type: 'image/x-icon',
-        href: favicon.value,
-      },
-    ],
-  })
+  watch(favicon, (newFavicon) => {
+    useHead({
+      link: [
+        {
+          rel: 'icon',
+          type: 'image/x-icon',
+          href: newFavicon,
+        },
+      ],
+    })
+  }, { immediate: true })
 }
