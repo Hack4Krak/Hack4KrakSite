@@ -54,7 +54,7 @@ onMounted(() => {
       <img
         class="h-auto w-full object-cover rendering-pixelated select-none pointer-events-none"
         src="/img/map.png"
-        alt="map"
+        alt="Map with tasks"
       >
       <div
         v-for="(item, index) in elements"
