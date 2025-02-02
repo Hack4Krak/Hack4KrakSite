@@ -32,12 +32,15 @@ pub struct AppState {
 }
 
 impl AppState {
-    pub fn with_database(database: DatabaseConnection) -> AppState {
-        let oauth_client: OAuthClient = BasicClient::new(ClientId::new("test".to_string()))
+    fn default_oauth_factory() -> OAuthClient {
+        BasicClient::new(ClientId::new("test".to_string()))
             .set_auth_uri(AuthUrl::new("https://authorize".to_string()).unwrap())
             .set_token_uri(TokenUrl::new("https://token".to_string()).unwrap())
-            .set_redirect_uri(RedirectUrl::new("https://redirect".to_string()).unwrap());
+            .set_redirect_uri(RedirectUrl::new("https://redirect".to_string()).unwrap())
+    }
 
+    pub fn with_database(database: DatabaseConnection) -> AppState {
+        let oauth_client: OAuthClient = Self::default_oauth_factory();
         AppState {
             task_manager: ShardedLock::new(TaskManager {
                 tasks: HashMap::new(),
@@ -52,6 +55,19 @@ impl AppState {
                     "resend-api-key".to_string(),
                 ))
                 .build(),
+        }
+    }
+
+    pub fn with_email_client(smtp_client: SmtpTransport) -> AppState {
+        let oauth_client: OAuthClient = Self::default_oauth_factory();
+        AppState {
+            database: Default::default(),
+            task_manager: ShardedLock::new(TaskManager {
+                tasks: HashMap::new(),
+            }),
+            github_oauth_client: oauth_client.clone(),
+            google_oauth_client: oauth_client,
+            smtp_client,
         }
     }
 }

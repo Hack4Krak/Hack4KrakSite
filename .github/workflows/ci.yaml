@@ -56,7 +56,7 @@ jobs:
       - name: "Run tests"
         run: |
             cd backend/
-            cargo test
+            cargo test --features=full-test-suite
             cd ..
       - name: "Run lint"
         run: |

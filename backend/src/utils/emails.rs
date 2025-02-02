@@ -2,6 +2,7 @@ use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::{web, HttpResponse};
 use lettre::message::header::ContentType;
+use lettre::message::{header, Mailboxes};
 use lettre::{Message, Transport};
 use std::option::Option;
 use std::path::Path;
@@ -25,7 +26,7 @@ impl EmailTemplate {
 
 pub struct Email {
     pub sender: String,
-    pub receivers: Vec<String>,
+    pub recipients: Vec<String>,
     pub subject: String,
     pub template: EmailTemplate,
     pub placeholders: Option<Vec<(String, String)>>,
@@ -37,17 +38,22 @@ impl Email {
 
         let html = self.parse_placeholders()?;
 
+        let mailboxes: Mailboxes = self
+            .recipients
+            .iter()
+            .map(|recipient| recipient.parse())
+            .collect::<Result<Mailboxes, _>>()
+            .map_err(|_| Error::InvalidEmailRecipients(self.recipients.join(", ")))?;
+
+        let to_header: header::To = mailboxes.into();
+
         let email = Message::builder()
             .from(
                 self.sender
                     .parse()
-                    .map_err(|_| Error::InvalidEmailAddressSendingEmail)?,
+                    .map_err(|_| Error::InvalidEmailSender(self.sender.to_string()))?,
             )
-            .to(self
-                .receivers
-                .join(", ")
-                .parse()
-                .map_err(|_| Error::InvalidEmailAddressSendingEmail)?)
+            .mailbox(to_header)
             .subject(&self.subject)
             .header(ContentType::TEXT_HTML)
             .body(html)
