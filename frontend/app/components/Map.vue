@@ -13,8 +13,8 @@ let isDragging = false
 let initialMousePositionX = 0
 let scrollLeft = 0
 let mapContainer: HTMLElement | null = null
-const mapImageAspectRatio = 5.31
-const idealVerticalOverflowValue = 88
+const MAP_IMAGE_ASPECT_RATIO = 2550 / 480
+const IDEAL_VERTICAL_OVERFLOW_VALUE = 88
 
 function onMouseDown(event: MouseEvent) {
   if (!mapContainer)
@@ -23,6 +23,7 @@ function onMouseDown(event: MouseEvent) {
   initialMousePositionX = event.pageX
   scrollLeft = mapContainer.scrollLeft
 }
+
 function onMouseMove(event: MouseEvent) {
   if (!isDragging || !mapContainer)
     return
@@ -50,7 +51,7 @@ onMounted(() => {
     @mouseup="onMouseUp"
     @mouseleave="onMouseUp"
   >
-    <div class="relative" :style="{ width: `${idealVerticalOverflowValue * mapImageAspectRatio}vh` }">
+    <div class="relative" :style="{ width: `${IDEAL_VERTICAL_OVERFLOW_VALUE * MAP_IMAGE_ASPECT_RATIO}vh` }">
       <img
         class="h-auto w-full object-cover rendering-pixelated select-none pointer-events-none"
         src="/img/map.png"
