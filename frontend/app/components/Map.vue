@@ -12,39 +12,36 @@ defineProps<{
 let isDragging = false
 let initialMousePositionX = 0
 let scrollLeft = 0
-let mapContainer: HTMLElement | null = null
+const mapContainer = ref<HTMLElement | null>(null)
+
 const MAP_IMAGE_ASPECT_RATIO = 2550 / 480
 const IDEAL_VERTICAL_OVERFLOW_VALUE = 88
 
 function onMouseDown(event: MouseEvent) {
-  if (!mapContainer)
+  if (!mapContainer.value)
     return
   isDragging = true
   initialMousePositionX = event.pageX
-  scrollLeft = mapContainer.scrollLeft
+  scrollLeft = mapContainer.value.scrollLeft
 }
 
 function onMouseMove(event: MouseEvent) {
-  if (!isDragging || !mapContainer)
+  if (!isDragging || !mapContainer.value)
     return
   event.preventDefault()
   const currentMousePositionX = event.pageX
   const dragDistanceX = (currentMousePositionX - initialMousePositionX) * -1
-  mapContainer.scrollLeft = scrollLeft + dragDistanceX
+  mapContainer.value.scrollLeft = scrollLeft + dragDistanceX
 }
 
 function onMouseUp() {
   isDragging = false
 }
-
-onMounted(() => {
-  mapContainer = document.getElementById('map_container')
-})
 </script>
 
 <template>
   <div
-    id="map_container"
+    ref="mapContainer"
     class="relative overflow-auto scrollbar-hide cursor-grab active:cursor-grabbing select-none"
     @mousedown="onMouseDown"
     @mousemove="onMouseMove"
