@@ -42,7 +42,8 @@ function onMouseUp() {
 <template>
   <div
     ref="mapContainer"
-    class="relative overflow-auto scrollbar-hide cursor-grab active:cursor-grabbing"
+    autofocus
+    class="relative overflow-auto scrollbar-hide cursor-grab active:cursor-grabbing focus:outline-none"
     @mousedown="onMouseDown"
     @mousemove="onMouseMove"
     @mouseup="onMouseUp"
