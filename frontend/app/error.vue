@@ -32,7 +32,7 @@ const errorMessage = computed(() => {
           </h2>
         </div>
         <div class="hidden lg:block md:ml-10">
-          <img class="w-150 rendering-pixelated" src="assets/img/error_dragon2.webp" alt="Error Dragon">
+          <img class="w-150 rendering-pixelated" src="assets/img/error_dragon.webp" alt="Dragon of (t)error">
         </div>
       </div>
     </main>
