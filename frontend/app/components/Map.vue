@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
-
-interface Element {
+export interface Element {
   x: number
   y: number
   content: string
@@ -14,23 +12,24 @@ defineProps<{
 let isDragging = false
 let initialMousePositionX = 0
 let scrollLeft = 0
-let map_container: HTMLElement | null = null
+let mapContainer: HTMLElement | null = null
+const mapImageAspectRatio = 5.31
+const idealVerticalOverflowValue = 88
 
 function onMouseDown(event: MouseEvent) {
-  if (!map_container)
+  if (!mapContainer)
     return
   isDragging = true
   initialMousePositionX = event.pageX
-  scrollLeft = map_container.scrollLeft
+  scrollLeft = mapContainer.scrollLeft
 }
-
 function onMouseMove(event: MouseEvent) {
-  if (!isDragging || !map_container)
+  if (!isDragging || !mapContainer)
     return
   event.preventDefault()
   const currentMousePositionX = event.pageX
   const dragDistanceX = (currentMousePositionX - initialMousePositionX) * -1
-  map_container.scrollLeft = scrollLeft + dragDistanceX
+  mapContainer.scrollLeft = scrollLeft + dragDistanceX
 }
 
 function onMouseUp() {
@@ -38,7 +37,7 @@ function onMouseUp() {
 }
 
 onMounted(() => {
-  map_container = document.getElementById('map_container')
+  mapContainer = document.getElementById('map_container')
 })
 </script>
 
@@ -51,7 +50,7 @@ onMounted(() => {
     @mouseup="onMouseUp"
     @mouseleave="onMouseUp"
   >
-    <div class="relative h-[88vh] w-[calc(88vh*5.31)]">
+    <div class="relative" :style="{ width: `${idealVerticalOverflowValue * mapImageAspectRatio}vh` }">
       <img
         class="h-auto w-full object-cover rendering-pixelated select-none pointer-events-none"
         src="/img/map.png"
