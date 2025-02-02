@@ -1,6 +1,11 @@
 <script setup lang="ts">
 useFavicon()
 useOgImage()
+useHead({
+  meta: [
+    { name: 'theme-color', content: '#FFFF00' },
+  ],
+})
 </script>
 
 <template>
