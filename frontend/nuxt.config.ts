@@ -18,7 +18,7 @@ export default defineNuxtConfig({
   site: {
     url: baseUrl,
     name: 'Hack4Krak CTF',
-    description: 'Krakowski CTF dla uczniów szkół średnich! Zgłoś swoją drużynę, weź udział w wydarzeniu i wygraj atrakcyjne nagrody!',
+    description: 'Krakowski CTF dla wszystkich uczniów szkół średnich! przetestuj się i zawalcz o ciekawe nagrody biorąc udział w wydarzeniu! Nie zwlekaj i zgłoś swoją drużynę już dziś!',
     defaultLocale: 'pl',
   },
 
