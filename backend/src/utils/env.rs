@@ -1,7 +1,8 @@
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::sync::OnceLock;
 
 use serde::Deserialize;
+use std::str::FromStr;
 use Default;
 
 fn default_backend_address() -> String {
@@ -15,6 +16,9 @@ fn default_openapi_json_frontend_path() -> String {
 }
 fn default_cookies_domain() -> String {
     "localhost".to_string()
+}
+fn default_tasks_base_path() -> PathBuf {
+    PathBuf::from_str("TasksTemplate/tasks/").unwrap()
 }
 
 pub static CONFIG: OnceLock<Config> = OnceLock::new();
@@ -31,6 +35,8 @@ pub struct Config {
     #[serde(default = "default_cookies_domain")]
     pub cookies_domain: String,
     pub jwt_secret: String,
+    #[serde(default = "default_tasks_base_path")]
+    pub tasks_base_path: PathBuf,
     pub github_oauth_client_id: String,
     pub github_oauth_client_secret: String,
     pub github_oauth_redirect_url: String,

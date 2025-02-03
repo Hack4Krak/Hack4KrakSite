@@ -1,15 +1,13 @@
-use std::env;
-use std::fs::File;
-use std::io::Write;
-
 use actix_cors::Cors;
 use actix_governor::{Governor, GovernorConfigBuilder};
 use actix_web::web::Data;
 use actix_web::{middleware::from_fn, middleware::Logger};
 use actix_web::{App, HttpServer};
+use crossbeam::sync::ShardedLock;
 use hack4krak_backend::utils::app_state::AppState;
 use hack4krak_backend::utils::env::Config;
 use hack4krak_backend::utils::openapi::ApiDoc;
+use hack4krak_backend::utils::task::TaskManager;
 use hack4krak_backend::{middlewares, routes};
 use lettre::transport::smtp::authentication::Credentials;
 use lettre::SmtpTransport;
@@ -17,6 +15,9 @@ use migration::{Migrator, MigratorTrait};
 use oauth2::basic::BasicClient;
 use oauth2::{AuthUrl, ClientId, ClientSecret, RedirectUrl, TokenUrl};
 use sea_orm::{Database, DatabaseConnection};
+use std::env;
+use std::fs::File;
+use std::io::Write;
 use tracing::info;
 use utoipa::gen::serde_json::to_string;
 use utoipa::OpenApi;
@@ -78,6 +79,8 @@ async fn main() -> std::io::Result<()> {
         )
         .set_redirect_uri(google_redirect_url);
 
+    let task_manager = ShardedLock::new(TaskManager::load().await);
+
     let smtp_client = SmtpTransport::relay("smtp.resend.com")
         .unwrap()
         .credentials(Credentials::new(
@@ -87,6 +90,7 @@ async fn main() -> std::io::Result<()> {
         .build();
 
     let data = Data::new(AppState {
+        task_manager,
         database: db,
         github_oauth_client,
         google_oauth_client,
@@ -116,6 +120,7 @@ async fn main() -> std::io::Result<()> {
                     .configure(routes::auth::config),
             )
             .service(scope("/teams").configure(routes::teams::config))
+            .service(scope("/tasks").configure(routes::task::config))
             .service(
                 scope("/teams/invitations")
                     .wrap(from_fn(middlewares::auth_middleware::check_auth_middleware))

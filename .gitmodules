@@ -1,0 +1,3 @@
+[submodule "backend/TasksTemplate"]
+path = backend/TasksTemplate
+url = https://github.com/Hack4Krak/TasksTemplate

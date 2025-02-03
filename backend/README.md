@@ -7,6 +7,22 @@
 - `OPENAPI_JSON_FRONTEND_PATH`: The path to write openapi json in frontend, relative to backend/ directory. Example: `../frontend/openapi/api/openapi.json`
 - `RUST_LOG`: The log level for crates. [Docs](https://docs.rs/tracing-subscriber/latest/tracing_subscriber/filter/struct.EnvFilter.html). Example: `hack4krak_backend=trace,actix-web=info`
 
+## Tasks Template
+
+This repository parses the [TasksTemplate](https://github.com/Hack4Krak/TasksTemplate) repository to display tasks in a data-driven way.
+
+You can customize tasks for your CTF by setting the appropriate environment variable.
+For development purposes, the template repository is included as a Git submodule.
+
+```shell
+# Initialize / update your local submodule
+git submodule update --init --recursive
+```
+
+```shell
+# Sync submodule with remote
+git submodule update --remote
+```
 
 ## Running Migrator CLI
 
