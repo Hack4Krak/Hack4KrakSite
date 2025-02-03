@@ -6,6 +6,9 @@
 - `BACKEND_ADDRESS`: The address to bind the backend server to. Example: `127.0.0.1:8080`
 - `OPENAPI_JSON_FRONTEND_PATH`: The path to write openapi json in frontend, relative to backend/ directory. Example: `../frontend/openapi/api/openapi.json`
 - `RUST_LOG`: The log level for crates. [Docs](https://docs.rs/tracing-subscriber/latest/tracing_subscriber/filter/struct.EnvFilter.html). Example: `hack4krak_backend=trace,actix-web=info`
+- `TASKS_BASE_PATH`: Path to `tasks` directory of `TasksTemplate` repository
+
+And more defined are defined in [env.rs](src/utils/env.rs)...
 
 ## Tasks Template
 
