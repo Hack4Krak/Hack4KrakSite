@@ -1,3 +1,5 @@
+use crate::utils::task::TaskManager;
+use crossbeam::sync::ShardedLock;
 use lettre::transport::smtp::authentication::Credentials;
 use lettre::SmtpTransport;
 use oauth2::basic::*;
@@ -6,6 +8,7 @@ use oauth2::{
     TokenUrl,
 };
 use sea_orm::DatabaseConnection;
+use std::collections::HashMap;
 
 type OAuthClient = Client<
     BasicErrorResponse,
@@ -22,6 +25,7 @@ type OAuthClient = Client<
 
 pub struct AppState {
     pub database: DatabaseConnection,
+    pub task_manager: ShardedLock<TaskManager>,
     pub github_oauth_client: OAuthClient,
     pub google_oauth_client: OAuthClient,
     pub smtp_client: SmtpTransport,
@@ -33,7 +37,11 @@ impl AppState {
             .set_auth_uri(AuthUrl::new("https://authorize".to_string()).unwrap())
             .set_token_uri(TokenUrl::new("https://token".to_string()).unwrap())
             .set_redirect_uri(RedirectUrl::new("https://redirect".to_string()).unwrap());
+
         AppState {
+            task_manager: ShardedLock::new(TaskManager {
+                tasks: HashMap::new(),
+            }),
             database,
             github_oauth_client: oauth_client.clone(),
             google_oauth_client: oauth_client,
