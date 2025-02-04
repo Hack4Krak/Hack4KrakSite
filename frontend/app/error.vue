@@ -21,9 +21,9 @@ const errorMessage = computed(() => {
   <NuxtLoadingIndicator color="#ffb900" :height="2" />
   <UApp class="font-roboto">
     <Navbar />
-    <main class="bg-[#18181b] min-h-[calc(100vh-var(--spacing)*19)] content-center items-center justify-center">
-      <div class="flex content-center items-center justify-center">
-        <div class="flex flex-col md:mr-10 md:max-w-2/5">
+    <main class="min-h-[calc(100vh-var(--spacing)*19)] content-center items-center justify-center ">
+      <div class="flex content-center items-center justify-center flex-col-reverse md:flex-row">
+        <div class="flex flex-col md:mr-10 max-w-3/4 md:max-w-2/5">
           <h1 class="text-balance text-8xl text-yellow-500 font-bold mb-3">
             {{ error?.statusCode }}
           </h1>
@@ -31,8 +31,8 @@ const errorMessage = computed(() => {
             {{ errorMessage }}
           </h2>
         </div>
-        <div class="hidden lg:block md:ml-10">
-          <img class="w-150 rendering-pixelated" src="assets/img/error_dragon.webp" alt="Dragon of (t)error">
+        <div class="w-3/4 mb-10 md:w-150 md:mb-0 md:ml-10">
+          <img class="w-full rendering-pixelated" src="assets/img/error_dragon.webp" alt="Dragon of (t)error">
         </div>
       </div>
     </main>
