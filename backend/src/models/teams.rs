@@ -6,7 +6,7 @@ use crate::routes::teams::management::remove_user::RemoveUserModel;
 use crate::routes::teams::management::rename::ChangeNameModel;
 use crate::routes::teams::team::TeamWithMembers;
 use crate::routes::teams::TeamError::{
-    AlreadyExists, TeamLeaderCantLeaveTeam, TeamNotFound, UserAlreadyBelongsToTeam,
+    AlreadyExists, TeamIsFull, TeamLeaderCantLeaveTeam, TeamNotFound, UserAlreadyBelongsToTeam,
     UserCantRemoveTeamLeader, UserCantRemoveYourself, UserDoesntBelongToAnyTeam,
     UserDoesntBelongToYourTeam, UserDoesntHaveAnyInvitations, UserDoesntHaveInvitationsFromTeam,
     UserIsNotTeamLeader,
@@ -111,6 +111,15 @@ impl teams::Model {
             }));
         }
 
+        let members = users::Entity::find()
+            .filter(users::Column::Team.eq(team.id))
+            .all(database)
+            .await?;
+
+        if members.len() >= 5 {
+            return Err(Error::Team(TeamIsFull));
+        }
+
         team_invites::Entity::insert(team_invites::ActiveModel {
             user: Set(invited_user.id),
             team: Set(team.id),
@@ -172,6 +181,15 @@ impl teams::Model {
 
         if !invitations.iter().any(|invite| invite.team == team.id) {
             return Err(Error::Team(UserDoesntHaveInvitationsFromTeam { team_name }));
+        }
+
+        let members = users::Entity::find()
+            .filter(users::Column::Team.eq(team.id))
+            .all(database)
+            .await?;
+
+        if members.len() >= 5 {
+            return Err(Error::Team(TeamIsFull));
         }
 
         let transaction = database.begin().await?;
