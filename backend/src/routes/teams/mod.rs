@@ -39,8 +39,8 @@ pub enum TeamError {
     UserDoesntHaveInvitationsFromTeam { team_name: String },
     #[error("Team leader can't leave team")]
     TeamLeaderCantLeaveTeam,
-    #[error("Team is full")]
-    TeamIsFull,
+    #[error("Team is full. Max team size is {max_size}")]
+    TeamIsFull { max_size: u8 },
 }
 
 impl error::ResponseError for TeamError {
@@ -48,7 +48,7 @@ impl error::ResponseError for TeamError {
         match self {
             TeamError::AlreadyExists
             | TeamError::UserCantRemoveYourself
-            | TeamError::TeamIsFull => StatusCode::CONFLICT,
+            | TeamError::TeamIsFull { .. } => StatusCode::CONFLICT,
             TeamError::UserAlreadyBelongsToTeam { .. }
             | TeamError::UserDoesntBelongToAnyTeam { .. }
             | TeamError::UserDoesntBelongToYourTeam
