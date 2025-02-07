@@ -1,8 +1,10 @@
 use actix_web::http::StatusCode;
 use actix_web::{error, HttpResponse};
+use std::string;
 use thiserror::Error;
 
 mod background;
+mod description;
 mod icon;
 mod list;
 mod story;
@@ -12,16 +14,21 @@ pub fn config(cfg: &mut utoipa_actix_web::service_config::ServiceConfig) {
     cfg.service(icon::icon);
     cfg.service(story::story);
     cfg.service(background::background);
+    cfg.service(description::description);
 }
 
 #[derive(Debug, Error)]
 pub enum TaskError {
     #[error("Task ID may only contain a-Z, A-Z, 0-9, - and _")]
     InvalidTaskId,
-    #[error("Could not load task icon for task \"{id}\"")]
-    CouldNotLoadTaskIcon { id: String },
+    #[error("Could not load task asset for task \"{id}\"")]
+    CouldNotLoadTaskAsset { id: String },
     #[error("Task \"{id}\" does not exists")]
     MissingTask { id: String },
+    #[error("Could not load task description for task \"{id}\"")]
+    CouldNotLoadTaskDescription { id: String },
+    #[error("Error while reading task description: {0}")]
+    ErrorWhileReadingDescription(#[from] string::FromUtf8Error),
 }
 
 impl error::ResponseError for TaskError {
@@ -29,7 +36,9 @@ impl error::ResponseError for TaskError {
         match self {
             TaskError::InvalidTaskId => StatusCode::BAD_REQUEST,
             TaskError::MissingTask { .. } => StatusCode::NOT_FOUND,
-            TaskError::CouldNotLoadTaskIcon { .. } => StatusCode::INTERNAL_SERVER_ERROR,
+            TaskError::CouldNotLoadTaskAsset { .. }
+            | TaskError::CouldNotLoadTaskDescription { .. }
+            | TaskError::ErrorWhileReadingDescription(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 

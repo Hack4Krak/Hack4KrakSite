@@ -77,12 +77,12 @@ impl TaskManager {
     pub async fn load_asset(&self, id: &str, path: &str) -> Result<Vec<u8>, Error> {
         self.get_task(id)?;
 
-        let icon_path = Config::get().tasks_base_path.join(id).join(path);
+        let asset_path = Config::get().tasks_base_path.join(id).join(path);
 
-        if !icon_path.exists() || !icon_path.is_file() {
-            return Err(TaskError::CouldNotLoadTaskIcon { id: id.to_string() }.into());
+        if !asset_path.exists() || !asset_path.is_file() {
+            return Err(TaskError::CouldNotLoadTaskAsset { id: id.to_string() }.into());
         }
 
-        Ok(fs::read(icon_path).await?)
+        Ok(fs::read(asset_path).await?)
     }
 }

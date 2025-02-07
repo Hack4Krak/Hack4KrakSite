@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/test-utils/module',
     '@nuxtjs/seo',
+    '@nuxtjs/mdc',
     '@nuxt/scripts',
     '@formkit/auto-animate/nuxt',
     'nuxt-open-fetch',
