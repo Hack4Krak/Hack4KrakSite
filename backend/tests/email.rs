@@ -1,16 +1,17 @@
-#[cfg(feature = "full-test-suite")]
+#![cfg(feature = "full-test-suite")]
+
+use actix_web::web::Data;
+use hack4krak_backend::utils::app_state::AppState;
+use hack4krak_backend::utils::emails::{Email, EmailTemplate};
+use lettre::transport::smtp::client::Tls;
+use lettre::SmtpTransport;
+use serde_json::Value;
+use testcontainers::core::{IntoContainerPort, WaitFor};
+use testcontainers::runners::AsyncRunner;
+use testcontainers::GenericImage;
+
 #[actix_web::test]
 async fn send_mail() {
-    use actix_web::web::Data;
-    use hack4krak_backend::utils::app_state::AppState;
-    use hack4krak_backend::utils::emails::{Email, EmailTemplate};
-    use lettre::transport::smtp::client::Tls;
-    use lettre::SmtpTransport;
-    use serde_json::Value;
-    use testcontainers::core::{IntoContainerPort, WaitFor};
-    use testcontainers::runners::AsyncRunner;
-    use testcontainers::GenericImage;
-
     let container = GenericImage::new("mailhog/mailhog", "latest")
         .with_exposed_port(1025.tcp()) // SMTP port
         .with_exposed_port(8025.tcp()) // HTTP API port
