@@ -110,6 +110,7 @@ async fn main() -> std::io::Result<()> {
                     .supports_credentials()
                     .max_age(3600),
             )
+            .wrap(middlewares::status_code_drain_middleware::StatusCodeDrain)
             .into_utoipa_app()
             .openapi(ApiDoc::openapi())
             .app_data(data.clone())

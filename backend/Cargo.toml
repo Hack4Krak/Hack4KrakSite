@@ -43,3 +43,5 @@ utoipa-scalar = { version = "0.3.0", features = ["actix-web"] }
 # Custom crates
 migration = { path = "migration" }
 regex = "1.11.1"
+futures = "0.3.31"
+log = "0.4.25"
