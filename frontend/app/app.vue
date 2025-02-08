@@ -4,7 +4,7 @@ useOgImage()
 </script>
 
 <template>
-  <NuxtLoadingIndicator color="white" />
+  <NuxtLoadingIndicator color="var(--ui-primary)" :height="2" />
   <Navbar />
   <UApp>
     <main>

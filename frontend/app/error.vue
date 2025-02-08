@@ -18,7 +18,7 @@ const errorMessage = computed(() => {
 </script>
 
 <template>
-  <NuxtLoadingIndicator color="#ffb900" :height="2" />
+  <NuxtLoadingIndicator color="var(--ui-primary)" :height="2" />
   <UApp class="font-roboto">
     <Navbar />
     <main class="min-h-[calc(100vh-var(--spacing)*19)] content-center items-center justify-center ">
