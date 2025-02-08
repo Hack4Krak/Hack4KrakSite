@@ -6,7 +6,7 @@ use crate::routes::teams::management::remove_user::RemoveUserModel;
 use crate::routes::teams::management::rename::ChangeNameModel;
 use crate::routes::teams::team::TeamWithMembers;
 use crate::routes::teams::TeamError::{
-    AlreadyExists, TeamLeaderCantLeaveTeam, TeamNotFound, UserAlreadyBelongsToTeam,
+    AlreadyExists, TeamIsFull, TeamLeaderCantLeaveTeam, TeamNotFound, UserAlreadyBelongsToTeam,
     UserCantRemoveTeamLeader, UserCantRemoveYourself, UserDoesntBelongToAnyTeam,
     UserDoesntBelongToYourTeam, UserDoesntHaveAnyInvitations, UserDoesntHaveInvitationsFromTeam,
     UserIsNotTeamLeader,
@@ -14,9 +14,11 @@ use crate::routes::teams::TeamError::{
 use crate::utils::error::Error;
 use crate::utils::jwt::Claims;
 use sea_orm::ActiveValue::Set;
-use sea_orm::{ActiveModelTrait, QueryFilter};
+use sea_orm::{ActiveModelTrait, PaginatorTrait, QueryFilter};
 use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, TransactionTrait};
 use uuid::Uuid;
+
+const MAX_MEMBERS_PER_TEAM: u8 = 5;
 
 impl teams::Model {
     pub async fn create_team(
@@ -111,6 +113,17 @@ impl teams::Model {
             }));
         }
 
+        let members_count = users::Entity::find()
+            .filter(users::Column::Team.eq(team.id))
+            .count(database)
+            .await?;
+
+        if members_count >= MAX_MEMBERS_PER_TEAM.into() {
+            return Err(Error::Team(TeamIsFull {
+                max_size: MAX_MEMBERS_PER_TEAM,
+            }));
+        }
+
         team_invites::Entity::insert(team_invites::ActiveModel {
             user: Set(invited_user.id),
             team: Set(team.id),
@@ -172,6 +185,17 @@ impl teams::Model {
 
         if !invitations.iter().any(|invite| invite.team == team.id) {
             return Err(Error::Team(UserDoesntHaveInvitationsFromTeam { team_name }));
+        }
+
+        let members_count = users::Entity::find()
+            .filter(users::Column::Team.eq(team.id))
+            .count(database)
+            .await?;
+
+        if members_count >= MAX_MEMBERS_PER_TEAM.into() {
+            return Err(Error::Team(TeamIsFull {
+                max_size: MAX_MEMBERS_PER_TEAM,
+            }));
         }
 
         let transaction = database.begin().await?;
