@@ -42,7 +42,7 @@ checksum = "4a0cb8586d3fa368d00ef643e8ef77f5d3d5dfe5c7b333415a556bc12eb1c41a"
 dependencies = [
  "actix-http",
  "actix-web",
- "futures",
+ "futures 0.3.31",
  "governor",
 ]
 
@@ -1290,6 +1290,12 @@ checksum = "e6d5a32815ae3f33302d95fdcb2ce17862f8c65363dcfd29360480ba1001fc9c"
 
 [[package]]
 name = "futures"
+version = "0.1.31"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3a471a38ef8ed83cd6e40aa59c1ffe17db6855c18e3604d9c4ed8c08ebc28678"
+
+[[package]]
+name = "futures"
 version = "0.3.31"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "65bc07b1a8bc7c85c5f2e110c476c7389b4554ba72af57d8445ea63a576b0876"
@@ -1395,6 +1401,7 @@ version = "0.3.31"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9fa08315bb612088cc391249efdc3bc77536f16c91f6cf495e6fbe85b20a4a81"
 dependencies = [
+ "futures 0.1.31",
  "futures-channel",
  "futures-core",
  "futures-io",
@@ -1537,7 +1544,7 @@ dependencies = [
  "crossbeam",
  "dotenvy",
  "envy",
- "futures",
+ "futures 0.3.31",
  "jsonwebtoken",
  "lettre",
  "migration",
@@ -3161,7 +3168,7 @@ dependencies = [
  "async-trait",
  "bigdecimal",
  "chrono",
- "futures",
+ "futures 0.3.31",
  "log",
  "ouroboros",
  "rust_decimal",
@@ -3219,7 +3226,7 @@ dependencies = [
  "async-trait",
  "clap",
  "dotenvy",
- "futures",
+ "futures 0.3.31",
  "sea-orm",
  "sea-orm-cli",
  "sea-schema",
@@ -3280,7 +3287,7 @@ version = "0.16.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0ef5dd7848c993f3789d09a2616484c72c9330cae2b048df59d8c9b8c0343e95"
 dependencies = [
- "futures",
+ "futures 0.3.31",
  "sea-query",
  "sea-schema-derive",
 ]
