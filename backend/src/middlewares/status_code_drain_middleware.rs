@@ -57,14 +57,17 @@ where
                 .extensions()
                 .get::<ErrorHttpResponseExtension>()
                 .map(|e| e.error.to_string())
-                .unwrap_or_else(|| "".to_string());
+                .unwrap_or_default();
 
-            if status.as_u16() >= 500 {
-                error!("Detected status: {} - {} - {{{:?}}}", status, path, error);
-            }
+            match status.as_u16() {
+                400..=499 => {
+                    warn!("Detected status: {} - {} - {{{:?}}}", status, path, error);
+                }
 
-            if status.as_u16() >= 400 {
-                warn!("Detected status: {} - {} - {{{:?}}}", status, path, error);
+                500..=599 => {
+                    error!("Detected status: {} - {} - {{{:?}}}", status, path, error);
+                }
+                _ => {}
             }
 
             Ok(response)
