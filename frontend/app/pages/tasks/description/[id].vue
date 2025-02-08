@@ -33,6 +33,6 @@ if (import.meta.server) {
 
 <template>
   <div class="flex flex-col mx-[10vw] w-[80vw] pt-5">
-    <MDCserver :text="description" />
+    <MarkdownContent :text="description" />
   </div>
 </template>
