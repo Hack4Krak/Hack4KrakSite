@@ -16,6 +16,18 @@ RUN cargo build --release --bin hack4krak-backend
 # We do not need the Rust toolchain to run the binary!
 FROM debian:bookworm-slim AS runtime
 WORKDIR /app
-RUN apt-get update && apt-get install -y libssl3 ca-certificates
+RUN apt-get update && apt-get install -y libssl3 ca-certificates git
+
+# Download TasksTemplate or other tasks repository
+ARG GIT_USER=Hack4Krak
+ARG GIT_REPO=TasksTemplate
+ARG GIT_ACCESS_TOKEN=token
+ARG BRANCH=master
+
+ADD https://$GIT_ACCESS_TOKEN:x-oauth-basic@api.github.com/repos/$GIT_USER/$GIT_REPO/git/refs/heads/$BRANCH version.json
+RUN git clone -b $BRANCH https://$GIT_USER:$GIT_ACCESS_TOKEN@github.com/$GIT_USER/$GIT_REPO.git TasksRepo/
+
+ENV TASKS_BASE_PATH=TasksRepo/tasks/
+
 COPY --from=builder /app/target/release/hack4krak-backend /usr/local/bin
 ENTRYPOINT ["/usr/local/bin/hack4krak-backend"]
