@@ -7,8 +7,8 @@ use futures::future::{ok, Ready};
 use std::future::Future;
 use std::pin::Pin;
 use std::task::{Context, Poll};
-use tracing::error;
-use tracing::log::warn;
+use tracing::log;
+use tracing::log::log;
 
 pub struct StatusCodeDrain;
 
@@ -59,15 +59,20 @@ where
                 .map(|e| e.error.to_string())
                 .unwrap_or_default();
 
-            match status.as_u16() {
-                400..=499 => {
-                    warn!("Detected status: {} - {} - {{{:?}}}", status, path, error);
-                }
+            let log_level = match status.as_u16() {
+                400..=499 => Some(log::Level::Warn),
+                500..=599 => Some(log::Level::Error),
+                _ => None,
+            };
 
-                500..=599 => {
-                    error!("Detected status: {} - {} - {{{:?}}}", status, path, error);
-                }
-                _ => {}
+            if let Some(level) = log_level {
+                log!(
+                    level,
+                    "Detected status: {} - {} - {{{:?}}}",
+                    status,
+                    path,
+                    error
+                );
             }
 
             Ok(response)
