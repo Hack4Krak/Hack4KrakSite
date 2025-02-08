@@ -13,12 +13,13 @@ if (import.meta.server) {
       path: { task_id },
     })
 
-    description.value = response.value ?? 'No task here'
-    if (description.value === 'No task here') {
+    if (!response.value) {
       showError({
         statusCode: 404,
-        message: 'Task not found',
+        message: 'Zadanie nie zostało znalezione',
       })
+    } else {
+      description.value = response.value
     }
   } catch (error) {
     if (error instanceof FetchError) {
@@ -32,8 +33,6 @@ if (import.meta.server) {
 
 <template>
   <div class="flex flex-col mx-[10vw] w-[80vw] pt-5">
-    <div class="prose prose-invert">
-      <MDC :value="description" />
-    </div>
+    <MDCserver :text="description" />
   </div>
 </template>

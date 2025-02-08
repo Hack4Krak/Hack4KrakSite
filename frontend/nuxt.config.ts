@@ -16,6 +16,10 @@ export default defineNuxtConfig({
     '@nuxt/image',
   ],
 
+  experimental: {
+    componentIslands: true,
+  },
+
   site: {
     url: baseUrl,
     name: 'Hack4Krak CTF',
