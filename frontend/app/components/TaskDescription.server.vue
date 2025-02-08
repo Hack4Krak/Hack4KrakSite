@@ -1,13 +1,21 @@
 <script setup lang="ts">
 import { FetchError } from 'ofetch'
 
-const description = useState('task-description', () => '')
+const props = defineProps<{
+  taskId: string | string[] | undefined
+}>()
 
-const route = useRoute()
-const task_id = String(route.params.id ?? 'simple-task-example')
+const description = ref('')
+const toast = useToast()
 
-if (import.meta.server) {
+if (props.taskId === undefined) {
+  showError({
+    statusCode: 404,
+    message: 'Nie znaleziono zadania',
+  })
+} else {
   try {
+    const task_id = String(props.taskId)
     const address = '/tasks/description/{task_id}'
     const { data: response } = await useApi(address, {
       path: { task_id },
@@ -22,10 +30,15 @@ if (import.meta.server) {
       description.value = response.value
     }
   } catch (error) {
-    if (error instanceof FetchError) {
-      console.error(error.message)
+    console.error(error)
+    if (!(error instanceof FetchError)) {
+      throw error
+    }
+
+    if (error.data) {
+      await toast.add({ title: 'Błąd pobierania danych', description: error.data.message, color: 'error' })
     } else {
-      console.error(error)
+      await toast.add({ title: 'Błąd pobierania danych', color: 'error' })
     }
   }
 }
