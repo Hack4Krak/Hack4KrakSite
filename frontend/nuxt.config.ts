@@ -30,7 +30,11 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      link: [{ rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
+      link: [
+        { rel: 'icon', type: 'image/png', href: '/favicon-96x96.png', sizes: '96x96' },
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+        { rel: 'shortcut icon', href: '/favicon.svg' },
+      ],
       charset: 'utf-8',
       viewport: 'width=device-width, initial-scale=1',
       meta: [
