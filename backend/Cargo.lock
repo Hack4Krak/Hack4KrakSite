@@ -1540,7 +1540,6 @@ dependencies = [
  "futures",
  "jsonwebtoken",
  "lettre",
- "log",
  "migration",
  "oauth2",
  "regex",

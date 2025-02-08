@@ -4,7 +4,7 @@ mod oauth;
 mod refresh;
 mod register;
 
-use crate::utils::error::json_error_response;
+use crate::utils::error::error_response_builder;
 use actix_web::error;
 use actix_web::http::StatusCode;
 pub use login::LoginModel;
@@ -45,6 +45,6 @@ impl error::ResponseError for AuthError {
     }
 
     fn error_response(&self) -> actix_web::HttpResponse {
-        json_error_response(self)
+        error_response_builder(self)
     }
 }

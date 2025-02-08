@@ -1,23 +1,24 @@
-use actix_web::http::StatusCode;
+use crate::utils::error::ErrorHttpResponseExtension;
 use actix_web::{
     dev::{Service, ServiceRequest, ServiceResponse, Transform},
-    Error,
+    Error as ActixError,
 };
 use futures::future::{ok, Ready};
-use log::error;
 use std::future::Future;
 use std::pin::Pin;
 use std::task::{Context, Poll};
+use tracing::error;
+use tracing::log::warn;
 
 pub struct StatusCodeDrain;
 
 impl<S, B> Transform<S, ServiceRequest> for StatusCodeDrain
 where
-    S: Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error>,
+    S: Service<ServiceRequest, Response = ServiceResponse<B>, Error = ActixError>,
     S::Future: 'static,
 {
     type Response = ServiceResponse<B>;
-    type Error = Error;
+    type Error = ActixError;
     type Transform = StatusCodeDrainMiddleware<S>;
     type InitError = ();
     type Future = Ready<Result<Self::Transform, Self::InitError>>;
@@ -33,36 +34,40 @@ pub struct StatusCodeDrainMiddleware<S> {
 
 impl<S, B> Service<ServiceRequest> for StatusCodeDrainMiddleware<S>
 where
-    S: Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error>,
+    S: Service<ServiceRequest, Response = ServiceResponse<B>, Error = ActixError>,
     S::Future: 'static,
 {
     type Response = ServiceResponse<B>;
-    type Error = Error;
+    type Error = ActixError;
     type Future = Pin<Box<dyn Future<Output = Result<Self::Response, Self::Error>>>>;
 
     fn poll_ready(&self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
         self.service.poll_ready(cx)
     }
 
-    fn call(&self, req: ServiceRequest) -> Self::Future {
-        let fut = self.service.call(req);
+    fn call(&self, request: ServiceRequest) -> Self::Future {
+        let future = self.service.call(request);
 
         Box::pin(async move {
-            let res = fut.await?;
-            let status = res.status();
-            let path = res.request().path();
+            let response = future.await?;
+            let status = response.status();
+            let path = response.request().path();
+            let error = response
+                .response()
+                .extensions()
+                .get::<ErrorHttpResponseExtension>()
+                .map(|e| e.error.to_string())
+                .unwrap_or_else(|| "".to_string());
 
-            if status == StatusCode::INTERNAL_SERVER_ERROR
-                || status == StatusCode::BAD_REQUEST
-                || status == StatusCode::BAD_GATEWAY
-                || status == StatusCode::SERVICE_UNAVAILABLE
-                || status == StatusCode::GATEWAY_TIMEOUT
-                || status == StatusCode::REQUEST_TIMEOUT
-            {
-                error!("Detected status: {} - {}", status, path);
+            if status.as_u16() >= 500 {
+                error!("Detected status: {} - {} - {{{:?}}}", status, path, error);
             }
 
-            Ok(res)
+            if status.as_u16() >= 400 {
+                warn!("Detected status: {} - {} - {{{:?}}}", status, path, error);
+            }
+
+            Ok(response)
         })
     }
 }

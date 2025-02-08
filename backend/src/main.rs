@@ -147,7 +147,6 @@ async fn main() -> std::io::Result<()> {
                 .write_all(to_string(&api).unwrap().as_bytes())
                 .unwrap();
         }
-
         app
     })
     .bind((ip, port))?
