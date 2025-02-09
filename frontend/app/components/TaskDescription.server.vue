@@ -11,35 +11,37 @@ const toast = useToast()
 if (props.taskId === undefined) {
   showError({
     statusCode: 404,
-    message: 'Nie znaleziono zadania',
+    message: 'Zadanie nie zostało znalezione',
   })
-} else {
-  try {
-    const task_id = String(props.taskId)
-    const address = '/tasks/description/{task_id}'
-    const { data: response } = await useApi(address, {
-      path: { task_id },
+  throw new Error('Task ID is not defined')
+}
+try {
+  const task_id = String(props.taskId)
+  const address = '/tasks/description/{task_id}'
+  const { data: response } = await useApi(address, {
+    path: { task_id },
+  })
+
+  console.error(response.value)
+  if (response.value === undefined) {
+    showError({
+      statusCode: 404,
+      message: 'Zadanie nie zostało znalezione',
     })
+    console.error('Task not found')
+  } else {
+    description.value = String(response.value)
+  }
+} catch (error) {
+  console.error(error)
+  if (!(error instanceof FetchError)) {
+    throw error
+  }
 
-    if (!response.value) {
-      showError({
-        statusCode: 404,
-        message: 'Zadanie nie zostało znalezione',
-      })
-    } else {
-      description.value = response.value
-    }
-  } catch (error) {
-    console.error(error)
-    if (!(error instanceof FetchError)) {
-      throw error
-    }
-
-    if (error.data) {
-      await toast.add({ title: 'Błąd pobierania danych', description: error.data.message, color: 'error' })
-    } else {
-      await toast.add({ title: 'Błąd pobierania danych', color: 'error' })
-    }
+  if (error.data) {
+    await toast.add({ title: 'Błąd pobierania danych', description: error.data.message, color: 'error' })
+  } else {
+    await toast.add({ title: 'Błąd pobierania danych', color: 'error' })
   }
 }
 </script>
