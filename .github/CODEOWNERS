@@ -7,5 +7,6 @@
 # Frontend Team
 /frontend/ @Hack4Krak/Frontend
 
-# OpenApi in /frontend/
+# Excluded files
 /frontend/openapi/
+/backend/TasksTemplate/
