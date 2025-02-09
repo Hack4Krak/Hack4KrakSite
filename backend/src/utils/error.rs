@@ -1,11 +1,38 @@
 use actix_web::http::StatusCode;
-use actix_web::{error, HttpResponse, HttpResponseBuilder};
+use actix_web::{error, HttpResponse};
 use thiserror::Error;
 use utoipa::gen::serde_json::json;
 
 use crate::routes::auth::AuthError;
 use crate::routes::task::TaskError;
 use crate::routes::teams::TeamError;
+
+pub struct ErrorHttpResponseExtension {
+    pub error: String,
+}
+
+impl ErrorHttpResponseExtension {
+    pub fn new(error: String) -> Self {
+        Self { error }
+    }
+}
+
+pub fn error_response_builder<T: error::ResponseError>(err: &T) -> HttpResponse {
+    let status_code = err.status_code();
+    let error_message = err.to_string();
+
+    let mut response = HttpResponse::build(status_code).json(json!({
+        "code": status_code.as_u16(),
+        "message": error_message,
+        "error": format!("{:?}", err),
+    }));
+
+    response
+        .extensions_mut()
+        .insert(ErrorHttpResponseExtension::new(error_message));
+
+    response
+}
 
 #[derive(Debug, Error)]
 pub enum Error {
@@ -49,14 +76,6 @@ pub enum Error {
     Task(#[from] TaskError),
 }
 
-pub fn json_error_response<T: error::ResponseError>(err: &T) -> HttpResponse {
-    HttpResponseBuilder::new(err.status_code()).json(json!({
-        "code": err.status_code().as_u16(),
-        "message": err.to_string(),
-        "error": format!("{:?}", err),
-    }))
-}
-
 impl error::ResponseError for Error {
     fn status_code(&self) -> StatusCode {
         match self {
@@ -83,6 +102,6 @@ impl error::ResponseError for Error {
     }
 
     fn error_response(&self) -> HttpResponse {
-        json_error_response(self)
+        error_response_builder(self)
     }
 }

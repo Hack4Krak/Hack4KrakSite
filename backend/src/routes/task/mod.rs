@@ -34,6 +34,6 @@ impl error::ResponseError for TaskError {
     }
 
     fn error_response(&self) -> HttpResponse {
-        crate::utils::error::json_error_response(self)
+        crate::utils::error::error_response_builder(self)
     }
 }
