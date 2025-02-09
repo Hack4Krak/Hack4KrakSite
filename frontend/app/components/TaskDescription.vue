@@ -6,14 +6,13 @@ const props = defineProps<{
 }>()
 
 const description = ref('')
-const toast = useToast()
 
 try {
-  const task_id = String(props.taskId)
+  const taskId = String(props.taskId)
   const address = '/tasks/description/{task_id}'
   const { data: response } = await useApi(address, {
-    path: { task_id },
-    key: `task-description-${task_id}`,
+    path: { task_id: taskId },
+    key: `task-description-${taskId}`,
   })
 
   if (response.value === undefined) {
@@ -31,11 +30,7 @@ try {
     throw error
   }
 
-  if (error.data) {
-    await toast.add({ title: 'Błąd pobierania danych', description: error.data.message, color: 'error' })
-  } else {
-    await toast.add({ title: 'Błąd pobierania danych', color: 'error' })
-  }
+  showError(error)
 }
 </script>
 
