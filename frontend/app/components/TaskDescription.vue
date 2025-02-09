@@ -8,21 +8,14 @@ const props = defineProps<{
 const description = ref('')
 const toast = useToast()
 
-if (props.taskId === undefined) {
-  showError({
-    statusCode: 404,
-    message: 'Zadanie nie zostało znalezione',
-  })
-  throw new Error('Task ID is not defined')
-}
 try {
   const task_id = String(props.taskId)
   const address = '/tasks/description/{task_id}'
   const { data: response } = await useApi(address, {
     path: { task_id },
+    key: `task-description-${task_id}`,
   })
 
-  console.error(response.value)
   if (response.value === undefined) {
     showError({
       statusCode: 404,

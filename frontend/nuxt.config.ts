@@ -16,6 +16,10 @@ export default defineNuxtConfig({
     '@nuxt/image',
   ],
 
+  routeRules: {
+    '/tasks/description/**': { swr: true },
+  },
+
   experimental: {
     componentIslands: true,
   },

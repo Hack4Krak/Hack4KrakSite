@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Element } from '~/components/Map.vue'
-import Map from '~/components/Map.vue'
+import type { Element } from '@/components/Map.vue'
+import Map from '@/components/Map.vue'
 
 const elements = ref<Element[]>([
   { x: 10, y: 20, content: 'Placeholder' },
