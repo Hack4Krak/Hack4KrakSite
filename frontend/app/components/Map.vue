@@ -1,21 +1,26 @@
 <script setup lang="ts">
-export interface Element {
-  x: number
-  y: number
-  content: string
-}
+import type { ApiResponse } from '#open-fetch'
+import { useResizeObserver } from '@vueuse/core'
+
+export type Tasks = ApiResponse<'list'>
 
 defineProps<{
-  elements: Element[]
+  elements: Tasks
 }>()
 
 let isDragging = false
 let initialMousePositionX = 0
 let scrollLeft = 0
 const mapContainer = ref<HTMLElement | null>(null)
+const mapImage = ref<HTMLImageElement | null>(null)
 
-const MAP_IMAGE_ASPECT_RATIO = 2550 / 480
+const isLoaded = ref(false)
+const scaleFactor = ref(1)
+
+const MAP_IMAGE_ASPECT_RATIO = 510 / 96
 const IDEAL_VERTICAL_OVERFLOW_VALUE = 88
+
+const taskIconBaseUrl = `${useRuntimeConfig().public.openFetch.api.baseURL}/tasks/icon/`
 
 function onMouseDown(event: MouseEvent) {
   if (!mapContainer.value)
@@ -37,6 +42,19 @@ function onMouseMove(event: MouseEvent) {
 function onMouseUp() {
   isDragging = false
 }
+
+useResizeObserver(mapImage, () => {
+  if (!mapImage.value)
+    return
+  const naturalHeight = mapImage.value.naturalHeight
+  const renderedHeight = mapImage.value.clientHeight
+
+  scaleFactor.value = renderedHeight / naturalHeight
+})
+
+onMounted(() => {
+  isLoaded.value = true
+})
 </script>
 
 <template>
@@ -51,17 +69,24 @@ function onMouseUp() {
   >
     <div class="relative" :style="{ width: `${IDEAL_VERTICAL_OVERFLOW_VALUE * MAP_IMAGE_ASPECT_RATIO}vh` }">
       <img
+        ref="mapImage"
         class="h-auto w-full object-cover rendering-pixelated select-none pointer-events-none"
         src="/img/map.png"
         alt="Map with tasks"
       >
       <div
-        v-for="(item, index) in elements"
-        :key="index"
+        v-for="item in elements"
+        :key="item.id"
         class="absolute transform -translate-x-1/2 -translate-y-1/2"
-        :style="{ left: `${item.x}vh`, top: `${item.y}vh` }"
+        :style="{ left: `${item.display.icon_coordinates.x}vh`, top: `${item.display.icon_coordinates.y}vh` }"
       >
-        {{ item.content }}
+        <div :style="{ transform: `scale(${scaleFactor})` }">
+          <UTooltip :text="item.name">
+            <NuxtLink :to="`/tasks/description/${item.id}`">
+              <img v-if="isLoaded" :src="`${taskIconBaseUrl}${item.id}`" class="rendering-pixelated hover:drop-shadow-[0px_0px_2px_#555555] transition-all duration-300 ease-in-out" :alt="item.name">
+            </NuxtLink>
+          </UTooltip>
+        </div>
       </div>
     </div>
   </div>

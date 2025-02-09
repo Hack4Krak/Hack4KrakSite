@@ -25,6 +25,10 @@ const items = [
       to: '/rules',
     },
     {
+      label: 'Zadania',
+      to: '/tasks',
+    },
+    {
       label: 'Discord',
       to: 'https://discord.gg/ASPqckzEd8',
       target: '_blank',
