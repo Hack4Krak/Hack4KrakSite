@@ -12,6 +12,7 @@
     "backend:build": "pnpm --prefix ./backend/ build",
     "backend:install": "pnpm --prefix ./backend/ install",
     "backend:test": "pnpm --prefix ./backend/ test",
+    "backend:test:full": "pnpm --prefix ./backend/ test:full",
     "backend:dev": "pnpm --prefix ./backend/ dev",
     "backend:lint": "pnpm --prefix ./backend/ lint",
     "backend:lint:fix": "pnpm --prefix ./backend/ lint:fix",

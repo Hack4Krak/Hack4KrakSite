@@ -3,6 +3,9 @@ name = "hack4krak-backend"
 version.workspace = true
 edition = "2021"
 
+[features]
+full-test-suite = []
+
 [workspace]
 members = [".", "migration"]
 
@@ -44,3 +47,7 @@ utoipa-scalar = { version = "0.3.0", features = ["actix-web"] }
 # Custom crates
 migration = { path = "migration" }
 regex = "1.11.1"
+
+[dev-dependencies]
+testcontainers = "0.23.1"
+

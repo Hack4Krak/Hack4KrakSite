@@ -38,6 +38,18 @@ pnpm backend:dev
 # Or all at the same time
 pnpm dev
 ```
+## Full Test Suite
+
+Because some backend tests are expensive and require docker (e.g. email integration tests), they are not run locally by default. To run the full test suite, use the following command:
+
+```shell
+pnpm backend:test:full
+```
+
+### Security ⚠️
+
+Running tests with `--features=full-test-suite` may require you to run them in privileged mode. This is because the tests are run in a Docker container and require access to the host's network. If running the tests in privileged mode is not an option, we recommend using alternatives like podman instead of Docker to host test containers.
+
 
 ## Stats
 

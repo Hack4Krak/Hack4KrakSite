@@ -66,8 +66,10 @@ pub enum Error {
     InvalidJson(#[from] serde_json::Error),
     #[error("Email template not found")]
     EmailTemplateNotFound,
-    #[error("Invalid email address while sending email")]
-    InvalidEmailAddressSendingEmail,
+    #[error("Invalid sender's email {0}")]
+    InvalidEmailSender(String),
+    #[error("Invalid recipients' email {0}")]
+    InvalidEmailRecipients(String),
     #[error(transparent)]
     Auth(#[from] AuthError),
     #[error(transparent)]
@@ -81,7 +83,8 @@ impl error::ResponseError for Error {
         match self {
             Error::PlaceholdersRequired
             | Error::EmailTemplateNotFound
-            | Error::InvalidEmailAddressSendingEmail => StatusCode::BAD_REQUEST,
+            | Error::InvalidEmailSender(_)
+            | Error::InvalidEmailRecipients(_) => StatusCode::BAD_REQUEST,
             Error::HashPasswordFailed(_)
             | Error::DatabaseOperation(_)
             | Error::OAuth
