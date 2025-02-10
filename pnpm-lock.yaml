@@ -20,8 +20,8 @@ importers:
         specifier: ^0.8.2
         version: 0.8.2
       '@iconify-json/lucide':
-        specifier: ^1.2.25
-        version: 1.2.25
+        specifier: ^1.2.26
+        version: 1.2.26
       '@nuxt/image':
         specifier: 1.9.0
         version: 1.9.0(db0@0.2.3(@libsql/client@0.14.0)(better-sqlite3@11.8.1))(ioredis@5.4.2)(magicast@0.3.5)(rollup@4.32.1)
@@ -721,8 +721,8 @@ packages:
     resolution: {integrity: sha512-c7hNEllBlenFTHBky65mhq8WD2kbN9Q6gk0bTk8lSBvc554jpXSkST1iePudpt7+A/AQvuHs9EMqjHDXMY1lrA==}
     engines: {node: '>=18.18'}
 
-  '@iconify-json/lucide@1.2.25':
-    resolution: {integrity: sha512-OsHihLfqdjxwoLWDEnGesrYbCG6VCCoLvmb1U6UJhggsppW+D3DUY/LhhcppZM4Yw3AM4USDIn/gkzqjdRYgEw==}
+  '@iconify-json/lucide@1.2.26':
+    resolution: {integrity: sha512-arD/8mK0lRxFY2LgLf345NhWVWiOtV8sOxJuLnq4QRz3frMiOwVwGxEgp5Xe/bRGzxO2CxxCBok0bPRpCkYZQQ==}
 
   '@iconify/collections@1.0.511':
     resolution: {integrity: sha512-Ilp9gg6HYu9oGZUCNGCEsblATFagC7AmvsUMi4mxfPbh48ygKQ4vIfzJetE9AAu2qwqaYt/dRQjTXvt5Ex8HwQ==}
@@ -6718,7 +6718,7 @@ snapshots:
 
   '@humanwhocodes/retry@0.4.1': {}
 
-  '@iconify-json/lucide@1.2.25':
+  '@iconify-json/lucide@1.2.26':
     dependencies:
       '@iconify/types': 2.0.0
 
