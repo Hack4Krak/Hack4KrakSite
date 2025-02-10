@@ -49,5 +49,5 @@ migration = { path = "migration" }
 regex = "1.11.1"
 
 [dev-dependencies]
-testcontainers = "0.23.1"
+testcontainers = "0.23.2"
 
