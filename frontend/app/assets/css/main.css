@@ -13,7 +13,7 @@
 }
 
 @utility rendering-pixelated {
-  image-rendering: crisp-edges;
+  image-rendering: pixelated;
 }
 
 @utility bg-default {
