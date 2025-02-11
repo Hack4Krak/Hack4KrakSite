@@ -1,10 +1,9 @@
-use crate::models::entities::teams;
+use crate::entities::{team_invites, teams, users};
 use crate::utils::app_state;
 use crate::utils::error::Error;
-use crate::utils::jwt::Claims;
+use crate::utils::success_response::SuccessResponse;
 use actix_web::{post, web, HttpResponse};
 use serde::{Deserialize, Serialize};
-use serde_json::json;
 use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, ToSchema)]
@@ -28,12 +27,14 @@ pub struct AddUserModel {
 #[post("/invite_user")]
 pub async fn invite_user(
     app_state: web::Data<app_state::AppState>,
-    add_user_model: web::Json<AddUserModel>,
-    claim_data: Claims,
+    model: web::Json<AddUserModel>,
+    team: teams::Model,
 ) -> Result<HttpResponse, Error> {
-    teams::Model::invite_user(&app_state.database, add_user_model.0, claim_data).await?;
+    let invited_user = users::Model::find_by_username(&app_state.database, &model.username)
+        .await?
+        .ok_or(Error::UserNotFound)?;
 
-    Ok(HttpResponse::Ok().json(json!({
-        "status": "ok"
-    })))
+    team_invites::Model::invite_user(&app_state.database, invited_user, team).await?;
+
+    Ok(SuccessResponse::default().http_response())
 }

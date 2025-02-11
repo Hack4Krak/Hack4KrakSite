@@ -1,50 +1,22 @@
+use crate::models::task::TaskConfig;
 use crate::routes::task::TaskError;
-use crate::utils::env::Config;
+use crate::services::env::EnvConfig;
 use crate::utils::error::Error;
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use dashmap::mapref::one::Ref;
+use dashmap::DashMap;
 use tokio::fs;
-use utoipa::ToSchema;
 
-#[derive(Serialize, Deserialize, ToSchema)]
-pub struct TaskConfig {
-    #[serde(flatten)]
-    pub description: TaskDescription,
-    pub story: Vec<TaskStory>,
-    pub display: TaskDisplay,
-}
-
-#[derive(Serialize, Deserialize, ToSchema, Clone)]
-pub struct TaskDescription {
-    pub id: String,
-    pub name: String,
-}
-
-#[derive(Serialize, Deserialize, ToSchema)]
-pub struct TaskStory {
-    pub title: String,
-    pub message: String,
-}
-
-#[derive(Serialize, Deserialize, ToSchema, Clone)]
-pub struct TaskDisplay {
-    pub icon_coordinates: Coordinates,
-}
-
-#[derive(Serialize, Deserialize, ToSchema, Clone)]
-pub struct Coordinates {
-    pub x: i32,
-    pub y: i32,
-}
-
+#[derive(Default)]
 pub struct TaskManager {
-    pub tasks: HashMap<String, TaskConfig>,
+    pub tasks: DashMap<String, TaskConfig>,
 }
 
 impl TaskManager {
     pub async fn load() -> Self {
-        let mut tasks = HashMap::new();
-        let mut entries = fs::read_dir(&Config::get().tasks_base_path).await.unwrap();
+        let tasks = DashMap::new();
+        let mut entries = fs::read_dir(&EnvConfig::get().tasks_base_path)
+            .await
+            .unwrap();
 
         while let Ok(Some(entry)) = entries.next_entry().await {
             if !entry.metadata().await.unwrap().is_dir() {
@@ -61,7 +33,7 @@ impl TaskManager {
         Self { tasks }
     }
 
-    pub fn get_task(&self, id: &str) -> Result<&TaskConfig, Error> {
+    pub fn get_task(&self, id: &str) -> Result<Ref<'_, String, TaskConfig>, Error> {
         if !id
             .chars()
             .all(|char| char.is_ascii_alphanumeric() || char == '-' || char == '_')
@@ -77,7 +49,7 @@ impl TaskManager {
     pub async fn load_asset(&self, id: &str, path: &str) -> Result<Vec<u8>, Error> {
         self.get_task(id)?;
 
-        let asset_path = Config::get().tasks_base_path.join(id).join(path);
+        let asset_path = EnvConfig::get().tasks_base_path.join(id).join(path);
 
         if !asset_path.exists() || !asset_path.is_file() {
             return Err(TaskError::CouldNotLoadTaskAsset { id: id.to_string() }.into());

@@ -3,10 +3,10 @@ use sea_orm::EntityTrait;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
-use crate::models::entities::users;
+use crate::entities::users;
 use crate::utils::app_state;
 use crate::utils::error::Error;
-use crate::utils::jwt::Claims;
+use crate::utils::jwt::JwtClaims;
 
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct UserInformationResponse {
@@ -27,7 +27,7 @@ pub struct UserInformationResponse {
 #[get("/")]
 pub async fn user(
     app_state: web::Data<app_state::AppState>,
-    claim_data: Claims,
+    claim_data: JwtClaims,
 ) -> Result<HttpResponse, Error> {
     let user_model = users::Entity::find_by_id(claim_data.id)
         .one(&app_state.database)

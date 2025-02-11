@@ -1,10 +1,9 @@
-use crate::models::entities::teams;
+use crate::entities::{teams, users};
+use crate::middlewares::auth::AuthMiddleware;
 use crate::utils::app_state;
 use crate::utils::error::Error;
-use crate::utils::jwt::Claims;
-use actix_web::middleware::from_fn;
-use actix_web::{post, web, HttpResponse};
-use serde_json::json;
+use crate::utils::success_response::SuccessResponse;
+use actix_web::{delete, web, HttpResponse};
 
 #[utoipa::path(
     responses(
@@ -16,19 +15,14 @@ use serde_json::json;
     security(
         ("access_token" = [])
     ),
-    tag = "teams"
+    tag = "teams/membership"
 )]
-#[post(
-    "/leave_team",
-    wrap = "from_fn(crate::middlewares::auth_middleware::check_auth_middleware)"
-)]
-pub async fn remove_user(
+#[delete("/leave_team", wrap = "AuthMiddleware::with_team_as_member()")]
+pub async fn leave_team(
     app_state: web::Data<app_state::AppState>,
-    claim_data: Claims,
+    user: users::Model,
 ) -> Result<HttpResponse, Error> {
-    teams::Model::leave_team(&app_state.database, claim_data).await?;
+    teams::Model::remove_user(&app_state.database, user).await?;
 
-    Ok(HttpResponse::Ok().json(json!({
-        "status": "ok"
-    })))
+    Ok(SuccessResponse::default().http_response())
 }

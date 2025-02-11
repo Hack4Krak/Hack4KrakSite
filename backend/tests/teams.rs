@@ -1,20 +1,19 @@
 use actix_web::http::header;
-use actix_web::middleware::from_fn;
 use actix_web::web::Data;
 use actix_web::{test, App};
 use chrono::Duration;
-use hack4krak_backend::models::entities::{teams, users};
+use hack4krak_backend::entities::{teams, users};
+use hack4krak_backend::routes;
+use hack4krak_backend::services::env::EnvConfig;
 use hack4krak_backend::utils::app_state::AppState;
-use hack4krak_backend::utils::env::Config;
 use hack4krak_backend::utils::jwt::encode_jwt;
-use hack4krak_backend::{middlewares, routes};
 use sea_orm::{DatabaseBackend, MockDatabase};
 use utoipa::gen::serde_json::json;
 use utoipa_actix_web::scope;
 
 #[actix_web::test]
 async fn create_team_user_already_belongs_to_team() {
-    Config::load_test_config();
+    EnvConfig::load_test_config();
 
     let uuid = uuid::Uuid::new_v4();
     let team_id = uuid::Uuid::new_v4();
@@ -44,11 +43,7 @@ async fn create_team_user_already_belongs_to_team() {
     let app = test::init_service(
         App::new()
             .app_data(Data::new(AppState::with_database(database)))
-            .service(
-                scope("/teams/manage")
-                    .wrap(from_fn(middlewares::auth_middleware::check_auth_middleware))
-                    .configure(routes::teams::management::config),
-            ),
+            .service(scope("/teams").configure(routes::teams::config)),
     )
     .await;
 
@@ -59,7 +54,7 @@ async fn create_team_user_already_belongs_to_team() {
     });
 
     let request = test::TestRequest::post()
-        .uri("/teams/manage/create_team")
+        .uri("/teams/create")
         .set_json(&create_team_payload)
         .insert_header((
             header::COOKIE,
@@ -74,7 +69,7 @@ async fn create_team_user_already_belongs_to_team() {
 
 #[actix_web::test]
 async fn create_duplicate_team() {
-    Config::load_test_config();
+    EnvConfig::load_test_config();
 
     let uuid = uuid::Uuid::new_v4();
 
@@ -103,11 +98,7 @@ async fn create_duplicate_team() {
     let app = test::init_service(
         App::new()
             .app_data(Data::new(AppState::with_database(database)))
-            .service(
-                scope("/teams/manage")
-                    .wrap(from_fn(middlewares::auth_middleware::check_auth_middleware))
-                    .configure(routes::teams::management::config),
-            ),
+            .service(scope("/teams").configure(routes::teams::config)),
     )
     .await;
 
@@ -118,7 +109,7 @@ async fn create_duplicate_team() {
     let access_token = encode_jwt(uuid, "example@gmail.com".to_string(), Duration::minutes(10));
 
     let request = test::TestRequest::post()
-        .uri("/teams/manage/create_team")
+        .uri("/teams/create")
         .set_json(&create_team_payload)
         .insert_header((
             header::COOKIE,
@@ -133,7 +124,7 @@ async fn create_duplicate_team() {
 
 #[actix_web::test]
 async fn create_team_success() {
-    Config::load_test_config();
+    EnvConfig::load_test_config();
 
     let uuid = uuid::Uuid::new_v4();
 
@@ -167,11 +158,7 @@ async fn create_team_success() {
     let app = test::init_service(
         App::new()
             .app_data(Data::new(AppState::with_database(database)))
-            .service(
-                scope("/teams/manage")
-                    .wrap(from_fn(middlewares::auth_middleware::check_auth_middleware))
-                    .configure(routes::teams::management::config),
-            ),
+            .service(scope("/teams").configure(routes::teams::config)),
     )
     .await;
 
@@ -182,7 +169,7 @@ async fn create_team_success() {
     let access_token = encode_jwt(uuid, "example@gmail.com".to_string(), Duration::minutes(10));
 
     let request = test::TestRequest::post()
-        .uri("/teams/manage/create_team")
+        .uri("/teams/create")
         .set_json(&create_team_payload)
         .insert_header((
             header::COOKIE,

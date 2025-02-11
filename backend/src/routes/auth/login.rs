@@ -1,7 +1,8 @@
-use crate::models::entities::users;
+use crate::entities::users;
+use crate::routes::auth::AuthError::InvalidCredentials;
+use crate::services::auth::AuthService;
 use crate::utils::app_state;
 use crate::utils::error::Error;
-use crate::utils::jwt::get_tokens_http_response;
 use actix_web::{post, web, HttpResponse};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
@@ -26,6 +27,11 @@ pub async fn login(
     app_state: web::Data<app_state::AppState>,
     login_json: web::Json<LoginModel>,
 ) -> Result<HttpResponse, Error> {
-    let (uuid, email) = users::Model::verify_credentials(&app_state.database, &login_json).await?;
-    get_tokens_http_response(uuid, email)
+    let user = users::Model::find_by_username(&app_state.database, &login_json.email)
+        .await?
+        .ok_or(Error::Auth(InvalidCredentials))?;
+
+    AuthService::assert_password_is_valid(&user, &login_json.password)?;
+
+    AuthService::response_with_cookies(user.id, user.email)
 }

@@ -21,10 +21,10 @@ fn default_tasks_base_path() -> PathBuf {
     PathBuf::from_str("TasksTemplate/tasks/").unwrap()
 }
 
-pub static CONFIG: OnceLock<Config> = OnceLock::new();
+pub static ENV: OnceLock<EnvConfig> = OnceLock::new();
 
 #[derive(Deserialize, Debug, Default)]
-pub struct Config {
+pub struct EnvConfig {
     pub database_url: String,
     #[serde(default = "default_backend_address")]
     pub backend_address: String,
@@ -46,20 +46,31 @@ pub struct Config {
     pub resend_api_key: String,
 }
 
-impl Config {
+impl EnvConfig {
     pub fn load_config() {
         let _ = dotenvy::from_path(Path::new("../.env"));
-        CONFIG.get_or_init(|| envy::from_env::<Config>().unwrap());
+        ENV.get_or_init(|| envy::from_env::<EnvConfig>().unwrap());
     }
 
     pub fn load_test_config() {
-        CONFIG.get_or_init(|| Config {
+        ENV.get_or_init(|| EnvConfig {
             jwt_secret: "skibidi-dziegiel-secret".to_string(),
             ..Default::default()
         });
     }
 
-    pub fn get() -> &'static Config {
-        CONFIG.get().unwrap()
+    pub fn get() -> &'static EnvConfig {
+        ENV.get().unwrap()
+    }
+
+    pub fn get_ip_and_port(&self) -> (&str, u16) {
+        let address_env = &EnvConfig::get().backend_address;
+        let address_vec: Vec<&str> = address_env.split(":").collect();
+        let ip = address_vec[0];
+        let port = address_vec[1]
+            .parse::<u16>()
+            .expect("The port in BACKEND_ADDRESS must be a valid u16 integer");
+
+        (ip, port)
     }
 }

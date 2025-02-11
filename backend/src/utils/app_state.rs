@@ -1,55 +1,57 @@
-use crate::utils::task::TaskManager;
-use crossbeam::sync::ShardedLock;
+use crate::services::env::EnvConfig;
+use crate::services::task_manager::TaskManager;
+use crate::utils::oauth::OAuthProvider;
+use lettre::transport::smtp::authentication::Credentials;
 use lettre::SmtpTransport;
-use oauth2::basic::*;
-use oauth2::{
-    AuthUrl, Client, ClientId, EndpointNotSet, EndpointSet, RedirectUrl, StandardRevocableToken,
-    TokenUrl,
-};
 use sea_orm::DatabaseConnection;
-use std::collections::HashMap;
-
-type OAuthClient = Client<
-    BasicErrorResponse,
-    BasicTokenResponse,
-    BasicTokenIntrospectionResponse,
-    StandardRevocableToken,
-    BasicRevocationErrorResponse,
-    EndpointSet,
-    EndpointNotSet,
-    EndpointNotSet,
-    EndpointNotSet,
-    EndpointSet,
->;
 
 pub struct AppState {
     pub database: DatabaseConnection,
-    pub task_manager: ShardedLock<TaskManager>,
-    pub github_oauth_client: OAuthClient,
-    pub google_oauth_client: OAuthClient,
+    pub task_manager: TaskManager,
+    pub github_oauth_provider: OAuthProvider,
+    pub google_oauth_provider: OAuthProvider,
     pub smtp_client: SmtpTransport,
 }
 
-impl Default for AppState {
-    fn default() -> Self {
-        let oauth_client: OAuthClient = BasicClient::new(ClientId::new("test".to_string()))
-            .set_auth_uri(AuthUrl::new("https://authorize".to_string()).unwrap())
-            .set_token_uri(TokenUrl::new("https://token".to_string()).unwrap())
-            .set_redirect_uri(RedirectUrl::new("https://redirect".to_string()).unwrap());
+impl AppState {
+    pub async fn setup(database: DatabaseConnection) -> AppState {
+        let config = EnvConfig::get();
+
+        let github_oauth_provider = OAuthProvider::new(
+            config.github_oauth_client_id.clone(),
+            config.github_oauth_client_secret.clone(),
+            "https://github.com/login/oauth/authorize",
+            "https://github.com/login/oauth/access_token",
+            &config.github_oauth_redirect_url,
+        );
+
+        let google_oauth_provider = OAuthProvider::new(
+            config.google_oauth_client_id.clone(),
+            config.google_oauth_client_secret.clone(),
+            "https://accounts.google.com/o/oauth2/v2/auth",
+            "https://www.googleapis.com/oauth2/v3/token",
+            &config.google_oauth_redirect_url,
+        );
+
+        let task_manager = TaskManager::load().await;
+
+        let smtp_client = SmtpTransport::relay("smtp.resend.com")
+            .unwrap()
+            .credentials(Credentials::new(
+                "resend".to_string(),
+                config.resend_api_key.clone(),
+            ))
+            .build();
 
         AppState {
-            database: Default::default(),
-            task_manager: ShardedLock::new(TaskManager {
-                tasks: HashMap::new(),
-            }),
-            github_oauth_client: oauth_client.clone(),
-            google_oauth_client: oauth_client,
-            smtp_client: SmtpTransport::relay("email.example.com").unwrap().build(),
+            task_manager,
+            database,
+            github_oauth_provider,
+            google_oauth_provider,
+            smtp_client,
         }
     }
-}
 
-impl AppState {
     pub fn with_database(database: DatabaseConnection) -> AppState {
         AppState {
             database,
@@ -61,6 +63,25 @@ impl AppState {
         AppState {
             smtp_client,
             ..Default::default()
+        }
+    }
+}
+
+impl Default for AppState {
+    fn default() -> Self {
+        let oauth_provider = OAuthProvider::new(
+            "test".to_string(),
+            "skibidi".to_string(),
+            "https://authorize",
+            "https://token",
+            "https://redirect",
+        );
+        AppState {
+            database: Default::default(),
+            task_manager: TaskManager::default(),
+            github_oauth_provider: oauth_provider.clone(),
+            google_oauth_provider: oauth_provider,
+            smtp_client: SmtpTransport::relay("email.example.com").unwrap().build(),
         }
     }
 }

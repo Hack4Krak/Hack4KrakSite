@@ -1,10 +1,9 @@
-use crate::models::entities::teams;
+use crate::entities::teams;
 use crate::utils::app_state;
 use crate::utils::error::Error;
-use crate::utils::jwt::Claims;
-use actix_web::{post, web, HttpResponse};
+use crate::utils::success_response::SuccessResponse;
+use actix_web::{patch, web, HttpResponse};
 use serde::{Deserialize, Serialize};
-use serde_json::json;
 use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, ToSchema)]
@@ -25,15 +24,18 @@ pub struct ChangeNameModel {
     ),
     tag = "teams/management"
 )]
-#[post("/rename")]
+#[patch("/rename")]
 pub async fn rename(
     app_state: web::Data<app_state::AppState>,
     change_name_model: web::Json<ChangeNameModel>,
-    claim_data: Claims,
+    team: teams::Model,
 ) -> Result<HttpResponse, Error> {
-    teams::Model::rename(&app_state.database, change_name_model.0, claim_data).await?;
+    teams::Model::rename(
+        &app_state.database,
+        change_name_model.new_name.clone(),
+        team,
+    )
+    .await?;
 
-    Ok(HttpResponse::Ok().json(json!({
-        "status": "ok"
-    })))
+    Ok(SuccessResponse::default().http_response())
 }

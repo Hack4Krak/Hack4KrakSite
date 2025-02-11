@@ -56,6 +56,8 @@ pub enum Error {
     Io(#[from] std::io::Error),
     #[error("User not found")]
     UserNotFound,
+    #[error("Missing {name} extension in request")]
+    MissingExtension { name: String },
     #[error("Placeholder elements are required for this email template")]
     PlaceholdersRequired,
     #[error("Failed to send email: {0}")]
@@ -96,7 +98,9 @@ impl error::ResponseError for Error {
             | Error::FailedToBuildEmail(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Unauthorized => StatusCode::UNAUTHORIZED,
             Error::InvalidJsonWebToken => StatusCode::UNAUTHORIZED,
-            Error::InvalidAuthorizationHeader => StatusCode::BAD_REQUEST,
+            Error::InvalidAuthorizationHeader | Error::MissingExtension { .. } => {
+                StatusCode::BAD_REQUEST
+            }
             Error::UserNotFound => StatusCode::NOT_FOUND,
             Error::Team(team_err) => team_err.status_code(),
             Error::Auth(auth_err) => auth_err.status_code(),

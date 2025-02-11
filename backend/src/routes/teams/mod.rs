@@ -1,23 +1,36 @@
+use crate::middlewares::auth::AuthMiddleware;
 use actix_web::http::StatusCode;
 use actix_web::{error, HttpResponse};
 use thiserror::Error;
+use utoipa_actix_web::scope;
 
-pub mod invitations;
-mod leave_team;
-pub mod management;
-pub mod my_team;
-pub mod team;
-pub mod view_teams;
+mod create;
+mod invitations;
+mod management;
+mod membership;
 
 pub fn config(cfg: &mut utoipa_actix_web::service_config::ServiceConfig) {
-    cfg.service(view_teams::view_teams);
-    cfg.service(team::view_team);
-    cfg.service(my_team::my_team);
+    cfg.service(create::create);
+    cfg.service(
+        scope("/invitations")
+            .wrap(AuthMiddleware::with_user())
+            .configure(invitations::config),
+    );
+    cfg.service(
+        scope("/membership")
+            .wrap(AuthMiddleware::with_team_as_member())
+            .configure(membership::config),
+    );
+    cfg.service(
+        scope("/management")
+            .wrap(AuthMiddleware::with_team_as_leader())
+            .configure(management::config),
+    );
 }
 
 #[derive(Debug, Error)]
 pub enum TeamError {
-    #[error("Team already exists")]
+    #[error("Team with same name already exists")]
     AlreadyExists,
     #[error("User already belongs to team: {team_name}")]
     UserAlreadyBelongsToTeam { team_name: String },

@@ -1,4 +1,4 @@
-use crate::utils::env::Config;
+use crate::services::env::EnvConfig;
 use actix_web::cookie::time::{Duration, OffsetDateTime};
 use actix_web::cookie::{Cookie, SameSite};
 
@@ -9,7 +9,7 @@ pub fn reset_cookie(name: &str) -> Cookie {
     Cookie::build(name, "removed")
         .expires(OffsetDateTime::UNIX_EPOCH)
         .path("/")
-        .domain(Config::get().cookies_domain.clone())
+        .domain(EnvConfig::get().cookies_domain.clone())
         .finish()
 }
 
@@ -18,7 +18,7 @@ pub fn create_cookie(name: &str, value: &str, max_age: Option<Duration>) -> Stri
         .path("/")
         .http_only(true)
         .same_site(SameSite::Strict)
-        .domain(Config::get().cookies_domain.clone())
+        .domain(EnvConfig::get().cookies_domain.clone())
         // Most browsers don't verify it for localhost
         .secure(true);
 
