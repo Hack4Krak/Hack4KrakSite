@@ -39,5 +39,5 @@ function redirectToTaskDescription() {
 </script>
 
 <template>
-  <StoryViewer @complete="redirectToTaskDescription" :image="backgroundImage" :story-dialogues="story" />
+  <StoryViewer :image="backgroundImage" :story-dialogues="story" @complete="redirectToTaskDescription" />
 </template>
