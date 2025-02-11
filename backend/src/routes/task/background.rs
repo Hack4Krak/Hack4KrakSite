@@ -19,7 +19,7 @@ pub async fn background(
 ) -> Result<HttpResponse, Error> {
     let manager = &app_state.task_manager;
 
-    let content = manager.load_asset(&task_id, "pictures/icon.png").await?;
+    let content = manager.load_asset(&task_id, "pictures/background.png").await?;
 
     Ok(HttpResponse::Ok().body(content))
 }
