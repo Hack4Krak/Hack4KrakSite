@@ -82,7 +82,7 @@ onMounted(() => {
       >
         <div :style="{ transform: `scale(${scaleFactor})` }">
           <UTooltip :text="item.name">
-            <NuxtLink :to="{ name: 'description', params: { id: item.id } }">
+            <NuxtLink :to="`/tasks/description/${item.id}`">
               <img v-if="isLoaded" :src="`${taskIconBaseUrl}${item.id}`" class="rendering-pixelated hover:drop-shadow-[0px_0px_2px_#555555] transition-all duration-300 ease-in-out" :alt="item.name">
             </NuxtLink>
           </UTooltip>
