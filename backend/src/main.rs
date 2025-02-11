@@ -98,7 +98,12 @@ fn setup_actix_app() -> App<
         .service(
             scope("/user")
                 .wrap(AuthMiddleware::with_user())
-                .configure(routes::user::config),
+                .configure(routes::user::user_config),
+        )
+        .service(
+            scope("/admin")
+                .wrap(AuthMiddleware::with_admin())
+                .configure(routes::user::admin_config),
         )
         .openapi_service(|api| Scalar::with_url("/docs", api))
         .split_for_parts();

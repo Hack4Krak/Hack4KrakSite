@@ -3,6 +3,7 @@ use actix_web::{error, HttpResponse};
 use thiserror::Error;
 use utoipa::gen::serde_json::json;
 
+use crate::entities::sea_orm_active_enums::UserRoles;
 use crate::routes::auth::AuthError;
 use crate::routes::task::TaskError;
 use crate::routes::teams::TeamError;
@@ -46,6 +47,8 @@ pub enum Error {
     DatabaseOperation(#[from] sea_orm::DbErr),
     #[error("Unauthorized")]
     Unauthorized,
+    #[error("Thou shall not pass, required role: {required_role:?}")]
+    Forbidden { required_role: UserRoles },
     #[error("Invalid Json Web Token")]
     InvalidJsonWebToken,
     #[error("Invalid authorization header content")]
@@ -102,6 +105,7 @@ impl error::ResponseError for Error {
                 StatusCode::BAD_REQUEST
             }
             Error::UserNotFound => StatusCode::NOT_FOUND,
+            Error::Forbidden { .. } => StatusCode::FORBIDDEN,
             Error::Team(team_err) => team_err.status_code(),
             Error::Auth(auth_err) => auth_err.status_code(),
             Error::Task(error) => error.status_code(),

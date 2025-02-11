@@ -22,9 +22,9 @@ async fn register() {
                 email: "".to_string(),
                 created_at: Default::default(),
                 team: None,
-                permissions: None,
                 is_leader: false,
                 password: None,
+                roles: Default::default(),
             }],
         ])
         .append_exec_results([MockExecResult {
@@ -92,9 +92,9 @@ async fn auth_flow() {
         email: "dev@hack4krak.eu".to_string(),
         created_at: Default::default(),
         team: None,
-        permissions: None,
         is_leader: false,
         password: Some("$argon2id$v=19$m=19456,t=2,p=1$cLSl6N0HmRupZWoHO/b2EQ$rWWC3cagHlLCO2+awPqSHQCeypMtIM9GhHNqn1dzaik".to_string()),
+        roles: Default::default(),
     };
 
     let database = MockDatabase::new(DatabaseBackend::Postgres)
@@ -108,7 +108,7 @@ async fn auth_flow() {
             .service(
                 scope("/user")
                     .wrap(AuthMiddleware::default())
-                    .configure(routes::user::config),
+                    .configure(routes::user::admin_config),
             ),
     )
     .await;

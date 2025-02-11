@@ -40,6 +40,25 @@ pub async fn user(
     }))
 }
 
-pub fn config(cfg: &mut utoipa_actix_web::service_config::ServiceConfig) {
+#[utoipa::path(
+    responses(
+        (status = 200, description = "Use information received."),
+        (status = 500, description = "Internal server error.")
+    ),
+    security(
+        ("access_token" = [])
+    ),
+    tag = "admin"
+)]
+#[get("/")]
+pub async fn only_admins() -> Result<HttpResponse, Error> {
+    Ok(HttpResponse::Ok().finish())
+}
+
+pub fn admin_config(cfg: &mut utoipa_actix_web::service_config::ServiceConfig) {
+    cfg.service(only_admins);
+}
+
+pub fn user_config(cfg: &mut utoipa_actix_web::service_config::ServiceConfig) {
     cfg.service(user);
 }

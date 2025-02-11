@@ -25,9 +25,9 @@ async fn create_team_user_already_belongs_to_team() {
             email: "example@gmail.com".to_string(),
             created_at: Default::default(),
             team: Some(team_id),
-            permissions: None,
             is_leader: false,
             password: None,
+            roles: Default::default(),
         }]])
         .append_query_results([vec![teams::Model {
             id: team_id,
@@ -80,7 +80,7 @@ async fn create_duplicate_team() {
             email: "example@gmail.com".to_string(),
             created_at: Default::default(),
             team: None,
-            permissions: None,
+            roles: Default::default(),
             is_leader: false,
             password: None,
         }]])
@@ -134,7 +134,7 @@ async fn create_team_success() {
         email: "example@gmail.com".to_string(),
         created_at: Default::default(),
         team: None,
-        permissions: None,
+        roles: Default::default(),
         is_leader: false,
         password: None,
     };

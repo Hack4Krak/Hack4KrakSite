@@ -1,3 +1,4 @@
+use crate::entities::sea_orm_active_enums::UserRoles;
 use crate::entities::{teams, users};
 use crate::routes::teams::TeamError;
 use crate::utils::app_state::AppState;
@@ -22,6 +23,7 @@ pub struct AuthMiddleware {
     insert_user_extension: bool,
     insert_team_extension: bool,
     team_requirement: TeamRequirement,
+    role_requirement: UserRoles,
 }
 
 #[derive(Default, Clone, Copy, PartialEq)]
@@ -45,6 +47,7 @@ impl AuthMiddleware {
             insert_user_extension: true,
             insert_team_extension: true,
             team_requirement: TeamRequirement::Member,
+            role_requirement: UserRoles::Default,
         }
     }
 
@@ -53,6 +56,23 @@ impl AuthMiddleware {
             insert_user_extension: true,
             insert_team_extension: true,
             team_requirement: TeamRequirement::Leader,
+            role_requirement: UserRoles::Default,
+        }
+    }
+
+    pub fn with_admin() -> Self {
+        AuthMiddleware {
+            insert_user_extension: true,
+            role_requirement: UserRoles::Admin,
+            ..Default::default()
+        }
+    }
+
+    pub fn with_owner() -> Self {
+        AuthMiddleware {
+            insert_user_extension: true,
+            role_requirement: UserRoles::Owner,
+            ..Default::default()
         }
     }
 }
@@ -159,6 +179,24 @@ impl<S> AuthMiddlewareService<S> {
                         .ok_or(Error::Team(TeamError::TeamNotFound))?;
 
                     request.extensions_mut().insert(team);
+                }
+            }
+        }
+
+        match config.role_requirement {
+            UserRoles::Default => (),
+            UserRoles::Admin => {
+                if user.roles.permission_level() < UserRoles::Admin.permission_level() {
+                    return Err(Error::Forbidden {
+                        required_role: UserRoles::Admin,
+                    });
+                }
+            }
+            UserRoles::Owner => {
+                if user.roles.permission_level() < UserRoles::Owner.permission_level() {
+                    return Err(Error::Forbidden {
+                        required_role: UserRoles::Owner,
+                    });
                 }
             }
         }
