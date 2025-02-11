@@ -40,7 +40,7 @@ async fn main() -> std::io::Result<()> {
     let task_manager = TaskManager::load().await;
     info!("Loaded {} tasks from file system", task_manager.tasks.len());
 
-    let app_data = Data::new(AppState::setup(database));
+    let app_data = Data::new(AppState::setup(database).await);
 
     info!("Starting server...");
     let server = HttpServer::new(move || setup_actix_app().app_data(app_data.clone()))

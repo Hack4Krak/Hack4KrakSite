@@ -33,6 +33,21 @@ impl users::Model {
             .await?)
     }
 
+    pub async fn find_by_email_or_username(
+        database: &DatabaseConnection,
+        email: &str,
+        username: &str,
+    ) -> Result<Option<Self>, Error> {
+        Ok(users::Entity::find()
+            .filter(
+                users::Column::Email
+                    .eq(email)
+                    .or(users::Column::Username.eq(username)),
+            )
+            .one(database)
+            .await?)
+    }
+
     pub async fn get_team(
         &self,
         database: &DatabaseConnection,
@@ -49,7 +64,8 @@ impl users::Model {
         username: String,
         email: String,
     ) -> Result<Self, Error> {
-        let user = users::Model::find_by_email(database, &email).await?;
+        let user = users::Model::find_by_email_or_username(database, &email, &username).await?;
+
         let user = match user {
             Some(user) => user,
             None => {
@@ -74,16 +90,13 @@ impl users::Model {
         password_hash: String,
         credentials: &RegisterModel,
     ) -> Result<(), Error> {
-        if users::Entity::find()
-            .filter(
-                users::Column::Email
-                    .eq(&credentials.email)
-                    .or(users::Column::Username.eq(&credentials.name)),
-            )
-            .one(database)
-            .await?
-            .is_some()
-        {
+        let user = users::Model::find_by_email_or_username(
+            database,
+            &credentials.email,
+            &credentials.name,
+        )
+        .await?;
+        if user.is_some() {
             return Err(Error::Auth(UserAlreadyExists));
         }
 
