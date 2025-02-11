@@ -4,7 +4,6 @@ use actix_web::{test, App};
 use chrono::Duration;
 use hack4krak_backend::entities::sea_orm_active_enums::UserRoles;
 use hack4krak_backend::entities::users;
-use hack4krak_backend::middlewares::auth::AuthMiddleware;
 use hack4krak_backend::routes;
 use hack4krak_backend::services::env::EnvConfig;
 use hack4krak_backend::utils::app_state::AppState;
@@ -34,18 +33,14 @@ async fn middleware_user_is_not_admin() {
     let app = test::init_service(
         App::new()
             .app_data(Data::new(AppState::with_database(database)))
-            .service(
-                scope("/admin")
-                    .wrap(AuthMiddleware::with_admin())
-                    .configure(routes::user::admin_config),
-            ),
+            .service(scope("/user").configure(routes::user::config)),
     )
     .await;
 
     let access_token = encode_jwt(uuid, "example@gmail.com".to_string(), Duration::minutes(10));
 
     let request = test::TestRequest::get()
-        .uri("/admin/")
+        .uri("/user/admin")
         .insert_header((
             header::COOKIE,
             format!("access_token={}", access_token.unwrap()),
@@ -79,18 +74,14 @@ async fn middleware_user_is_admin() {
     let app = test::init_service(
         App::new()
             .app_data(Data::new(AppState::with_database(database)))
-            .service(
-                scope("/admin")
-                    .wrap(AuthMiddleware::with_admin())
-                    .configure(routes::user::admin_config),
-            ),
+            .service(scope("/user").configure(routes::user::config)),
     )
     .await;
 
     let access_token = encode_jwt(uuid, "example@gmail.com".to_string(), Duration::minutes(10));
 
     let request = test::TestRequest::get()
-        .uri("/admin/")
+        .uri("/user/admin")
         .insert_header((
             header::COOKIE,
             format!("access_token={}", access_token.unwrap()),

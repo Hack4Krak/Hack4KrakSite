@@ -3,7 +3,6 @@ use actix_web::http::header;
 use actix_web::web::Data;
 use actix_web::{test, App};
 use hack4krak_backend::entities::users;
-use hack4krak_backend::middlewares::auth::AuthMiddleware;
 use hack4krak_backend::routes;
 use hack4krak_backend::services::env::EnvConfig;
 use hack4krak_backend::utils::app_state::AppState;
@@ -105,11 +104,7 @@ async fn auth_flow() {
         App::new()
             .app_data(Data::new(AppState::with_database(database)))
             .service(scope("/auth").configure(routes::auth::config))
-            .service(
-                scope("/user")
-                    .wrap(AuthMiddleware::default())
-                    .configure(routes::user::admin_config),
-            ),
+            .service(scope("/user").configure(routes::user::config)),
     )
     .await;
 

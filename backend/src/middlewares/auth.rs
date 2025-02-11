@@ -60,7 +60,7 @@ impl AuthMiddleware {
         }
     }
 
-    pub fn with_admin() -> Self {
+    pub fn with_user_as_admin() -> Self {
         AuthMiddleware {
             insert_user_extension: true,
             role_requirement: UserRoles::Admin,
@@ -68,7 +68,7 @@ impl AuthMiddleware {
         }
     }
 
-    pub fn with_owner() -> Self {
+    pub fn with_user_as_owner() -> Self {
         AuthMiddleware {
             insert_user_extension: true,
             role_requirement: UserRoles::Owner,
