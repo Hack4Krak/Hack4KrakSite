@@ -1,8 +1,8 @@
 #![cfg(feature = "full-test-suite")]
 
 use actix_web::web::Data;
+use hack4krak_backend::services::emails::{Email, EmailTemplate};
 use hack4krak_backend::utils::app_state::AppState;
-use hack4krak_backend::utils::emails::{Email, EmailTemplate};
 use lettre::transport::smtp::client::Tls;
 use lettre::SmtpTransport;
 use serde_json::Value;

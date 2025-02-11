@@ -18,11 +18,10 @@ pub async fn description(
     app_state: Data<AppState>,
     task_id: Path<String>,
 ) -> Result<HttpResponse, Error> {
-    let manager = app_state
+    let content_bytes = app_state
         .task_manager
-        .read()
-        .map_err(|_| Error::PoisonedLock)?;
-    let content_bytes = manager.load_asset(&task_id, "description.md").await?;
+        .load_asset(&task_id, "description.md")
+        .await?;
     let content =
         String::from_utf8(content_bytes).map_err(TaskError::ErrorWhileReadingDescription)?;
 

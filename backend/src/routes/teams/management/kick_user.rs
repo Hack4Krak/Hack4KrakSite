@@ -1,10 +1,9 @@
-use crate::models::entities::teams;
+use crate::entities::{teams, users};
 use crate::utils::app_state;
 use crate::utils::error::Error;
-use crate::utils::jwt::Claims;
-use actix_web::{post, web, HttpResponse};
+use crate::utils::success_response::SuccessResponse;
+use actix_web::{delete, web, HttpResponse};
 use serde::{Deserialize, Serialize};
-use serde_json::json;
 use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, ToSchema)]
@@ -25,15 +24,17 @@ pub struct RemoveUserModel {
     ),
     tag = "teams/management"
 )]
-#[post("/remove_user")]
-pub async fn remove_user(
+#[delete("/kick_user")]
+pub async fn kick_user(
     app_state: web::Data<app_state::AppState>,
-    remove_user_model: web::Json<RemoveUserModel>,
-    claim_data: Claims,
+    model: web::Json<RemoveUserModel>,
+    user: users::Model,
 ) -> Result<HttpResponse, Error> {
-    teams::Model::remove_user(&app_state.database, remove_user_model.0, claim_data).await?;
+    let user_to_remove = users::Model::find_by_username(&app_state.database, &model.username)
+        .await?
+        .ok_or(Error::UserNotFound)?;
 
-    Ok(HttpResponse::Ok().json(json!({
-        "status": "ok"
-    })))
+    teams::Model::kick_user(&app_state.database, user_to_remove, user).await?;
+
+    Ok(SuccessResponse::default().http_response())
 }

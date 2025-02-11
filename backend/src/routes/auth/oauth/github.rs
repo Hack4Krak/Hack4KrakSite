@@ -1,15 +1,13 @@
 use actix_web::{get, web, HttpResponse};
 use oauth2::reqwest;
-use oauth2::{AuthorizationCode, CsrfToken, Scope, TokenResponse};
-use reqwest::redirect::Policy;
 use reqwest::{Response, Url};
 use serde::Deserialize;
 
-use crate::models::entities::users;
 use crate::routes::auth::AuthError::InvalidCredentials;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use crate::utils::error::Error::OAuth;
+use crate::utils::oauth::OAuthProvider;
 
 #[derive(Deserialize, Debug)]
 struct QueryParams {
@@ -46,33 +44,25 @@ async fn send_github_request(url: Url, token: &String) -> Result<Response, reqwe
         (status = 401, description = "Invalid credentials"),
         (status = 500, description = "Internal server errors."),
     ),
-    tag = "auth"
+    tag = "auth/oauth"
 )]
 #[get("/oauth/github/callback")]
 pub async fn github_callback(
     app_state: web::Data<AppState>,
     data: web::Query<QueryParams>,
 ) -> Result<HttpResponse, Error> {
-    let http_client = reqwest::ClientBuilder::new()
-        .redirect(Policy::none())
-        .build()?;
+    let token = app_state
+        .github_oauth_provider
+        .exchange_code(data.code.to_string())
+        .await?;
 
-    let token_result = app_state
-        .github_oauth_client
-        .exchange_code(AuthorizationCode::new(data.code.to_string()))
-        .request_async(&http_client)
-        .await
-        .map_err(|_| OAuth)?;
-
-    let token = format!("Bearer {}", token_result.access_token().secret());
-    let response_user =
+    let response =
         send_github_request("https://api.github.com/user".parse().unwrap(), &token).await?;
-
-    if !response_user.status().is_success() {
+    if !response.status().is_success() {
         return Err(Error::Auth(InvalidCredentials));
     }
 
-    let mut user: GitHubUser = response_user.json().await.map_err(|_| OAuth)?;
+    let mut user: GitHubUser = response.json().await.map_err(|_| OAuth)?;
 
     if user.email.is_none() {
         let email_response: Vec<GitHubEmail> = send_github_request(
@@ -92,24 +82,18 @@ pub async fn github_callback(
         return Err(Error::Auth(InvalidCredentials));
     };
 
-    users::Model::create_from_oauth(&app_state.database, user.name, email).await
+    OAuthProvider::finish_response(&app_state.database, user.name, email).await
 }
 
 #[utoipa::path(
     responses(
         (status = 200, description = "Redirects to GitHub for OAuth authorization")
     ),
-    tag = "auth"
+    tag = "auth/oauth"
 )]
 #[get("/oauth/github")]
 pub async fn github(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
-    let (auth_url, _) = app_state
-        .github_oauth_client
-        .authorize_url(CsrfToken::new_random)
-        .add_scope(Scope::new("user:email".to_string()))
-        .url();
-
-    Ok(HttpResponse::Found()
-        .insert_header(("Location", auth_url.to_string()))
-        .finish())
+    Ok(app_state
+        .github_oauth_provider
+        .redirect_response(vec!["user:email".to_string()]))
 }

@@ -1,6 +1,6 @@
+use crate::models::task::TaskStory;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
-use crate::utils::task::TaskStory;
 use actix_web::web::{Data, Path};
 use actix_web::{get, HttpResponse};
 
@@ -18,11 +18,7 @@ pub async fn story(
     app_state: Data<AppState>,
     task_id: Path<String>,
 ) -> Result<HttpResponse, Error> {
-    let manager = app_state
-        .task_manager
-        .read()
-        .map_err(|_| Error::PoisonedLock)?;
-    let task = manager.get_task(&task_id)?;
+    let task = app_state.task_manager.get_task(&task_id)?;
 
     Ok(HttpResponse::Ok().json(&task.story))
 }

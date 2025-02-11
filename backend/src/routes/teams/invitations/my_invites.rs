@@ -1,10 +1,8 @@
-use crate::models::entities::teams;
+use crate::entities::{team_invites, users};
 use crate::routes::teams::TeamError::TeamNotFound;
 use crate::utils::app_state;
 use crate::utils::error::Error;
-use crate::utils::jwt::Claims;
 use actix_web::{get, web, HttpResponse};
-use sea_orm::EntityTrait;
 
 #[utoipa::path(
     responses(
@@ -20,18 +18,16 @@ use sea_orm::EntityTrait;
 #[get("/")]
 pub async fn get_invitations(
     app_state: web::Data<app_state::AppState>,
-    claim_data: Claims,
+    user: users::Model,
 ) -> Result<HttpResponse, Error> {
-    let invitations = teams::Model::get_invitations(&app_state.database, claim_data).await?;
-    let mut invitations_vector = Vec::new();
+    let invitations =
+        team_invites::Model::get_invitations_with_teams(&app_state.database, user).await?;
 
-    for invitation in invitations {
-        let team = teams::Entity::find_by_id(invitation.team)
-            .one(&app_state.database)
-            .await?
-            .ok_or(Error::Team(TeamNotFound))?;
-        invitations_vector.push(team.name)
+    let mut invitations_output = Vec::new();
+    for (_, team) in invitations {
+        let team = team.ok_or(Error::Team(TeamNotFound))?;
+        invitations_output.push(team.name)
     }
 
-    Ok(HttpResponse::Ok().json(invitations_vector))
+    Ok(HttpResponse::Ok().json(invitations_output))
 }

@@ -1,10 +1,9 @@
-use crate::models::entities::teams;
+use crate::entities::{teams, users};
 use crate::utils::app_state;
 use crate::utils::error::Error;
-use crate::utils::jwt::Claims;
-use actix_web::{post, web, HttpResponse};
+use crate::utils::success_response::SuccessResponse;
+use actix_web::{patch, web, HttpResponse};
 use serde::{Deserialize, Serialize};
-use serde_json::json;
 use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, ToSchema)]
@@ -25,15 +24,18 @@ pub struct ChangeLeaderModel {
     ),
     tag = "teams/management"
 )]
-#[post("/change_name")]
+#[patch("/change_name")]
 pub async fn change_leader(
     app_state: web::Data<app_state::AppState>,
-    change_name_model: web::Json<ChangeLeaderModel>,
-    claim_data: Claims,
+    model: web::Json<ChangeLeaderModel>,
+    user: users::Model,
 ) -> Result<HttpResponse, Error> {
-    teams::Model::change_leader(&app_state.database, change_name_model.0, claim_data).await?;
+    let new_leader =
+        users::Model::find_by_username(&app_state.database, &model.new_leader_username)
+            .await?
+            .ok_or(Error::UserNotFound)?;
 
-    Ok(HttpResponse::Ok().json(json!({
-        "status": "ok"
-    })))
+    teams::Model::change_leader(&app_state.database, new_leader, user).await?;
+
+    Ok(SuccessResponse::default().http_response())
 }

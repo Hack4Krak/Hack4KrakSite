@@ -17,10 +17,8 @@ pub async fn background(
     app_state: Data<AppState>,
     task_id: Path<String>,
 ) -> Result<HttpResponse, Error> {
-    let manager = app_state
-        .task_manager
-        .read()
-        .map_err(|_| Error::PoisonedLock)?;
+    let manager = &app_state.task_manager;
+
     let content = manager.load_asset(&task_id, "pictures/icon.png").await?;
 
     Ok(HttpResponse::Ok().body(content))

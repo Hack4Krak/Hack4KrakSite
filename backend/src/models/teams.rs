@@ -1,59 +1,55 @@
-use crate::models::entities::{team_invites, teams, users};
-use crate::routes::teams::management::change_leader::ChangeLeaderModel;
-use crate::routes::teams::management::create_team::CreateTeamModel;
-use crate::routes::teams::management::invite_user::AddUserModel;
-use crate::routes::teams::management::remove_user::RemoveUserModel;
-use crate::routes::teams::management::rename::ChangeNameModel;
-use crate::routes::teams::team::TeamWithMembers;
-use crate::routes::teams::TeamError::{
-    AlreadyExists, TeamIsFull, TeamLeaderCantLeaveTeam, TeamNotFound, UserAlreadyBelongsToTeam,
-    UserCantRemoveTeamLeader, UserCantRemoveYourself, UserDoesntBelongToAnyTeam,
-    UserDoesntBelongToYourTeam, UserDoesntHaveAnyInvitations, UserDoesntHaveInvitationsFromTeam,
-    UserIsNotTeamLeader,
-};
+use crate::entities::{teams, users};
+use crate::routes::teams::TeamError::*;
 use crate::utils::error::Error;
-use crate::utils::jwt::Claims;
+use actix_web::dev::Payload;
+use actix_web::{FromRequest, HttpMessage, HttpRequest};
 use sea_orm::ActiveValue::Set;
 use sea_orm::{ActiveModelTrait, PaginatorTrait, QueryFilter};
 use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, TransactionTrait};
+use std::future;
 use uuid::Uuid;
 
-const MAX_MEMBERS_PER_TEAM: u8 = 5;
+pub const MAX_MEMBERS_PER_TEAM: u8 = 5;
 
 impl teams::Model {
-    pub async fn create_team(
+    pub async fn find_by_name(
         database: &DatabaseConnection,
-        create_team_json: CreateTeamModel,
-        claim_data: Claims,
-    ) -> Result<(), Error> {
-        let user = users::Entity::find_by_id(claim_data.id)
+        name: &str,
+    ) -> Result<Option<Self>, Error> {
+        let team = teams::Entity::find()
+            .filter(teams::Column::Name.eq(name))
             .one(database)
-            .await?
-            .ok_or(Error::Unauthorized)?;
+            .await?;
 
-        if let Some(team_id) = user.team {
-            let belonging_team = teams::Entity::find_by_id(team_id)
-                .one(database)
-                .await?
-                .ok_or(Error::Team(TeamNotFound))?;
-            return Err(Error::Team(UserAlreadyBelongsToTeam {
-                team_name: belonging_team.name,
+        Ok(team)
+    }
+
+    pub async fn assert_correct_team_size(
+        database: &DatabaseConnection,
+        name: &str,
+    ) -> Result<(), Error> {
+        let members_count = users::Entity::find()
+            .filter(users::Column::Team.eq(name))
+            .count(database)
+            .await?;
+
+        if members_count >= MAX_MEMBERS_PER_TEAM.into() {
+            return Err(Error::Team(TeamIsFull {
+                max_size: MAX_MEMBERS_PER_TEAM,
             }));
         }
-        if teams::Entity::find()
-            .filter(teams::Column::Name.eq(&create_team_json.team_name))
-            .one(database)
-            .await?
-            .is_some()
-        {
-            return Err(Error::Team(AlreadyExists));
-        }
+
+        Ok(())
+    }
+
+    pub async fn create(
+        database: &DatabaseConnection,
+        team_name: String,
+        user: users::Model,
+    ) -> Result<(), Error> {
         let transaction = database.begin().await?;
 
-        let team_name = create_team_json.team_name;
-
         let uuid = Uuid::new_v4();
-
         teams::Entity::insert(teams::ActiveModel {
             id: Set(uuid),
             name: Set(team_name),
@@ -72,238 +68,30 @@ impl teams::Model {
         Ok(())
     }
 
-    pub async fn invite_user(
+    pub async fn kick_user(
         database: &DatabaseConnection,
-        add_user_username: AddUserModel,
-        claim_data: Claims,
+        user_to_remove: users::Model,
+        user: users::Model,
     ) -> Result<(), Error> {
-        let user = users::Entity::find_by_id(claim_data.id)
-            .one(database)
-            .await?
-            .ok_or(Error::Unauthorized)?;
-
-        let Some(team_id) = user.team else {
-            return Err(Error::Team(UserDoesntBelongToAnyTeam {
-                username: user.username,
-            }))?;
-        };
-
-        let team = teams::Entity::find_by_id(team_id)
-            .one(database)
-            .await?
-            .ok_or(Error::Team(TeamNotFound))?;
-
-        if !user.is_leader {
-            return Err(Error::Team(UserIsNotTeamLeader));
+        if user_to_remove.id == user.id {
+            return Err(Error::Team(UserCantRemoveYourself));
         }
 
-        let invited_user = users::Entity::find()
-            .filter(users::Column::Username.eq(&add_user_username.username))
-            .one(database)
-            .await?
-            .ok_or(Error::UserNotFound)?;
-
-        if let Some(team_id) = invited_user.team {
-            let belonging_team = teams::Entity::find_by_id(team_id)
-                .one(database)
-                .await?
-                .ok_or(Error::Team(TeamNotFound))?;
-            return Err(Error::Team(UserAlreadyBelongsToTeam {
-                team_name: belonging_team.name,
-            }));
+        if user_to_remove.team != user.team && user_to_remove.team.is_some() {
+            return Err(Error::Team(UserDoesntBelongToYourTeam));
         }
 
-        let members_count = users::Entity::find()
-            .filter(users::Column::Team.eq(team.id))
-            .count(database)
-            .await?;
-
-        if members_count >= MAX_MEMBERS_PER_TEAM.into() {
-            return Err(Error::Team(TeamIsFull {
-                max_size: MAX_MEMBERS_PER_TEAM,
-            }));
+        if user_to_remove.is_leader {
+            return Err(Error::Team(UserCantRemoveTeamLeader));
         }
 
-        team_invites::Entity::insert(team_invites::ActiveModel {
-            user: Set(invited_user.id),
-            team: Set(team.id),
-            ..Default::default()
-        })
-        .exec(database)
-        .await?;
-
-        Ok(())
-    }
-
-    pub async fn get_invitations(
-        database: &DatabaseConnection,
-        claim_data: Claims,
-    ) -> Result<Vec<team_invites::Model>, Error> {
-        let user = users::Entity::find()
-            .filter(users::Column::Email.eq(claim_data.email))
-            .one(database)
-            .await?
-            .ok_or(Error::UserNotFound)?;
-
-        let invitations = team_invites::Entity::find()
-            .filter(team_invites::Column::User.eq(user.id))
-            .all(database)
-            .await?;
-
-        Ok(invitations)
-    }
-
-    pub async fn accept_invitation(
-        database: &DatabaseConnection,
-        team_name: String,
-        claim_data: Claims,
-    ) -> Result<(), Error> {
-        let user = users::Entity::find()
-            .filter(users::Column::Email.eq(claim_data.email))
-            .one(database)
-            .await?
-            .ok_or(Error::Unauthorized)?;
-
-        let team = teams::Entity::find()
-            .filter(teams::Column::Name.eq(team_name.to_string()))
-            .one(database)
-            .await?
-            .ok_or(Error::Team(TeamNotFound))?;
-
-        if Some(team.id) == user.team {
-            return Err(Error::Team(UserAlreadyBelongsToTeam { team_name }));
-        }
-
-        let invitations = team_invites::Entity::find()
-            .filter(team_invites::Column::User.eq(user.id))
-            .all(database)
-            .await?;
-
-        if invitations.is_empty() {
-            return Err(Error::Team(UserDoesntHaveAnyInvitations));
-        }
-
-        if !invitations.iter().any(|invite| invite.team == team.id) {
-            return Err(Error::Team(UserDoesntHaveInvitationsFromTeam { team_name }));
-        }
-
-        let members_count = users::Entity::find()
-            .filter(users::Column::Team.eq(team.id))
-            .count(database)
-            .await?;
-
-        if members_count >= MAX_MEMBERS_PER_TEAM.into() {
-            return Err(Error::Team(TeamIsFull {
-                max_size: MAX_MEMBERS_PER_TEAM,
-            }));
-        }
-
-        let transaction = database.begin().await?;
-
-        let mut active_user: users::ActiveModel = user.into();
-        active_user.team = Set(Some(team.id));
-        active_user.update(&transaction).await?;
-
-        for invite in invitations {
-            let active_invite: team_invites::ActiveModel = invite.into();
-            active_invite.delete(&transaction).await?;
-        }
-
-        transaction.commit().await?;
-
-        Ok(())
-    }
-
-    pub async fn get_team(
-        database: &DatabaseConnection,
-        team_name: String,
-    ) -> Result<TeamWithMembers, Error> {
-        let team = teams::Entity::find()
-            .filter(teams::Column::Name.eq(team_name))
-            .one(database)
-            .await?
-            .ok_or(Error::Team(TeamNotFound))?;
-
-        let users = users::Entity::find()
-            .filter(users::Column::Team.eq(team.id))
-            .all(database)
-            .await?;
-        let member_names: Vec<String> = users.into_iter().map(|user| user.username).collect();
-
-        let team_response = TeamWithMembers {
-            team_name: team.name,
-            created_at: team.created_at,
-            members: member_names,
-        };
-        Ok(team_response)
+        Self::remove_user(database, user_to_remove).await
     }
 
     pub async fn remove_user(
         database: &DatabaseConnection,
-        remove_user_username: RemoveUserModel,
-        claim_data: Claims,
+        user: users::Model,
     ) -> Result<(), Error> {
-        let user = users::Entity::find_by_id(claim_data.id)
-            .one(database)
-            .await?
-            .ok_or(Error::Unauthorized)?;
-
-        if !user.is_leader {
-            return Err(Error::Team(UserIsNotTeamLeader));
-        }
-
-        let team_id = user.team;
-
-        let removed_user = users::Entity::find()
-            .filter(users::Column::Username.eq(remove_user_username.username))
-            .one(database)
-            .await?
-            .ok_or(Error::UserNotFound)?;
-
-        if removed_user.id == user.id {
-            return Err(Error::Team(UserCantRemoveYourself));
-        }
-
-        if removed_user.team.is_none() {
-            return Err(Error::Team(UserDoesntBelongToAnyTeam {
-                username: removed_user.username,
-            }));
-        }
-
-        if removed_user.team != team_id {
-            return Err(Error::Team(UserDoesntBelongToYourTeam));
-        }
-
-        if removed_user.is_leader {
-            return Err(Error::Team(UserCantRemoveTeamLeader));
-        }
-
-        let mut active_user: users::ActiveModel = removed_user.into();
-        active_user.team = Set(None);
-        active_user.update(database).await?;
-
-        Ok(())
-    }
-
-    pub async fn leave_team(
-        database: &DatabaseConnection,
-        claim_data: Claims,
-    ) -> Result<(), Error> {
-        let user = users::Entity::find_by_id(claim_data.id)
-            .one(database)
-            .await?
-            .ok_or(Error::Unauthorized)?;
-
-        if user.team.is_none() {
-            return Err(Error::Team(UserDoesntBelongToAnyTeam {
-                username: user.username,
-            }));
-        }
-
-        if user.is_leader {
-            return Err(Error::Team(TeamLeaderCantLeaveTeam));
-        }
-
         let mut active_user: users::ActiveModel = user.into();
         active_user.team = Set(None);
         active_user.update(database).await?;
@@ -313,30 +101,11 @@ impl teams::Model {
 
     pub async fn rename(
         database: &DatabaseConnection,
-        new_team_name: ChangeNameModel,
-        claim_data: Claims,
+        new_team_name: String,
+        team: teams::Model,
     ) -> Result<(), Error> {
-        let user = users::Entity::find_by_id(claim_data.id)
-            .one(database)
-            .await?
-            .ok_or(Error::Unauthorized)?;
-
-        if !user.is_leader {
-            return Err(Error::Team(UserIsNotTeamLeader));
-        };
-
-        let team = teams::Entity::find()
-            .filter(teams::Column::Name.eq(user.team.ok_or(Error::Team(
-                UserDoesntBelongToAnyTeam {
-                    username: user.username,
-                },
-            ))?))
-            .one(database)
-            .await?
-            .ok_or(Error::Team(TeamNotFound))?;
-
         let mut active_team: teams::ActiveModel = team.into();
-        active_team.name = Set(new_team_name.new_name.clone());
+        active_team.name = Set(new_team_name);
         active_team.update(database).await?;
 
         Ok(())
@@ -344,25 +113,9 @@ impl teams::Model {
 
     pub async fn change_leader(
         database: &DatabaseConnection,
-        new_leader_username: ChangeLeaderModel,
-        claim_data: Claims,
+        new_leader: users::Model,
+        user: users::Model,
     ) -> Result<(), Error> {
-        let user = users::Entity::find()
-            .filter(users::Column::Email.eq(claim_data.email))
-            .one(database)
-            .await?
-            .ok_or(Error::Unauthorized)?;
-
-        if !user.is_leader {
-            return Err(Error::Team(UserIsNotTeamLeader));
-        };
-
-        let new_leader = users::Entity::find()
-            .filter(users::Column::Username.eq(&new_leader_username.new_leader_username))
-            .one(database)
-            .await?
-            .ok_or(Error::UserNotFound)?;
-
         if new_leader.team != user.team {
             return Err(Error::Team(UserDoesntBelongToYourTeam));
         }
@@ -380,5 +133,20 @@ impl teams::Model {
         transaction.commit().await?;
 
         Ok(())
+    }
+}
+
+impl FromRequest for teams::Model {
+    type Error = Error;
+
+    type Future = future::Ready<Result<Self, Self::Error>>;
+
+    fn from_request(req: &HttpRequest, _payload: &mut Payload) -> Self::Future {
+        match req.extensions().get::<teams::Model>() {
+            Some(data) => future::ready(Ok(data.clone())),
+            None => future::ready(Err(Error::MissingExtension {
+                name: "team".to_string(),
+            })),
+        }
     }
 }

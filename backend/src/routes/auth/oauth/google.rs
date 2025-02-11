@@ -1,13 +1,10 @@
 use actix_web::{get, web, HttpResponse};
-use oauth2::{AuthorizationCode, CsrfToken, Scope, TokenResponse};
-use reqwest::redirect::Policy;
 use serde::Deserialize;
 
-use crate::models::entities::users;
 use crate::routes::auth::AuthError::InvalidCredentials;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
-use crate::utils::error::Error::OAuth;
+use crate::utils::oauth::OAuthProvider;
 
 #[derive(Deserialize, Debug)]
 struct QueryParams {
@@ -29,60 +26,42 @@ pub struct GoogleUser {
         (status = 401, description = "Invalid credentials"),
         (status = 500, description = "Internal server errors."),
     ),
-    tag = "auth"
+    tag = "auth/oauth"
 )]
 #[get("/oauth/google/callback")]
 pub async fn google_callback(
     app_state: web::Data<AppState>,
     data: web::Query<QueryParams>,
 ) -> Result<HttpResponse, Error> {
-    let http_client = reqwest::ClientBuilder::new()
-        .redirect(Policy::none())
-        .build()?;
+    let token = app_state
+        .google_oauth_provider
+        .exchange_code(data.code.to_string())
+        .await?;
 
-    let token_result = app_state
-        .google_oauth_client
-        .exchange_code(AuthorizationCode::new(data.code.to_string()))
-        .request_async(&http_client)
-        .await
-        .map_err(|_| OAuth)?;
-
-    let token = format!("Bearer {}", token_result.access_token().secret());
     let response = reqwest::Client::new()
         .get("https://www.googleapis.com/oauth2/v3/userinfo")
         .header("Authorization", token)
         .send()
         .await?;
-
     if !response.status().is_success() {
         return Err(InvalidCredentials.into());
     }
 
     let user: GoogleUser = response.json().await.map_err(|_| InvalidCredentials)?;
 
-    users::Model::create_from_oauth(&app_state.database, user.name, user.email).await
+    OAuthProvider::finish_response(&app_state.database, user.name, user.email).await
 }
 
 #[utoipa::path(
     responses(
         (status = 200, description = "Redirects to Google for OAuth authorization"),
     ),
-    tag = "auth"
+    tag = "auth/oauth"
 )]
 #[get("/oauth/google")]
 pub async fn google(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
-    let (auth_url, _) = app_state
-        .google_oauth_client
-        .authorize_url(CsrfToken::new_random)
-        .add_scope(Scope::new(
-            "https://www.googleapis.com/auth/userinfo.email".to_string(),
-        ))
-        .add_scope(Scope::new(
-            "https://www.googleapis.com/auth/userinfo.profile".to_string(),
-        ))
-        .url();
-
-    Ok(HttpResponse::Found()
-        .insert_header(("Location", auth_url.to_string()))
-        .finish())
+    Ok(app_state.google_oauth_provider.redirect_response(vec![
+        "https://www.googleapis.com/auth/userinfo.email".to_string(),
+        "https://www.googleapis.com/auth/userinfo.profile".to_string(),
+    ]))
 }

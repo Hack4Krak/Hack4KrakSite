@@ -1,9 +1,9 @@
-use actix_web::{post, HttpRequest, HttpResponse};
-
+use crate::services::auth::AuthService;
 use crate::utils::cookies::REFRESH_TOKEN_COOKIE;
 use crate::utils::error::Error;
+use actix_web::{post, HttpRequest, HttpResponse};
 
-use crate::utils::jwt::{decode_jwt, get_tokens_http_response};
+use crate::utils::jwt::decode_jwt;
 
 #[utoipa::path(
     responses(
@@ -21,10 +21,8 @@ pub async fn refresh(request: HttpRequest) -> Result<HttpResponse, Error> {
         return Err(Error::Unauthorized);
     };
 
-    let claim = decode_jwt(refresh_token.value()).map_err(|_| Error::Unauthorized)?;
-    let uuid = claim.claims.id;
-    let email = claim.claims.email;
-    let response = get_tokens_http_response(uuid, email)?;
+    let claims = decode_jwt(refresh_token.value()).map_err(|_| Error::Unauthorized)?;
+    let response = AuthService::response_with_cookies(claims.claims.id, claims.claims.email)?;
 
     Ok(response)
 }

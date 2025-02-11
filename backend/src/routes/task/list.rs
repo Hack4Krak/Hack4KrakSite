@@ -1,6 +1,6 @@
+use crate::models::task::{TaskDescription, TaskDisplay};
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
-use crate::utils::task::{TaskDescription, TaskDisplay};
 use actix_web::web::Data;
 use actix_web::{get, HttpResponse};
 use serde::{Deserialize, Serialize};
@@ -22,13 +22,10 @@ pub struct SimpleTask {
 )]
 #[get("/list")]
 pub async fn list(app_state: Data<AppState>) -> Result<HttpResponse, Error> {
-    let manager = app_state
-        .task_manager
-        .read()
-        .map_err(|_| Error::PoisonedLock)?;
+    let manager = &app_state.task_manager;
 
     let mut tasks = Vec::new();
-    for task in manager.tasks.values() {
+    for task in manager.tasks.iter() {
         tasks.push(SimpleTask {
             description: task.description.clone(),
             display: task.display.clone(),

@@ -1,12 +1,12 @@
 use actix_web::cookie::Cookie;
 use actix_web::http::header;
-use actix_web::middleware::from_fn;
 use actix_web::web::Data;
 use actix_web::{test, App};
-use hack4krak_backend::models::entities::users;
+use hack4krak_backend::entities::users;
+use hack4krak_backend::middlewares::auth::AuthMiddleware;
+use hack4krak_backend::routes;
+use hack4krak_backend::services::env::EnvConfig;
 use hack4krak_backend::utils::app_state::AppState;
-use hack4krak_backend::utils::env::Config;
-use hack4krak_backend::{middlewares, routes};
 use sea_orm::{DatabaseBackend, MockDatabase, MockExecResult};
 use utoipa::gen::serde_json::json;
 use utoipa_actix_web::scope;
@@ -84,7 +84,7 @@ async fn register_invalid_email() {
 
 #[actix_web::test]
 async fn auth_flow() {
-    Config::load_test_config();
+    EnvConfig::load_test_config();
 
     let example_user = users::Model {
         id: Default::default(),
@@ -107,7 +107,7 @@ async fn auth_flow() {
             .service(scope("/auth").configure(routes::auth::config))
             .service(
                 scope("/user")
-                    .wrap(from_fn(middlewares::auth_middleware::check_auth_middleware))
+                    .wrap(AuthMiddleware::default())
                     .configure(routes::user::config),
             ),
     )

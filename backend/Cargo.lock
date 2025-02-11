@@ -42,7 +42,7 @@ checksum = "4a0cb8586d3fa368d00ef643e8ef77f5d3d5dfe5c7b333415a556bc12eb1c41a"
 dependencies = [
  "actix-http",
  "actix-web",
- "futures 0.3.31",
+ "futures",
  "governor",
 ]
 
@@ -998,47 +998,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "crossbeam"
-version = "0.8.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1137cd7e7fc0fb5d3c5a8678be38ec56e819125d8d7907411fe24ccb943faca8"
-dependencies = [
- "crossbeam-channel",
- "crossbeam-deque",
- "crossbeam-epoch",
- "crossbeam-queue",
- "crossbeam-utils",
-]
-
-[[package]]
-name = "crossbeam-channel"
-version = "0.5.14"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "06ba6d68e24814cb8de6bb986db8222d3a027d15872cabc0d18817bc3c0e4471"
-dependencies = [
- "crossbeam-utils",
-]
-
-[[package]]
-name = "crossbeam-deque"
-version = "0.8.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9dd111b7b7f7d55b72c0a6ae361660ee5853c9af73f70c3c2ef6858b950e2e51"
-dependencies = [
- "crossbeam-epoch",
- "crossbeam-utils",
-]
-
-[[package]]
-name = "crossbeam-epoch"
-version = "0.9.18"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5b82ac4a3c2ca9c3460964f020e1402edd5753411d7737aa39c3714ad1b5420e"
-dependencies = [
- "crossbeam-utils",
-]
-
-[[package]]
 name = "crossbeam-queue"
 version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1386,12 +1345,6 @@ checksum = "e6d5a32815ae3f33302d95fdcb2ce17862f8c65363dcfd29360480ba1001fc9c"
 
 [[package]]
 name = "futures"
-version = "0.1.31"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3a471a38ef8ed83cd6e40aa59c1ffe17db6855c18e3604d9c4ed8c08ebc28678"
-
-[[package]]
-name = "futures"
 version = "0.3.31"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "65bc07b1a8bc7c85c5f2e110c476c7389b4554ba72af57d8445ea63a576b0876"
@@ -1497,7 +1450,6 @@ version = "0.3.31"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9fa08315bb612088cc391249efdc3bc77536f16c91f6cf495e6fbe85b20a4a81"
 dependencies = [
- "futures 0.1.31",
  "futures-channel",
  "futures-core",
  "futures-io",
@@ -1637,10 +1589,10 @@ dependencies = [
  "actix-web",
  "argon2",
  "chrono",
- "crossbeam",
+ "dashmap",
  "dotenvy",
  "envy",
- "futures 0.3.31",
+ "futures-util",
  "jsonwebtoken",
  "lettre",
  "migration",
@@ -3364,7 +3316,7 @@ dependencies = [
  "async-trait",
  "bigdecimal",
  "chrono",
- "futures 0.3.31",
+ "futures",
  "log",
  "ouroboros",
  "rust_decimal",
@@ -3422,7 +3374,7 @@ dependencies = [
  "async-trait",
  "clap",
  "dotenvy",
- "futures 0.3.31",
+ "futures",
  "sea-orm",
  "sea-orm-cli",
  "sea-schema",
@@ -3483,7 +3435,7 @@ version = "0.16.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0ef5dd7848c993f3789d09a2616484c72c9330cae2b048df59d8c9b8c0343e95"
 dependencies = [
- "futures 0.3.31",
+ "futures",
  "sea-query",
  "sea-schema-derive",
 ]
@@ -4170,7 +4122,7 @@ dependencies = [
  "docker_credential",
  "either",
  "etcetera",
- "futures 0.3.31",
+ "futures",
  "log",
  "memchr",
  "parse-display",

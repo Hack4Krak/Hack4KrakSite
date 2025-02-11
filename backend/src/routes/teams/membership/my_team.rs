@@ -1,15 +1,21 @@
-use actix_web::middleware::from_fn;
+use crate::entities::{teams, users};
+use crate::middlewares::auth::AuthMiddleware;
+use crate::utils::app_state;
+use crate::utils::error::Error;
 use actix_web::{get, web, HttpResponse};
+use sea_orm::prelude::DateTime;
 use sea_orm::ColumnTrait;
 use sea_orm::EntityTrait;
 use sea_orm::QueryFilter;
+use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
-use crate::models::entities::{teams, users};
-use crate::routes::teams::team::TeamWithMembers;
-use crate::routes::teams::TeamError::{TeamNotFound, UserDoesntBelongToAnyTeam};
-use crate::utils::app_state;
-use crate::utils::error::Error;
-use crate::utils::jwt::Claims;
+#[derive(Serialize, Deserialize, ToSchema)]
+pub struct TeamWithMembers {
+    pub team_name: String,
+    pub created_at: DateTime,
+    pub members: Vec<String>,
+}
 
 #[utoipa::path(
     responses(
@@ -21,32 +27,13 @@ use crate::utils::jwt::Claims;
     security(
         ("access_token" = [])
     ),
-    tag = "teams"
+    tag = "teams/membership"
 )]
-#[get(
-    "/my_team",
-    wrap = "from_fn(crate::middlewares::auth_middleware::check_auth_middleware)"
-)]
+#[get("/my_team", wrap = "AuthMiddleware::with_team_as_member()")]
 pub async fn my_team(
     app_state: web::Data<app_state::AppState>,
-    claim_data: Claims,
+    team: teams::Model,
 ) -> Result<HttpResponse, Error> {
-    let user = users::Entity::find_by_id(claim_data.id)
-        .one(&app_state.database)
-        .await?
-        .ok_or(Error::Unauthorized)?;
-
-    let Some(team_id) = user.team else {
-        return Err(Error::Team(UserDoesntBelongToAnyTeam {
-            username: user.username,
-        }))?;
-    };
-
-    let team = teams::Entity::find_by_id(team_id)
-        .one(&app_state.database)
-        .await?
-        .ok_or(Error::Team(TeamNotFound))?;
-
     let users = users::Entity::find()
         .filter(users::Column::Team.eq(team.id))
         .all(&app_state.database)
