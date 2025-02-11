@@ -38,7 +38,7 @@ pub fn error_response_builder<T: error::ResponseError>(err: &T) -> HttpResponse 
 pub enum Error {
     #[error("Failed to hash password: {0}")]
     HashPasswordFailed(argon2::password_hash::Error),
-    #[error("Failed to proceed with OAuth flow")]
+    #[error("Failed to parse response from OAuth provider")]
     OAuth,
     #[error("Request error: {0}")]
     Request(#[from] reqwest::Error),

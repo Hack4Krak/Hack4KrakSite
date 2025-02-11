@@ -33,19 +33,25 @@ impl users::Model {
             .await?)
     }
 
-    pub async fn find_by_email_or_username(
+    pub async fn assert_is_unique(
         database: &DatabaseConnection,
         email: &str,
         username: &str,
-    ) -> Result<Option<Self>, Error> {
-        Ok(users::Entity::find()
+    ) -> Result<(), Error> {
+        let user = users::Entity::find()
             .filter(
                 users::Column::Email
                     .eq(email)
                     .or(users::Column::Username.eq(username)),
             )
             .one(database)
-            .await?)
+            .await?;
+
+        if user.is_some() {
+            return Err(Error::Auth(UserAlreadyExists));
+        }
+
+        Ok(())
     }
 
     pub async fn get_team(
@@ -64,11 +70,13 @@ impl users::Model {
         username: String,
         email: String,
     ) -> Result<Self, Error> {
-        let user = users::Model::find_by_email_or_username(database, &email, &username).await?;
+        let user = users::Model::find_by_email(database, &email).await?;
 
         let user = match user {
             Some(user) => user,
             None => {
+                users::Model::assert_is_unique(database, &email, &username).await?;
+
                 users::ActiveModel {
                     id: Set(uuid_gen::new_v4()),
                     username: Set(username),
@@ -90,15 +98,7 @@ impl users::Model {
         password_hash: String,
         credentials: &RegisterModel,
     ) -> Result<(), Error> {
-        let user = users::Model::find_by_email_or_username(
-            database,
-            &credentials.email,
-            &credentials.name,
-        )
-        .await?;
-        if user.is_some() {
-            return Err(Error::Auth(UserAlreadyExists));
-        }
+        users::Model::assert_is_unique(database, &credentials.email, &credentials.name).await?;
 
         users::ActiveModel {
             id: Set(uuid),
