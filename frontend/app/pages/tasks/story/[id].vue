@@ -32,8 +32,12 @@ try {
 
   showError(error)
 }
+
+function redirectToTaskDescription() {
+  navigateTo(`/tasks/description/${taskId}`)
+}
 </script>
 
 <template>
-  <StoryViewer :image="backgroundImage" :story-dialogues="story" />
+  <StoryViewer @complete="redirectToTaskDescription" :image="backgroundImage" :story-dialogues="story" />
 </template>
