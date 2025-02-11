@@ -1,4 +1,6 @@
-# Backend Readme
+# Hack4Krak Backend
+
+Technical documentation for [Hack4Krak](https://github.com/Hack4Krak)'s backend written in Rust.
 
 ## Environment Variables
 
@@ -27,7 +29,7 @@ git submodule update --init --recursive
 git submodule update --remote
 ```
 
-## Running Migrator CLI
+## Running database migrator
 
 > All of those commands should be run from the `backend/migration` directory
 > You have to set the `DATABASE_URL` environment variable before.
@@ -37,33 +39,11 @@ git submodule update --remote
     ```sh
     cargo run -- generate MIGRATION_NAME
     ```
-  
-- Apply all pending migrations
 
-    ```sh
-    cargo run
-    ```
-  
-    ```sh
-    cargo run -- up
-    ```
-  
-- Apply first 10 pending migrations
-
-    ```sh
-    cargo run -- up -n 10
-    ```
-  
-- Rollback last applied migrations
+- Rollback last applied migration
 
     ```sh
     cargo run -- down
-    ```
-
-- Rollback last 10 applied migrations
-
-    ```sh
-    cargo run -- down -n 10
     ```
 
 - Drop all tables from the database, then reapply all migrations
@@ -71,25 +51,6 @@ git submodule update --remote
     ```sh
     cargo run -- fresh
     ```
-
-- Rollback all applied migrations, then reapply all migrations
-
-    ```sh
-    cargo run -- refresh
-    ```
-
-- Rollback all applied migrations
-
-    ```sh
-    cargo run -- reset
-    ```
-
-- Check the status of all migrations
-
-    ```sh
-    cargo run -- status
-    ```
-
 
 ## Generating SeaORM Entities
 
@@ -105,6 +66,6 @@ git submodule update --remote
 - Generate entities from the database
 
     ```sh
-    sea-orm-cli generate entity -o src/models/entities/
+    sea-orm-cli generate entity -o src/entities/
 
     ```
