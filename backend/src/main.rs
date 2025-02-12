@@ -41,14 +41,18 @@ async fn main() -> std::io::Result<()> {
 
     let app_data = Data::new(AppState::setup(database).await);
 
-    let (app, api) = setup_actix_app().app_data(app_data.clone()).split_for_parts();
-
-    write_openapi(&api).expect("Could not generate OpenApi specification file");
-
     info!("Starting server...");
-    let server = HttpServer::new(move || app)
-        .bind((ip, port))?
-        .run();
+    let server = HttpServer::new(move || {
+        let (app, api) = setup_actix_app()
+            .app_data(app_data.clone())
+            .split_for_parts();
+
+        write_openapi(&api).expect("Could not generate OpenApi specification file");
+
+        app
+    })
+    .bind((ip, port))?
+    .run();
 
     let duration = start.elapsed();
     info!(
