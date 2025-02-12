@@ -1,6 +1,6 @@
 use actix_cors::Cors;
 use actix_governor::{Governor, GovernorConfigBuilder};
-use actix_web::body::MessageBody;
+use actix_web::body::{EitherBody, MessageBody};
 use actix_web::dev::{ServiceFactory, ServiceRequest, ServiceResponse};
 use actix_web::middleware::Logger;
 use actix_web::web::Data;
@@ -17,7 +17,7 @@ use std::env;
 use std::time::Instant;
 use tracing::info;
 use utoipa::OpenApi;
-use utoipa_actix_web::{scope, AppExt};
+use utoipa_actix_web::{scope, AppExt, UtoipaApp};
 use utoipa_scalar::{Scalar, Servable};
 
 #[actix_web::main]
@@ -41,8 +41,12 @@ async fn main() -> std::io::Result<()> {
 
     let app_data = Data::new(AppState::setup(database).await);
 
+    let (app, api) = setup_actix_app().app_data(app_data.clone()).split_for_parts();
+
+    write_openapi(&api).expect("Could not generate OpenApi specification file");
+
     info!("Starting server...");
-    let server = HttpServer::new(move || setup_actix_app().app_data(app_data.clone()))
+    let server = HttpServer::new(move || app)
         .bind((ip, port))?
         .run();
 
@@ -57,7 +61,7 @@ async fn main() -> std::io::Result<()> {
     Ok(())
 }
 
-fn setup_actix_app() -> App<
+fn setup_actix_app() -> UtoipaApp<
     impl ServiceFactory<
         ServiceRequest,
         Config = (),
@@ -80,7 +84,7 @@ fn setup_actix_app() -> App<
         .supports_credentials()
         .max_age(3600);
 
-    let (app, api) = App::new()
+    App::new()
         .wrap(StatusCodeDrain)
         .wrap(Logger::default())
         .wrap(cors_middleware)
@@ -96,11 +100,6 @@ fn setup_actix_app() -> App<
         .service(scope("/tasks").configure(routes::task::config))
         .service(scope("/user").configure(routes::user::config))
         .openapi_service(|api| Scalar::with_url("/docs", api))
-        .split_for_parts();
-
-    write_openapi(&api).expect("Could not generate OpenApi specification file");
-
-    app
 }
 
 fn setup_logs() {
