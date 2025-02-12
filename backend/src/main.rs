@@ -5,7 +5,6 @@ use actix_web::dev::{ServiceFactory, ServiceRequest, ServiceResponse};
 use actix_web::middleware::Logger;
 use actix_web::web::Data;
 use actix_web::{App, Error, HttpServer};
-use hack4krak_backend::middlewares::auth::AuthMiddleware;
 use hack4krak_backend::middlewares::status_code_drain_middleware::StatusCodeDrain;
 use hack4krak_backend::routes;
 use hack4krak_backend::services::env::EnvConfig;
@@ -95,11 +94,7 @@ fn setup_actix_app() -> App<
         )
         .service(scope("/teams").configure(routes::teams::config))
         .service(scope("/tasks").configure(routes::task::config))
-        .service(
-            scope("/user")
-                .wrap(AuthMiddleware::with_user())
-                .configure(routes::user::config),
-        )
+        .service(scope("/user").configure(routes::user::config))
         .openapi_service(|api| Scalar::with_url("/docs", api))
         .split_for_parts();
 
