@@ -5,6 +5,7 @@ use crate::routes::auth::RegisterModel;
 use crate::utils::error::Error;
 use actix_web::dev::Payload;
 use actix_web::{FromRequest, HttpMessage, HttpRequest};
+use chrono::Local;
 use sea_orm::prelude::Uuid as SeaOrmUuid;
 use sea_orm::ActiveValue::Set;
 use sea_orm::QueryFilter;
@@ -106,6 +107,9 @@ impl users::Model {
             username: Set(credentials.name.clone()),
             email: Set(credentials.email.clone()),
             password: Set(Some(password_hash)),
+            created_at: Set(Local::now().naive_local()),
+            is_leader: Set(false),
+            roles: Set(UserRoles::Default),
             ..Default::default()
         }
         .insert(database)

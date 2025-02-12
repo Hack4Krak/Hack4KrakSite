@@ -34,7 +34,7 @@ async fn main() -> std::io::Result<()> {
 
     info!("Starting server...");
     let server = HttpServer::new(move || {
-        let (app, api) = setup_actix_app()
+        let (app, api) = setup_actix_app(true)
             .app_data(app_data.clone())
             .split_for_parts();
 
