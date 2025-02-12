@@ -3,15 +3,11 @@ name = "hack4krak-backend"
 version.workspace = true
 edition = "2021"
 
-[[bin]]
-name = "openapi_check"
-path = "src/bin/openapi_check.rs"
-
 [features]
 full-test-suite = []
 
 [workspace]
-members = [".", "migration"]
+members = [".", "migration", "openapi_check"]
 
 [workspace.package]
 version = "0.0.1"
