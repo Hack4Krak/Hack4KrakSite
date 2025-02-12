@@ -30,7 +30,7 @@ jobs:
           cache: 'pnpm'
 
       - name: 'Install dependencies'
-        run: | 
+        run: |
           pnpm install
 
       - name: "Run tests"
@@ -56,10 +56,10 @@ jobs:
           cargo build
           cd ..
 
-      - name: Run openapi check
+      - name: Verify if openapi is up to date
         run: |
           cd backend/
-          cargo run --bin openapi_check
+          cargo run -p openapi-check
           cd ..
 
       - name: Run tests

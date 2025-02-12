@@ -16,7 +16,7 @@
     "backend:dev": "pnpm --prefix ./backend/ dev",
     "backend:lint": "pnpm --prefix ./backend/ lint",
     "backend:lint:fix": "pnpm --prefix ./backend/ lint:fix",
-    "backend:openapi_check": "pnpm --prefix ./backend/ openapi_check",
+    "backend:openapi-check": "pnpm --prefix ./backend/ openapi-check",
     "test": "pnpm run /:test$/",
     "dev": "pnpm run /:dev$/",
     "lint": "pnpm run /:lint$/",
