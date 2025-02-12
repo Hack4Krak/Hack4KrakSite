@@ -1,24 +1,15 @@
-use actix_cors::Cors;
-use actix_governor::{Governor, GovernorConfigBuilder};
-use actix_web::body::{EitherBody, MessageBody};
-use actix_web::dev::{ServiceFactory, ServiceRequest, ServiceResponse};
-use actix_web::middleware::Logger;
 use actix_web::web::Data;
-use actix_web::{App, Error, HttpServer};
-use hack4krak_backend::middlewares::status_code_drain_middleware::StatusCodeDrain;
-use hack4krak_backend::routes;
+use actix_web::HttpServer;
 use hack4krak_backend::services::env::EnvConfig;
 use hack4krak_backend::services::task_manager::TaskManager;
+use hack4krak_backend::setup_actix_app;
 use hack4krak_backend::utils::app_state::AppState;
-use hack4krak_backend::utils::openapi::{write_openapi, ApiDoc};
+use hack4krak_backend::utils::openapi::write_openapi;
 use migration::{Migrator, MigratorTrait};
 use sea_orm::{Database, DatabaseConnection};
 use std::env;
 use std::time::Instant;
 use tracing::info;
-use utoipa::OpenApi;
-use utoipa_actix_web::{scope, AppExt, UtoipaApp};
-use utoipa_scalar::{Scalar, Servable};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -63,47 +54,6 @@ async fn main() -> std::io::Result<()> {
 
     info!("Server stopped. Goodbye :c");
     Ok(())
-}
-
-fn setup_actix_app() -> UtoipaApp<
-    impl ServiceFactory<
-        ServiceRequest,
-        Config = (),
-        Response = ServiceResponse<impl MessageBody>,
-        Error = Error,
-        InitError = (),
-    >,
-> {
-    let governor_middleware = GovernorConfigBuilder::default()
-        .seconds_per_request(3)
-        .burst_size(5)
-        .finish()
-        .unwrap();
-
-    let cors_middleware = Cors::default()
-        .allowed_origin("http://localhost:3000")
-        .allowed_origin("https://hack4krak.pl")
-        .allow_any_method()
-        .allow_any_header()
-        .supports_credentials()
-        .max_age(3600);
-
-    App::new()
-        .wrap(StatusCodeDrain)
-        .wrap(Logger::default())
-        .wrap(cors_middleware)
-        .into_utoipa_app()
-        .openapi(ApiDoc::openapi())
-        .service(routes::index::index)
-        .service(
-            scope("/auth")
-                .wrap(Governor::new(&governor_middleware))
-                .configure(routes::auth::config),
-        )
-        .service(scope("/teams").configure(routes::teams::config))
-        .service(scope("/tasks").configure(routes::task::config))
-        .service(scope("/user").configure(routes::user::config))
-        .openapi_service(|api| Scalar::with_url("/docs", api))
 }
 
 fn setup_logs() {
