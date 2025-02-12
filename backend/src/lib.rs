@@ -18,7 +18,9 @@ pub mod routes;
 pub mod services;
 pub mod utils;
 
-pub fn setup_actix_app() -> UtoipaApp<
+pub fn setup_actix_app(
+    enable_governor: bool,
+) -> UtoipaApp<
     impl ServiceFactory<
         ServiceRequest,
         Config = (),
@@ -27,12 +29,6 @@ pub fn setup_actix_app() -> UtoipaApp<
         InitError = (),
     >,
 > {
-    let governor_middleware = GovernorConfigBuilder::default()
-        .seconds_per_request(3)
-        .burst_size(5)
-        .finish()
-        .unwrap();
-
     let cors_middleware = Cors::default()
         .allowed_origin_fn(|origin, request| {
             if request.uri.path().starts_with("/tasks") {
@@ -51,21 +47,33 @@ pub fn setup_actix_app() -> UtoipaApp<
         .supports_credentials()
         .max_age(3600);
 
-    App::new()
+    let mut app = App::new()
         .wrap(StatusCodeDrain)
         .wrap(Logger::default())
         .wrap(cors_middleware)
         .into_utoipa_app()
         .openapi(ApiDoc::openapi())
         .service(routes::index::index)
-        .service(
-            scope("/auth")
-                .wrap(Governor::new(&governor_middleware))
-                .configure(routes::auth::config),
-        )
+        .service(scope("/auth").configure(routes::auth::config))
         .service(scope("/teams").configure(routes::teams::config))
         .service(scope("/tasks").configure(routes::task::config))
         .service(scope("/user").configure(routes::user::config))
         .default_service(actix_web::web::route().to(|| async { RouteNotFound.error_response() }))
-        .openapi_service(|api| Scalar::with_url("/docs", api))
+        .openapi_service(|api| Scalar::with_url("/docs", api));
+
+    if enable_governor {
+        let governor_middleware = GovernorConfigBuilder::default()
+            .seconds_per_request(3)
+            .burst_size(5)
+            .finish()
+            .unwrap();
+
+        app = app.service(
+            scope("/auth")
+                .wrap(Governor::new(&governor_middleware))
+                .configure(routes::auth::config),
+        )
+    }
+
+    app
 }
