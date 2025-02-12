@@ -56,19 +56,13 @@ pub async fn github_callback(
         .exchange_code(data.code.to_string())
         .await?;
 
-    println!("1");
     let response =
         send_github_request("https://api.github.com/user".parse().unwrap(), &token).await?;
     if !response.status().is_success() {
         return Err(Error::Auth(InvalidCredentials));
     }
 
-    // panic!("2 {:?} {:?}", response.status(), response.text().await);
-    // let hihi =
     let mut user: GitHubUser = response.json().await.map_err(|_| OAuth)?;
-
-    println!("3");
-
     if user.email.is_none() {
         let email_response: Vec<GitHubEmail> = send_github_request(
             "https://api.github.com/user/emails".parse().unwrap(),
@@ -83,13 +77,9 @@ pub async fn github_callback(
         }
     }
 
-    println!("4");
-
     let Some(email) = user.email else {
         return Err(Error::Auth(InvalidCredentials));
     };
-
-    println!("5");
 
     OAuthProvider::finish_response(&app_state.database, user.login, email).await
 }
