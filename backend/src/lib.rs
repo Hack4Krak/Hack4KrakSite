@@ -55,5 +55,6 @@ pub fn setup_actix_app() -> UtoipaApp<
         .service(scope("/teams").configure(routes::teams::config))
         .service(scope("/tasks").configure(routes::task::config))
         .service(scope("/user").configure(routes::user::config))
+        .default_service(actix_web::web::route().to(utils::not_found_error::not_found))
         .openapi_service(|api| Scalar::with_url("/docs", api))
 }
