@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
 
+pnpm backend:openapi-check
 pnpm test
 pnpm lint

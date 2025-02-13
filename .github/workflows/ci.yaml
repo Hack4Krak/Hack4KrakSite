@@ -30,7 +30,7 @@ jobs:
           cache: 'pnpm'
 
       - name: 'Install dependencies'
-        run: | 
+        run: |
           pnpm install
 
       - name: "Run tests"
@@ -56,12 +56,19 @@ jobs:
           cargo build
           cd ..
 
-      - name: "Run tests"
+      - name: Verify if openapi is up to date
+        run: |
+          cd backend/
+          cargo run -p openapi-check
+          cd ..
+
+      - name: Run tests
         run: |
             cd backend/
             cargo test --features=full-test-suite
             cd ..
-      - name: "Run lint"
+
+      - name: Run lint
         run: |
             cd backend/
             cargo fmt && cargo clippy
