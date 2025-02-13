@@ -61,7 +61,7 @@ const siteName = computed(() => props.siteName || useSiteConfig().name)
           </p>
         </div>
         <div v-if="icon" class="flex justify-end" style="width: 30%;">
-          <NuxtImg :src="icon" height="100" />
+          <img :src="icon" height="100" alt="Hack4Krak">
         </div>
       </div>
       <div class="flex flex-row justify-center items-center text-left w-full">

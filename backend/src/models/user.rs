@@ -1,3 +1,4 @@
+use crate::entities::sea_orm_active_enums::UserRoles;
 use crate::entities::{teams, users};
 use crate::routes::auth::AuthError::UserAlreadyExists;
 use crate::routes::auth::RegisterModel;
@@ -125,6 +126,23 @@ impl FromRequest for users::Model {
             None => future::ready(Err(Error::MissingExtension {
                 name: "user".to_string(),
             })),
+        }
+    }
+}
+
+#[allow(clippy::derivable_impls)]
+impl Default for UserRoles {
+    fn default() -> Self {
+        UserRoles::Default
+    }
+}
+
+impl UserRoles {
+    pub fn permission_level(&self) -> u8 {
+        match self {
+            UserRoles::Owner => 2,
+            UserRoles::Admin => 1,
+            UserRoles::Default => 0,
         }
     }
 }

@@ -27,7 +27,7 @@ pub async fn login(
     app_state: web::Data<app_state::AppState>,
     login_json: web::Json<LoginModel>,
 ) -> Result<HttpResponse, Error> {
-    let user = users::Model::find_by_username(&app_state.database, &login_json.email)
+    let user = users::Model::find_by_email(&app_state.database, &login_json.email)
         .await?
         .ok_or(Error::Auth(InvalidCredentials))?;
 
