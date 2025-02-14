@@ -1,13 +1,26 @@
+use crate::entities::teams::ActiveModel;
 use crate::entities::{teams, users};
+use crate::routes::admin::teams::update_team::UpdateTeamModel;
 use crate::routes::teams::TeamError::*;
 use crate::utils::error::Error;
 use actix_web::dev::Payload;
 use actix_web::{FromRequest, HttpMessage, HttpRequest};
+use sea_orm::prelude::DateTime;
 use sea_orm::ActiveValue::Set;
 use sea_orm::{ActiveModelTrait, PaginatorTrait, QueryFilter};
 use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, TransactionTrait};
+use serde::{Deserialize, Serialize};
 use std::future;
+use utoipa::ToSchema;
 use uuid::Uuid;
+
+#[derive(Serialize, Deserialize, ToSchema)]
+pub struct TeamWithMembers {
+    pub id: String,
+    pub team_name: String,
+    pub created_at: DateTime,
+    pub members: Vec<String>,
+}
 
 impl teams::Model {
     pub async fn find_by_name(
@@ -130,6 +143,92 @@ impl teams::Model {
         active_user.update(&transaction).await?;
 
         transaction.commit().await?;
+
+        Ok(())
+    }
+
+    pub async fn get_leader(
+        database: &DatabaseConnection,
+        team_id: Uuid,
+    ) -> Result<users::Model, Error> {
+        let team_with_members = teams::Entity::find_by_id(team_id)
+            .find_with_related(users::Entity)
+            .all(database)
+            .await?;
+
+        let members = team_with_members[0].1.clone();
+
+        for member in members {
+            if member.is_leader {
+                return Ok(member);
+            }
+        }
+
+        Err(Error::Team(TeamLeaderNotFound))
+    }
+
+    pub async fn get_teams(database: &DatabaseConnection) -> Result<Vec<TeamWithMembers>, Error> {
+        let teams = teams::Entity::find()
+            .find_with_related(users::Entity)
+            .all(database)
+            .await?;
+
+        let teams_with_members = teams
+            .into_iter()
+            .map(|(team, users)| {
+                let members_ids: Vec<String> =
+                    users.into_iter().map(|user| user.id.to_string()).collect();
+                TeamWithMembers {
+                    id: team.id.to_string(),
+                    team_name: team.name,
+                    created_at: team.created_at,
+                    members: members_ids,
+                }
+            })
+            .collect::<Vec<TeamWithMembers>>();
+
+        Ok(teams_with_members)
+    }
+
+    pub async fn update_team(
+        database: &DatabaseConnection,
+        id: Uuid,
+        update_team_json: UpdateTeamModel,
+    ) -> Result<(), Error> {
+        let team = teams::Entity::find_by_id(id)
+            .one(database)
+            .await?
+            .ok_or(Error::Team(TeamNotFound))?;
+
+        if let Some(team_name) = update_team_json.team_name {
+            let mut active_team: ActiveModel = team.into();
+            active_team.name = Set(team_name);
+            active_team.update(database).await?;
+        }
+
+        if let Some(leader) = update_team_json.leader {
+            let new_leader = users::Entity::find_by_id(
+                Uuid::parse_str(&leader).map_err(|_| Error::UserNotFound)?,
+            )
+            .one(database)
+            .await?
+            .ok_or(Error::UserNotFound)?;
+            let leader = Self::get_leader(database, id).await?;
+
+            Self::change_leader(database, new_leader, leader).await?;
+        }
+
+        Ok(())
+    }
+
+    pub async fn delete_team(database: &DatabaseConnection, id: Uuid) -> Result<(), Error> {
+        let team = teams::Entity::find_by_id(id)
+            .one(database)
+            .await?
+            .ok_or(Error::Team(TeamNotFound))?;
+
+        let active_team: ActiveModel = team.into();
+        active_team.delete(database).await?;
 
         Ok(())
     }

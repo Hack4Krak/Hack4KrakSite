@@ -1,0 +1,20 @@
+use crate::entities::users;
+use crate::utils::app_state::AppState;
+use crate::utils::error::Error;
+use actix_web::web::Data;
+use actix_web::{get, HttpResponse};
+use sea_orm::EntityTrait;
+
+#[utoipa::path(
+    responses(
+        (status = 200, description = "User list successfully retrieved."),
+        (status = 500, description = "Internal server error.")
+    ),
+    tag = "admin/users"
+)]
+#[get("/")]
+pub async fn user_list(app_state: Data<AppState>) -> Result<HttpResponse, Error> {
+    let users = users::Entity::find().all(&app_state.database).await?;
+
+    Ok(HttpResponse::Ok().json(users))
+}

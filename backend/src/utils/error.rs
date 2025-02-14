@@ -75,6 +75,10 @@ pub enum Error {
     InvalidEmailSender(String),
     #[error("Invalid recipients' email {0}")]
     InvalidEmailRecipients(String),
+    #[error("User must have higher role than the affected user")]
+    UserMustHaveHigherRoleThanAffectedUser,
+    #[error("User with such email or username already exists")]
+    UserWithEmailOrUsernameAlreadyExists,
     #[error(transparent)]
     Auth(#[from] AuthError),
     #[error(transparent)]
@@ -104,7 +108,10 @@ impl error::ResponseError for Error {
                 StatusCode::BAD_REQUEST
             }
             Error::UserNotFound | Error::RouteNotFound => StatusCode::NOT_FOUND,
-            Error::Forbidden { .. } => StatusCode::FORBIDDEN,
+            Error::Forbidden { .. } | Error::UserMustHaveHigherRoleThanAffectedUser => {
+                StatusCode::FORBIDDEN
+            }
+            Error::UserWithEmailOrUsernameAlreadyExists => StatusCode::CONFLICT,
             Error::Team(team_err) => team_err.status_code(),
             Error::Auth(auth_err) => auth_err.status_code(),
             Error::Task(error) => error.status_code(),
