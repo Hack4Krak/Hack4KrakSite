@@ -169,7 +169,7 @@ impl<S> AuthMiddlewareService<S> {
                     }
                     .into());
                 };
-                if !user.is_leader {
+                if !user.is_leader && config.team_requirement == TeamRequirement::Leader {
                     return Err(TeamError::UserIsNotTeamLeader.into());
                 }
                 if config.insert_team_extension {
