@@ -1,11 +1,12 @@
 use crate::middlewares::status_code_drain_middleware::StatusCodeDrain;
+use crate::utils::error::Error::RouteNotFound;
 use crate::utils::openapi::ApiDoc;
 use actix_cors::Cors;
 use actix_governor::{Governor, GovernorConfigBuilder};
 use actix_web::body::MessageBody;
 use actix_web::dev::{ServiceFactory, ServiceRequest, ServiceResponse};
 use actix_web::middleware::Logger;
-use actix_web::{App, Error};
+use actix_web::{App, Error, ResponseError};
 use utoipa::OpenApi;
 use utoipa_actix_web::{scope, AppExt, UtoipaApp};
 use utoipa_scalar::{Scalar, Servable};
@@ -55,5 +56,6 @@ pub fn setup_actix_app() -> UtoipaApp<
         .service(scope("/teams").configure(routes::teams::config))
         .service(scope("/tasks").configure(routes::task::config))
         .service(scope("/user").configure(routes::user::config))
+        .default_service(actix_web::web::route().to(|| async { RouteNotFound.error_response() }))
         .openapi_service(|api| Scalar::with_url("/docs", api))
 }

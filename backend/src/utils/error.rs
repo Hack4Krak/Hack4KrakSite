@@ -71,6 +71,8 @@ pub enum Error {
     InvalidJson(#[from] serde_json::Error),
     #[error("Email template not found")]
     EmailTemplateNotFound,
+    #[error("Route not found")]
+    RouteNotFound,
     #[error("Invalid sender's email {0}")]
     InvalidEmailSender(String),
     #[error("Invalid recipients' email {0}")]
@@ -104,7 +106,7 @@ impl error::ResponseError for Error {
             Error::InvalidAuthorizationHeader | Error::MissingExtension { .. } => {
                 StatusCode::BAD_REQUEST
             }
-            Error::UserNotFound => StatusCode::NOT_FOUND,
+            Error::UserNotFound | Error::RouteNotFound => StatusCode::NOT_FOUND,
             Error::Forbidden { .. } => StatusCode::FORBIDDEN,
             Error::Team(team_err) => team_err.status_code(),
             Error::Auth(auth_err) => auth_err.status_code(),
