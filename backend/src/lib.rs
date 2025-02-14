@@ -34,8 +34,18 @@ pub fn setup_actix_app() -> UtoipaApp<
         .unwrap();
 
     let cors_middleware = Cors::default()
-        .allowed_origin("http://localhost:3000")
-        .allowed_origin("https://hack4krak.pl")
+        .allowed_origin_fn(|origin, request| {
+            if request.uri.path().contains("/tasks") {
+                return true;
+            }
+
+            if let Ok(origin_str) = origin.to_str() {
+                return origin_str == "http://localhost:3000"
+                    || origin_str == "https://hack4krak.pl";
+            }
+
+            false
+        })
         .allow_any_method()
         .allow_any_header()
         .supports_credentials()
@@ -53,7 +63,11 @@ pub fn setup_actix_app() -> UtoipaApp<
                 .wrap(Governor::new(&governor_middleware))
                 .configure(routes::auth::config),
         )
-        .service(scope("/teams").configure(routes::teams::config))
+        .service(
+            scope("/teams")
+                .wrap(Cors::permissive())
+                .configure(routes::teams::config),
+        )
         .service(scope("/tasks").configure(routes::task::config))
         .service(scope("/user").configure(routes::user::config))
         .default_service(actix_web::web::route().to(|| async { RouteNotFound.error_response() }))
