@@ -7,6 +7,17 @@ const taskId = String(route.params.id)
 const story = ref<{ title: string, message: string }[]>([])
 const backgroundImage = `${useRuntimeConfig().public.openFetch.api.baseURL}/tasks/background/${taskId}`
 
+function checkImage() {
+  const img = new Image()
+  img.src = backgroundImage
+  img.onerror = () => {
+    showError({
+      statusCode: 404,
+      message: 'Zdjecie nie zostalo znalezione',
+    })
+  }
+}
+
 try {
   const { data: storyResponse } = await useApi('/tasks/story/{task_id}', {
     path: { task_id: taskId },
@@ -32,6 +43,10 @@ try {
 
   showError(error)
 }
+
+onMounted(() => {
+  checkImage()
+})
 
 function redirectToTaskDescription() {
   navigateTo(`/tasks/description/${taskId}`)
