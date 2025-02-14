@@ -35,7 +35,7 @@ pub fn setup_actix_app() -> UtoipaApp<
 
     let cors_middleware = Cors::default()
         .allowed_origin_fn(|origin, request| {
-            if request.uri.path().contains("/tasks") {
+            if request.uri.path().starts_with("/tasks") {
                 return true;
             }
 
