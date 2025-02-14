@@ -44,13 +44,13 @@ try {
   showError(error)
 }
 
-onMounted(() => {
-  checkImage()
-})
-
 function redirectToTaskDescription() {
   navigateTo(`/tasks/description/${taskId}`)
 }
+
+onMounted(() => {
+  checkImage()
+})
 </script>
 
 <template>
