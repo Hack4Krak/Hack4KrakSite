@@ -51,6 +51,14 @@ function handleKeydown(event: KeyboardEvent) {
   }
 }
 
+function handleClick(event: MouseEvent) {
+  if (event.clientX > window.innerWidth / 2) {
+    nextDialogue()
+  } else {
+    prevDialogue()
+  }
+}
+
 watch(currentCharacter, (newCharacter) => {
   typeMessage(newCharacter.message)
 })
@@ -65,7 +73,7 @@ onMounted(() => {
   <div
     class="rendering-pixelated relative max-w-full max-h-screen justify-end flex flex-col bg-cover bg-center cursor-pointer"
     :style="{ backgroundImage: `url('${props.image}')` }"
-    @click="nextDialogue"
+    @click="handleClick"
   >
     <div>
       <div class="relative w-full mx-auto p-4 bg-black/80 text-white shadow-lg text-center">
