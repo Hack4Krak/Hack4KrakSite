@@ -4,6 +4,7 @@ use reqwest::{Response, Url};
 use serde::Deserialize;
 
 use crate::routes::auth::AuthError::InvalidCredentials;
+use crate::services::env::EnvConfig;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use crate::utils::error::Error::OAuth;
@@ -51,10 +52,15 @@ pub async fn github_callback(
     app_state: web::Data<AppState>,
     data: web::Query<QueryParams>,
 ) -> Result<HttpResponse, Error> {
-    let token = app_state
+    let token = match app_state
         .github_oauth_provider
         .exchange_code(data.code.to_string())
-        .await?;
+        .await {
+        Ok(token) => token,
+        Err(err) => return Ok(HttpResponse::TemporaryRedirect()
+            .insert_header(("Location", format!("{}?error={err}", EnvConfig::get().oauth_finish_redirect_url.clone())))
+            .finish())
+    };
 
     let response =
         send_github_request("https://api.github.com/user".parse().unwrap(), &token).await?;
