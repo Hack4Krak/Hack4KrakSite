@@ -63,11 +63,7 @@ pub fn setup_actix_app() -> UtoipaApp<
                 .wrap(Governor::new(&governor_middleware))
                 .configure(routes::auth::config),
         )
-        .service(
-            scope("/teams")
-                .wrap(Cors::permissive())
-                .configure(routes::teams::config),
-        )
+        .service(scope("/teams").configure(routes::teams::config))
         .service(scope("/tasks").configure(routes::task::config))
         .service(scope("/user").configure(routes::user::config))
         .default_service(actix_web::web::route().to(|| async { RouteNotFound.error_response() }))
