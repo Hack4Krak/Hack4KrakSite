@@ -1,18 +1,22 @@
 use crate::entities::sea_orm_active_enums::UserRoles;
+use crate::entities::users::ActiveModel;
 use crate::entities::{teams, users};
+use crate::routes::admin::users::update_user::UpdateUserModel;
 use crate::routes::auth::AuthError::UserAlreadyExists;
 use crate::routes::auth::RegisterModel;
+use crate::routes::teams::TeamError::TeamNotFound;
 use crate::utils::error::Error;
 use actix_web::dev::Payload;
 use actix_web::{FromRequest, HttpMessage, HttpRequest};
+use chrono::Local;
+use sea_orm::prelude::Uuid as SeaOrmUuid;
 use sea_orm::ActiveValue::Set;
-use sea_orm::QueryFilter;
 use sea_orm::{ActiveModelTrait, EntityTrait};
 use sea_orm::{ColumnTrait, DatabaseConnection};
-
-use chrono::Local;
+use sea_orm::{ModelTrait, QueryFilter};
 use serde::{Deserialize, Serialize};
 use std::future;
+use std::str::FromStr;
 use uuid::Uuid as uuid_gen;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -28,7 +32,8 @@ impl UserInformation {
         password_hash: String,
         credentials: &RegisterModel,
     ) -> Result<UserInformation, Error> {
-        users::Model::assert_is_unique(database, &credentials.email, &credentials.name).await?;
+        users::Model::assert_is_unique(database, &credentials.email, &credentials.name, None)
+            .await?;
 
         let user_info = UserInformation {
             name: credentials.name.clone(),
@@ -65,6 +70,7 @@ impl users::Model {
         database: &DatabaseConnection,
         email: &str,
         username: &str,
+        id: Option<SeaOrmUuid>,
     ) -> Result<(), Error> {
         let user = users::Entity::find()
             .filter(
@@ -74,6 +80,16 @@ impl users::Model {
             )
             .one(database)
             .await?;
+
+        if let Some(id) = id {
+            if let Some(user) = user {
+                return if user.id == id {
+                    Ok(())
+                } else {
+                    Err(Error::Auth(UserAlreadyExists))
+                };
+            }
+        }
 
         if user.is_some() {
             return Err(Error::Auth(UserAlreadyExists));
@@ -103,9 +119,9 @@ impl users::Model {
         let user = match user {
             Some(user) => user,
             None => {
-                users::Model::assert_is_unique(database, &email, &username).await?;
+                users::Model::assert_is_unique(database, &email, &username, None).await?;
 
-                users::ActiveModel {
+                ActiveModel {
                     id: Set(uuid_gen::new_v4()),
                     username: Set(username),
                     email: Set(email.clone()),
@@ -124,7 +140,7 @@ impl users::Model {
         database: &DatabaseConnection,
         user_info: UserInformation,
     ) -> Result<(), Error> {
-        users::Model::assert_is_unique(database, &user_info.email, &user_info.name).await?;
+        users::Model::assert_is_unique(database, &user_info.email, &user_info.name, None).await?;
 
         users::ActiveModel {
             id: Set(uuid_gen::new_v4()),
@@ -138,6 +154,72 @@ impl users::Model {
         }
         .insert(database)
         .await?;
+
+        Ok(())
+    }
+
+    pub async fn update_user(
+        database: &DatabaseConnection,
+        user: users::Model,
+        id: SeaOrmUuid,
+        update_user_json: UpdateUserModel,
+    ) -> Result<(), Error> {
+        let updated_user = users::Entity::find_by_id(id)
+            .one(database)
+            .await?
+            .ok_or(Error::UserNotFound)?;
+
+        if user.roles.permission_level() <= updated_user.roles.permission_level() {
+            return Err(Error::UserMustHaveHigherRoleThanAffectedUser);
+        }
+
+        let mut active_user: ActiveModel = updated_user.into();
+
+        if let Some(username) = update_user_json.username {
+            active_user.username = Set(username);
+        }
+
+        if let Some(email) = update_user_json.email {
+            active_user.email = Set(email);
+        }
+
+        if let Some(team) = update_user_json.team {
+            let team = uuid_gen::from_str(&team).map_err(|_| TeamNotFound)?;
+            teams::Model::assert_correct_team_size(database, &team.clone()).await?;
+            active_user.team = Set(Some(team));
+        }
+
+        if Self::assert_is_unique(
+            database,
+            &active_user.email.clone().unwrap(),
+            &active_user.username.clone().unwrap(),
+            Some(id),
+        )
+        .await
+        .is_err()
+        {
+            return Err(Error::UserWithEmailOrUsernameAlreadyExists);
+        }
+
+        active_user.save(database).await?;
+        Ok(())
+    }
+
+    pub async fn delete_user(
+        database: &DatabaseConnection,
+        user: users::Model,
+        id: SeaOrmUuid,
+    ) -> Result<(), Error> {
+        let deleted_user = users::Entity::find_by_id(id)
+            .one(database)
+            .await?
+            .ok_or(Error::UserNotFound)?;
+
+        if user.roles.permission_level() <= deleted_user.roles.permission_level() {
+            return Err(Error::UserMustHaveHigherRoleThanAffectedUser);
+        }
+
+        deleted_user.delete(database).await?;
 
         Ok(())
     }
