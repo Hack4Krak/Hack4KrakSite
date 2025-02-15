@@ -24,7 +24,7 @@ function typeMessage(message: string) {
     } else {
       clearInterval(interval)
     }
-  }, 20)
+  }, 35)
 }
 
 function nextDialogue() {
