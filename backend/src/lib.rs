@@ -34,8 +34,18 @@ pub fn setup_actix_app() -> UtoipaApp<
         .unwrap();
 
     let cors_middleware = Cors::default()
-        .allowed_origin("http://localhost:3000")
-        .allowed_origin("https://hack4krak.pl")
+        .allowed_origin_fn(|origin, request| {
+            if request.uri.path().starts_with("/tasks") {
+                return true;
+            }
+
+            if let Ok(origin_str) = origin.to_str() {
+                return origin_str == "http://localhost:3000"
+                    || origin_str == "https://hack4krak.pl";
+            }
+
+            false
+        })
         .allow_any_method()
         .allow_any_header()
         .supports_credentials()
