@@ -8,18 +8,18 @@ const props = defineProps<{
 
 const emit = defineEmits(['complete'])
 
-const characterIndex = ref(0)
-const displayedMessage = ref('')
-const currentCharacter = computed(() => props.storyDialogues[characterIndex.value] ?? { title: '', message: '' })
+const phraseIndex = ref(0)
+const displayedPhrase = ref('')
+const currentMessage = computed(() => props.storyDialogues[phraseIndex.value] ?? { title: '', message: '' })
 
-let interval: NodeJS.Timeout
+let interval: NodeJS.Timeout | undefined
 
 function typeMessage(message: string) {
-  displayedMessage.value = message[0] ?? ' '
+  displayedPhrase.value = message[0] ?? ' '
   let index = 1
   interval = setInterval(() => {
     if (index < message.length) {
-      displayedMessage.value += message[index]
+      displayedPhrase.value += message[index]
       index++
     } else {
       clearInterval(interval)
@@ -28,8 +28,8 @@ function typeMessage(message: string) {
 }
 
 function nextDialogue() {
-  if (characterIndex.value < props.storyDialogues.length - 1) {
-    characterIndex.value++
+  if (phraseIndex.value < props.storyDialogues.length - 1) {
+    phraseIndex.value++
     clearInterval(interval)
   } else {
     emit('complete')
@@ -37,8 +37,8 @@ function nextDialogue() {
 }
 
 function prevDialogue() {
-  if (characterIndex.value > 0) {
-    characterIndex.value--
+  if (phraseIndex.value > 0) {
+    phraseIndex.value--
     clearInterval(interval)
   }
 }
@@ -59,13 +59,13 @@ function handleClick(event: MouseEvent) {
   }
 }
 
-watch(currentCharacter, (newCharacter) => {
+watch(currentMessage, (newCharacter) => {
   typeMessage(newCharacter.message)
 })
 
 onMounted(() => {
   window.addEventListener('keydown', handleKeydown)
-  typeMessage(currentCharacter.value.message)
+  typeMessage(currentMessage.value.message)
 })
 </script>
 
@@ -78,13 +78,13 @@ onMounted(() => {
     <div>
       <div class="relative w-full mx-auto p-4 bg-black/80 text-white shadow-lg text-center">
         <div class="overflow-y-auto mb-10 ">
-          <MDC :value="currentCharacter.title" class="font-extrabold text-2xl sm:text-3xl md:text-4xl mb-3" />
+          <MDC :value="currentMessage.title" class="font-extrabold text-2xl sm:text-3xl md:text-4xl mb-3" />
           <div class="flex justify-center items-center mb-3">
-            <div class="w-[12px] h-[12px] bg-[#F6B216]" />
-            <div class="w-1/2 h-[2px] bg-[#F6B216]" />
-            <div class="w-[12px] h-[12px] bg-[#F6B216]" />
+            <div class="w-[12px] h-[12px] bg-yellow-500" />
+            <div class="w-1/2 h-[2px] bg-yellow-500" />
+            <div class="w-[12px] h-[12px] bg-yellow-500" />
           </div>
-          <MDC :value="displayedMessage" class="text-xl md:text-2xl font-semibold" />
+          <MDC :value="displayedPhrase" class="text-xl md:text-2xl font-semibold" />
         </div>
       </div>
     </div>
