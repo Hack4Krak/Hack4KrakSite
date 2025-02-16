@@ -5,14 +5,40 @@ use crate::routes::auth::RegisterModel;
 use crate::utils::error::Error;
 use actix_web::dev::Payload;
 use actix_web::{FromRequest, HttpMessage, HttpRequest};
-use chrono::Local;
-use sea_orm::prelude::Uuid as SeaOrmUuid;
 use sea_orm::ActiveValue::Set;
 use sea_orm::QueryFilter;
 use sea_orm::{ActiveModelTrait, EntityTrait};
 use sea_orm::{ColumnTrait, DatabaseConnection};
+
+use chrono::Local;
+use serde::{Deserialize, Serialize};
 use std::future;
 use uuid::Uuid as uuid_gen;
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct UserInformation {
+    pub name: String,
+    pub email: String,
+    pub password_hash: String,
+}
+
+impl UserInformation {
+    pub async fn new(
+        database: &DatabaseConnection,
+        password_hash: String,
+        credentials: &RegisterModel,
+    ) -> Result<UserInformation, Error> {
+        users::Model::assert_is_unique(database, &credentials.email, &credentials.name).await?;
+
+        let user_info = UserInformation {
+            name: credentials.name.clone(),
+            email: credentials.email.clone(),
+            password_hash: password_hash.clone(),
+        };
+
+        Ok(user_info)
+    }
+}
 
 impl users::Model {
     pub async fn find_by_username(
@@ -94,19 +120,17 @@ impl users::Model {
         Ok(user)
     }
 
-    pub async fn create_with_password(
+    pub async fn create_from_user_info(
         database: &DatabaseConnection,
-        uuid: SeaOrmUuid,
-        password_hash: String,
-        credentials: &RegisterModel,
+        user_info: UserInformation,
     ) -> Result<(), Error> {
-        users::Model::assert_is_unique(database, &credentials.email, &credentials.name).await?;
+        users::Model::assert_is_unique(database, &user_info.email, &user_info.name).await?;
 
         users::ActiveModel {
-            id: Set(uuid),
-            username: Set(credentials.name.clone()),
-            email: Set(credentials.email.clone()),
-            password: Set(Some(password_hash)),
+            id: Set(uuid_gen::new_v4()),
+            username: Set(user_info.name.clone()),
+            email: Set(user_info.email.clone()),
+            password: Set(Some(user_info.password_hash.clone())),
             created_at: Set(Local::now().naive_local()),
             is_leader: Set(false),
             roles: Set(UserRoles::Default),

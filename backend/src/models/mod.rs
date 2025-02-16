@@ -1,3 +1,4 @@
+mod email_confirmation;
 pub mod task;
 pub mod team_invites;
 pub mod teams;

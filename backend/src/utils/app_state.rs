@@ -65,6 +65,17 @@ impl AppState {
             ..Default::default()
         }
     }
+
+    pub fn with_database_and_smtp_client(
+        database: DatabaseConnection,
+        smtp_client: SmtpTransport,
+    ) -> AppState {
+        AppState {
+            database,
+            smtp_client,
+            ..Default::default()
+        }
+    }
 }
 
 impl Default for AppState {

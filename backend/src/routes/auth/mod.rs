@@ -1,3 +1,4 @@
+mod confirm;
 mod login;
 mod logout;
 mod oauth;
@@ -20,6 +21,7 @@ pub fn config(cfg: &mut utoipa_actix_web::service_config::ServiceConfig) {
     cfg.service(oauth::github::github_callback);
     cfg.service(oauth::google::google_callback);
     cfg.service(oauth::google::google);
+    cfg.service(confirm::confirm_email);
 }
 
 #[derive(Debug, Error)]
@@ -32,6 +34,10 @@ pub enum AuthError {
     InvalidEmailAddress,
     #[error("Password & email authentication is not available for this account")]
     PasswordAuthNotAvailable,
+    #[error("Invalid confirmation code")]
+    InvalidConfirmationCode,
+    #[error("Confirmation code expired, please try sending email again")]
+    ConfirmationCodeExpired,
 }
 
 impl error::ResponseError for AuthError {
@@ -40,7 +46,9 @@ impl error::ResponseError for AuthError {
             AuthError::UserAlreadyExists => StatusCode::CONFLICT,
             AuthError::InvalidCredentials
             | AuthError::InvalidEmailAddress
-            | AuthError::PasswordAuthNotAvailable => StatusCode::UNAUTHORIZED,
+            | AuthError::PasswordAuthNotAvailable
+            | AuthError::InvalidConfirmationCode
+            | AuthError::ConfirmationCodeExpired => StatusCode::UNAUTHORIZED,
         }
     }
 

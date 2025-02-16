@@ -31,7 +31,7 @@ async fn send_mail() {
         .build();
 
     let email = Email {
-        sender: "user@domain.tld".to_string(),
+        sender: (None, "user@domain.tld".to_string()),
         subject: "Le Corbusier and his crimes".to_string(),
         recipients: vec![
             "danger@domain.tld".to_string(),
@@ -43,7 +43,7 @@ async fn send_mail() {
     };
 
     email
-        .send(Data::new(AppState::with_email_client(smtp_client)))
+        .send(&Data::new(AppState::with_email_client(smtp_client)))
         .await
         .unwrap();
 
