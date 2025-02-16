@@ -28,6 +28,19 @@ const isButtonEnabled = computed(() => {
 
 const OAuthBaseUrl = `${useRuntimeConfig().public.openFetch.api.baseURL}/auth/oauth`
 
+const route = useRoute()
+
+if (route.query.redirect_from_confirmation === 'true') {
+  toast.add({
+    title: 'Sukces',
+    description: 'Pomyślnie aktywowano konto! Możesz się teraz zalogować',
+    color: 'success',
+  })
+  const query = Object.assign({}, route.query)
+  delete query.redirect_from_confirmation
+  useRouter().replace({ query })
+}
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   event.preventDefault()
 
@@ -35,14 +48,23 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
   try {
     const address = props.isLogin ? '/auth/login' : '/auth/register'
+    if (!props.isLogin) {
+      await toast.add({ title: 'Oczekiwanie', description: 'Wysyłanie emaila…', color: 'info' })
+    }
+
     await useNuxtApp().$api(address, {
       method: 'POST',
       credentials: 'include',
       body: event.data,
     })
 
-    await toast.add({ title: 'Sukces', description: 'Pomyślnie zalogowano!', color: 'success' })
-    await navigateTo('/panel/')
+    if (props.isLogin) {
+      await toast.add({ title: 'Sukces', description: 'Pomyślnie zalogowano!', color: 'success' })
+      await navigateTo('/panel/')
+    } else {
+      await toast.add({ title: 'Sukces', description: 'Pomyślnie zarejestrowano! Wysłaliśmy Ci na podany adres email link do aktywacji konta', color: 'success' })
+      await navigateTo('/login')
+    }
   } catch (error) {
     console.error(error)
     if (!(error instanceof FetchError)) {

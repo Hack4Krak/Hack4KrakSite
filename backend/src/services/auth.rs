@@ -1,8 +1,12 @@
-use crate::entities::users;
+use crate::entities::{email_confirmation, users};
+use crate::models::user::UserInformation;
 use crate::routes::auth::AuthError::{
     InvalidCredentials, InvalidEmailAddress, PasswordAuthNotAvailable,
 };
 use crate::routes::auth::RegisterModel;
+use crate::services::emails::{Email, EmailTemplate};
+use crate::services::env::EnvConfig;
+use crate::utils::app_state;
 use crate::utils::cookies::{create_cookie, ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE};
 use crate::utils::error::Error;
 use crate::utils::error::Error::HashPasswordFailed;
@@ -13,7 +17,6 @@ use argon2::password_hash::SaltString;
 use argon2::{Argon2, PasswordHash, PasswordHasher, PasswordVerifier};
 use chrono::Duration;
 use regex::Regex;
-use sea_orm::DatabaseConnection;
 use uuid::Uuid;
 
 const EMAIL_REGEX: &str =
@@ -23,7 +26,7 @@ pub struct AuthService;
 
 impl AuthService {
     pub async fn register_with_password(
-        database: &DatabaseConnection,
+        app_state: &app_state::AppState,
         credentials: RegisterModel,
     ) -> Result<HttpResponse, Error> {
         let regex = Regex::new(EMAIL_REGEX).unwrap();
@@ -37,10 +40,31 @@ impl AuthService {
             .map_err(HashPasswordFailed)?
             .to_string();
 
-        let uuid = Uuid::new_v4();
-        users::Model::create_with_password(database, uuid, password_hash, &credentials).await?;
+        let user_info =
+            UserInformation::new(&app_state.database, password_hash, &credentials).await?;
 
-        Self::response_with_cookies(uuid, credentials.email)
+        let confirmation_code =
+            email_confirmation::Model::create_with_userinfo(&app_state.database, user_info).await?;
+
+        let confirmation_link = Self::create_email_confirmation_link(&confirmation_code);
+
+        Email {
+            sender: (
+                Some("Hack4Krak Authentication".to_string()),
+                "auth@hack4krak.pl".to_string(),
+            ),
+            recipients: vec![credentials.email],
+            subject: "Potwierdzenie rejestracji".to_string(),
+            template: EmailTemplate::EmailConfirmation,
+            placeholders: Some(vec![
+                ("user".to_string(), credentials.name),
+                ("link".to_string(), confirmation_link.to_string()),
+            ]),
+        }
+        .send(app_state)
+        .await?;
+
+        Ok(HttpResponse::Ok().body("User successfully registered."))
     }
 
     pub fn assert_password_is_valid(
@@ -90,5 +114,35 @@ impl AuthService {
         let mut response = HttpResponse::Ok();
         Self::append_tokens_as_cookies(uuid, email, &mut response)?;
         Ok(response.finish())
+    }
+
+    pub async fn confirm_email(
+        app_state: &app_state::AppState,
+        confirmation_code: String,
+    ) -> Result<(), Error> {
+        let user_info = email_confirmation::Model::get_user_info(
+            &app_state.database,
+            confirmation_code.clone(),
+        )
+        .await?;
+
+        users::Model::create_from_user_info(&app_state.database, user_info).await?;
+
+        email_confirmation::Model::remove_expired_and_confirmed(
+            &app_state.database,
+            Some(confirmation_code),
+        )
+        .await?;
+
+        Ok(())
+    }
+
+    fn create_email_confirmation_link(confirmation_code: &str) -> String {
+        let mut confirmation_link = "".to_string();
+        confirmation_link.push_str(&EnvConfig::get().email_confirm_backend_url.clone());
+        confirmation_link.push('/');
+        confirmation_link.push_str(confirmation_code);
+
+        confirmation_link
     }
 }

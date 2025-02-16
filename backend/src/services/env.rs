@@ -11,6 +11,12 @@ fn default_backend_address() -> String {
 fn default_oauth_finish_redirect_url() -> String {
     "http://localhost:3000/panel".to_string()
 }
+fn default_email_confirm_redirect_url() -> String {
+    "http://localhost:3000/login?redirect_from_confirmation=true".to_string()
+}
+fn default_email_confirm_backend_url() -> String {
+    "http://localhost:8080/auth/confirm".to_string()
+}
 fn default_openapi_json_frontend_path() -> String {
     "../frontend/openapi/api/openapi.json".to_string()
 }
@@ -32,6 +38,10 @@ pub struct EnvConfig {
     pub oauth_finish_redirect_url: String,
     #[serde(default = "default_openapi_json_frontend_path")]
     pub openapi_json_frontend_path: String,
+    #[serde(default = "default_email_confirm_redirect_url")]
+    pub email_confirm_redirect_url: String,
+    #[serde(default = "default_email_confirm_backend_url")]
+    pub email_confirm_backend_url: String,
     #[serde(default = "default_cookies_domain")]
     pub cookies_domain: String,
     pub jwt_secret: String,

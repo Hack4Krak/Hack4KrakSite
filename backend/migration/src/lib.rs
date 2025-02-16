@@ -13,6 +13,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20250130_182300_refactor_of_initial_fk_and_leader_system::Migration),
             Box::new(m20250131_155122_rename_teamname_to_team_and_change_relation_to_team_id_in_users::Migration),
             Box::new(m20250203_105134_setup_roles_system::Migration),
+            Box::new(m20250204_175306_add_email_confirmation_table::Migration),
         ]
     }
 }
@@ -23,3 +24,4 @@ mod m20250130_145618_change_teams_and_users_pk_to_id_add_team_invites_table_drop
 mod m20250130_182300_refactor_of_initial_fk_and_leader_system;
 mod m20250131_155122_rename_teamname_to_team_and_change_relation_to_team_id_in_users;
 mod m20250203_105134_setup_roles_system;
+mod m20250204_175306_add_email_confirmation_table;

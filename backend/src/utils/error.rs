@@ -77,6 +77,8 @@ pub enum Error {
     InvalidEmailSender(String),
     #[error("Invalid recipients' email {0}")]
     InvalidEmailRecipients(String),
+    #[error("Email assets not found")]
+    EmailAssetsNotFound,
     #[error(transparent)]
     Auth(#[from] AuthError),
     #[error(transparent)]
@@ -100,7 +102,8 @@ impl error::ResponseError for Error {
             | Error::Request(_)
             | Error::FailedToSendEmail(_)
             | Error::InvalidJson(_)
-            | Error::FailedToBuildEmail(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            | Error::FailedToBuildEmail(_)
+            | Error::EmailAssetsNotFound => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Unauthorized => StatusCode::UNAUTHORIZED,
             Error::InvalidJsonWebToken => StatusCode::UNAUTHORIZED,
             Error::InvalidAuthorizationHeader | Error::MissingExtension { .. } => {

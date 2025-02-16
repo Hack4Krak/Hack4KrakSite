@@ -2,6 +2,7 @@
 
 pub mod prelude;
 
+pub mod email_confirmation;
 pub mod sea_orm_active_enums;
 pub mod team_invites;
 pub mod teams;

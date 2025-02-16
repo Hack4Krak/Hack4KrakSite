@@ -27,5 +27,5 @@ pub async fn register(
     app_state: web::Data<app_state::AppState>,
     model: web::Json<RegisterModel>,
 ) -> Result<HttpResponse, Error> {
-    AuthService::register_with_password(&app_state.database, model.into_inner()).await
+    AuthService::register_with_password(&app_state, model.into_inner()).await
 }

@@ -2,11 +2,15 @@ use actix_web::body::MessageBody;
 use actix_web::dev::{ServiceFactory, ServiceRequest, ServiceResponse};
 use actix_web::web::Data;
 use actix_web::{App, Error};
-use hack4krak_backend::entities::{team_invites, teams, users};
+use hack4krak_backend::entities::{email_confirmation, team_invites, teams, users};
 use hack4krak_backend::setup_actix_app;
 use hack4krak_backend::utils::app_state::AppState;
+use lettre::SmtpTransport;
 use migration::TableCreateStatement;
 use sea_orm::{ConnectionTrait, Database, DbBackend, DbConn, EntityTrait, Schema};
+
+pub const UUID_REGEX: &str =
+    r"[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}";
 
 async fn setup_schema(database: &DbConn, entity: impl EntityTrait) {
     let schema = Schema::new(DbBackend::Sqlite);
@@ -18,7 +22,9 @@ async fn setup_schema(database: &DbConn, entity: impl EntityTrait) {
         .unwrap();
 }
 
-pub async fn setup_test_app() -> App<
+pub async fn setup_test_app(
+    email_client: Option<SmtpTransport>,
+) -> App<
     impl ServiceFactory<
         ServiceRequest,
         Config = (),
@@ -32,7 +38,15 @@ pub async fn setup_test_app() -> App<
     setup_schema(&database, team_invites::Entity).await;
     setup_schema(&database, teams::Entity).await;
     setup_schema(&database, users::Entity).await;
+    setup_schema(&database, email_confirmation::Entity).await;
 
+    if let Some(email_client) = email_client {
+        let state = Data::new(AppState::with_database_and_smtp_client(
+            database,
+            email_client,
+        ));
+        return setup_actix_app(false).into_app().app_data(state.clone());
+    }
     let state = Data::new(AppState::with_database(database));
     setup_actix_app(false).into_app().app_data(state.clone())
 }
