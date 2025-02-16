@@ -1,31 +1,41 @@
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
-use actix_web::{web, HttpResponse};
-use lettre::message::header::ContentType;
-use lettre::message::{header, Mailboxes};
+use actix_web::HttpResponse;
+use lettre::message::{header, Attachment, Mailbox, Mailboxes, MultiPart, SinglePart};
 use lettre::{Message, Transport};
 use std::option::Option;
 use std::path::Path;
 
 pub enum EmailTemplate {
     HelloWorld,
+    EmailConfirmation,
 }
 
 impl EmailTemplate {
     pub fn get_placeholder_elements(&self) -> Option<Vec<String>> {
         match self {
             EmailTemplate::HelloWorld => None,
+            EmailTemplate::EmailConfirmation => Some(vec!["user".to_string(), "link".to_string()]),
         }
     }
     pub fn get_template_path(&self) -> String {
         match self {
-            EmailTemplate::HelloWorld => "src/utils/emails_assets/hello_world.html".to_string(),
+            EmailTemplate::HelloWorld => "src/services/emails_assets/hello_world.html".to_string(),
+            EmailTemplate::EmailConfirmation => {
+                "src/services/emails_assets/email_confirmation.html".to_string()
+            }
+        }
+    }
+    pub fn is_logo_attached(&self) -> bool {
+        match self {
+            EmailTemplate::HelloWorld => false,
+            EmailTemplate::EmailConfirmation => true,
         }
     }
 }
 
 pub struct Email {
-    pub sender: String,
+    pub sender: (Option<String>, String),
     pub recipients: Vec<String>,
     pub subject: String,
     pub template: EmailTemplate,
@@ -33,10 +43,26 @@ pub struct Email {
 }
 
 impl Email {
-    pub async fn send(&self, app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
+    pub async fn send(&self, app_state: &AppState) -> Result<HttpResponse, Error> {
         let smtp_client = &app_state.smtp_client;
 
         let html = self.parse_placeholders()?;
+
+        let mut email_body = MultiPart::mixed().singlepart(
+            SinglePart::builder()
+                .header(header::ContentType::TEXT_HTML)
+                .body(html),
+        );
+
+        if self.template.is_logo_attached() {
+            let logo_attachment = Attachment::new_inline("hack4krak_logo".to_string()).body(
+                tokio::fs::read("src/services/emails_assets/images/hack4krak_logo_black.webp")
+                    .await
+                    .map_err(|_| Error::EmailAssetsNotFound)?,
+                header::ContentType::parse("image/webp").unwrap(),
+            );
+            email_body = email_body.singlepart(logo_attachment);
+        }
 
         let mailboxes: Mailboxes = self
             .recipients
@@ -47,16 +73,20 @@ impl Email {
 
         let to_header: header::To = mailboxes.into();
 
+        let (sender_name, sender_email) = self.sender.clone();
+
+        let sender = Mailbox::new(
+            sender_name,
+            sender_email
+                .parse()
+                .map_err(|_| Error::InvalidEmailSender(sender_email))?,
+        );
+
         let email = Message::builder()
-            .from(
-                self.sender
-                    .parse()
-                    .map_err(|_| Error::InvalidEmailSender(self.sender.to_string()))?,
-            )
+            .from(sender)
             .mailbox(to_header)
             .subject(&self.subject)
-            .header(ContentType::TEXT_HTML)
-            .body(html)
+            .multipart(email_body)
             .map_err(Error::FailedToBuildEmail)?;
 
         let _email = smtp_client.send(&email).map_err(Error::FailedToSendEmail)?;
