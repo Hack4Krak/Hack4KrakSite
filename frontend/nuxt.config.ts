@@ -18,6 +18,7 @@ export default defineNuxtConfig({
 
   routeRules: {
     '/tasks/description/**': { swr: true },
+    '/tasks/story/**': { swr: true },
   },
 
   experimental: {
