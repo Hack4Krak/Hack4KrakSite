@@ -26,10 +26,10 @@ impl teams::Model {
 
     pub async fn assert_correct_team_size(
         database: &DatabaseConnection,
-        name: &str,
+        id: &Uuid,
     ) -> Result<(), Error> {
         let members_count = users::Entity::find()
-            .filter(users::Column::Team.eq(name))
+            .filter(users::Column::Team.eq(*id))
             .count(database)
             .await?;
 

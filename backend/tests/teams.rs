@@ -1,15 +1,22 @@
+use utils::{setup_schema, setup_test_app};
+
 use actix_web::http::header;
 use actix_web::web::Data;
 use actix_web::{test, App};
-use chrono::Duration;
-use hack4krak_backend::entities::{teams, users};
+use chrono::{Duration, Local};
+use hack4krak_backend::entities::sea_orm_active_enums::UserRoles;
+use hack4krak_backend::entities::{email_confirmation, team_invites, teams, users};
 use hack4krak_backend::routes;
 use hack4krak_backend::services::env::EnvConfig;
 use hack4krak_backend::utils::app_state::AppState;
 use hack4krak_backend::utils::jwt::encode_jwt;
-use sea_orm::{DatabaseBackend, MockDatabase};
+use sea_orm::ActiveValue::Set;
+use sea_orm::{ActiveModelTrait, Database, DatabaseBackend, DatabaseConnection, MockDatabase};
 use utoipa::gen::serde_json::json;
 use utoipa_actix_web::scope;
+use uuid::Uuid;
+
+mod utils;
 
 #[actix_web::test]
 async fn create_team_user_already_belongs_to_team() {
@@ -180,4 +187,133 @@ async fn create_team_success() {
     let response = test::call_service(&app, request).await;
 
     assert_eq!(response.status(), 200);
+}
+
+async fn assert_team_size_setup() -> (DatabaseConnection, Uuid, Uuid) {
+    let database = Database::connect("sqlite::memory:").await.unwrap();
+
+    setup_schema(&database, team_invites::Entity).await;
+    setup_schema(&database, teams::Entity).await;
+    setup_schema(&database, users::Entity).await;
+    setup_schema(&database, email_confirmation::Entity).await;
+
+    let users = vec![
+        ("Salieri", "example@gmail.com"),
+        ("Salieri2", "example2@gmail.com"),
+        ("Salieri3", "example3@gmail.com"),
+        ("Salieri4", "example4@gmail.com"),
+    ];
+
+    let team_uuid = Uuid::new_v4();
+
+    teams::ActiveModel {
+        id: Set(team_uuid),
+        name: Set("dziengiel".to_string()),
+        created_at: Set(Local::now().naive_local()),
+    }
+    .insert(&database)
+    .await
+    .unwrap();
+
+    for (username, email) in users {
+        users::ActiveModel {
+            id: Set(Uuid::new_v4()),
+            username: Set(username.to_string()),
+            email: Set(email.to_string()),
+            created_at: Set(Local::now().naive_local()),
+            is_leader: Set(false),
+            roles: Set(UserRoles::Default),
+            team: Set(Some(team_uuid)),
+            ..Default::default()
+        }
+        .insert(&database)
+        .await
+        .unwrap();
+    }
+
+    let user_uuid = Uuid::new_v4();
+
+    users::ActiveModel {
+        id: Set(user_uuid),
+        username: Set("Antonio".to_string()),
+        email: Set("skibidi@gmail.com".to_string()),
+        created_at: Set(Local::now().naive_local()),
+        is_leader: Set(false),
+        roles: Set(UserRoles::Default),
+        ..Default::default()
+    }
+    .insert(&database)
+    .await
+    .unwrap();
+
+    team_invites::ActiveModel {
+        id: Set(Uuid::new_v4()),
+        user: Set(user_uuid),
+        team: Set(team_uuid),
+    }
+    .insert(&database)
+    .await
+    .unwrap();
+
+    (database, user_uuid, team_uuid)
+}
+
+#[actix_web::test]
+async fn assert_correct_team_size() {
+    EnvConfig::load_test_config();
+
+    let (database, uuid, _) = assert_team_size_setup().await;
+
+    let app = test::init_service(setup_test_app(None, Some(database)).await).await;
+
+    let access_token =
+        encode_jwt(uuid, "skibidi@gmail.com".to_string(), Duration::minutes(10)).unwrap();
+
+    let request = test::TestRequest::post()
+        .uri("/teams/invitations/accept_invitation/dziengiel")
+        .insert_header((header::COOKIE, format!("access_token={}", access_token)))
+        .to_request();
+
+    let response = test::call_service(&app, request).await;
+
+    assert_eq!(response.status(), 200);
+}
+
+#[actix_web::test]
+async fn assert_incorrect_team_size() {
+    EnvConfig::load_test_config();
+
+    let (database, user_uuid, team_uuid) = assert_team_size_setup().await;
+
+    users::ActiveModel {
+        id: Set(Uuid::new_v4()),
+        username: Set("Salieri10".to_string()),
+        email: Set("example123@gmail.com".to_string()),
+        created_at: Set(Local::now().naive_local()),
+        is_leader: Set(false),
+        roles: Set(UserRoles::Default),
+        team: Set(Some(team_uuid)),
+        ..Default::default()
+    }
+    .insert(&database)
+    .await
+    .unwrap();
+
+    let app = test::init_service(setup_test_app(None, Some(database)).await).await;
+
+    let access_token = encode_jwt(
+        user_uuid,
+        "skibidi@gmail.com".to_string(),
+        Duration::minutes(10),
+    )
+    .unwrap();
+
+    let request = test::TestRequest::post()
+        .uri("/teams/invitations/accept_invitation/dziengiel")
+        .insert_header((header::COOKIE, format!("access_token={}", access_token)))
+        .to_request();
+
+    let response = test::call_service(&app, request).await;
+
+    assert_eq!(response.status(), 409);
 }
