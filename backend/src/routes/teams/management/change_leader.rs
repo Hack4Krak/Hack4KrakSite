@@ -24,7 +24,7 @@ pub struct ChangeLeaderModel {
     ),
     tag = "teams/management"
 )]
-#[patch("/change_name")]
+#[patch("/change_leader")]
 pub async fn change_leader(
     app_state: web::Data<app_state::AppState>,
     model: web::Json<ChangeLeaderModel>,
