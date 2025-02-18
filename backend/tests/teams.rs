@@ -1,17 +1,18 @@
-use utils::{setup_schema, setup_test_app};
+use utils::setup_test_app;
 
+use crate::utils::setup_database_with_schema;
 use actix_web::http::header;
 use actix_web::web::Data;
 use actix_web::{test, App};
 use chrono::{Duration, Local};
 use hack4krak_backend::entities::sea_orm_active_enums::UserRoles;
-use hack4krak_backend::entities::{email_confirmation, team_invites, teams, users};
+use hack4krak_backend::entities::{team_invites, teams, users};
 use hack4krak_backend::routes;
 use hack4krak_backend::services::env::EnvConfig;
 use hack4krak_backend::utils::app_state::AppState;
 use hack4krak_backend::utils::jwt::encode_jwt;
 use sea_orm::ActiveValue::Set;
-use sea_orm::{ActiveModelTrait, Database, DatabaseBackend, DatabaseConnection, MockDatabase};
+use sea_orm::{ActiveModelTrait, DatabaseBackend, DatabaseConnection, MockDatabase};
 use utoipa::gen::serde_json::json;
 use utoipa_actix_web::scope;
 use uuid::Uuid;
@@ -190,19 +191,7 @@ async fn create_team_success() {
 }
 
 async fn assert_team_size_setup() -> (DatabaseConnection, Uuid, Uuid) {
-    let database = Database::connect("sqlite::memory:").await.unwrap();
-
-    setup_schema(&database, team_invites::Entity).await;
-    setup_schema(&database, teams::Entity).await;
-    setup_schema(&database, users::Entity).await;
-    setup_schema(&database, email_confirmation::Entity).await;
-
-    let users = vec![
-        ("Salieri", "example@gmail.com"),
-        ("Salieri2", "example2@gmail.com"),
-        ("Salieri3", "example3@gmail.com"),
-        ("Salieri4", "example4@gmail.com"),
-    ];
+    let database = setup_database_with_schema().await;
 
     let team_uuid = Uuid::new_v4();
 
@@ -214,6 +203,13 @@ async fn assert_team_size_setup() -> (DatabaseConnection, Uuid, Uuid) {
     .insert(&database)
     .await
     .unwrap();
+
+    let users = vec![
+        ("Salieri", "example@gmail.com"),
+        ("Salieri2", "example2@gmail.com"),
+        ("Salieri3", "example3@gmail.com"),
+        ("Salieri4", "example4@gmail.com"),
+    ];
 
     for (username, email) in users {
         users::ActiveModel {

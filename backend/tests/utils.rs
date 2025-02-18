@@ -21,6 +21,17 @@ pub async fn setup_schema(database: &DbConn, entity: impl EntityTrait) {
         .unwrap();
 }
 
+pub async fn setup_database_with_schema() -> DatabaseConnection {
+    let database = Database::connect("sqlite::memory:").await.unwrap();
+
+    setup_schema(&database, team_invites::Entity).await;
+    setup_schema(&database, teams::Entity).await;
+    setup_schema(&database, users::Entity).await;
+    setup_schema(&database, email_confirmation::Entity).await;
+
+    database
+}
+
 pub async fn setup_test_app(
     email_client: Option<SmtpTransport>,
     database_connection: Option<DatabaseConnection>,
@@ -35,16 +46,7 @@ pub async fn setup_test_app(
 > {
     let database = match database_connection {
         Some(database) => database,
-        None => {
-            let database = Database::connect("sqlite::memory:").await.unwrap();
-
-            setup_schema(&database, team_invites::Entity).await;
-            setup_schema(&database, teams::Entity).await;
-            setup_schema(&database, users::Entity).await;
-            setup_schema(&database, email_confirmation::Entity).await;
-
-            database
-        }
+        None => setup_database_with_schema().await,
     };
 
     if let Some(email_client) = email_client {
