@@ -103,13 +103,13 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         </UFormField>
 
         <div class="space-y-2">
-          <UButton type="submit" class="w-full text-center inline rounded-3xl py-2 bg-neutral-300" :disabled="loading" :class="isButtonEnabled ? 'bg-[var(--ui-primary)]' : ''">
+          <UButton type="submit" class="w-full text-center inline rounded-3xl py-2 bg-neutral-300" :disabled="loading" :class="isButtonEnabled ? 'bg-(--ui-primary)' : ''">
             {{ isLogin ? 'Zaloguj' : 'Zarejestruj' }}
           </UButton>
 
           <span class="text-sm text-neutral-500">
             {{ isLogin ? 'Nie masz konta?' : 'Masz już konto?' }}
-            <NuxtLink class="underline text-white cursor-pointer hover:text-[var(--ui-primary)]" :to="props.isLogin ? '/register' : '/login'">
+            <NuxtLink class="underline text-white cursor-pointer hover:text-(--ui-primary)" :to="props.isLogin ? '/register' : '/login'">
               {{ isLogin ? 'Załóż je' : 'Zaloguj się' }}
             </NuxtLink>
           </span>
