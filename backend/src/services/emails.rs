@@ -4,7 +4,6 @@ use actix_web::HttpResponse;
 use lettre::message::{header, Attachment, Mailbox, Mailboxes, MultiPart, SinglePart};
 use lettre::{Message, Transport};
 use std::option::Option;
-use std::path::Path;
 
 pub enum EmailTemplate {
     HelloWorld,
@@ -18,11 +17,11 @@ impl EmailTemplate {
             EmailTemplate::EmailConfirmation => Some(vec!["user".to_string(), "link".to_string()]),
         }
     }
-    pub fn get_template_path(&self) -> String {
+    pub fn get_template(&self) -> &'static str {
         match self {
-            EmailTemplate::HelloWorld => "src/services/emails_assets/hello_world.html".to_string(),
+            EmailTemplate::HelloWorld => include_str!("emails_assets/hello_world.html"),
             EmailTemplate::EmailConfirmation => {
-                "src/services/emails_assets/email_confirmation.html".to_string()
+                include_str!("emails_assets/email_confirmation.html")
             }
         }
     }
@@ -99,8 +98,7 @@ impl Email {
             return Err(Error::PlaceholdersRequired);
         }
 
-        let mut html = std::fs::read_to_string(Path::new(&self.template.get_template_path()))
-            .map_err(|_| Error::EmailTemplateNotFound)?;
+        let mut html = self.template.get_template().to_string();
         if let Some(elements) = self.placeholders.clone() {
             for (key, value) in elements {
                 html = html.replace(&format!("%{}%", key), &value);
