@@ -15,8 +15,12 @@ pub struct TaskManager {
 }
 
 impl TaskManager {
-    pub async fn load() -> Self {
-        let tasks = DashMap::new();
+    pub async fn refresh(&self) {
+        self.tasks.clear();
+        Self::load_tasks(&self.tasks).await;
+    }
+
+    async fn load_tasks(tasks: &DashMap<String, TaskConfig>) {
         let mut entries = fs::read_dir(&EnvConfig::get().tasks_base_path.join("tasks/"))
             .await
             .unwrap();
@@ -32,6 +36,12 @@ impl TaskManager {
                 tasks.insert(task.description.id.clone(), task);
             }
         }
+    }
+
+    pub async fn load() -> Self {
+        let tasks = DashMap::new();
+
+        Self::load_tasks(&tasks).await;
 
         let event_config_path = EnvConfig::get().tasks_base_path.join("config/event.yaml");
         let event_config = fs::read_to_string(event_config_path).await.unwrap();
