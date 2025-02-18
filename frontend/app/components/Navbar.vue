@@ -44,7 +44,7 @@ const items = [
 </script>
 
 <template>
-  <UContainer class="top-0 z-1 sticky max-w-full border-b-1 border-neutral-600 font-pixelify bg-[var(--ui-bg)]">
+  <UContainer class="top-0 z-1 sticky max-w-full border-b-1 border-neutral-600 font-pixelify bg-(--ui-bg)">
     <div class="mx-auto flex items-center">
       <NuxtLink to="/" class="flex items-center space-x-2 py-3">
         <Logo class="size-10 text-black dark:text-white" />
@@ -56,7 +56,7 @@ const items = [
       <!-- Desktop Navigation -->
       <UNavigationMenu
         :items="items" variant="link" class="hidden md:flex w-full"
-        :ui="{ linkLabel: 'text-lg hover:underline underline-offset-5 text-[var(--ui-bg)] dark:text-white' }"
+        :ui="{ linkLabel: 'text-lg hover:underline underline-offset-5 text-(--ui-bg) dark:text-white' }"
       >
         <template #button>
           <ElevatedButton message="START GRY" />
