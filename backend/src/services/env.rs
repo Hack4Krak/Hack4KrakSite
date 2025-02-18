@@ -26,11 +26,18 @@ fn default_cookies_domain() -> String {
 fn default_tasks_base_path() -> PathBuf {
     PathBuf::from_str("TasksTemplate/tasks/").unwrap()
 }
+fn default_relaxed_security_mode() -> bool {
+    false
+}
 
 pub static ENV: OnceLock<EnvConfig> = OnceLock::new();
 
 #[derive(Deserialize, Debug, Default)]
 pub struct EnvConfig {
+    /// Configures some stuff to be a little bit less secure
+    /// But allow for example makes vercel previews work correctly
+    #[serde(default = "default_relaxed_security_mode")]
+    pub relaxed_security_mode: bool,
     pub database_url: String,
     #[serde(default = "default_backend_address")]
     pub backend_address: String,

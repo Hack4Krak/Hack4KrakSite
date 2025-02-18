@@ -1,4 +1,5 @@
 use crate::middlewares::status_code_drain_middleware::StatusCodeDrain;
+use crate::services::env::EnvConfig;
 use crate::utils::error::Error::RouteNotFound;
 use crate::utils::openapi::ApiDoc;
 use actix_cors::Cors;
@@ -30,14 +31,19 @@ pub fn setup_actix_app(
     >,
 > {
     let cors_middleware = Cors::default()
+        .allowed_origin("http://localhost:3000")
+        .allowed_origin("https://hack4krak.pl")
         .allowed_origin_fn(|origin, request| {
-            if request.uri.path().starts_with("/tasks") {
-                return true;
-            }
+            let Ok(origin) = origin.to_str() else {
+                return false;
+            };
 
-            if let Ok(origin_str) = origin.to_str() {
-                return origin_str == "http://localhost:3000"
-                    || origin_str == "https://hack4krak.pl";
+            if EnvConfig::get().relaxed_security_mode
+                && origin.starts_with("https://hack4krak")
+                && origin.ends_with("-spacemceu.vercel.app")
+                && !request.uri.path().starts_with("/admin")
+            {
+                return true;
             }
 
             false
