@@ -52,7 +52,7 @@ argon2 = "0.6.0-pre.1"
 jsonwebtoken = "9.3.1"
 chrono = "0.4.39"
 oauth2 = { version = "5.0.0", features = ["reqwest"] }
-lettre = "0.11.12"
+lettre = "0.11.13"
 dashmap = "6.1.0"
 
 [dev-dependencies]
