@@ -1,13 +1,14 @@
-use actix_web::{post, web, HttpResponse};
-use serde::{Deserialize, Serialize};
-use utoipa::ToSchema;
-
 use crate::services::auth::AuthService;
 use crate::utils::app_state;
 use crate::utils::error::Error;
+use actix_web::{post, web, HttpResponse};
+use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
+use validator::Validate;
 
-#[derive(Serialize, Deserialize, ToSchema)]
+#[derive(Serialize, Deserialize, ToSchema, Validate)]
 pub struct RegisterModel {
+    #[validate(length(min = 3, max = 32))]
     pub name: String,
     pub email: String,
     pub(crate) password: String,
@@ -25,7 +26,7 @@ pub struct RegisterModel {
 #[post("/register")]
 pub async fn register(
     app_state: web::Data<app_state::AppState>,
-    model: web::Json<RegisterModel>,
+    model: actix_web_validator::Json<RegisterModel>,
 ) -> Result<HttpResponse, Error> {
     AuthService::register_with_password(&app_state, model.into_inner()).await
 }
