@@ -109,7 +109,9 @@ async fn auth_flow() {
     use testcontainers::core::WaitFor;
     use testcontainers::runners::AsyncRunner;
     use testcontainers::GenericImage;
-    use utils::UUID_REGEX;
+
+    const UUID_REGEX: &str =
+        r"[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}";
 
     let container = GenericImage::new("mailhog/mailhog", "latest")
         .with_exposed_port(1025.tcp()) // SMTP port

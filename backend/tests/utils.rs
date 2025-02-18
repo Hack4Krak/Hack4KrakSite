@@ -11,9 +11,6 @@ use sea_orm::{
     ConnectionTrait, Database, DatabaseConnection, DbBackend, DbConn, EntityTrait, Schema,
 };
 
-pub const UUID_REGEX: &str =
-    r"[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}";
-
 pub async fn setup_schema(database: &DbConn, entity: impl EntityTrait) {
     let schema = Schema::new(DbBackend::Sqlite);
 
