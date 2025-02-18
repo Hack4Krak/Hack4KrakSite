@@ -49,7 +49,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
     const address = props.isLogin ? '/auth/login' : '/auth/register'
     if (!props.isLogin) {
-      await toast.add({ title: 'Oczekiwanie', description: 'Wysyłanie emaila…', color: 'info' })
+      toast.add({ title: 'Oczekiwanie', description: 'Wysyłanie emaila…', color: 'info' })
     }
 
     await useNuxtApp().$api(address, {
@@ -59,10 +59,10 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     })
 
     if (props.isLogin) {
-      await toast.add({ title: 'Sukces', description: 'Pomyślnie zalogowano!', color: 'success' })
+      toast.add({ title: 'Sukces', description: 'Pomyślnie zalogowano!', color: 'success' })
       await navigateTo('/panel/')
     } else {
-      await toast.add({ title: 'Sukces', description: 'Pomyślnie zarejestrowano! Wysłaliśmy Ci na podany adres email link do aktywacji konta', color: 'success' })
+      toast.add({ title: 'Sukces', description: 'Pomyślnie zarejestrowano! Wysłaliśmy Ci na podany adres email link do aktywacji konta', color: 'success' })
       await navigateTo('/login')
     }
   } catch (error) {
@@ -72,9 +72,9 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     }
 
     if (error.data) {
-      await toast.add({ title: 'Błąd logowania', description: error.data.message, color: 'error' })
+      toast.add({ title: 'Błąd logowania', description: error.data.message, color: 'error' })
     } else {
-      await toast.add({ title: 'Błąd logowania', color: 'error' })
+      toast.add({ title: 'Błąd logowania', color: 'error' })
     }
   } finally {
     loading.value = false
