@@ -2,6 +2,7 @@ use actix_web::{HttpResponse, get, web};
 use serde::Deserialize;
 
 use crate::routes::auth::AuthError::InvalidCredentials;
+use crate::services::env::EnvConfig;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use crate::utils::oauth::OAuthProvider;
@@ -33,10 +34,15 @@ pub async fn google_callback(
     app_state: web::Data<AppState>,
     data: web::Query<QueryParams>,
 ) -> Result<HttpResponse, Error> {
-    let token = app_state
+    let token = match app_state
         .google_oauth_provider
         .exchange_code(data.code.to_string())
-        .await?;
+        .await {
+        Ok(token) => token,
+        Err(err) => return Ok(HttpResponse::TemporaryRedirect()
+            .insert_header(("Location", format!("{}?error={err}", EnvConfig::get().oauth_finish_redirect_url.clone())))
+            .finish())
+    };
 
     let response = reqwest::Client::new()
         .get("https://www.googleapis.com/oauth2/v3/userinfo")
