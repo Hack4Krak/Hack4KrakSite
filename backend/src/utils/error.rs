@@ -69,8 +69,6 @@ pub enum Error {
     FailedToBuildEmail(#[from] lettre::error::Error),
     #[error("Could not serialize json: {0}")]
     InvalidJson(#[from] serde_json::Error),
-    #[error("Email template not found")]
-    EmailTemplateNotFound,
     #[error("Route not found")]
     RouteNotFound,
     #[error("Invalid sender's email {0}")]
@@ -91,7 +89,6 @@ impl error::ResponseError for Error {
     fn status_code(&self) -> StatusCode {
         match self {
             Error::PlaceholdersRequired
-            | Error::EmailTemplateNotFound
             | Error::InvalidEmailSender(_)
             | Error::InvalidEmailRecipients(_) => StatusCode::BAD_REQUEST,
             Error::HashPasswordFailed(_)
