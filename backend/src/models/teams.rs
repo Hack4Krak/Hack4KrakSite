@@ -201,6 +201,12 @@ impl teams::Model {
             .ok_or(Error::Team(TeamNotFound))?;
 
         if let Some(team_name) = update_team_json.team_name {
+            if teams::Model::find_by_name(&database, &*team_name)
+                .await?
+                .is_some()
+            {
+                return Err(Error::Team(AlreadyExists));
+            }
             let mut active_team: ActiveModel = team.into();
             active_team.name = Set(team_name);
             active_team.update(database).await?;
@@ -213,6 +219,7 @@ impl teams::Model {
             .one(database)
             .await?
             .ok_or(Error::UserNotFound)?;
+
             let leader = Self::get_leader(database, id).await?;
 
             Self::change_leader(database, new_leader, leader).await?;
