@@ -12,7 +12,7 @@ use crate::utils::error::Error;
 #[post("/logout")]
 pub async fn logout() -> Result<HttpResponse, Error> {
     Ok(HttpResponse::Ok()
-        .cookie(reset_cookie(ACCESS_TOKEN_COOKIE))
-        .cookie(reset_cookie(REFRESH_TOKEN_COOKIE))
+        .append_header(("Set-Cookie", reset_cookie(ACCESS_TOKEN_COOKIE)))
+        .append_header(("Set-Cookie", reset_cookie(REFRESH_TOKEN_COOKIE)))
         .finish())
 }

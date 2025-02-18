@@ -9,7 +9,7 @@ use migration::{Migrator, MigratorTrait};
 use sea_orm::{Database, DatabaseConnection};
 use std::env;
 use std::time::Instant;
-use tracing::info;
+use tracing::{info, warn};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -31,6 +31,11 @@ async fn main() -> std::io::Result<()> {
     info!("Loaded {} tasks from file system", task_manager.tasks.len());
 
     let app_data = Data::new(AppState::setup(database).await);
+
+    if EnvConfig::get().relaxed_security_mode {
+        warn!("App is in relaxed security mode, so some stuff are less restrictive");
+        warn!("You can safely ignore it if it is intended");
+    }
 
     info!("Starting server...");
     let server = HttpServer::new(move || {
