@@ -21,12 +21,14 @@ pub async fn get(
 ) -> Result<HttpResponse, Error> {
     let task_asset = task_asset.into_inner();
 
+    let (task_id, asset_path) = (task_asset.0, task_asset.1);
+
     let asset_path_full = EnvConfig::get()
         .tasks_base_path
         .clone()
-        .join(&task_asset.0)
+        .join(task_id)
         .join("assets/")
-        .join(&task_asset.1);
+        .join(asset_path);
 
     let stream = NamedFile::open(asset_path_full)?.into_response(&request);
 
