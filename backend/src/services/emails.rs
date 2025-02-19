@@ -55,9 +55,7 @@ impl Email {
 
         if self.template.is_logo_attached() {
             let logo_attachment = Attachment::new_inline("hack4krak_logo".to_string()).body(
-                tokio::fs::read("src/services/emails_assets/images/hack4krak_logo_black.webp")
-                    .await
-                    .map_err(|_| Error::EmailAssetsNotFound)?,
+                include_bytes!("emails_assets/images/hack4krak_logo_black.webp").to_vec(),
                 header::ContentType::parse("image/webp").unwrap(),
             );
             email_body = email_body.singlepart(logo_attachment);
