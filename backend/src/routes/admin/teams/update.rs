@@ -22,7 +22,7 @@ pub struct UpdateTeamModel {
     tag = "admin/teams"
 )]
 #[patch("/update/{id}")]
-pub async fn update_team(
+pub async fn update(
     app_state: Data<app_state::AppState>,
     id: Path<Uuid>,
     update_team_json: Json<UpdateTeamModel>,

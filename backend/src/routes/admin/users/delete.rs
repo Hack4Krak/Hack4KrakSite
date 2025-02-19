@@ -14,7 +14,7 @@ use uuid::Uuid;
     tag = "admin/users"
 )]
 #[delete("/delete/{id}")]
-pub async fn delete_user(
+pub async fn delete(
     app_state: Data<app_state::AppState>,
     user: users::Model,
     id: Path<Uuid>,

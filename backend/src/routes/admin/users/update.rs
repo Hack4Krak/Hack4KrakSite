@@ -4,6 +4,7 @@ use crate::utils::error::Error;
 use actix_web::web::{Data, Json, Path};
 use actix_web::{patch, HttpResponse};
 use serde::{Deserialize, Serialize};
+use std::ops::Deref;
 use utoipa::ToSchema;
 use uuid::Uuid;
 
@@ -24,7 +25,7 @@ pub struct UpdateUserModel {
     tag = "admin/users"
 )]
 #[patch("/update/{id}")]
-pub async fn update_user(
+pub async fn update(
     app_state: Data<app_state::AppState>,
     user: users::Model,
     id: Path<Uuid>,
@@ -33,6 +34,7 @@ pub async fn update_user(
     users::Model::update(
         &app_state.database,
         user,
+        app_state.task_manager.event_config.lock().await.deref(),
         id.into_inner(),
         update_user_json.into_inner(),
     )

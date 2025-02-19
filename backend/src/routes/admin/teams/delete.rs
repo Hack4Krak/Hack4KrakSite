@@ -13,7 +13,7 @@ use uuid::Uuid;
     tag = "admin/teams"
 )]
 #[delete("/delete/{id}")]
-pub async fn delete_team(
+pub async fn delete(
     app_state: Data<app_state::AppState>,
     id: Path<Uuid>,
 ) -> Result<HttpResponse, Error> {

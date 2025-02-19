@@ -1,13 +1,13 @@
 use crate::entities::teams::ActiveModel;
 use crate::entities::{teams, users};
-use crate::routes::admin::teams::update_team::UpdateTeamModel;
+use crate::routes::admin::teams::update::UpdateTeamModel;
 use crate::routes::teams::TeamError::*;
 use crate::utils::error::Error;
 use actix_web::dev::Payload;
 use actix_web::{FromRequest, HttpMessage, HttpRequest};
 use sea_orm::prelude::DateTime;
 use sea_orm::ActiveValue::Set;
-use sea_orm::{ActiveModelTrait, PaginatorTrait, QueryFilter};
+use sea_orm::{ActiveModelTrait, ModelTrait, PaginatorTrait, QueryFilter};
 use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, TransactionTrait};
 use serde::{Deserialize, Serialize};
 use std::future;
@@ -116,7 +116,7 @@ impl teams::Model {
         new_team_name: String,
         team: teams::Model,
     ) -> Result<(), Error> {
-        let mut active_team: teams::ActiveModel = team.into();
+        let mut active_team: ActiveModel = team.into();
         active_team.name = Set(new_team_name);
         active_team.update(database).await?;
 
@@ -151,20 +151,17 @@ impl teams::Model {
         database: &DatabaseConnection,
         team_id: Uuid,
     ) -> Result<users::Model, Error> {
-        let team_with_members = teams::Entity::find_by_id(team_id)
-            .find_with_related(users::Entity)
-            .all(database)
-            .await?;
+        let leader = users::Entity::find()
+            .filter(
+                users::Column::Team
+                    .eq(team_id)
+                    .and(users::Column::IsLeader.eq(true)),
+            )
+            .one(database)
+            .await?
+            .ok_or(Error::Team(TeamLeaderNotFound))?;
 
-        let members = team_with_members[0].1.clone();
-
-        for member in members {
-            if member.is_leader {
-                return Ok(member);
-            }
-        }
-
-        Err(Error::Team(TeamLeaderNotFound))
+        Ok(leader)
     }
 
     pub async fn list(database: &DatabaseConnection) -> Result<Vec<TeamWithMembers>, Error> {
@@ -213,12 +210,7 @@ impl teams::Model {
         }
 
         if let Some(leader) = update_team_json.leader {
-            let new_leader = users::Entity::find_by_id(
-                Uuid::parse_str(&leader).map_err(|_| Error::UserNotFound)?,
-            )
-            .one(database)
-            .await?
-            .ok_or(Error::UserNotFound)?;
+            let new_leader = users::Model::find_by_uuid_from_string(database, &leader).await?;
 
             let leader = Self::leader(database, id).await?;
 
@@ -234,8 +226,9 @@ impl teams::Model {
             .await?
             .ok_or(Error::Team(TeamNotFound))?;
 
-        let active_team: ActiveModel = team.into();
-        active_team.delete(database).await?;
+        // Team is declared and then deleted instead of using delete_by_id,
+        // because it should return error if team is not found and delete_by_id does not return this error
+        team.delete(database).await?;
 
         Ok(())
     }

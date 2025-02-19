@@ -1,7 +1,8 @@
 use crate::entities::sea_orm_active_enums::UserRoles;
 use crate::entities::users::ActiveModel;
 use crate::entities::{teams, users};
-use crate::routes::admin::users::update_user::UpdateUserModel;
+use crate::models::task::EventConfig;
+use crate::routes::admin::users::update::UpdateUserModel;
 use crate::routes::auth::AuthError::UserAlreadyExists;
 use crate::routes::auth::RegisterModel;
 use crate::routes::teams::TeamError::TeamNotFound;
@@ -17,7 +18,7 @@ use sea_orm::{ModelTrait, QueryFilter};
 use serde::{Deserialize, Serialize};
 use std::future;
 use std::str::FromStr;
-use uuid::Uuid as uuid_gen;
+use uuid::{Uuid as uuid_gen, Uuid};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UserInformation {
@@ -66,6 +67,18 @@ impl users::Model {
             .await?)
     }
 
+    pub async fn find_by_uuid_from_string(
+        database: &DatabaseConnection,
+        id: &str,
+    ) -> Result<Self, Error> {
+        let user = users::Entity::find_by_id(Uuid::parse_str(id).map_err(|_| Error::UserNotFound)?)
+            .one(database)
+            .await?
+            .ok_or(Error::UserNotFound)?;
+
+        Ok(user)
+    }
+
     pub async fn assert_is_unique(
         database: &DatabaseConnection,
         email: &str,
@@ -81,17 +94,16 @@ impl users::Model {
             .one(database)
             .await?;
 
-        if let Some(id) = id {
-            if let Some(user) = user {
-                return if user.id == id {
-                    Ok(())
-                } else {
-                    Err(Error::Auth(UserAlreadyExists))
-                };
+        let same_user_exists = user.is_some();
+
+        if let (Some(user), Some(id)) = (user, id) {
+            if user.id != id {
+                return Err(Error::UserWithEmailOrUsernameAlreadyExists);
             }
+            return Ok(());
         }
 
-        if user.is_some() {
+        if same_user_exists {
             return Err(Error::Auth(UserAlreadyExists));
         }
 
@@ -161,6 +173,7 @@ impl users::Model {
     pub async fn update(
         database: &DatabaseConnection,
         user: users::Model,
+        event_config: &EventConfig,
         id: SeaOrmUuid,
         update_user_json: UpdateUserModel,
     ) -> Result<(), Error> {
@@ -185,7 +198,12 @@ impl users::Model {
 
         if let Some(team) = update_user_json.team {
             let team = uuid_gen::from_str(&team).map_err(|_| TeamNotFound)?;
-            teams::Model::assert_correct_team_size(database, &team.clone()).await?;
+            teams::Model::assert_correct_team_size(
+                database,
+                event_config.max_team_size,
+                &team.clone(),
+            )
+            .await?;
             active_user.team = Set(Some(team));
         }
 
@@ -210,16 +228,16 @@ impl users::Model {
         user: users::Model,
         id: SeaOrmUuid,
     ) -> Result<(), Error> {
-        let deleted_user = users::Entity::find_by_id(id)
+        let user_to_delete = users::Entity::find_by_id(id)
             .one(database)
             .await?
             .ok_or(Error::UserNotFound)?;
 
-        if user.roles.permission_level() <= deleted_user.roles.permission_level() {
+        if user.roles.permission_level() <= user_to_delete.roles.permission_level() {
             return Err(Error::UserMustHaveHigherRoleThanAffectedUser);
         }
 
-        deleted_user.delete(database).await?;
+        user_to_delete.delete(database).await?;
 
         Ok(())
     }
