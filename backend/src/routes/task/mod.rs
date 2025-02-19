@@ -2,7 +2,9 @@ use actix_web::http::StatusCode;
 use actix_web::{error, HttpResponse};
 use std::string;
 use thiserror::Error;
+use utoipa_actix_web::scope;
 
+mod assets;
 mod background;
 mod description;
 mod icon;
@@ -15,6 +17,7 @@ pub fn config(cfg: &mut utoipa_actix_web::service_config::ServiceConfig) {
     cfg.service(story::story);
     cfg.service(background::background);
     cfg.service(description::description);
+    cfg.service(scope("/assets").configure(assets::config));
 }
 
 #[derive(Debug, Error)]
