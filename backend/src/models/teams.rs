@@ -4,7 +4,7 @@ use crate::utils::error::Error;
 use actix_web::dev::Payload;
 use actix_web::{FromRequest, HttpMessage, HttpRequest};
 use sea_orm::ActiveValue::Set;
-use sea_orm::{ActiveModelTrait, PaginatorTrait, QueryFilter};
+use sea_orm::{ActiveModelTrait, ModelTrait, PaginatorTrait, QueryFilter};
 use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, TransactionTrait};
 use std::future;
 use uuid::Uuid;
@@ -128,6 +128,24 @@ impl teams::Model {
         let mut active_user: users::ActiveModel = user.into();
         active_user.is_leader = Set(false);
         active_user.update(&transaction).await?;
+
+        transaction.commit().await?;
+
+        Ok(())
+    }
+
+    pub async fn delete(
+        database: &DatabaseConnection,
+        user: users::Model,
+        team: teams::Model,
+    ) -> Result<(), Error> {
+        let transaction = database.begin().await?;
+
+        let mut active_user: users::ActiveModel = user.into();
+        active_user.is_leader = Set(false);
+        active_user.update(&transaction).await?;
+
+        team.delete(&transaction).await?;
 
         transaction.commit().await?;
 

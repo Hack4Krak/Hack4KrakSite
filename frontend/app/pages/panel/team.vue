@@ -1,0 +1,102 @@
+<script setup lang="ts">
+const { data: team } = await useAuth('/teams/membership/my_team', {
+  key: 'teams-membership-my-team',
+  method: 'GET',
+})
+
+if (!team.value) {
+  await navigateTo('/panel/')
+}
+
+const { _, error } = await useAuth('/teams/management/', {
+  key: 'is-user-leader',
+  method: 'GET',
+})
+
+const is_user_leader = error.value === undefined
+
+const inviteUserModal = ref(false)
+const leaveTeamModal = ref(false)
+const deleteTeamModal = ref(false)
+const kickUserModal = ref(false)
+const kickedUser = ref('')
+
+const members = computed(() => {
+  const teamMembers = team?.value?.members || []
+  return [...teamMembers, ...Array.from({ length: 5 }).fill(null)].slice(0, 5)
+})
+</script>
+
+<template>
+  <div>
+    <PanelModalInviteUser v-model="inviteUserModal" />
+    <PanelModalConfirmDeleteModal
+      v-model="deleteTeamModal"
+      url="/teams/management/delete"
+      modal-title="Usuwanie drużyny"
+      modal-description="Czy na pewno chcesz usunąć drużynę? Ta operacja jest nieodwracalna."
+      toast-success-message="Pomyślnie usunięto drużynę"
+      :request-body="undefined"
+    />
+    <PanelModalConfirmDeleteModal
+      v-model="leaveTeamModal"
+      url="/teams/membership/leave_team"
+      modal-title="Opuść drużynę"
+      modal-description="Czy na pewno chcesz opuścić drużynę? Ta operacja jest nieodwracalna."
+      toast-success-message="Pomyślnie opuściłeś drużynę"
+      :request-body="undefined"
+    />
+    <PanelModalConfirmDeleteModal
+      v-model="kickUserModal"
+      url="/teams/management/kick_user"
+      modal-title="Wyrzucenie użytkownika"
+      modal-description="Czy na pewno chcesz wyrzucić użytkownika z drużyny?"
+      toast-success-message="Pomyślnie wyrzucono użytkownika"
+      :request-body="{ username: kickedUser }"
+    />
+
+    <NuxtLink to="/panel/" class="flex items-center gap-3 font-900 pt-5 pl-5">
+      <Icon name="mdi:arrow-left" class="text-2xl" />
+      Powrót
+    </NuxtLink>
+    <div class="flex mx-20 gap-20 mt-10">
+      <div class="border-2 border-neutral-600 p-5 min-w-70 rounded-2xl flex flex-col">
+        <h1 class="flex-grow text-3xl font-bold">
+          {{ team?.team_name }}
+        </h1>
+        <UButton v-if="is_user_leader" class="w-full" @click="deleteTeamModal = true">
+          <p class="text-center w-full">
+            Opuść zespół
+          </p>
+        </UButton>
+        <UButton v-else class="w-full" @click="leaveTeamModal = true">
+          <p class="text-center w-full">
+            Opuść zespół
+          </p>
+        </UButton>
+      </div>
+      <div class="border-2 border-neutral-600 flex-grow rounded-2xl">
+        <div
+          v-for="(user, index) in members" :key="index"
+          class="border-b-1 border-neutral-600 last-of-type:border-0 p-5"
+        >
+          <div v-if="user" class="flex justify-between items-center">
+            <div>
+              <UIcon v-if="user.is_leader" name="i-material-symbols-crown" class="text-yellow-400" />
+              {{ user.name }}
+            </div>
+            <UButton v-if="is_user_leader" @click="kickUserModal = true; kickedUser = user.name">
+              Wyrzuć
+            </UButton>
+          </div>
+          <div v-else class="text-gray-400">
+            <div v-if="is_user_leader" class="flex gap-5 items-center cursor-pointer" @click="inviteUserModal = true">
+              <Icon name="mdi:account-plus" class="text-2xl" />
+              Dodaj do zespołu
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

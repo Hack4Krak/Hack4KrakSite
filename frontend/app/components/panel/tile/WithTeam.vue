@@ -1,5 +1,9 @@
 <script setup lang="ts">
-const value = ref(50)
+const props = defineProps<{
+  teamName: string
+}>()
+
+const value = ref(0)
 </script>
 
 <template>
@@ -11,14 +15,14 @@ const value = ref(50)
     <span class="flex-grow">Brakuje wam 25 flag</span>
 
     <h1 class="font-semibold text-2xl">
-      Nazwa zespołu: <span class="text-(--ui-primary)">Szypki</span>
+      Nazwa zespołu: <span class="text-(--ui-primary)">{{ props.teamName }}</span>
     </h1>
-    <button class="flex items-center gap-5 border-neutral-800 border-2 rounded-2xl px-5 py-2 cursor-pointer hover:bg-neutral-800 transition-all duration-150">
+    <NuxtLink to="/panel/team" class="flex items-center gap-5 border-neutral-800 border-2 rounded-2xl px-5 py-2 cursor-pointer hover:bg-neutral-800 transition-all duration-150">
       <UIcon name="i-fluent-people-team-16-filled" class="size-15" />
       <h3 class="font-semibold">
         Panel zespołu
       </h3>
       <UIcon name="i-material-symbols-arrow-back-2-rounded" class="size-3 transform scale-x-[-1]" />
-    </button>
+    </NuxtLink>
   </div>
 </template>

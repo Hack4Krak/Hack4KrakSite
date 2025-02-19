@@ -14,7 +14,13 @@ use utoipa::ToSchema;
 pub struct TeamWithMembers {
     pub team_name: String,
     pub created_at: DateTime,
-    pub members: Vec<String>,
+    pub members: Vec<TeamMember>,
+}
+
+#[derive(Serialize, Deserialize, ToSchema)]
+pub struct TeamMember {
+    pub name: String,
+    pub is_leader: bool,
 }
 
 #[utoipa::path(
@@ -39,7 +45,13 @@ pub async fn my_team(
         .all(&app_state.database)
         .await?;
 
-    let members = users.into_iter().map(|user| user.username).collect();
+    let members = users
+        .into_iter()
+        .map(|user| TeamMember {
+            name: user.username,
+            is_leader: user.is_leader,
+        })
+        .collect();
 
     let team_response = TeamWithMembers {
         team_name: team.name,
