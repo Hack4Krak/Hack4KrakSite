@@ -1,5 +1,24 @@
+use chrono::{DateTime, FixedOffset};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "kebab-case")]
+pub struct EventConfig {
+    pub start_date: DateTime<FixedOffset>,
+    pub end_date: DateTime<FixedOffset>,
+    pub max_team_size: u16,
+}
+
+impl Default for EventConfig {
+    fn default() -> Self {
+        EventConfig {
+            max_team_size: 5,
+            start_date: DateTime::default(),
+            end_date: DateTime::default()
+        }
+    }
+}
 
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct TaskConfig {

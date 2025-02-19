@@ -1,4 +1,5 @@
 use crate::entities::{team_invites, teams, users};
+use crate::models::task::EventConfig;
 use crate::routes::teams::TeamError::{
     UserAlreadyBelongsToTeam, UserDoesntHaveAnyInvitations, UserDoesntHaveInvitationsFromTeam,
 };
@@ -11,6 +12,7 @@ use sea_orm::{ActiveModelTrait, DatabaseConnection, EntityTrait, TransactionTrai
 impl team_invites::Model {
     pub async fn invite_user(
         database: &DatabaseConnection,
+        event_config: &EventConfig,
         invited_user: users::Model,
         team: teams::Model,
     ) -> Result<(), Error> {
@@ -20,7 +22,8 @@ impl team_invites::Model {
             }));
         }
 
-        teams::Model::assert_correct_team_size(database, &team.id).await?;
+        teams::Model::assert_correct_team_size(database, event_config.max_team_size, &team.id)
+            .await?;
 
         team_invites::Entity::insert(team_invites::ActiveModel {
             user: Set(invited_user.id),
@@ -60,6 +63,7 @@ impl team_invites::Model {
 
     pub async fn accept_invitation(
         database: &DatabaseConnection,
+        event_config: &EventConfig,
         team: teams::Model,
         user: users::Model,
     ) -> Result<(), Error> {
@@ -81,7 +85,8 @@ impl team_invites::Model {
             }));
         }
 
-        teams::Model::assert_correct_team_size(database, &team.id).await?;
+        teams::Model::assert_correct_team_size(database, event_config.max_team_size, &team.id)
+            .await?;
 
         let transaction = database.begin().await?;
 

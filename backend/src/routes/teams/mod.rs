@@ -53,7 +53,7 @@ pub enum TeamError {
     #[error("Team leader can't leave team")]
     TeamLeaderCantLeaveTeam,
     #[error("Team is full. Max team size is {max_size}")]
-    TeamIsFull { max_size: u8 },
+    TeamIsFull { max_size: u16 },
 }
 
 impl error::ResponseError for TeamError {
