@@ -17,16 +17,18 @@ async function logout() {
 
 <template>
   <div class="flex flex-col p-12 pb-12 items-center gap-12">
-    <div>
-      <h1 class="text-5xl font-bold text-center">
-        Witaj {{ data?.username }}!
-      </h1>
-      <h2 class="text-2xl font-light text-center mt-2">
-        Życzymy powodzenia na wydarzeniu!
-      </h2>
+    <div class="flex flex-col flex-grow items-center justify-center max-h-[15em]">
+      <div class="text-center">
+        <h1 class="text-5xl font-bold">
+          Witaj {{ data?.username }}!
+        </h1>
+        <h2 class="text-4xl font-light mt-2">
+          Życzymy powodzenia na wydarzeniu!
+        </h2>
+      </div>
     </div>
 
-    <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-x-15 gap-y-5 flex-grow">
+    <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-15 gap-y-5">
       <PanelTile class="row-span-2 min-h-100 min-w-70">
         <PanelTileWithTeam />
       </PanelTile>
