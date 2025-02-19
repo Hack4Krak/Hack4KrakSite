@@ -1,9 +1,7 @@
-use crate::utils::app_state;
+use crate::services::env::EnvConfig;
 use crate::utils::error::Error;
-use actix_web::web::Bytes;
-use actix_web::{get, web, HttpResponse};
-use futures_util::future::ok;
-use futures_util::stream::once;
+use actix_files::NamedFile;
+use actix_web::{get, web, HttpRequest, HttpResponse};
 
 #[utoipa::path(
     responses(
@@ -18,21 +16,19 @@ use futures_util::stream::once;
 )]
 #[get("/get/{task_id}/{asset_path}")]
 pub async fn get(
-    app_state: web::Data<app_state::AppState>,
+    request: HttpRequest,
     task_asset: web::Path<(String, String)>,
 ) -> Result<HttpResponse, Error> {
-    let manager = &app_state.task_manager;
-
     let task_asset = task_asset.into_inner();
 
-    let mut asset_path_full = "assets/".to_string();
-    asset_path_full.push_str(&task_asset.1);
+    let asset_path_full = EnvConfig::get()
+        .tasks_base_path
+        .clone()
+        .join(&task_asset.0)
+        .join("assets/")
+        .join(&task_asset.1);
 
-    let content = manager.load_asset(&task_asset.0, &asset_path_full).await?;
+    let stream = NamedFile::open(asset_path_full)?.into_response(&request);
 
-    let body = once(ok::<_, Error>(Bytes::from(content)));
-
-    Ok(HttpResponse::Ok()
-        .content_type("application/octet-stream")
-        .streaming(body))
+    Ok(stream)
 }
