@@ -10,6 +10,7 @@ pub fn reset_cookie(name: &str) -> String {
         .expires(OffsetDateTime::UNIX_EPOCH)
         .path("/")
         .domain(EnvConfig::get().cookies_domain.clone())
+        .secure(true)
         .finish()
         .to_string();
 
