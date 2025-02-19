@@ -7,12 +7,11 @@ use hack4krak_backend::setup_actix_app;
 use hack4krak_backend::utils::app_state::AppState;
 use lettre::SmtpTransport;
 use migration::TableCreateStatement;
-use sea_orm::{ConnectionTrait, Database, DbBackend, DbConn, EntityTrait, Schema};
+use sea_orm::{
+    ConnectionTrait, Database, DatabaseConnection, DbBackend, DbConn, EntityTrait, Schema,
+};
 
-pub const UUID_REGEX: &str =
-    r"[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}";
-
-async fn setup_schema(database: &DbConn, entity: impl EntityTrait) {
+pub async fn setup_schema(database: &DbConn, entity: impl EntityTrait) {
     let schema = Schema::new(DbBackend::Sqlite);
 
     let stmt: TableCreateStatement = schema.create_table_from_entity(entity);
@@ -22,8 +21,20 @@ async fn setup_schema(database: &DbConn, entity: impl EntityTrait) {
         .unwrap();
 }
 
+pub async fn setup_database_with_schema() -> DatabaseConnection {
+    let database = Database::connect("sqlite::memory:").await.unwrap();
+
+    setup_schema(&database, team_invites::Entity).await;
+    setup_schema(&database, teams::Entity).await;
+    setup_schema(&database, users::Entity).await;
+    setup_schema(&database, email_confirmation::Entity).await;
+
+    database
+}
+
 pub async fn setup_test_app(
     email_client: Option<SmtpTransport>,
+    database_connection: Option<DatabaseConnection>,
 ) -> App<
     impl ServiceFactory<
         ServiceRequest,
@@ -33,12 +44,10 @@ pub async fn setup_test_app(
         InitError = (),
     >,
 > {
-    let database = Database::connect("sqlite::memory:").await.unwrap();
-
-    setup_schema(&database, team_invites::Entity).await;
-    setup_schema(&database, teams::Entity).await;
-    setup_schema(&database, users::Entity).await;
-    setup_schema(&database, email_confirmation::Entity).await;
+    let database = match database_connection {
+        Some(database) => database,
+        None => setup_database_with_schema().await,
+    };
 
     if let Some(email_client) = email_client {
         let state = Data::new(AppState::with_database_and_smtp_client(

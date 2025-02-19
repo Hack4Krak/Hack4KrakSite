@@ -1,6 +1,5 @@
-use crate::utils::{setup_test_app, UUID_REGEX};
-use actix_web::cookie::Cookie;
-use actix_web::http::header;
+use crate::utils::setup_test_app;
+
 use actix_web::web::Data;
 use actix_web::{test, App};
 use hack4krak_backend::entities::{email_confirmation, users};
@@ -9,7 +8,6 @@ use hack4krak_backend::services::env::EnvConfig;
 use hack4krak_backend::utils::app_state::AppState;
 use sea_orm::MockExecResult;
 use sea_orm::{DatabaseBackend, MockDatabase};
-use serde_json::Value;
 use utoipa::gen::serde_json::json;
 use utoipa_actix_web::scope;
 
@@ -21,6 +19,7 @@ async fn register() {
     EnvConfig::load_test_config();
     use lettre::transport::smtp::client::Tls;
     use lettre::SmtpTransport;
+    use serde_json::Value;
     use testcontainers::core::IntoContainerPort;
     use testcontainers::core::WaitFor;
     use testcontainers::runners::AsyncRunner;
@@ -44,7 +43,7 @@ async fn register() {
         .port(smtp_port)
         .build();
 
-    let app = test::init_service(setup_test_app(Some(smtp_client)).await).await;
+    let app = test::init_service(setup_test_app(Some(smtp_client), None).await).await;
 
     let register_payload = json!({
         "email": "test@example.com",
@@ -79,7 +78,7 @@ async fn register() {
 
 #[actix_web::test]
 async fn register_invalid_email() {
-    let app = test::init_service(setup_test_app(None).await).await;
+    let app = test::init_service(setup_test_app(None, None).await).await;
 
     let register_payload = json!({
         "email": "this_!isn'taemaill",
@@ -101,12 +100,18 @@ async fn register_invalid_email() {
 #[actix_web::test]
 async fn auth_flow() {
     EnvConfig::load_test_config();
+    use actix_web::cookie::Cookie;
+    use actix_web::http::header;
     use lettre::transport::smtp::client::Tls;
     use lettre::SmtpTransport;
+    use serde_json::Value;
     use testcontainers::core::IntoContainerPort;
     use testcontainers::core::WaitFor;
     use testcontainers::runners::AsyncRunner;
     use testcontainers::GenericImage;
+
+    const UUID_REGEX: &str =
+        r"[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}";
 
     let container = GenericImage::new("mailhog/mailhog", "latest")
         .with_exposed_port(1025.tcp()) // SMTP port
@@ -126,7 +131,7 @@ async fn auth_flow() {
         .port(smtp_port)
         .build();
 
-    let app = test::init_service(setup_test_app(Some(smtp_client)).await).await;
+    let app = test::init_service(setup_test_app(Some(smtp_client), None).await).await;
 
     let register_payload = json!({
         "email": "test@example.com",

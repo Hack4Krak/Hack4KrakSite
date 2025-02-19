@@ -20,7 +20,7 @@ impl team_invites::Model {
             }));
         }
 
-        teams::Model::assert_correct_team_size(database, &team.name).await?;
+        teams::Model::assert_correct_team_size(database, &team.id).await?;
 
         team_invites::Entity::insert(team_invites::ActiveModel {
             user: Set(invited_user.id),
@@ -81,7 +81,7 @@ impl team_invites::Model {
             }));
         }
 
-        teams::Model::assert_correct_team_size(database, &team.name).await?;
+        teams::Model::assert_correct_team_size(database, &team.id).await?;
 
         let transaction = database.begin().await?;
 
