@@ -2,6 +2,7 @@ use crate::models::task::{EventConfig, TaskConfig};
 use crate::routes::task::TaskError;
 use crate::services::env::EnvConfig;
 use crate::utils::error::Error;
+use actix_files::NamedFile;
 use dashmap::mapref::one::Ref;
 use dashmap::DashMap;
 use tokio::fs;
@@ -55,7 +56,7 @@ impl TaskManager {
             .ok_or(TaskError::MissingTask { id: id.to_string() }.into())
     }
 
-    pub async fn load_asset(&self, id: &str, path: &str) -> Result<Vec<u8>, Error> {
+    pub async fn load_asset(&self, id: &str, path: &str) -> Result<NamedFile, Error> {
         self.get_task(id)?;
 
         let asset_path = EnvConfig::get().tasks_base_path.join(id).join(path);
@@ -64,6 +65,8 @@ impl TaskManager {
             return Err(TaskError::CouldNotLoadTaskAsset { id: id.to_string() }.into());
         }
 
-        Ok(fs::read(asset_path).await?)
+        let named_file = NamedFile::open(asset_path)?;
+
+        Ok(named_file)
     }
 }

@@ -1,7 +1,7 @@
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::web::{Data, Path};
-use actix_web::{get, HttpResponse};
+use actix_web::{get, HttpRequest, HttpResponse};
 
 #[utoipa::path(
     responses(
@@ -13,11 +13,15 @@ use actix_web::{get, HttpResponse};
     tag = "tasks"
 )]
 #[get("/icon/{task_id}")]
-pub async fn icon(app_state: Data<AppState>, task_id: Path<String>) -> Result<HttpResponse, Error> {
+pub async fn icon(
+    app_state: Data<AppState>,
+    task_id: Path<String>,
+    request: HttpRequest,
+) -> Result<HttpResponse, Error> {
     let content = app_state
         .task_manager
         .load_asset(&task_id, "pictures/icon.png")
         .await?;
 
-    Ok(HttpResponse::Ok().body(content))
+    Ok(content.into_response(&request))
 }

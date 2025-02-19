@@ -1,7 +1,7 @@
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::web::{Data, Path};
-use actix_web::{get, HttpResponse};
+use actix_web::{get, HttpRequest, HttpResponse};
 
 #[utoipa::path(
     responses(
@@ -15,6 +15,7 @@ use actix_web::{get, HttpResponse};
 #[get("/background/{task_id}")]
 pub async fn background(
     app_state: Data<AppState>,
+    request: HttpRequest,
     task_id: Path<String>,
 ) -> Result<HttpResponse, Error> {
     let manager = &app_state.task_manager;
@@ -23,5 +24,5 @@ pub async fn background(
         .load_asset(&task_id, "pictures/background.png")
         .await?;
 
-    Ok(HttpResponse::Ok().body(content))
+    Ok(content.into_response(&request))
 }

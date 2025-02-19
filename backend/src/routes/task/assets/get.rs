@@ -1,6 +1,5 @@
-use crate::services::env::EnvConfig;
+use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
-use actix_files::NamedFile;
 use actix_web::{get, web, HttpRequest, HttpResponse};
 
 #[utoipa::path(
@@ -16,21 +15,17 @@ use actix_web::{get, web, HttpRequest, HttpResponse};
 )]
 #[get("/get/{task_id}/{asset_path}")]
 pub async fn get(
+    app_data: web::Data<AppState>,
     request: HttpRequest,
     task_asset: web::Path<(String, String)>,
 ) -> Result<HttpResponse, Error> {
-    let task_asset = task_asset.into_inner();
+    let manager = &app_data.task_manager;
 
-    let (task_id, asset_path) = (task_asset.0, task_asset.1);
+    let (task_id, asset_path) = task_asset.into_inner();
 
-    let asset_path_full = EnvConfig::get()
-        .tasks_base_path
-        .clone()
-        .join(task_id)
-        .join("assets/")
-        .join(asset_path);
+    let asset_path = "assets/".to_owned() + &*asset_path;
 
-    let stream = NamedFile::open(asset_path_full)?.into_response(&request);
+    let named_file = manager.load_asset(&task_id, &asset_path).await?;
 
-    Ok(stream)
+    Ok(named_file.into_response(&request))
 }

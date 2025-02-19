@@ -1,8 +1,7 @@
-use crate::routes::task::TaskError;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::web::{Data, Path};
-use actix_web::{get, HttpResponse};
+use actix_web::{get, HttpRequest, HttpResponse};
 
 #[utoipa::path(
     responses(
@@ -16,14 +15,13 @@ use actix_web::{get, HttpResponse};
 #[get("/description/{task_id}")]
 pub async fn description(
     app_state: Data<AppState>,
+    request: HttpRequest,
     task_id: Path<String>,
 ) -> Result<HttpResponse, Error> {
-    let content_bytes = app_state
+    let content = app_state
         .task_manager
         .load_asset(&task_id, "description.md")
         .await?;
-    let content =
-        String::from_utf8(content_bytes).map_err(TaskError::ErrorWhileReadingDescription)?;
 
-    Ok(HttpResponse::Ok().body(content))
+    Ok(content.into_response(&request))
 }
