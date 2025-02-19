@@ -12,8 +12,8 @@ use sea_orm::EntityTrait;
     ),
     tag = "admin/users"
 )]
-#[get("/")]
-pub async fn user_list(app_state: Data<AppState>) -> Result<HttpResponse, Error> {
+#[get("/list")]
+pub async fn list(app_state: Data<AppState>) -> Result<HttpResponse, Error> {
     let users = users::Entity::find().all(&app_state.database).await?;
 
     Ok(HttpResponse::Ok().json(users))

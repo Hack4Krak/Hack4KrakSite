@@ -1,4 +1,4 @@
-use crate::entities::users;
+use crate::entities::teams;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use actix_web::web::{Data, Json, Path};
@@ -8,33 +8,29 @@ use utoipa::ToSchema;
 use uuid::Uuid;
 
 #[derive(Serialize, Deserialize, ToSchema)]
-pub struct UpdateUserModel {
-    pub username: Option<String>,
-    pub email: Option<String>,
-    pub team: Option<String>,
+pub struct UpdateTeamModel {
+    pub team_name: Option<String>,
+    pub leader: Option<String>,
 }
 
 #[utoipa::path(
-    request_body = UpdateUserModel,
+    request_body = UpdateTeamModel,
     responses(
-        (status = 200, description = "User successfully updated."),
-        (status = 403, description = "User must have higher role than updated user."),
+        (status = 200, description = "Team successfully updated."),
         (status = 500, description = "Internal server error.")
     ),
-    tag = "admin/users"
+    tag = "admin/teams"
 )]
 #[patch("/update/{id}")]
-pub async fn update_user(
+pub async fn update(
     app_state: Data<app_state::AppState>,
-    user: users::Model,
     id: Path<Uuid>,
-    update_user_json: Json<UpdateUserModel>,
+    update_team_json: Json<UpdateTeamModel>,
 ) -> Result<HttpResponse, Error> {
-    users::Model::update(
+    teams::Model::update(
         &app_state.database,
-        user,
         id.into_inner(),
-        update_user_json.into_inner(),
+        update_team_json.into_inner(),
     )
     .await?;
 

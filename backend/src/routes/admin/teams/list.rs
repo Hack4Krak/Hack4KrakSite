@@ -11,8 +11,8 @@ use actix_web::{get, HttpResponse};
     ),
     tag = "admin/teams"
 )]
-#[get("/")]
-pub async fn teams_list(app_state: Data<app_state::AppState>) -> Result<HttpResponse, Error> {
+#[get("/list")]
+pub async fn list(app_state: Data<app_state::AppState>) -> Result<HttpResponse, Error> {
     let teams = teams::Model::list(&app_state.database).await?;
 
     Ok(HttpResponse::Ok().json(teams))
