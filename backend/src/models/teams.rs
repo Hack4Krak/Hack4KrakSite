@@ -1,15 +1,28 @@
+use crate::entities::teams::ActiveModel;
 use crate::entities::{teams, users};
+use crate::routes::admin::teams::update::UpdateTeamModel;
 use crate::routes::teams::TeamError::*;
 use crate::utils::error::Error;
 use actix_web::dev::Payload;
 use actix_web::{FromRequest, HttpMessage, HttpRequest};
+use sea_orm::prelude::DateTime;
 use sea_orm::ActiveValue::Set;
-use sea_orm::{ActiveModelTrait, PaginatorTrait, QueryFilter};
+use sea_orm::{ActiveModelTrait, ModelTrait, PaginatorTrait, QueryFilter};
 use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, TransactionTrait};
+use serde::{Deserialize, Serialize};
 use std::future;
+use utoipa::ToSchema;
 use uuid::Uuid;
 
 pub const MAX_MEMBERS_PER_TEAM: u8 = 5;
+
+#[derive(Serialize, Deserialize, ToSchema)]
+pub struct TeamWithMembers {
+    pub id: String,
+    pub team_name: String,
+    pub created_at: DateTime,
+    pub members: Vec<String>,
+}
 
 impl teams::Model {
     pub async fn find_by_name(
@@ -104,7 +117,7 @@ impl teams::Model {
         new_team_name: String,
         team: teams::Model,
     ) -> Result<(), Error> {
-        let mut active_team: teams::ActiveModel = team.into();
+        let mut active_team: ActiveModel = team.into();
         active_team.name = Set(new_team_name);
         active_team.update(database).await?;
 
@@ -131,6 +144,92 @@ impl teams::Model {
         active_user.update(&transaction).await?;
 
         transaction.commit().await?;
+
+        Ok(())
+    }
+
+    pub async fn leader(
+        database: &DatabaseConnection,
+        team_id: Uuid,
+    ) -> Result<users::Model, Error> {
+        let leader = users::Entity::find()
+            .filter(
+                users::Column::Team
+                    .eq(team_id)
+                    .and(users::Column::IsLeader.eq(true)),
+            )
+            .one(database)
+            .await?
+            .ok_or(Error::Team(TeamLeaderNotFound))?;
+
+        Ok(leader)
+    }
+
+    pub async fn list(database: &DatabaseConnection) -> Result<Vec<TeamWithMembers>, Error> {
+        let teams = teams::Entity::find()
+            .find_with_related(users::Entity)
+            .all(database)
+            .await?;
+
+        let teams_with_members = teams
+            .into_iter()
+            .map(|(team, users)| {
+                let members_ids: Vec<String> =
+                    users.into_iter().map(|user| user.id.to_string()).collect();
+                TeamWithMembers {
+                    id: team.id.to_string(),
+                    team_name: team.name,
+                    created_at: team.created_at,
+                    members: members_ids,
+                }
+            })
+            .collect::<Vec<TeamWithMembers>>();
+
+        Ok(teams_with_members)
+    }
+
+    pub async fn update(
+        database: &DatabaseConnection,
+        id: Uuid,
+        update_team_json: UpdateTeamModel,
+    ) -> Result<(), Error> {
+        let team = teams::Entity::find_by_id(id)
+            .one(database)
+            .await?
+            .ok_or(Error::Team(TeamNotFound))?;
+
+        if let Some(team_name) = update_team_json.team_name {
+            if teams::Model::find_by_name(database, &team_name)
+                .await?
+                .is_some()
+            {
+                return Err(Error::Team(AlreadyExists));
+            }
+            let mut active_team: ActiveModel = team.into();
+            active_team.name = Set(team_name);
+            active_team.update(database).await?;
+        }
+
+        if let Some(leader) = update_team_json.leader {
+            let new_leader = users::Model::find_by_uuid_from_string(database, &leader).await?;
+
+            let leader = Self::leader(database, id).await?;
+
+            Self::change_leader(database, new_leader, leader).await?;
+        }
+
+        Ok(())
+    }
+
+    pub async fn delete(database: &DatabaseConnection, id: Uuid) -> Result<(), Error> {
+        let team = teams::Entity::find_by_id(id)
+            .one(database)
+            .await?
+            .ok_or(Error::Team(TeamNotFound))?;
+
+        // Team is declared and then deleted instead of using delete_by_id,
+        // because it should return error if team is not found and delete_by_id does not return this error
+        team.delete(database).await?;
 
         Ok(())
     }
