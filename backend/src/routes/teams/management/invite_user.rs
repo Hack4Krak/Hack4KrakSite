@@ -4,6 +4,7 @@ use crate::utils::error::Error;
 use crate::utils::success_response::SuccessResponse;
 use actix_web::{post, web, HttpResponse};
 use serde::{Deserialize, Serialize};
+use std::ops::Deref;
 use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, ToSchema)]
@@ -34,7 +35,14 @@ pub async fn invite_user(
         .await?
         .ok_or(Error::UserNotFound)?;
 
-    team_invites::Model::invite_user(&app_state.database, invited_user, team).await?;
+    let event_config = app_state.task_manager.event_config.lock().await;
+    team_invites::Model::invite_user(
+        &app_state.database,
+        event_config.deref(),
+        invited_user,
+        team,
+    )
+    .await?;
 
     Ok(SuccessResponse::default().http_response())
 }

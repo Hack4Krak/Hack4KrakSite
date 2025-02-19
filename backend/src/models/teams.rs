@@ -9,8 +9,6 @@ use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, TransactionTrait};
 use std::future;
 use uuid::Uuid;
 
-pub const MAX_MEMBERS_PER_TEAM: u8 = 5;
-
 impl teams::Model {
     pub async fn find_by_name(
         database: &DatabaseConnection,
@@ -26,6 +24,7 @@ impl teams::Model {
 
     pub async fn assert_correct_team_size(
         database: &DatabaseConnection,
+        max_team_size: u16,
         id: &Uuid,
     ) -> Result<(), Error> {
         let members_count = users::Entity::find()
@@ -33,9 +32,9 @@ impl teams::Model {
             .count(database)
             .await?;
 
-        if members_count >= MAX_MEMBERS_PER_TEAM.into() {
+        if members_count >= max_team_size as u64 {
             return Err(Error::Team(TeamIsFull {
-                max_size: MAX_MEMBERS_PER_TEAM,
+                max_size: max_team_size,
             }));
         }
 
