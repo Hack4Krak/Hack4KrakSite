@@ -7,7 +7,7 @@ const value = ref(50)
     <h1 class="font-bold text-2xl">
       Progress twojej drużyny:
     </h1>
-    <UProgress v-model="value" />
+    <UProgress v-model="value" size="md" :ui="{ base: 'bg-primary-darker' }" />
     <span class="flex-grow">Brakuje wam 25 flag</span>
 
     <h1 class="font-semibold text-2xl">
