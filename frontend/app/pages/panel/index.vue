@@ -5,6 +5,10 @@ const { data } = await useAuth('/user/', {
   method: 'GET',
 })
 
+const { data: team } = await useAuth('/teams/membership/my_team', {
+  method: 'GET',
+})
+
 async function logout() {
   await $api('/auth/logout', {
     method: 'POST',
@@ -30,7 +34,8 @@ async function logout() {
 
     <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-15 gap-y-5">
       <PanelTile class="row-span-2 min-h-100 min-w-70">
-        <PanelTileWithTeam />
+        <PanelTileWithTeam v-if="team" />
+        <PanelTileWithoutTeam v-else />
       </PanelTile>
       <PanelTile class="row-span-2">
         <PanelTileMain />
