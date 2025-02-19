@@ -30,7 +30,7 @@ pub async fn update_user(
     id: Path<Uuid>,
     update_user_json: Json<UpdateUserModel>,
 ) -> Result<HttpResponse, Error> {
-    users::Model::update_user(
+    users::Model::update(
         &app_state.database,
         user,
         id.into_inner(),

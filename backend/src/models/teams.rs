@@ -147,7 +147,7 @@ impl teams::Model {
         Ok(())
     }
 
-    pub async fn get_leader(
+    pub async fn leader(
         database: &DatabaseConnection,
         team_id: Uuid,
     ) -> Result<users::Model, Error> {
@@ -167,7 +167,7 @@ impl teams::Model {
         Err(Error::Team(TeamLeaderNotFound))
     }
 
-    pub async fn get_teams(database: &DatabaseConnection) -> Result<Vec<TeamWithMembers>, Error> {
+    pub async fn list(database: &DatabaseConnection) -> Result<Vec<TeamWithMembers>, Error> {
         let teams = teams::Entity::find()
             .find_with_related(users::Entity)
             .all(database)
@@ -190,7 +190,7 @@ impl teams::Model {
         Ok(teams_with_members)
     }
 
-    pub async fn update_team(
+    pub async fn update(
         database: &DatabaseConnection,
         id: Uuid,
         update_team_json: UpdateTeamModel,
@@ -201,7 +201,7 @@ impl teams::Model {
             .ok_or(Error::Team(TeamNotFound))?;
 
         if let Some(team_name) = update_team_json.team_name {
-            if teams::Model::find_by_name(&database, &*team_name)
+            if teams::Model::find_by_name(database, &team_name)
                 .await?
                 .is_some()
             {
@@ -220,7 +220,7 @@ impl teams::Model {
             .await?
             .ok_or(Error::UserNotFound)?;
 
-            let leader = Self::get_leader(database, id).await?;
+            let leader = Self::leader(database, id).await?;
 
             Self::change_leader(database, new_leader, leader).await?;
         }
@@ -228,7 +228,7 @@ impl teams::Model {
         Ok(())
     }
 
-    pub async fn delete_team(database: &DatabaseConnection, id: Uuid) -> Result<(), Error> {
+    pub async fn delete(database: &DatabaseConnection, id: Uuid) -> Result<(), Error> {
         let team = teams::Entity::find_by_id(id)
             .one(database)
             .await?

@@ -19,7 +19,7 @@ pub async fn delete_user(
     user: users::Model,
     id: Path<Uuid>,
 ) -> Result<HttpResponse, Error> {
-    users::Model::delete_user(&app_state.database, user, id.into_inner()).await?;
+    users::Model::delete(&app_state.database, user, id.into_inner()).await?;
 
     Ok(HttpResponse::Ok().finish())
 }

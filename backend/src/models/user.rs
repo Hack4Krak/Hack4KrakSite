@@ -158,7 +158,7 @@ impl users::Model {
         Ok(())
     }
 
-    pub async fn update_user(
+    pub async fn update(
         database: &DatabaseConnection,
         user: users::Model,
         id: SeaOrmUuid,
@@ -205,7 +205,7 @@ impl users::Model {
         Ok(())
     }
 
-    pub async fn delete_user(
+    pub async fn delete(
         database: &DatabaseConnection,
         user: users::Model,
         id: SeaOrmUuid,
