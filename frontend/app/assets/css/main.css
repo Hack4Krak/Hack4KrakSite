@@ -10,6 +10,7 @@
 @theme {
   --font-sans: 'Public Sans', sans-serif;
   --font-pixelify: Pixelify Sans;
+  --color-primary-darker: #987117;
 }
 
 @utility rendering-pixelated {
