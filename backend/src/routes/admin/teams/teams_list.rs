@@ -13,7 +13,7 @@ use actix_web::{get, HttpResponse};
 )]
 #[get("/")]
 pub async fn teams_list(app_state: Data<app_state::AppState>) -> Result<HttpResponse, Error> {
-    let teams = teams::Model::get_teams(&app_state.database).await?;
+    let teams = teams::Model::list(&app_state.database).await?;
 
     Ok(HttpResponse::Ok().json(teams))
 }

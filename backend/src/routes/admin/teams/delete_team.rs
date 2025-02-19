@@ -17,7 +17,7 @@ pub async fn delete_team(
     app_state: Data<app_state::AppState>,
     id: Path<Uuid>,
 ) -> Result<HttpResponse, Error> {
-    teams::Model::delete_team(&app_state.database, id.into_inner()).await?;
+    teams::Model::delete(&app_state.database, id.into_inner()).await?;
 
     Ok(HttpResponse::Ok().finish())
 }

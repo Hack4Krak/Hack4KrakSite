@@ -27,7 +27,7 @@ pub async fn update_team(
     id: Path<Uuid>,
     update_team_json: Json<UpdateTeamModel>,
 ) -> Result<HttpResponse, Error> {
-    teams::Model::update_team(
+    teams::Model::update(
         &app_state.database,
         id.into_inner(),
         update_team_json.into_inner(),
