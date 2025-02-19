@@ -24,7 +24,7 @@ fn default_cookies_domain() -> String {
     "localhost".to_string()
 }
 fn default_tasks_base_path() -> PathBuf {
-    PathBuf::from_str("TasksTemplate/tasks/").unwrap()
+    PathBuf::from_str("TasksTemplate/").unwrap()
 }
 fn default_relaxed_security_mode() -> bool {
     false

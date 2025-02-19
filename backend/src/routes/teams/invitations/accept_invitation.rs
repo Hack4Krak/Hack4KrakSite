@@ -4,6 +4,7 @@ use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::success_response::SuccessResponse;
 use actix_web::{post, web, HttpResponse};
+use std::ops::Deref;
 
 #[utoipa::path(
     responses(
@@ -27,7 +28,9 @@ pub async fn accept_invitation(
         .await?
         .ok_or(Error::Team(TeamNotFound))?;
 
-    team_invites::Model::accept_invitation(&app_state.database, team, user).await?;
+    let event_config = app_state.task_manager.event_config.lock().await;
+    team_invites::Model::accept_invitation(&app_state.database, event_config.deref(), team, user)
+        .await?;
 
     Ok(SuccessResponse::default().http_response())
 }

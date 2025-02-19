@@ -1,4 +1,5 @@
 pub mod auth;
+pub mod event;
 pub mod index;
 pub mod task;
 pub mod teams;
