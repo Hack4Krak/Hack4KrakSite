@@ -1,7 +1,8 @@
 use crate::entities::{team_invites, teams, users};
 use crate::models::task::EventConfig;
 use crate::routes::teams::TeamError::{
-    UserAlreadyBelongsToTeam, UserDoesntHaveAnyInvitations, UserDoesntHaveInvitationsFromTeam,
+    UserAlreadyBelongsToTeam, UserAlreadyInvited, UserDoesntHaveAnyInvitations,
+    UserDoesntHaveInvitationsFromTeam,
 };
 use crate::utils::error::Error;
 use sea_orm::ActiveValue::Set;
@@ -24,6 +25,13 @@ impl team_invites::Model {
 
         teams::Model::assert_correct_team_size(database, event_config.max_team_size, &team.id)
             .await?;
+
+        Self::assert_user_doesnt_have_invites_from_this_team(
+            database,
+            invited_user.clone(),
+            team.clone(),
+        )
+        .await?;
 
         team_invites::Entity::insert(team_invites::ActiveModel {
             user: Set(invited_user.id),
@@ -102,5 +110,25 @@ impl team_invites::Model {
         transaction.commit().await?;
 
         Ok(())
+    }
+
+    pub async fn assert_user_doesnt_have_invites_from_this_team(
+        database: &DatabaseConnection,
+        user: users::Model,
+        team: teams::Model,
+    ) -> Result<(), Error> {
+        let invitation = team_invites::Entity::find()
+            .filter(
+                team_invites::Column::User
+                    .eq(user.id)
+                    .and(team_invites::Column::Team.eq(team.id)),
+            )
+            .one(database)
+            .await?;
+
+        match invitation {
+            Some(_) => Err(Error::Team(UserAlreadyInvited)),
+            None => Ok(()),
+        }
     }
 }
