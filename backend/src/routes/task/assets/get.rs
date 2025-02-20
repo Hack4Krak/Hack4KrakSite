@@ -23,7 +23,7 @@ pub async fn get(
 
     let (task_id, asset_path) = task_asset.into_inner();
 
-    let asset_path = "assets/".to_owned() + &*asset_path;
+    let asset_path = "assets/".to_owned() + asset_path.as_str();
 
     let named_file = manager.load_asset(&task_id, &asset_path).await?;
 

@@ -15,7 +15,7 @@ impl Default for EventConfig {
         EventConfig {
             max_team_size: 5,
             start_date: DateTime::default(),
-            end_date: DateTime::default()
+            end_date: DateTime::default(),
         }
     }
 }
