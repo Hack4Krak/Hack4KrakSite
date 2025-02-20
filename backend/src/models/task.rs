@@ -15,7 +15,7 @@ impl Default for EventConfig {
         EventConfig {
             max_team_size: 5,
             start_date: DateTime::default(),
-            end_date: DateTime::default()
+            end_date: DateTime::default(),
         }
     }
 }
@@ -24,6 +24,7 @@ impl Default for EventConfig {
 pub struct TaskConfig {
     #[serde(flatten)]
     pub description: TaskDescription,
+    pub assets: Vec<TaskAsset>,
     pub story: Vec<TaskStory>,
     pub display: TaskDisplay,
 }
@@ -49,4 +50,10 @@ pub struct TaskDisplay {
 pub struct Coordinates {
     pub x: i32,
     pub y: i32,
+}
+
+#[derive(Serialize, Deserialize, ToSchema)]
+pub struct TaskAsset {
+    pub description: String,
+    pub path: String,
 }
