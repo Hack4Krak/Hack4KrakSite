@@ -26,6 +26,7 @@ migration = { path = "migration" }
 
 # Web
 actix-web = { version = "4.9.0", features = ["cookies"] }
+actix-web-validation = { version = "0.7.0", features = ["validator"] }
 actix-cors = "0.7.0"
 actix-governor = "0.8.0"
 
@@ -56,8 +57,8 @@ chrono = "0.4.39"
 oauth2 = { version = "5.0.0", features = ["reqwest"] }
 lettre = "0.11.13"
 dashmap = "6.1.0"
-# older validator is used because of actix-web-validator
-validator = { version = "0.18.0", features = ["derive"] }
+# older validator is used because of actix-web-validaton
+validator = { version = "0.19.0", features = ["derive"] }
 
 [dev-dependencies]
 testcontainers = "0.23.3"
