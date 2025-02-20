@@ -13,9 +13,6 @@ updates:
     directory: "/backend/"
     schedule:
       interval: "daily"
-    ignore:
-      - dependency-name: "validator"
-        versions: [ ">=0.20.0" ]
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
