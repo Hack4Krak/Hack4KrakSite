@@ -237,13 +237,13 @@ dependencies = [
 
 [[package]]
 name = "actix-web-validation"
-version = "0.7.0"
+version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e3aa275f69e21ebf713f1e0330c82bfb8377f5c8f80ee7feb201bc6d6d1d8df7"
+checksum = "289a4fa5febbf8a11f53d68b3830d42f3268f902e891df56ea8391d5ce548f70"
 dependencies = [
  "actix-web",
  "thiserror 2.0.11",
- "validator 0.19.0",
+ "validator 0.20.0",
 ]
 
 [[package]]
@@ -4719,6 +4719,21 @@ dependencies = [
  "serde_json",
  "url",
  "validator_derive",
+]
+
+[[package]]
+name = "validator"
+version = "0.20.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "43fb22e1a008ece370ce08a3e9e4447a910e92621bb49b85d6e48a45397e7cfa"
+dependencies = [
+ "idna 1.0.3",
+ "once_cell",
+ "regex",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "url",
 ]
 
 [[package]]
