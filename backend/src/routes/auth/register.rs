@@ -10,6 +10,7 @@ use validator::Validate;
 pub struct RegisterModel {
     #[validate(length(min = 3, max = 32))]
     pub name: String,
+    #[validate(email)]
     pub email: String,
     pub(crate) password: String,
 }
