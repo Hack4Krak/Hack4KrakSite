@@ -26,6 +26,7 @@ migration = { path = "migration" }
 
 # Web
 actix-web = { version = "4.9.0", features = ["cookies"] }
+actix-web-validation = { version = "0.7.0", features = ["validator"] }
 actix-cors = "0.7.0"
 actix-governor = "0.8.0"
 
@@ -38,6 +39,8 @@ serde_yml = "0.0.12"
 sea-orm.workspace = true
 
 # Utils
+actix-files = "0.6.6"
+actix-web-validator = "6.0.0"
 regex = "1.11.1"
 futures-util = "0.3.31"
 reqwest = { version = "0.12.12", features = ["json"] }
@@ -54,7 +57,8 @@ chrono = "0.4.39"
 oauth2 = { version = "5.0.0", features = ["reqwest"] }
 lettre = "0.11.13"
 dashmap = "6.1.0"
-actix-files = "0.6.6"
+# Older validator is used because of actix-web-validaton, waiting for resolution of https://github.com/ranger-ross/actix-web-validation/pull/35
+validator = { version = "0.19.0", features = ["derive"] }
 
 [dev-dependencies]
 testcontainers = "0.23.3"

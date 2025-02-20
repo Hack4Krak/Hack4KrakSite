@@ -1,7 +1,10 @@
 use crate::routes::teams::AuthMiddleware;
+use actix_web::web::Json;
 use actix_web::{post, web, HttpResponse};
+use actix_web_validation::Validated;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
+use validator::Validate;
 
 use crate::entities::{teams, users};
 use crate::routes::teams::TeamError::{AlreadyExists, UserAlreadyBelongsToTeam};
@@ -9,8 +12,9 @@ use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::success_response::SuccessResponse;
 
-#[derive(Serialize, Deserialize, ToSchema)]
+#[derive(Debug, Serialize, Deserialize, ToSchema, Validate)]
 pub struct CreateTeamModel {
+    #[validate(length(min = 3, max = 32))]
     pub team_name: String,
 }
 
@@ -30,7 +34,7 @@ pub struct CreateTeamModel {
 #[post("/create", wrap = "AuthMiddleware::with_user()")]
 pub async fn create(
     app_state: web::Data<app_state::AppState>,
-    create_team_model: web::Json<CreateTeamModel>,
+    Validated(create_team_model): Validated<Json<CreateTeamModel>>,
     user: users::Model,
 ) -> Result<HttpResponse, Error> {
     if let Some(team) = user.get_team(&app_state.database).await? {
