@@ -26,7 +26,7 @@ migration = { path = "migration" }
 
 # Web
 actix-web = { version = "4.9.0", features = ["cookies"] }
-actix-web-validation = { version = "0.7.0", features = ["validator"] }
+actix-web-validation = { version = "0.8.0", features = ["validator"] }
 actix-cors = "0.7.0"
 actix-governor = "0.8.0"
 
