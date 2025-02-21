@@ -27,7 +27,7 @@ ARG BRANCH=master
 ADD https://$GIT_ACCESS_TOKEN:x-oauth-basic@api.github.com/repos/$GIT_USER/$GIT_REPO/git/refs/heads/$BRANCH version.json
 RUN git clone -b $BRANCH https://$GIT_USER:$GIT_ACCESS_TOKEN@github.com/$GIT_USER/$GIT_REPO.git TasksRepo/
 
-ENV TASKS_BASE_PATH=TasksRepo/tasks/
+ENV TASKS_BASE_PATH=TasksRepo/
 
 COPY --from=builder /app/target/release/hack4krak-backend /usr/local/bin
 ENTRYPOINT ["/usr/local/bin/hack4krak-backend"]
