@@ -5,6 +5,7 @@ use utoipa::gen::serde_json::json;
 
 use crate::entities::sea_orm_active_enums::UserRoles;
 use crate::routes::auth::AuthError;
+use crate::routes::flag::FlagError;
 use crate::routes::task::TaskError;
 use crate::routes::teams::TeamError;
 
@@ -85,6 +86,8 @@ pub enum Error {
     Team(#[from] TeamError),
     #[error(transparent)]
     Task(#[from] TaskError),
+    #[error(transparent)]
+    Flag(#[from] FlagError),
 }
 
 impl error::ResponseError for Error {
@@ -113,6 +116,7 @@ impl error::ResponseError for Error {
             Error::Team(team_err) => team_err.status_code(),
             Error::Auth(auth_err) => auth_err.status_code(),
             Error::Task(error) => error.status_code(),
+            Error::Flag(error) => error.status_code(),
         }
     }
 

@@ -4,7 +4,9 @@ use crate::services::env::EnvConfig;
 use crate::utils::error::Error::RouteNotFound;
 use crate::utils::openapi::ApiDoc;
 use actix_cors::Cors;
-use actix_governor::{Governor, GovernorConfigBuilder};
+use actix_governor::governor::clock::QuantaInstant;
+use actix_governor::governor::middleware::NoOpMiddleware;
+use actix_governor::{Governor, GovernorConfig, GovernorConfigBuilder, PeerIpKeyExtractor};
 use actix_web::body::MessageBody;
 use actix_web::dev::{ServiceFactory, ServiceRequest, ServiceResponse};
 use actix_web::middleware::Logger;
@@ -70,21 +72,30 @@ pub fn setup_actix_app(
         )
         .service(scope("/user").configure(routes::user::config))
         .service(scope("/event").configure(routes::event::config))
+        .service(scope("/flag").configure(routes::flag::config))
         .default_service(actix_web::web::route().to(|| async { RouteNotFound.error_response() }))
         .openapi_service(|api| Scalar::with_url("/docs", api));
 
     if enable_governor {
-        let governor_middleware = GovernorConfigBuilder::default()
-            .seconds_per_request(3)
-            .burst_size(5)
-            .finish()
-            .unwrap();
-
+        let auth_governor: GovernorConfig<PeerIpKeyExtractor, NoOpMiddleware<QuantaInstant>> =
+            GovernorConfig::secure();
         app = app.service(
             scope("/auth")
-                .wrap(Governor::new(&governor_middleware))
+                .wrap(Governor::new(&auth_governor))
                 .configure(routes::auth::config),
-        )
+        );
+
+        let flag_governor = GovernorConfigBuilder::default()
+            .seconds_per_request(5)
+            .burst_size(2)
+            .finish()
+            .unwrap();
+        app = app.service(
+            scope("/flag")
+                .wrap(Governor::new(&flag_governor))
+                .wrap(EventMiddleware::allow_during_event_only())
+                .configure(routes::flag::config),
+        );
     }
 
     app

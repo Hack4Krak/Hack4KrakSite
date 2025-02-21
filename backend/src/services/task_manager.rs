@@ -3,8 +3,10 @@ use crate::routes::task::TaskError;
 use crate::services::env::EnvConfig;
 use crate::utils::error::Error;
 use actix_files::NamedFile;
+use dashmap::mapref::multiple::RefMulti;
 use dashmap::mapref::one::Ref;
 use dashmap::DashMap;
+use sha2::{Digest, Sha256};
 use tokio::fs;
 use tokio::sync::Mutex;
 
@@ -72,5 +74,57 @@ impl TaskManager {
         let named_file = NamedFile::open(asset_path)?;
 
         Ok(named_file)
+    }
+
+    pub fn find_by_flag(&self, flag: &str) -> Option<RefMulti<String, TaskConfig>> {
+        let mut hasher = Sha256::new();
+        hasher.update(flag);
+        let hashed_flag = format!("{:x}", hasher.finalize());
+
+        self.tasks.iter().find(|task| task.flag_hash == hashed_flag)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::default::Default;
+
+    const FLAG_HASH: &str = "1912766d6ba0e50e8b1bacfb51207e83b95b7ac0cd8ce15307cdf4965e7e3f6c";
+
+    #[test]
+    fn find_existing_flag() {
+        let task_manager = TaskManager::default();
+
+        task_manager.tasks.insert(
+            "test-task".to_string(),
+            TaskConfig {
+                flag_hash: FLAG_HASH.to_string(),
+                ..Default::default()
+            },
+        );
+
+        let flag = task_manager.find_by_flag("skibidi");
+        assert!(flag.is_some());
+        assert_eq!(flag.unwrap().flag_hash, FLAG_HASH);
+    }
+
+    #[test]
+    fn find_non_existing_flag() {
+        let task_manager = TaskManager::default();
+
+        task_manager.tasks.insert(
+            "test-task".to_string(),
+            TaskConfig {
+                flag_hash: FLAG_HASH.to_string(),
+                ..Default::default()
+            },
+        );
+
+        let flag = task_manager.find_by_flag("asdsdads");
+        assert!(flag.is_none());
+
+        let flag = task_manager.find_by_flag("..asd3#1s--.?");
+        assert!(flag.is_none());
     }
 }
