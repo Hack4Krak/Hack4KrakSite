@@ -8,7 +8,9 @@ use crate::utils::error::Error;
 use sea_orm::ActiveValue::Set;
 use sea_orm::ColumnTrait;
 use sea_orm::QueryFilter;
-use sea_orm::{ActiveModelTrait, PaginatorTrait, DatabaseConnection, EntityTrait, TransactionTrait};
+use sea_orm::{
+    ActiveModelTrait, DatabaseConnection, EntityTrait, PaginatorTrait, TransactionTrait,
+};
 
 impl team_invites::Model {
     pub async fn invite_user(
@@ -127,9 +129,9 @@ impl team_invites::Model {
             .await?;
 
         if invitation > 0 {
-	    return Err(Error::Team(UserAlreadyInvited));
-	}
-	
-	Ok(())
+            return Err(Error::Team(UserAlreadyInvited));
+        }
+
+        Ok(())
     }
 }
