@@ -20,7 +20,7 @@ pub struct TeamWithMembers {
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct TeamMember {
     pub name: String,
-    pub is_leader: bool
+    pub is_leader: bool,
 }
 
 #[utoipa::path(
@@ -45,12 +45,13 @@ pub async fn my_team(
         .all(&app_state.database)
         .await?;
 
-    let members = users.into_iter().map(|user| {
-        TeamMember {
+    let members = users
+        .into_iter()
+        .map(|user| TeamMember {
             name: user.username,
-            is_leader: user.is_leader
-        }
-    }).collect();
+            is_leader: user.is_leader,
+        })
+        .collect();
 
     let team_response = TeamWithMembers {
         team_name: team.name,

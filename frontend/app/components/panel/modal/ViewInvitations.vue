@@ -36,7 +36,7 @@ async function accept(team_name: string) {
       <div v-if="data?.length === 0">
         Brak danych do wyświetlenia
       </div>
-      <div v-for="team in data" :key="team">
+      <div v-for="team in data" :key="team" class="flex justify-between">
         {{ team }} <UButton @click="accept(team)">
           Zaakceptuj
         </UButton>

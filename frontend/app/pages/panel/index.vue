@@ -3,12 +3,12 @@ const { $api } = useNuxtApp()
 
 const { data } = await useAuth('/user/', {
   method: 'GET',
-  key: 'user-panel'
+  key: 'user-panel',
 })
 
 const { data: team } = await useAuth('/teams/membership/my_team', {
   method: 'GET',
-  key: 'my-team'
+  key: 'my-team',
 })
 
 async function logout() {
@@ -36,7 +36,7 @@ async function logout() {
 
     <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-15 gap-y-5">
       <PanelTile class="row-span-2 min-h-100 min-w-70">
-        <PanelTileWithTeam v-if="team" />
+        <PanelTileWithTeam v-if="team" :team-name="team?.team_name" />
         <PanelTileWithoutTeam v-else />
       </PanelTile>
       <PanelTile class="row-span-2">
