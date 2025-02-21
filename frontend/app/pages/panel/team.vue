@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { data: team, refresh } = await useAuth('/teams/membership/my_team', {
+  key: 'teams-membership-my-team',
   method: 'GET',
 })
 
@@ -12,7 +13,7 @@ const members = computed(() => {
 
 async function kick(username: string) {
   const { error } = await useAuth('/teams/management/kick_user', {
-    key: 'kick-user',
+    key: 'teams-management-kick-user',
     method: 'DELETE',
     body: {
       username,
