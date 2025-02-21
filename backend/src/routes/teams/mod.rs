@@ -52,7 +52,7 @@ pub enum TeamError {
     UserDoesntHaveInvitationsFromTeam { team_name: String },
     #[error("Team leader can't leave team")]
     TeamLeaderCantLeaveTeam,
-    #[error("User is already invited to the team")]
+    #[error("User already has an invitation to this team")]
     UserAlreadyInvited,
     #[error("Team is full. Max team size is {max_size}")]
     TeamIsFull { max_size: u16 },
