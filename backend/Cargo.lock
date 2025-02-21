@@ -1663,6 +1663,7 @@ dependencies = [
  "serde_json",
  "serde_yml",
  "testcontainers",
+ "text-template",
  "thiserror 2.0.11",
  "tokio",
  "tracing",
@@ -4245,6 +4246,12 @@ dependencies = [
  "tokio-util",
  "url",
 ]
+
+[[package]]
+name = "text-template"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "51bcc3e9514cba67c087126b18600010c7c29b0cb51a6f6bc75e5058c2369bba"
 
 [[package]]
 name = "thiserror"

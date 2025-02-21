@@ -3,7 +3,9 @@ use crate::utils::error::Error;
 use actix_web::HttpResponse;
 use lettre::message::{header, Attachment, Mailbox, Mailboxes, MultiPart, SinglePart};
 use lettre::{Message, Transport};
+use std::collections::HashMap;
 use std::option::Option;
+use text_template::Template;
 
 pub enum EmailTemplate {
     HelloWorld,
@@ -33,15 +35,15 @@ impl EmailTemplate {
     }
 }
 
-pub struct Email {
+pub struct Email<'a> {
     pub sender: (Option<String>, String),
     pub recipients: Vec<String>,
     pub subject: String,
     pub template: EmailTemplate,
-    pub placeholders: Option<Vec<(String, String)>>,
+    pub placeholders: Option<HashMap<&'a str, &'a str>>,
 }
 
-impl Email {
+impl Email<'_> {
     pub async fn send(&self, app_state: &AppState) -> Result<HttpResponse, Error> {
         let smtp_client = &app_state.smtp_client;
 
@@ -96,12 +98,17 @@ impl Email {
             return Err(Error::PlaceholdersRequired);
         }
 
-        let mut html = self.template.get_template().to_string();
-        if let Some(elements) = self.placeholders.clone() {
-            for (key, value) in elements {
-                html = html.replace(&format!("%{}%", key), &value);
-            }
+        if self.template.get_placeholder_elements().is_none() {
+            let html = self.template.get_template().to_string();
+
+            return Ok(html);
         }
-        Ok(html)
+
+        let template = Template::from(self.template.get_template());
+        let values = self.placeholders.clone().unwrap();
+
+        let html = template.fill_in(&values);
+
+        Ok(html.to_string())
     }
 }
