@@ -3,10 +3,12 @@ const { $api } = useNuxtApp()
 
 const { data } = await useAuth('/user/', {
   method: 'GET',
+  key: 'user-panel'
 })
 
 const { data: team } = await useAuth('/teams/membership/my_team', {
   method: 'GET',
+  key: 'my-team'
 })
 
 async function logout() {

@@ -1,7 +1,3 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
   <div class="flex flex-col m-5 md:m-10 gap-5">
     <h2 class="text-2xl font-bold">
