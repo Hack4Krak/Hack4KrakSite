@@ -43,7 +43,7 @@ async fn register() {
         .port(smtp_port)
         .build();
 
-    let app = test::init_service(setup_test_app(Some(smtp_client), None).await).await;
+    let app = test::init_service(setup_test_app(Some(smtp_client), None, None).await).await;
 
     let register_payload = json!({
         "email": "test@example.com",
@@ -78,7 +78,7 @@ async fn register() {
 
 #[actix_web::test]
 async fn register_invalid_email() {
-    let app = test::init_service(setup_test_app(None, None).await).await;
+    let app = test::init_service(setup_test_app(None, None, None).await).await;
 
     let register_payload = json!({
         "email": "this_!isn'taemaill",
@@ -131,7 +131,7 @@ async fn auth_flow() {
         .port(smtp_port)
         .build();
 
-    let app = test::init_service(setup_test_app(Some(smtp_client), None).await).await;
+    let app = test::init_service(setup_test_app(Some(smtp_client), None, None).await).await;
 
     let register_payload = json!({
         "email": "test@example.com",

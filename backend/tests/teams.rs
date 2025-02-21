@@ -1,18 +1,18 @@
 use utils::setup_test_app;
 
-use crate::utils::setup_database_with_schema;
+use crate::utils::init_database_with_teams;
 use actix_web::http::header;
 use actix_web::web::Data;
 use actix_web::{test, App};
 use chrono::{Duration, Local};
 use hack4krak_backend::entities::sea_orm_active_enums::UserRoles;
-use hack4krak_backend::entities::{team_invites, teams, users};
+use hack4krak_backend::entities::{teams, users};
 use hack4krak_backend::routes;
 use hack4krak_backend::services::env::EnvConfig;
 use hack4krak_backend::utils::app_state::AppState;
 use hack4krak_backend::utils::jwt::encode_jwt;
 use sea_orm::ActiveValue::Set;
-use sea_orm::{ActiveModelTrait, DatabaseBackend, DatabaseConnection, MockDatabase};
+use sea_orm::{ActiveModelTrait, DatabaseBackend, MockDatabase};
 use utoipa::gen::serde_json::json;
 use utoipa_actix_web::scope;
 use uuid::Uuid;
@@ -190,77 +190,13 @@ async fn create_team_success() {
     assert_eq!(response.status(), 200);
 }
 
-async fn assert_team_size_setup() -> (DatabaseConnection, Uuid, Uuid) {
-    let database = setup_database_with_schema().await;
-
-    let team_uuid = Uuid::new_v4();
-
-    teams::ActiveModel {
-        id: Set(team_uuid),
-        name: Set("dziengiel".to_string()),
-        created_at: Set(Local::now().naive_local()),
-    }
-    .insert(&database)
-    .await
-    .unwrap();
-
-    let users = vec![
-        ("Salieri", "example@gmail.com"),
-        ("Salieri2", "example2@gmail.com"),
-        ("Salieri3", "example3@gmail.com"),
-        ("Salieri4", "example4@gmail.com"),
-    ];
-
-    for (username, email) in users {
-        users::ActiveModel {
-            id: Set(Uuid::new_v4()),
-            username: Set(username.to_string()),
-            email: Set(email.to_string()),
-            created_at: Set(Local::now().naive_local()),
-            is_leader: Set(false),
-            roles: Set(UserRoles::Default),
-            team: Set(Some(team_uuid)),
-            ..Default::default()
-        }
-        .insert(&database)
-        .await
-        .unwrap();
-    }
-
-    let user_uuid = Uuid::new_v4();
-
-    users::ActiveModel {
-        id: Set(user_uuid),
-        username: Set("Antonio".to_string()),
-        email: Set("skibidi@gmail.com".to_string()),
-        created_at: Set(Local::now().naive_local()),
-        is_leader: Set(false),
-        roles: Set(UserRoles::Default),
-        ..Default::default()
-    }
-    .insert(&database)
-    .await
-    .unwrap();
-
-    team_invites::ActiveModel {
-        id: Set(Uuid::new_v4()),
-        user: Set(user_uuid),
-        team: Set(team_uuid),
-    }
-    .insert(&database)
-    .await
-    .unwrap();
-
-    (database, user_uuid, team_uuid)
-}
-
 #[actix_web::test]
 async fn assert_correct_team_size() {
     EnvConfig::load_test_config();
 
-    let (database, uuid, _) = assert_team_size_setup().await;
+    let (database, uuid, _, _) = init_database_with_teams().await;
 
-    let app = test::init_service(setup_test_app(None, Some(database)).await).await;
+    let app = test::init_service(setup_test_app(None, Some(database), None).await).await;
 
     let access_token =
         encode_jwt(uuid, "skibidi@gmail.com".to_string(), Duration::minutes(10)).unwrap();
@@ -279,7 +215,7 @@ async fn assert_correct_team_size() {
 async fn assert_incorrect_team_size() {
     EnvConfig::load_test_config();
 
-    let (database, user_uuid, team_uuid) = assert_team_size_setup().await;
+    let (database, user_uuid, team_uuid, _) = init_database_with_teams().await;
 
     users::ActiveModel {
         id: Set(Uuid::new_v4()),
@@ -295,7 +231,7 @@ async fn assert_incorrect_team_size() {
     .await
     .unwrap();
 
-    let app = test::init_service(setup_test_app(None, Some(database)).await).await;
+    let app = test::init_service(setup_test_app(None, Some(database), None).await).await;
 
     let access_token = encode_jwt(
         user_uuid,
