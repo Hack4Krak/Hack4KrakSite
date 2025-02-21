@@ -1,4 +1,3 @@
-use crate::middlewares::auth::AuthMiddleware;
 use crate::middlewares::status_code_drain_middleware::StatusCodeDrain;
 use crate::services::env::EnvConfig;
 use crate::utils::error::Error::RouteNotFound;
@@ -66,11 +65,6 @@ pub fn setup_actix_app(
         .service(scope("/tasks").configure(routes::task::config))
         .service(scope("/user").configure(routes::user::config))
         .service(scope("/event").configure(routes::event::config))
-        .service(
-            scope("/account")
-                .wrap(AuthMiddleware::with_user())
-                .configure(routes::account::config),
-        )
         .default_service(actix_web::web::route().to(|| async { RouteNotFound.error_response() }))
         .openapi_service(|api| Scalar::with_url("/docs", api));
 
