@@ -20,16 +20,18 @@ impl Default for EventConfig {
     }
 }
 
-#[derive(Serialize, Deserialize, ToSchema)]
+#[derive(Serialize, Deserialize, ToSchema, Default)]
 pub struct TaskConfig {
     #[serde(flatten)]
     pub description: TaskDescription,
+    #[serde(skip_serializing)]
+    pub flag_hash: String,
     pub assets: Vec<TaskAsset>,
     pub story: Vec<TaskStory>,
     pub display: TaskDisplay,
 }
 
-#[derive(Serialize, Deserialize, ToSchema, Clone)]
+#[derive(Serialize, Deserialize, ToSchema, Clone, Default)]
 pub struct TaskDescription {
     pub id: String,
     pub name: String,
@@ -41,12 +43,12 @@ pub struct TaskStory {
     pub message: String,
 }
 
-#[derive(Serialize, Deserialize, ToSchema, Clone)]
+#[derive(Serialize, Deserialize, ToSchema, Clone, Default)]
 pub struct TaskDisplay {
     pub icon_coordinates: Coordinates,
 }
 
-#[derive(Serialize, Deserialize, ToSchema, Clone)]
+#[derive(Serialize, Deserialize, ToSchema, Clone, Default)]
 pub struct Coordinates {
     pub x: i32,
     pub y: i32,
