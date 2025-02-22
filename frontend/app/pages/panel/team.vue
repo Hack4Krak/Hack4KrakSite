@@ -4,6 +4,13 @@ const { data: team } = await useAuth('/teams/membership/my_team', {
   method: 'GET',
 })
 
+let { data: invited_users } = await useAuth('/teams/management/invited_users', {
+  key: 'teams-management-invited-users',
+  method: 'GET',
+})
+
+invited_users = invited_users.value || []
+
 if (!team.value) {
   await navigateTo('/panel/')
 }
@@ -20,6 +27,8 @@ const leaveTeamModal = ref(false)
 const deleteTeamModal = ref(false)
 const kickUserModal = ref(false)
 const kickedUser = ref('')
+const revokeInvitationModal = ref(false)
+const revokedInvitation = ref('')
 
 const members = computed(() => {
   const teamMembers = team?.value?.members || []
@@ -54,6 +63,14 @@ const members = computed(() => {
       toast-success-message="Pomyślnie wyrzucono użytkownika"
       :request-body="{ username: kickedUser }"
     />
+    <PanelModalConfirmDeleteModal
+      v-model="revokeInvitationModal"
+      :url="`/teams/management/revoke_invitation/${revokedInvitation}`"
+      modal-title="Cofnięcie zaproszenia"
+      modal-description="Czy na pewno chcesz cofnąć zaproszenie?"
+      toast-success-message="Pomyślnie cofnięto zaproszenie"
+      :request-body="undefined"
+    />
 
     <NuxtLink to="/panel/" class="flex items-center gap-3 font-900 pt-5 pl-5">
       <Icon name="mdi:arrow-left" class="text-2xl" />
@@ -75,24 +92,39 @@ const members = computed(() => {
           </p>
         </UButton>
       </div>
-      <div class="border-2 border-neutral-600 flex-grow rounded-2xl">
-        <div
-          v-for="(user, index) in members" :key="index"
-          class="border-b-1 border-neutral-600 last-of-type:border-0 p-5"
-        >
-          <div v-if="user" class="flex justify-between items-center">
-            <div>
-              <UIcon v-if="user.is_leader" name="i-material-symbols-crown" class="text-yellow-400" />
-              {{ user.name }}
+      <div class="flex flex-col w-full gap-5">
+        <div class="border-2 border-neutral-600 flex-grow rounded-2xl">
+          <div
+            v-for="(user, index) in members" :key="index"
+            class="border-b-1 border-neutral-600 last-of-type:border-0 p-5"
+          >
+            <div v-if="user" class="flex justify-between items-center">
+              <div>
+                <UIcon v-if="user.is_leader" name="i-material-symbols-crown" class="text-yellow-400" />
+                {{ user.name }}
+              </div>
+              <UButton v-if="is_user_leader" @click="kickUserModal = true; kickedUser = user.name">
+                Wyrzuć
+              </UButton>
             </div>
-            <UButton v-if="is_user_leader" @click="kickUserModal = true; kickedUser = user.name">
-              Wyrzuć
-            </UButton>
+            <div v-else class="text-gray-400">
+              <div v-if="is_user_leader" class="flex gap-5 items-center cursor-pointer" @click="inviteUserModal = true">
+                <Icon name="mdi:account-plus" class="text-2xl" />
+                Dodaj do zespołu
+              </div>
+            </div>
           </div>
-          <div v-else class="text-gray-400">
-            <div v-if="is_user_leader" class="flex gap-5 items-center cursor-pointer" @click="inviteUserModal = true">
-              <Icon name="mdi:account-plus" class="text-2xl" />
-              Dodaj do zespołu
+        </div>
+        <div v-if="invited_users.length > 0" class="border-2 border-neutral-600 flex-grow rounded-2xl">
+          <div
+            v-for="(user) in invited_users" :key="user"
+            class="border-b-1 border-neutral-600 last-of-type:border-0 p-5"
+          >
+            <div class="flex justify-between items-center">
+              {{ user }}
+              <UButton v-if="is_user_leader" @click="revokeInvitationModal = true; revokedInvitation = user">
+                Cofnij zaproszenie
+              </UButton>
             </div>
           </div>
         </div>
