@@ -18,7 +18,7 @@ use utoipa::Modify;
     modifiers(&SecurityAddon),
     servers(
         (url = "http://localhost:8080", description = "Local development server"),
-        (url = "http://api.hack4krak.pl", description = "Main API server"),
+        (url = "https://api.hack4krak.pl", description = "Main API server"),
     )
 )]
 pub struct ApiDoc;
