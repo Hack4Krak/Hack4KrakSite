@@ -1,3 +1,4 @@
+use crate::middlewares::event::EventMiddleware;
 use crate::middlewares::status_code_drain_middleware::StatusCodeDrain;
 use crate::services::env::EnvConfig;
 use crate::utils::error::Error::RouteNotFound;
@@ -62,7 +63,11 @@ pub fn setup_actix_app(
         .service(routes::index::index)
         .service(scope("/auth").configure(routes::auth::config))
         .service(scope("/teams").configure(routes::teams::config))
-        .service(scope("/tasks").configure(routes::task::config))
+        .service(
+            scope("/tasks")
+                .wrap(EventMiddleware::allow_after_event())
+                .configure(routes::task::config),
+        )
         .service(scope("/user").configure(routes::user::config))
         .service(scope("/event").configure(routes::event::config))
         .default_service(actix_web::web::route().to(|| async { RouteNotFound.error_response() }))
