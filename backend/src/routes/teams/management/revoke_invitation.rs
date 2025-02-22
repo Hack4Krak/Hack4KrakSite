@@ -16,7 +16,7 @@ use actix_web::{delete, HttpResponse};
     ),
     tag = "teams/management"
 )]
-#[delete("/teams/management/revoke_invitation/{username}")]
+#[delete("/revoke_invitation/{username}")]
 pub async fn revoke_invitation(
     app_state: Data<app_state::AppState>,
     username: Path<String>,
