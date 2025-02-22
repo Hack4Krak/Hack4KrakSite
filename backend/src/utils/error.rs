@@ -75,6 +75,10 @@ pub enum Error {
     InvalidEmailSender(String),
     #[error("Invalid recipients' email {0}")]
     InvalidEmailRecipients(String),
+    #[error("You cannot access this endpoint before our event has started")]
+    AccessBeforeEventStart,
+    #[error("You cannot access this endpoint after our event has finished")]
+    AccessAfterEventEnd,
     #[error(transparent)]
     Auth(#[from] AuthError),
     #[error(transparent)]
@@ -104,7 +108,8 @@ impl error::ResponseError for Error {
                 StatusCode::BAD_REQUEST
             }
             Error::UserNotFound | Error::RouteNotFound => StatusCode::NOT_FOUND,
-            Error::Forbidden { .. } => StatusCode::FORBIDDEN,
+            Error::Forbidden { .. } | Error::AccessBeforeEventStart => StatusCode::FORBIDDEN,
+            Error::AccessAfterEventEnd => StatusCode::GONE,
             Error::Team(team_err) => team_err.status_code(),
             Error::Auth(auth_err) => auth_err.status_code(),
             Error::Task(error) => error.status_code(),
