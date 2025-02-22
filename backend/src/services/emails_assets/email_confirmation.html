@@ -1,4 +1,4 @@
-<!--Generated using Maizzle - https://maizzle.com/docs/installation, a framework for HTML email development.-->
+<!--Generated using Maizzle - https://maizzle.com/docs/installation, a framework for HTML email development. Use ${placeholder_name} for placeholders-->
 <!DOCTYPE html>
 <html lang="en" xmlns:v="urn:schemas-microsoft-com:vml">
 <head>
@@ -58,13 +58,13 @@
                   </a>
                   <div role="separator" style="line-height: 24px">&zwj;</div>
                   <h1 style="margin: 0 0 24px; font-size: 24px; line-height: 32px; font-weight: 600; color: #0f172a">
-                    Cześć, %user%!
+                    Cześć, ${name}!
                   </h1>
                   <p style="margin: 0 0 24px; font-size: 16px; line-height: 24px; color: #475569">
                     Dziękujemy za zarejestrowanie się na naszej stronie. Aby dokończyć proces rejestracji, kliknij poniższy przycisk.
                   </p>
                   <div>
-                    <a href="%link%" style="display: inline-block; text-decoration: none; padding: 16px 24px; font-size: 16px; line-height: 1; border-radius: 4px; color: #fffffe; background-color: #020617" class="hover-bg-slate-800">
+                    <a href="${link}" style="display: inline-block; text-decoration: none; padding: 16px 24px; font-size: 16px; line-height: 1; border-radius: 4px; color: #fffffe; background-color: #020617" class="hover-bg-slate-800">
                       <!--[if mso]><i style="mso-font-width: 150%; mso-text-raise: 31px" hidden>&emsp;</i><![endif]-->
                       <span style="mso-text-raise: 16px">Potwierdz Email</span>
                       <!--[if mso]><i hidden style="mso-font-width: 150%">&emsp;&#8203;</i><![endif]-->
@@ -79,7 +79,7 @@
                   <div role="separator" style="height: 1px; line-height: 1px; background-color: #cbd5e1; margin-top: 24px; margin-bottom: 24px">&zwj;</div>
                   <p class="mso-break-all" style="margin: 0; font-size: 12px; line-height: 20px; color: #475569">
                     Jeśli masz problem z kliknięciem przycisku, skopiuj i wklej poniższy link do przeglądarki:
-                    <a href="%link%" style="color: #1e293b; text-decoration: underline">%link%</a>
+                    <a href="${link}" style="color: #1e293b; text-decoration: underline">${link}</a>
                   </p>
                 </td>
               </tr>

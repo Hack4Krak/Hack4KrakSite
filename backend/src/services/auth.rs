@@ -17,6 +17,7 @@ use argon2::password_hash::SaltString;
 use argon2::{Argon2, PasswordHash, PasswordHasher, PasswordVerifier};
 use chrono::Duration;
 use regex::Regex;
+use std::collections::HashMap;
 use uuid::Uuid;
 
 const EMAIL_REGEX: &str =
@@ -56,10 +57,10 @@ impl AuthService {
             recipients: vec![credentials.email],
             subject: "Potwierdzenie rejestracji".to_string(),
             template: EmailTemplate::EmailConfirmation,
-            placeholders: Some(vec![
-                ("user".to_string(), credentials.name),
-                ("link".to_string(), confirmation_link.to_string()),
-            ]),
+            placeholders: Some(HashMap::from([
+                ("user", credentials.name.as_str()),
+                ("link", confirmation_link.as_str()),
+            ])),
         }
         .send(app_state)
         .await?;
