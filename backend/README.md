@@ -66,6 +66,6 @@ git submodule update --remote
 - Generate entities from the database
 
     ```sh
-    sea-orm-cli generate entity -o src/entities/
+    sea-orm-cli generate entity --with-serde both -o src/entities/
 
     ```

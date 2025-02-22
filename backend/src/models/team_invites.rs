@@ -6,11 +6,12 @@ use crate::routes::teams::TeamError::{
 };
 use crate::utils::error::Error;
 use sea_orm::ActiveValue::Set;
-use sea_orm::ColumnTrait;
 use sea_orm::QueryFilter;
 use sea_orm::{
     ActiveModelTrait, DatabaseConnection, EntityTrait, PaginatorTrait, TransactionTrait,
 };
+use sea_orm::{ColumnTrait, ModelTrait};
+use uuid::Uuid;
 
 impl team_invites::Model {
     pub async fn invite_user(
@@ -131,6 +132,48 @@ impl team_invites::Model {
         if invitation > 0 {
             return Err(Error::Team(UserAlreadyInvited));
         }
+
+        Ok(())
+    }
+
+    pub async fn get_invited_users(
+        database: &DatabaseConnection,
+        team: teams::Model,
+    ) -> Result<Vec<String>, Error> {
+        let invitations = team_invites::Entity::find()
+            .filter(team_invites::Column::Team.eq(team.id))
+            .find_with_related(users::Entity)
+            .all(database)
+            .await?;
+
+        let users = invitations
+            .into_iter()
+            .map(|(_, user)| user.into_iter().next().unwrap().username)
+            .collect();
+
+        Ok(users)
+    }
+
+    pub async fn revoke_invitation(
+        database: &DatabaseConnection,
+        username: &str,
+        team_id: Uuid,
+    ) -> Result<(), Error> {
+        let user = users::Model::find_by_username(database, username)
+            .await?
+            .ok_or(Error::UserNotFound)?;
+
+        let invitation = team_invites::Entity::find()
+            .filter(
+                team_invites::Column::User
+                    .eq(user.id)
+                    .and(team_invites::Column::Team.eq(team_id)),
+            )
+            .one(database)
+            .await?
+            .ok_or(Error::Team(UserDoesntHaveAnyInvitations))?;
+
+        invitation.delete(database).await?;
 
         Ok(())
     }
