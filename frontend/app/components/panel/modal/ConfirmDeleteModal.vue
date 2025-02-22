@@ -5,6 +5,7 @@ const props = defineProps<{
   modalDescription: string
   toastSuccessMessage: string
   requestBody: object | undefined
+  redirectTo: string
 }>()
 
 const toast = useToast()
@@ -12,13 +13,12 @@ const open = defineModel<boolean>()
 
 async function onSubmit() {
   let request = {
-    key: 'teams-create',
+    key: `${props.url}-modal`,
     method: 'DELETE',
   }
   console.error(props.requestBody)
   if (props.requestBody !== undefined) {
     request = Object.assign(request, { body: props.requestBody })
-    console.error(request)
   }
   const { error } = await useAuth(props.url, request)
 
@@ -27,7 +27,8 @@ async function onSubmit() {
     toast.add({ title: 'Błąd', description: response.message, color: 'error' })
   } else {
     toast.add({ title: 'Sukces', description: props.toastSuccessMessage, color: 'success' })
-    navigateTo('/panel')
+    open.value = false
+    navigateTo(props.redirectTo, { external: true })
   }
 }
 </script>
