@@ -186,14 +186,14 @@ impl<S> AuthMiddlewareService<S> {
         match config.role_requirement {
             UserRoles::Default => (),
             UserRoles::Admin => {
-                if user.roles.permission_level() < UserRoles::Admin.permission_level() {
+                if user.roles < UserRoles::Admin {
                     return Err(Error::Forbidden {
                         required_role: UserRoles::Admin,
                     });
                 }
             }
             UserRoles::Owner => {
-                if user.roles.permission_level() < UserRoles::Owner.permission_level() {
+                if user.roles < UserRoles::Owner {
                     return Err(Error::Forbidden {
                         required_role: UserRoles::Owner,
                     });
