@@ -134,4 +134,22 @@ impl team_invites::Model {
 
         Ok(())
     }
+
+    pub async fn get_invited_users(
+        database: &DatabaseConnection,
+        team: teams::Model,
+    ) -> Result<Vec<String>, Error> {
+        let invitations = team_invites::Entity::find()
+            .filter(team_invites::Column::Team.eq(team.id))
+            .find_with_related(users::Entity)
+            .all(database)
+            .await?;
+
+        let users = invitations
+            .into_iter()
+            .map(|(_, user)| user.into_iter().next().unwrap().username)
+            .collect();
+
+        Ok(users)
+    }
 }

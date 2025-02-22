@@ -2,6 +2,7 @@ pub mod change_leader;
 mod delete;
 mod index;
 pub mod invite_user;
+mod invited_users;
 pub mod kick_user;
 pub mod rename;
 
@@ -11,5 +12,6 @@ pub fn config(cfg: &mut utoipa_actix_web::service_config::ServiceConfig) {
         .service(kick_user::kick_user)
         .service(rename::rename)
         .service(index::index)
-        .service(delete::delete_team);
+        .service(delete::delete_team)
+        .service(invited_users::invited_users);
 }
