@@ -84,6 +84,14 @@ export default defineNuxtConfig({
     preference: 'dark',
     storageKey: 'nuxt-color-mode-forced',
   },
+  mdc: {
+    remarkPlugins: {
+      'remark-math': {},
+    },
+    rehypePlugins: {
+      'rehype-mathjax': {},
+    },
+  },
   components: [
     {
       path: '~/components/',
