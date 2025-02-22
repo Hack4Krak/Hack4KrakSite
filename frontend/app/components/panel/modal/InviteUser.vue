@@ -16,10 +16,8 @@ const toast = useToast()
 const open = defineModel<boolean>()
 const formRef = useTemplateRef('form')
 
-// ToDo: Use $auth isntead of useAuth in fucntions
-
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  const { error } = await useAuth('/teams/management/invite_user', {
+  const { error } = await useNuxtApp.$auth('/teams/management/invite_user', {
     key: 'teams-invite',
     method: 'POST',
     body: {

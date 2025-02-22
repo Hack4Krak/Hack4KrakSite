@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { data: team, refresh } = await useAuth('/teams/membership/my_team', {
+const { data: team } = await useAuth('/teams/membership/my_team', {
   key: 'teams-membership-my-team',
   method: 'GET',
 })
@@ -18,38 +18,42 @@ const is_user_leader = error.value === undefined
 const inviteUserModal = ref(false)
 const leaveTeamModal = ref(false)
 const deleteTeamModal = ref(false)
+const kickUserModal = ref(false)
+const kickedUser = ref('')
 
 const members = computed(() => {
   const teamMembers = team?.value?.members || []
   return [...teamMembers, ...Array.from({ length: 5 }).fill(null)].slice(0, 5)
 })
-
-async function kick(username: string) {
-  const { error } = await useAuth('/teams/management/kick_user', {
-    key: 'teams-management-kick-user',
-    method: 'DELETE',
-    body: {
-      username,
-    },
-  })
-
-  const toast = useToast()
-
-  if (error.value?.data) {
-    const response = error.value.data as any
-    toast.add({ title: 'Błąd', description: response.message, color: 'error' })
-  } else {
-    toast.add({ title: 'Sukces', description: 'Pomyślnie wyrzucono użytkownika', color: 'success' })
-    await refresh()
-  }
-}
 </script>
 
 <template>
   <div>
     <PanelModalInviteUser v-model="inviteUserModal" />
-    <PanelModalLeaveTeam v-model="leaveTeamModal" />
-    <PanelModalDeleteTeam v-model="deleteTeamModal" />
+    <PanelModalConfirmDeleteModal
+      v-model="deleteTeamModal"
+      url="/teams/management/delete"
+      modal-title="Usuwanie drużyny"
+      modal-description="Czy na pewno chcesz usunąć drużynę? Ta operacja jest nieodwracalna."
+      toast-success-message="Pomyślnie usunięto drużynę"
+      :request-body="undefined"
+    />
+    <PanelModalConfirmDeleteModal
+      v-model="leaveTeamModal"
+      url="/teams/membership/leave_team"
+      modal-title="Opuść drużynę"
+      modal-description="Czy na pewno chcesz opuścić drużynę? Ta operacja jest nieodwracalna."
+      toast-success-message="Pomyślnie opuściłeś drużynę"
+      :request-body="undefined"
+    />
+    <PanelModalConfirmDeleteModal
+      v-model="kickUserModal"
+      url="/teams/management/kick_user"
+      modal-title="Wyrzucenie użytkownika"
+      modal-description="Czy na pewno chcesz wyrzucić użytkownika z drużyny?"
+      toast-success-message="Pomyślnie wyrzucono użytkownika"
+      :request-body="{ username: kickedUser }"
+    />
 
     <NuxtLink to="/panel/" class="flex items-center gap-3 font-900 pt-5 pl-5">
       <Icon name="mdi:arrow-left" class="text-2xl" />
@@ -61,10 +65,14 @@ async function kick(username: string) {
           {{ team?.team_name }}
         </h1>
         <UButton v-if="is_user_leader" class="w-full" @click="deleteTeamModal = true">
-          Usuń zespół
+          <p class="text-center w-full">
+            Opuść zespół
+          </p>
         </UButton>
         <UButton v-else class="w-full" @click="leaveTeamModal = true">
-          Opuść zespół
+          <p class="text-center w-full">
+            Opuść zespół
+          </p>
         </UButton>
       </div>
       <div class="border-2 border-neutral-600 flex-grow rounded-2xl">
@@ -77,15 +85,15 @@ async function kick(username: string) {
               <UIcon v-if="user.is_leader" name="i-material-symbols-crown" class="text-yellow-400" />
               {{ user.name }}
             </div>
-            <UButton v-if="is_user_leader" @click="kick(user.name)">
+            <UButton v-if="is_user_leader" @click="kickUserModal = true; kickedUser = user.name">
               Wyrzuć
             </UButton>
           </div>
-          <div v-else class="text-gray-500 flex justify-between items-center">
-            miejsce na uczestnika
-            <UButton v-if="is_user_leader" @click="inviteUserModal = true">
-              Dodaj do drużyny
-            </UButton>
+          <div v-else class="text-gray-400">
+            <div v-if="is_user_leader" class="flex gap-5 items-center cursor-pointer" @click="inviteUserModal = true">
+              <Icon name="mdi:account-plus" class="text-2xl" />
+              Dodaj do zespołu
+            </div>
           </div>
         </div>
       </div>
