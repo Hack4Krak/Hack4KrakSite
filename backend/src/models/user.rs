@@ -165,6 +165,13 @@ impl Default for UserRoles {
     }
 }
 
+impl PartialOrd for UserRoles {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        self.permission_level()
+            .partial_cmp(&other.permission_level())
+    }
+}
+
 impl UserRoles {
     pub fn permission_level(&self) -> u8 {
         match self {
