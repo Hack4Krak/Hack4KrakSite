@@ -11,10 +11,12 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
       const error = response.error.value
       if (error) {
-        if (error.data.code === 403) {
-          description = 'Nie możesz otworzyć tej strony przed rozpocząciem wydarzenia'
-        } else if (error.data.code === 410) {
-          description = 'Wydarzenie zostało zakończone'
+        switch (error.data.code) {
+          case 403:
+            description = 'Nie możesz otworzyć tej strony przed rozpocząciem wydarzenia'
+            break
+          case 410:
+            description = 'Nie możesz otworzyć tej strony po zakończeniu wydarzenia'
         }
 
         toast.add({ title: `Błąd ${error.data.code}`, description: `${description}`, color: 'error' })
