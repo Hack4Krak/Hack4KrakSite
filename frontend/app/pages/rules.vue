@@ -4,6 +4,6 @@ import file from 'assets/docs/School_Edition_Guidelines.md?raw'
 
 <template>
   <div class="w-full mt-5 md:pl-[25svw] pl-[15svw]">
-    <MarkdownContent :text="file" width="md:w-[50svw] w-[70svw]" />
+    <MarkdownContent :text="file" class="md:w-[50svw] w-[70svw]" />
   </div>
 </template>
