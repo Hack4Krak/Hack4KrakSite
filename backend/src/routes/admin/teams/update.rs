@@ -10,7 +10,7 @@ use uuid::Uuid;
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct UpdateTeamModel {
     pub team_name: Option<String>,
-    pub leader: Option<String>,
+    pub leader: Option<Uuid>,
 }
 
 #[utoipa::path(

@@ -228,7 +228,10 @@ impl teams::Model {
         }
 
         if let Some(leader) = update_team_json.leader {
-            let new_leader = users::Model::find_by_uuid_from_string(database, &leader).await?;
+            let new_leader = users::Entity::find_by_id(leader)
+                .one(database)
+                .await?
+                .ok_or(Error::UserNotFound)?;
 
             let leader = Self::leader(database, id).await?;
 

@@ -12,7 +12,7 @@ use uuid::Uuid;
 pub struct UpdateUserModel {
     pub username: Option<String>,
     pub email: Option<String>,
-    pub team: Option<String>,
+    pub team: Option<Uuid>,
 }
 
 #[utoipa::path(
