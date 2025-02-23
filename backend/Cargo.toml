@@ -17,7 +17,7 @@ sea-orm = { version = "1.1.5", features = [ "sqlx-postgres", "sqlx-sqlite", "run
 
 [dependencies]
 # Generating OpenAPI
-utoipa = { version = "5.3.1", features = ["actix_extras", "macros", "chrono"] }
+utoipa = { version = "5.3.1", features = ["actix_extras", "macros", "chrono", "uuid"] }
 utoipa-actix-web = "0.1.2"
 utoipa-scalar = { version = "0.3.0", features = ["actix-web"] }
 
@@ -44,7 +44,7 @@ actix-web-validator = "6.0.0"
 regex = "1.11.1"
 futures-util = "0.3.31"
 reqwest = { version = "0.12.12", features = ["json"] }
-uuid = { version = "1.14.0", features = ["v4"] }
+uuid = { version = "1.14.0", features = ["serde", "v4"] }
 tokio = {  version = "1.43.0", features = ["fs", "macros"] }
 envy = "0.4.2"
 dotenvy = "0.15"

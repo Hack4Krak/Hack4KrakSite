@@ -5,7 +5,6 @@ use crate::models::task::EventConfig;
 use crate::routes::admin::users::update::UpdateUserModel;
 use crate::routes::auth::AuthError::UserAlreadyExists;
 use crate::routes::auth::RegisterModel;
-use crate::routes::teams::TeamError::TeamNotFound;
 use crate::utils::error::Error;
 use actix_web::dev::Payload;
 use actix_web::{FromRequest, HttpMessage, HttpRequest};
@@ -17,8 +16,7 @@ use sea_orm::{ColumnTrait, DatabaseConnection};
 use sea_orm::{ModelTrait, QueryFilter};
 use serde::{Deserialize, Serialize};
 use std::future;
-use std::str::FromStr;
-use uuid::{Uuid as uuid_gen, Uuid};
+use uuid::Uuid as uuid_gen;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UserInformation {
@@ -65,18 +63,6 @@ impl users::Model {
             .filter(users::Column::Email.eq(email))
             .one(database)
             .await?)
-    }
-
-    pub async fn find_by_uuid_from_string(
-        database: &DatabaseConnection,
-        id: &str,
-    ) -> Result<Self, Error> {
-        let user = users::Entity::find_by_id(Uuid::parse_str(id).map_err(|_| Error::UserNotFound)?)
-            .one(database)
-            .await?
-            .ok_or(Error::UserNotFound)?;
-
-        Ok(user)
     }
 
     pub async fn assert_is_unique(
@@ -197,7 +183,6 @@ impl users::Model {
         }
 
         if let Some(team) = update_user_json.team {
-            let team = uuid_gen::from_str(&team).map_err(|_| TeamNotFound)?;
             teams::Model::assert_correct_team_size(
                 database,
                 event_config.max_team_size,
