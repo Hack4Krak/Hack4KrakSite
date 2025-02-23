@@ -1,9 +1,45 @@
+<script setup>
+const dayjs = useDayjs()
+
+const { data: timeLeft } = useAsyncData('timeLeft', async () => calculateTimeLeft())
+const eventMessage = computed(() => getEventState().message)
+
+const { data } = await useAuth('/event/info', {
+  method: 'GET',
+  key: 'event-info',
+})
+
+function getEventState() {
+  const now = dayjs()
+  const eventStart = dayjs(data.value?.['start-date'])
+
+  const eventEnd = dayjs(data.value?.['end-date'])
+  if (now.isBetween(eventStart, eventEnd)) {
+    return { message: 'Czas do zakończenia wydarzenia', diff: dayjs.duration(eventEnd.diff()) }
+  } else if (now.isBefore(eventStart)) {
+    return { message: 'Czas do rozpoczęcia wydarzenia', diff: dayjs.duration(eventStart.diff(now)) }
+  } else {
+    return { message: 'Wydarzenie zakończyło się:', diff: dayjs.duration(now.diff(eventEnd)) }
+  }
+}
+
+function calculateTimeLeft() {
+  return getEventState().diff.format('D[d] HH:mm:ss').replace(/^0*d /, '')
+}
+
+onMounted(() => {
+  setInterval(() => {
+    timeLeft.value = calculateTimeLeft()
+  }, 1000)
+})
+</script>
+
 <template>
   <div class="flex flex-col m-5 md:m-10 gap-5">
     <h2 class="text-2xl font-bold">
-      Czas do początku wydarzenia
+      {{ eventMessage }}
     </h2>
-    <span class="w-full text-center text-6xl font-bold">21 : 37 : 69</span>
+    <span class="w-full text-center text-6xl font-bold">{{ timeLeft }}</span>
     <h2 class="text-2xl font-bold mt-5">
       Wyślij flagę
     </h2>

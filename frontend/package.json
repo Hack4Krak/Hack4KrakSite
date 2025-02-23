@@ -21,6 +21,7 @@
     "@nuxt/ui": "3.0.0-alpha.13",
     "@nuxtjs/mdc": "0.13.5",
     "@nuxtjs/seo": "2.2.0",
+    "dayjs-nuxt": "^2.1.11",
     "nuxt": "^3.15.4",
     "nuxt-open-fetch": "^0.9.5",
     "rehype-mathjax": "^7.1.0",

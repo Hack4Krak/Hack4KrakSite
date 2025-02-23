@@ -37,6 +37,9 @@ importers:
       '@nuxtjs/seo':
         specifier: 2.2.0
         version: 2.2.0(@unhead/vue@1.11.19(vue@3.5.13(typescript@5.7.3)))(h3@1.15.1)(magicast@0.3.5)(rollup@4.32.1)(typescript@5.7.3)(unhead@1.11.19)(unstorage@1.15.0(db0@0.2.3(@libsql/client@0.14.0)(better-sqlite3@11.8.1))(ioredis@5.4.2))(vite@6.1.1(@types/node@22.13.4)(jiti@2.4.2)(lightningcss@1.29.1)(terser@5.38.1)(tsx@4.19.2)(yaml@2.7.0))(vue@3.5.13(typescript@5.7.3))
+      dayjs-nuxt:
+        specifier: ^2.1.11
+        version: 2.1.11(magicast@0.3.5)
       nuxt:
         specifier: ^3.15.4
         version: 3.15.4(@libsql/client@0.14.0)(@parcel/watcher@2.5.1)(@types/node@22.13.4)(better-sqlite3@11.8.1)(db0@0.2.3(@libsql/client@0.14.0)(better-sqlite3@11.8.1))(eslint@9.21.0(jiti@2.4.2))(ioredis@5.4.2)(lightningcss@1.29.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.32.1)(terser@5.38.1)(tsx@4.19.2)(typescript@5.7.3)(vite@6.1.1(@types/node@22.13.4)(jiti@2.4.2)(lightningcss@1.29.1)(terser@5.38.1)(tsx@4.19.2)(yaml@2.7.0))(yaml@2.7.0)
@@ -2644,6 +2647,12 @@ packages:
   data-uri-to-buffer@4.0.1:
     resolution: {integrity: sha512-0R9ikRb668HB7QDxT1vkpuUBtqc53YyAwMwGeUFKRojY/NWKvdZ+9UYtRfGmhqNbRkTSVpMbmyhXipFFv2cb/A==}
     engines: {node: '>= 12'}
+
+  dayjs-nuxt@2.1.11:
+    resolution: {integrity: sha512-KDDNiET7KAKf6yzL3RaPWq5aV7ql9QTt5fIDYv+4eOegDmnEQGjwkKYADDystsKtPjt7QZerpVbhC96o3BIyqQ==}
+
+  dayjs@1.11.13:
+    resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
 
   db0@0.2.3:
     resolution: {integrity: sha512-PunuHESDNefmwVy1LDpY663uWwKt2ogLGoB6NOz2sflGREWqDreMwDgF8gfkXxgNXW+dqviyiJGm924H1BaGiw==}
@@ -9477,6 +9486,16 @@ snapshots:
 
   data-uri-to-buffer@4.0.1:
     optional: true
+
+  dayjs-nuxt@2.1.11(magicast@0.3.5):
+    dependencies:
+      '@nuxt/kit': 3.15.4(magicast@0.3.5)
+      dayjs: 1.11.13
+    transitivePeerDependencies:
+      - magicast
+      - supports-color
+
+  dayjs@1.11.13: {}
 
   db0@0.2.3(@libsql/client@0.14.0)(better-sqlite3@11.8.1):
     optionalDependencies:

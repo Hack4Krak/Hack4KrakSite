@@ -4,17 +4,7 @@ const baseUrl = process.env.BASE_URL || 'http://localhost:3000'
 const backendAddress = process.env.BACKEND_ADDRESS || 'http://localhost:8080'
 
 export default defineNuxtConfig({
-  modules: [
-    '@nuxt/ui',
-    '@nuxt/eslint',
-    '@nuxt/test-utils/module',
-    '@nuxtjs/seo',
-    '@nuxtjs/mdc',
-    '@nuxt/scripts',
-    '@formkit/auto-animate/nuxt',
-    'nuxt-open-fetch',
-    '@nuxt/image',
-  ],
+  modules: ['@nuxt/ui', '@nuxt/eslint', '@nuxt/test-utils/module', '@nuxtjs/seo', '@nuxtjs/mdc', '@nuxt/scripts', '@formkit/auto-animate/nuxt', 'nuxt-open-fetch', '@nuxt/image', 'dayjs-nuxt'],
 
   routeRules: {
     '/tasks/description/**': { swr: true },
@@ -92,6 +82,12 @@ export default defineNuxtConfig({
     rehypePlugins: {
       'rehype-mathjax': {},
     },
+  },
+  dayjs: {
+    locales: ['en', 'pl'],
+    plugins: ['duration', 'timezone', 'isBetween'],
+    defaultLocale: 'pl',
+    defaultTimezone: 'Poland/Warsaw',
   },
   components: [
     {
