@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import file from 'assets/docs/School_Edition_Guidelines.md?raw'
+import file from '~/content/docs/School_Edition_Guidelines.md?raw'
 </script>
 
 <template>
