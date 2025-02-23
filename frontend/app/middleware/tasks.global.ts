@@ -4,8 +4,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
     let description = 'Nieznany błąd'
 
     try {
-      const response = await useApi('/event/is_event_in_progress', {
-        key: 'tasks',
+      const response = await useApi('/event/status', {
+        key: 'event-status',
         redirect: 'error',
       })
 
