@@ -18,6 +18,7 @@ export default defineNuxtConfig({
 
   routeRules: {
     '/tasks/description/**': { swr: true },
+    '/rules': { prerender: true },
   },
 
   experimental: {
@@ -83,6 +84,14 @@ export default defineNuxtConfig({
   colorMode: {
     preference: 'dark',
     storageKey: 'nuxt-color-mode-forced',
+  },
+  mdc: {
+    remarkPlugins: {
+      'remark-math': {},
+    },
+    rehypePlugins: {
+      'rehype-mathjax': {},
+    },
   },
   components: [
     {
