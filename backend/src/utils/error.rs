@@ -76,6 +76,10 @@ pub enum Error {
     InvalidEmailSender(String),
     #[error("Invalid recipients' email {0}")]
     InvalidEmailRecipients(String),
+    #[error("User must have higher role than the affected user")]
+    UserMustHaveHigherRoleThanAffectedUser,
+    #[error("User with such email or username already exists")]
+    UserWithEmailOrUsernameAlreadyExists,
     #[error("You cannot access this endpoint before our event has started")]
     AccessBeforeEventStart,
     #[error("You cannot access this endpoint after our event has finished")]
@@ -111,7 +115,10 @@ impl error::ResponseError for Error {
                 StatusCode::BAD_REQUEST
             }
             Error::UserNotFound | Error::RouteNotFound => StatusCode::NOT_FOUND,
-            Error::Forbidden { .. } | Error::AccessBeforeEventStart => StatusCode::FORBIDDEN,
+            Error::Forbidden { .. }
+            | Error::UserMustHaveHigherRoleThanAffectedUser
+            | Error::AccessBeforeEventStart => StatusCode::FORBIDDEN,
+            Error::UserWithEmailOrUsernameAlreadyExists => StatusCode::CONFLICT,
             Error::AccessAfterEventEnd => StatusCode::GONE,
             Error::Team(team_err) => team_err.status_code(),
             Error::Auth(auth_err) => auth_err.status_code(),

@@ -1,3 +1,4 @@
+use crate::middlewares::auth::AuthMiddleware;
 use crate::middlewares::event::EventMiddleware;
 use crate::middlewares::status_code_drain_middleware::StatusCodeDrain;
 use crate::services::env::EnvConfig;
@@ -71,6 +72,11 @@ pub fn setup_actix_app(
                 .configure(routes::task::config),
         )
         .service(scope("/user").configure(routes::user::config))
+        .service(
+            scope("/admin")
+                .wrap(AuthMiddleware::with_user_as_admin())
+                .configure(routes::admin::config),
+        )
         .service(scope("/event").configure(routes::event::config))
         .service(scope("/flag").configure(routes::flag::config))
         .default_service(actix_web::web::route().to(|| async { RouteNotFound.error_response() }))

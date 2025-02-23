@@ -56,6 +56,8 @@ pub enum TeamError {
     UserAlreadyInvited,
     #[error("Team is full. Max team size is {max_size}")]
     TeamIsFull { max_size: u16 },
+    #[error("Team leader not found")]
+    TeamLeaderNotFound,
 }
 
 impl error::ResponseError for TeamError {
@@ -73,7 +75,8 @@ impl error::ResponseError for TeamError {
             | TeamError::TeamLeaderCantLeaveTeam => StatusCode::FORBIDDEN,
             TeamError::TeamNotFound
             | TeamError::UserDoesntHaveAnyInvitations
-            | TeamError::UserDoesntHaveInvitationsFromTeam { .. } => StatusCode::NOT_FOUND,
+            | TeamError::UserDoesntHaveInvitationsFromTeam { .. }
+            | TeamError::TeamLeaderNotFound => StatusCode::NOT_FOUND,
         }
     }
 
