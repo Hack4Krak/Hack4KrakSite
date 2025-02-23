@@ -35,7 +35,7 @@ const items = [
     },
     {
       label: 'FAQ',
-      target: '/faq',
+      to: '/faq',
     },
   ],
   [
