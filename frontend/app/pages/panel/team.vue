@@ -80,7 +80,7 @@ const members = computed(() => {
       <Icon name="mdi:arrow-left" class="text-2xl" />
       Powrót
     </NuxtLink>
-    <div class="flex mx-20 gap-20 mt-10">
+    <div class="flex flex-col md:flex-row md:mx-20 mx-10 gap-20 mt-10">
       <div class="border-2 border-neutral-600 p-5 min-w-70 rounded-2xl flex flex-col h-40">
         <h1 class="flex-grow text-3xl font-bold">
           {{ team?.team_name }}
