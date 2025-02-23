@@ -10,6 +10,7 @@ use sea_orm::EntityTrait;
         (status = 200, description = "User list successfully retrieved."),
         (status = 500, description = "Internal server error.")
     ),
+    operation_id = "admin_users_list",
     tag = "admin/users"
 )]
 #[get("/list")]

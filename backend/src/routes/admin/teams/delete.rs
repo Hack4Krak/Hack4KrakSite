@@ -10,6 +10,7 @@ use uuid::Uuid;
         (status = 200, description = "Team successfully deleted."),
         (status = 500, description = "Internal server error.")
     ),
+    operation_id = "admin_teams_delete",
     tag = "admin/teams"
 )]
 #[delete("/delete/{id}")]

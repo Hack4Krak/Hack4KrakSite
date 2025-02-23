@@ -24,6 +24,7 @@ pub struct UserInformationResponse {
     security(
         ("access_token" = [])
     ),
+    operation_id = "user_index",
     tag = "user"
 )]
 #[get("/", wrap = "AuthMiddleware::default()")]

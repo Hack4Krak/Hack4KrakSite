@@ -2,7 +2,7 @@
 import type { ApiResponse } from '#open-fetch'
 import { useResizeObserver } from '@vueuse/core'
 
-export type Tasks = ApiResponse<'list'>
+export type Tasks = ApiResponse<'task_list'>
 
 defineProps<{
   elements: Tasks
