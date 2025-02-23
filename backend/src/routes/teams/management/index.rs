@@ -10,6 +10,7 @@ use actix_web::{get, HttpResponse};
     security(
         ("access_token" = ["leader"])
     ),
+    operation_id = "teams_management_index",
     tag = "teams/management"
 )]
 #[get("/")]

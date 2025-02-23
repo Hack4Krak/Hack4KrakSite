@@ -18,6 +18,7 @@ pub struct SimpleTask {
         (status = 200, description = "Tasks successfully retrieved.", body = Vec<SimpleTask>),
         (status = 500, description = "Internal server error.")
     ),
+    operation_id = "task_list",
     tag = "tasks"
 )]
 #[get("/list")]

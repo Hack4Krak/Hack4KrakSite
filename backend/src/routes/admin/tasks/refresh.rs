@@ -8,6 +8,7 @@ use actix_web::{post, HttpResponse};
         (status = 200, description = "Tasks successfully refreshed."),
         (status = 500, description = "Internal server error.")
     ),
+    operation_id = "admin_tasks_refresh",
     tag = "admin/tasks"
 )]
 #[post("/refresh")]

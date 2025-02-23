@@ -11,6 +11,7 @@ use uuid::Uuid;
         (status = 403, description = "User must have higher role than updated user."),
         (status = 500, description = "Internal server error.")
     ),
+    operation_id = "admin_users_delete",
     tag = "admin/users"
 )]
 #[delete("/delete/{id}")]

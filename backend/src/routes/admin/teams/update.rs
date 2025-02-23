@@ -19,6 +19,7 @@ pub struct UpdateTeamModel {
         (status = 200, description = "Team successfully updated."),
         (status = 500, description = "Internal server error.")
     ),
+    operation_id = "admin_teams_update",
     tag = "admin/teams"
 )]
 #[patch("/update/{id}")]

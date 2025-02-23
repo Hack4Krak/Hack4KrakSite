@@ -9,6 +9,7 @@ use actix_web::{get, HttpResponse};
         (status = 200, description = "Teams successfully fetched."),
         (status = 500, description = "Internal server error.")
     ),
+    operation_id = "admin_teams_list",
     tag = "admin/teams"
 )]
 #[get("/list")]

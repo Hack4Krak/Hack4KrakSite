@@ -11,6 +11,7 @@ use actix_web::{get, web, HttpResponse};
     security(
         ("access_token" = [])
     ),
+    operation_id = "task_assets_list",
     tag = "task/assets"
 )]
 #[get("/list/{task_id}")]
