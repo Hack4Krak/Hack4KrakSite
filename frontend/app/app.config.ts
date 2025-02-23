@@ -8,10 +8,10 @@ export default defineAppConfig({
         header: 'flex',
         trigger: 'group flex-1 flex items-center gap-1.5 font-medium text-sm py-3.5 focus-visible:outline-(--ui-primary) min-w-0',
         content: 'data-[state=open]:animate-[accordion-down_200ms_ease-out] data-[state=closed]:animate-[accordion-up_200ms_ease-out] overflow-hidden focus:outline-none',
-        body: 'text-md font-light pb-3.5',
+        body: 'cursor-default text-md font-light pb-3.5',
         leadingIcon: 'shrink-0 size-6',
-        trailingIcon: 'shrink-0 size-6 text-yellow-500 ms-auto group-data-[state=open]:rotate-180 transition-transform duration-200',
-        label: 'text-lg text-start break-words'
+        trailingIcon: 'cursor-pointer shrink-0 size-6 text-yellow-500 ms-auto group-data-[state=open]:rotate-180 transition-transform duration-200',
+        label: 'cursor-pointer text-lg text-start break-words',
       },
     },
     colors: {
@@ -29,4 +29,3 @@ export default defineAppConfig({
     },
   },
 })
-

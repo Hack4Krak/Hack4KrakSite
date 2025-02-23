@@ -25,6 +25,10 @@ const items = [
       to: '/rules',
     },
     {
+      label: 'FAQ',
+      to: '/faq',
+    },
+    {
       label: 'Zadania',
       to: '/tasks',
     },
@@ -32,10 +36,6 @@ const items = [
       label: 'Discord',
       to: 'https://discord.gg/ASPqckzEd8',
       target: '_blank',
-    },
-    {
-      label: 'FAQ',
-      to: '/faq',
     },
   ],
   [
