@@ -1,41 +1,8 @@
 <script setup lang="ts">
 import file from 'assets/faq.json?raw'
 const content = JSON.parse(file);
-const items = ref([
-  {
-    label: 'Na czym polega \"lokalny CTF\"?',
-    content: 'Lokalny CTF to zawody z cyberbezpieczeństwa, które będą się składały z dwóch części: pierwsza to pilotażowy CTF, tylko dla uczniów 31 LO, a druga to główne zawody, otwarte dla wszystkich uczniów szkół średnich w Krakowie. Głównym zadaniem uczestników będzie rozwiązywanie różnych zadań związanych z bezpieczeństwem komputerowym, przełamywaniem zabezpieczeń oraz kryptografią., żeby zdobyć tzw. \"flagę\".'
-  },
-  {
-    label: 'Kto organizuje te zawody w Krakowie?',
-    content: 'Zawody organizują uczniowie 31 LO w Krakowie, którzy znają się na cyberbezpieczeństwie i chcą podzielić się tym z innymi.'
-  },
-  {
-    label: 'Kto może wziąć udział w zawodach?',
-    content: 'Pierwsza część (testowa) jest tylko dla uczniów 31 LO, ale druga część to zawody otwarte dla wszystkich uczniów szkół średnich w Krakowie i okolic. Można się zapisać indywidualnie lub w drużynie.'
-  },
-  {
-    label: 'Jak mogę się zarejestrować?',
-    content: 'Wystarczy zalogować się na stronie, stworzyć drużynę i już!'
-  },
-  {
-    label: 'Gdzie odbędą się zawody?',
-    content: 'Zawody będą w 31 LO w Krakowie.'
-  },
-  {
-    label: 'Jak mogę skontaktować się z organizatorami w razie pytań?',
-    content: 'Można napisać przez formularz na stronie lub wysłać maila na adres: [adres e-mail].'
-  },
-  {
-    label: 'Czy korzystanie ze sztucznej inteligencji, w tym filmów na YouTube i innych narzędzi AI, jest dozwolone?',
-    content: 'Oczywiście, można używać AI, filmów na YouTube i innych źródeł w trakcie zawodów. Możesz korzystać z nich, aby szukać wskazówek, analizować zadania czy korzystać z narzędzi, które pomogą ci rozwiązać problemy.'
-  },
-  {
-    label: 'Czy (miejsce na twoje pytanie).',
-    content: 'Nie.'
-  }
+const items = ref(content)
 
-])
 </script>
 
 <template>

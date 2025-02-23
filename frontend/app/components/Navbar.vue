@@ -33,6 +33,10 @@ const items = [
       to: 'https://discord.gg/ASPqckzEd8',
       target: '_blank',
     },
+    {
+      label: 'FAQ',
+      target: '/faq',
+    },
   ],
   [
     {
