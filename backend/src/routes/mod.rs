@@ -1,3 +1,4 @@
+pub mod account;
 pub mod admin;
 pub mod auth;
 pub mod event;
@@ -6,4 +7,3 @@ pub mod index;
 pub mod leaderboard;
 pub mod task;
 pub mod teams;
-pub mod user;

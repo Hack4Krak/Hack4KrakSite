@@ -148,3 +148,27 @@ pub async fn init_database_with_teams() -> (DatabaseConnection, Uuid, Uuid, Vec<
 
     (database, user_uuid, team_uuid, users_with_team)
 }
+
+#[allow(dead_code)]
+pub async fn init_database_with_user() -> (DatabaseConnection, Uuid) {
+    let database = setup_database_with_schema().await;
+
+    let uuid = Uuid::new_v4();
+
+    users::Entity::insert(users::ActiveModel {
+        id: Set(uuid),
+        username: Set("test_user".to_string()),
+        email: Set("example@gmail.com".to_string()),
+        created_at: Set(Local::now().naive_local()),
+        team: Set(None),
+        is_leader: Set(false),
+        // Password is Dziengiel
+        password: Set(Some("$argon2id$v=19$m=19456,t=2,p=1$GuyDKoLJCF5tt+MDGJqRfA$8NZPkyNbR/IWuLg6tR7tn0RH/lJGahLYDODj23ajP3Y".to_string())),
+        roles: Set(UserRoles::Default),
+    })
+    .exec(&database)
+    .await
+    .unwrap();
+
+    (database, uuid)
+}

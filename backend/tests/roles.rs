@@ -33,7 +33,7 @@ async fn middleware_user_is_not_admin() {
     let app = test::init_service(
         App::new()
             .app_data(Data::new(AppState::with_database(database)))
-            .service(scope("/user").configure(routes::user::config)),
+            .service(scope("/user").configure(routes::account::config)),
     )
     .await;
 
@@ -74,7 +74,7 @@ async fn middleware_user_is_admin() {
     let app = test::init_service(
         App::new()
             .app_data(Data::new(AppState::with_database(database)))
-            .service(scope("/user").configure(routes::user::config)),
+            .service(scope("/user").configure(routes::account::config)),
     )
     .await;
 

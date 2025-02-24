@@ -197,7 +197,7 @@ async fn auth_flow() {
         .unwrap();
 
     let user_request = test::TestRequest::get()
-        .uri("/user/")
+        .uri("/account/")
         .insert_header((
             header::COOKIE,
             format!("access_token={}", access_token.value()),
