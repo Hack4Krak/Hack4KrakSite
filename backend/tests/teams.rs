@@ -3,7 +3,7 @@ use utils::setup_test_app;
 use crate::utils::init_database_with_teams;
 use actix_web::http::header;
 use actix_web::web::Data;
-use actix_web::{test, App};
+use actix_web::{App, test};
 use chrono::{Duration, Local};
 use hack4krak_backend::entities::sea_orm_active_enums::UserRoles;
 use hack4krak_backend::entities::{teams, users};

@@ -2,7 +2,7 @@ use crate::entities::teams;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use actix_web::web::{Data, Path};
-use actix_web::{delete, HttpResponse};
+use actix_web::{HttpResponse, delete};
 use uuid::Uuid;
 
 #[utoipa::path(

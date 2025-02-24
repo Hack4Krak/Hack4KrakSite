@@ -13,7 +13,7 @@ use actix_web::dev::{ServiceFactory, ServiceRequest, ServiceResponse};
 use actix_web::middleware::Logger;
 use actix_web::{App, Error, ResponseError};
 use utoipa::OpenApi;
-use utoipa_actix_web::{scope, AppExt, UtoipaApp};
+use utoipa_actix_web::{AppExt, UtoipaApp, scope};
 use utoipa_scalar::{Scalar, Servable};
 
 pub mod entities;

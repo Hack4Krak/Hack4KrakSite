@@ -1,9 +1,9 @@
 use crate::utils::error::ErrorHttpResponseExtension;
 use actix_web::{
-    dev::{Service, ServiceRequest, ServiceResponse, Transform},
     Error as ActixError,
+    dev::{Service, ServiceRequest, ServiceResponse, Transform},
 };
-use futures_util::future::{ok, Ready};
+use futures_util::future::{Ready, ok};
 use std::future::Future;
 use std::pin::Pin;
 use std::task::{Context, Poll};

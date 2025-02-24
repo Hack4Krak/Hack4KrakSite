@@ -3,7 +3,7 @@ use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::success_response::SuccessResponse;
 use actix_web::web::{Data, Path};
-use actix_web::{delete, HttpResponse};
+use actix_web::{HttpResponse, delete};
 
 #[utoipa::path(
     responses(

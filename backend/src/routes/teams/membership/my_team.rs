@@ -2,11 +2,11 @@ use crate::entities::{teams, users};
 use crate::middlewares::auth::AuthMiddleware;
 use crate::utils::app_state;
 use crate::utils::error::Error;
-use actix_web::{get, web, HttpResponse};
-use sea_orm::prelude::DateTime;
+use actix_web::{HttpResponse, get, web};
 use sea_orm::ColumnTrait;
 use sea_orm::EntityTrait;
 use sea_orm::QueryFilter;
+use sea_orm::prelude::DateTime;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 

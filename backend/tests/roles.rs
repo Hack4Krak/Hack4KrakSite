@@ -1,6 +1,6 @@
 use actix_web::http::header;
 use actix_web::web::Data;
-use actix_web::{test, App};
+use actix_web::{App, test};
 use chrono::Duration;
 use hack4krak_backend::entities::sea_orm_active_enums::UserRoles;
 use hack4krak_backend::entities::users;

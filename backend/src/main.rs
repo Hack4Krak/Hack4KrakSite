@@ -1,5 +1,5 @@
-use actix_web::web::Data;
 use actix_web::HttpServer;
+use actix_web::web::Data;
 use hack4krak_backend::services::env::EnvConfig;
 use hack4krak_backend::services::task_manager::TaskManager;
 use hack4krak_backend::setup_actix_app;

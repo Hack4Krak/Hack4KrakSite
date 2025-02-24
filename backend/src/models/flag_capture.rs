@@ -3,7 +3,7 @@ use crate::routes::flag::FlagError;
 use crate::utils::error::Error;
 use chrono::Local;
 use sea_orm::ActiveValue::Set;
-use sea_orm::{sea_query, DatabaseConnection, EntityTrait, TryInsertResult};
+use sea_orm::{DatabaseConnection, EntityTrait, TryInsertResult, sea_query};
 
 impl flag_capture::Model {
     pub async fn completed(

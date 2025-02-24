@@ -2,7 +2,7 @@ use crate::entities::{team_invites, users};
 use crate::routes::teams::TeamError::TeamNotFound;
 use crate::utils::app_state;
 use crate::utils::error::Error;
-use actix_web::{get, web, HttpResponse};
+use actix_web::{HttpResponse, get, web};
 
 #[utoipa::path(
     responses(

@@ -1,6 +1,6 @@
 use crate::middlewares::auth::AuthMiddleware;
 use actix_web::http::StatusCode;
-use actix_web::{error, HttpResponse};
+use actix_web::{HttpResponse, error};
 use thiserror::Error;
 use utoipa_actix_web::scope;
 

@@ -1,7 +1,7 @@
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use actix_web::web::Data;
-use actix_web::{post, HttpResponse};
+use actix_web::{HttpResponse, post};
 
 #[utoipa::path(
     responses(

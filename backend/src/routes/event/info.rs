@@ -1,7 +1,7 @@
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::web::Data;
-use actix_web::{get, HttpResponse};
+use actix_web::{HttpResponse, get};
 use std::ops::Deref;
 
 #[utoipa::path(

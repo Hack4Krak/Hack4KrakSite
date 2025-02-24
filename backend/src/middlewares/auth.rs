@@ -7,13 +7,14 @@ use crate::utils::error::Error;
 use crate::utils::jwt::decode_jwt;
 use actix_web::body::{BoxBody, EitherBody};
 use actix_web::{
-    dev::{forward_ready, Service, ServiceRequest, ServiceResponse, Transform},
-    web, Error as ActixError, HttpMessage, ResponseError,
+    Error as ActixError, HttpMessage, ResponseError,
+    dev::{Service, ServiceRequest, ServiceResponse, Transform, forward_ready},
+    web,
 };
 use futures_util::future::LocalBoxFuture;
 use sea_orm::EntityTrait;
 use std::cmp::PartialEq;
-use std::future::{ready, Ready};
+use std::future::{Ready, ready};
 use std::rc::Rc;
 
 /// Middleware responsible for verifying authenticated users

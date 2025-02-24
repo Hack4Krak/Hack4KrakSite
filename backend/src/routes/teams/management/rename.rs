@@ -3,7 +3,7 @@ use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::success_response::SuccessResponse;
 use actix_web::web::Json;
-use actix_web::{patch, web, HttpResponse};
+use actix_web::{HttpResponse, patch, web};
 use actix_web_validation::Validated;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;

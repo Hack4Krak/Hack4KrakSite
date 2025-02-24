@@ -6,7 +6,7 @@ use crate::utils::error::Error::InvalidJsonWebToken;
 use actix_web::dev::Payload;
 use actix_web::{FromRequest, HttpMessage, HttpRequest};
 use chrono::{TimeDelta, Utc};
-use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, TokenData, Validation};
+use jsonwebtoken::{DecodingKey, EncodingKey, Header, TokenData, Validation, decode, encode};
 use sea_orm::prelude::Uuid;
 use serde::{Deserialize, Serialize};
 

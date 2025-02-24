@@ -4,12 +4,13 @@ use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::body::{BoxBody, EitherBody};
 use actix_web::{
-    dev::{forward_ready, Service, ServiceRequest, ServiceResponse, Transform},
-    web, Error as ActixError, HttpMessage, ResponseError,
+    Error as ActixError, HttpMessage, ResponseError,
+    dev::{Service, ServiceRequest, ServiceResponse, Transform, forward_ready},
+    web,
 };
 use chrono::Utc;
 use futures_util::future::LocalBoxFuture;
-use std::future::{ready, Ready};
+use std::future::{Ready, ready};
 use std::rc::Rc;
 
 /// Restricts access to endpoints if event is not stared

@@ -4,7 +4,7 @@ use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::jwt::JwtClaims;
 use actix_web::web::Data;
-use actix_web::{delete, get, HttpResponse};
+use actix_web::{HttpResponse, delete, get};
 use sea_orm::{EntityTrait, ModelTrait};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;

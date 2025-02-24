@@ -4,7 +4,7 @@ use crate::routes::flag::FlagError;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::web::{Data, Json};
-use actix_web::{post, HttpResponse};
+use actix_web::{HttpResponse, post};
 use actix_web_validation::Validated;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;

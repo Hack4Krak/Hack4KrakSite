@@ -1,4 +1,4 @@
-use actix_web::{get, web, HttpResponse};
+use actix_web::{HttpResponse, get, web};
 use serde::Deserialize;
 
 use crate::routes::auth::AuthError::InvalidCredentials;

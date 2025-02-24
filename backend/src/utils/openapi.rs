@@ -4,9 +4,9 @@ use crate::utils::error::Error;
 use serde_json::to_string;
 use std::fs::File;
 use std::io::Write;
-use utoipa::openapi::security::{ApiKey, ApiKeyValue, SecurityScheme};
-use utoipa::openapi::OpenApi;
 use utoipa::Modify;
+use utoipa::openapi::OpenApi;
+use utoipa::openapi::security::{ApiKey, ApiKeyValue, SecurityScheme};
 
 #[derive(utoipa::OpenApi)]
 #[openapi(

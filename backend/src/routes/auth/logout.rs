@@ -1,6 +1,6 @@
-use actix_web::{post, HttpResponse};
+use actix_web::{HttpResponse, post};
 
-use crate::utils::cookies::{reset_cookie, ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE};
+use crate::utils::cookies::{ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE, reset_cookie};
 use crate::utils::error::Error;
 
 #[utoipa::path(

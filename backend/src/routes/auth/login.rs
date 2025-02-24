@@ -3,7 +3,7 @@ use crate::routes::auth::AuthError::InvalidCredentials;
 use crate::services::auth::AuthService;
 use crate::utils::app_state;
 use crate::utils::error::Error;
-use actix_web::{post, web, HttpResponse};
+use actix_web::{HttpResponse, post, web};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 

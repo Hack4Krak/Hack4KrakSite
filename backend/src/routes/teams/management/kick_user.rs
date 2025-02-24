@@ -2,7 +2,7 @@ use crate::entities::{teams, users};
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::success_response::SuccessResponse;
-use actix_web::{delete, web, HttpResponse};
+use actix_web::{HttpResponse, delete, web};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 

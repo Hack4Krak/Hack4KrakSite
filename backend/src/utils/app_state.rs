@@ -1,8 +1,8 @@
 use crate::services::env::EnvConfig;
 use crate::services::task_manager::TaskManager;
 use crate::utils::oauth::OAuthProvider;
-use lettre::transport::smtp::authentication::Credentials;
 use lettre::SmtpTransport;
+use lettre::transport::smtp::authentication::Credentials;
 use sea_orm::DatabaseConnection;
 
 pub struct AppState {

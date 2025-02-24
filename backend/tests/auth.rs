@@ -1,7 +1,7 @@
 use crate::utils::setup_test_app;
 
 use actix_web::web::Data;
-use actix_web::{test, App};
+use actix_web::{App, test};
 use hack4krak_backend::entities::{email_confirmation, users};
 use hack4krak_backend::routes;
 use hack4krak_backend::services::env::EnvConfig;
@@ -17,13 +17,13 @@ mod utils;
 #[actix_web::test]
 async fn register() {
     EnvConfig::load_test_config();
-    use lettre::transport::smtp::client::Tls;
     use lettre::SmtpTransport;
+    use lettre::transport::smtp::client::Tls;
     use serde_json::Value;
+    use testcontainers::GenericImage;
     use testcontainers::core::IntoContainerPort;
     use testcontainers::core::WaitFor;
     use testcontainers::runners::AsyncRunner;
-    use testcontainers::GenericImage;
 
     let container = GenericImage::new("mailhog/mailhog", "latest")
         .with_exposed_port(1025.tcp()) // SMTP port
@@ -102,13 +102,13 @@ async fn auth_flow() {
     EnvConfig::load_test_config();
     use actix_web::cookie::Cookie;
     use actix_web::http::header;
-    use lettre::transport::smtp::client::Tls;
     use lettre::SmtpTransport;
+    use lettre::transport::smtp::client::Tls;
     use serde_json::Value;
+    use testcontainers::GenericImage;
     use testcontainers::core::IntoContainerPort;
     use testcontainers::core::WaitFor;
     use testcontainers::runners::AsyncRunner;
-    use testcontainers::GenericImage;
 
     const UUID_REGEX: &str =
         r"[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}";

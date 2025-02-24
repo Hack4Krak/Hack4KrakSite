@@ -2,7 +2,7 @@ use crate::entities::email_confirmation;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use actix_web::web::Data;
-use actix_web::{get, HttpResponse};
+use actix_web::{HttpResponse, get};
 use sea_orm::EntityTrait;
 
 #[utoipa::path(

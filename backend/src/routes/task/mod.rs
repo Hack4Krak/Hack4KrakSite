@@ -1,5 +1,5 @@
 use actix_web::http::StatusCode;
-use actix_web::{error, HttpResponse};
+use actix_web::{HttpResponse, error};
 use std::string;
 use thiserror::Error;
 use utoipa_actix_web::scope;

@@ -1,7 +1,7 @@
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::HttpResponse;
-use lettre::message::{header, Attachment, Mailbox, Mailboxes, MultiPart, SinglePart};
+use lettre::message::{Attachment, Mailbox, Mailboxes, MultiPart, SinglePart, header};
 use lettre::{Message, Transport};
 use std::option::Option;
 

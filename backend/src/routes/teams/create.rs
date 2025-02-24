@@ -1,6 +1,6 @@
 use crate::routes::teams::AuthMiddleware;
 use actix_web::web::Json;
-use actix_web::{post, web, HttpResponse};
+use actix_web::{HttpResponse, post, web};
 use actix_web_validation::Validated;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;

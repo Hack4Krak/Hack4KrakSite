@@ -3,7 +3,7 @@ use crate::services::env::EnvConfig;
 use crate::utils::app_state;
 use crate::utils::common_responses;
 use crate::utils::error::Error;
-use actix_web::{get, web, HttpResponse};
+use actix_web::{HttpResponse, get, web};
 
 #[utoipa::path(
     responses(

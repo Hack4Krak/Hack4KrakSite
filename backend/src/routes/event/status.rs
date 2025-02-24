@@ -1,7 +1,7 @@
 use crate::middlewares::event::EventMiddleware;
 use crate::utils::error::Error;
 use crate::utils::success_response::SuccessResponse;
-use actix_web::{get, HttpResponse};
+use actix_web::{HttpResponse, get};
 
 #[utoipa::path(
     responses(

@@ -2,7 +2,7 @@ use crate::entities::teams;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use actix_web::web::{Data, Json, Path};
-use actix_web::{patch, HttpResponse};
+use actix_web::{HttpResponse, patch};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;

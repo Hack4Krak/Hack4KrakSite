@@ -1,9 +1,9 @@
 use std::path::{Path, PathBuf};
 use std::sync::OnceLock;
 
+use Default;
 use serde::Deserialize;
 use std::str::FromStr;
-use Default;
 
 fn default_backend_address() -> String {
     "127.0.0.1:8080".to_string()

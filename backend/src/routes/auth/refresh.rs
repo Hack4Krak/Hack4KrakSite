@@ -1,7 +1,7 @@
 use crate::services::auth::AuthService;
 use crate::utils::cookies::REFRESH_TOKEN_COOKIE;
 use crate::utils::error::Error;
-use actix_web::{post, HttpRequest, HttpResponse};
+use actix_web::{HttpRequest, HttpResponse, post};
 
 use crate::utils::jwt::decode_jwt;
 
