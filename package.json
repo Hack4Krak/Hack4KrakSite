@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "frontend:build": "pnpm --prefix ./frontend/ build",
-    "frontend:install": "pnpm --prefix ./frontend/ install",
+    "frontend:install": "pnpm --filter ./frontend/ install",
     "frontend:test": "pnpm --prefix ./frontend/ test",
     "frontend:dev": "pnpm --prefix ./frontend/ dev",
     "frontend:lint": "pnpm --prefix ./frontend/ lint .",
