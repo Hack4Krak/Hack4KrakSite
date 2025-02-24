@@ -8,7 +8,7 @@ use hack4krak_backend::services::env::EnvConfig;
 use hack4krak_backend::utils::app_state::AppState;
 use sea_orm::MockExecResult;
 use sea_orm::{DatabaseBackend, MockDatabase};
-use utoipa::gen::serde_json::json;
+use serde_json::json;
 use utoipa_actix_web::scope;
 
 mod utils;
