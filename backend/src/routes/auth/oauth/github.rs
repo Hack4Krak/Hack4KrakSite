@@ -63,7 +63,7 @@ pub async fn github_callback(
             return Ok(create_temporary_redirect_response(
                 EnvConfig::get().oauth_finish_redirect_url.clone(),
                 error,
-            )
+            )?
             .finish());
         }
     };

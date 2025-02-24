@@ -1645,6 +1645,7 @@ dependencies = [
  "tokio",
  "tracing",
  "tracing-subscriber",
+ "url",
  "utoipa",
  "utoipa-actix-web",
  "utoipa-scalar",

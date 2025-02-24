@@ -23,14 +23,14 @@ pub async fn confirm_email(
         Ok(()) => {
             let mut response = common_responses::create_redirect_response(
                 EnvConfig::get().email_confirm_redirect_url.clone(),
-            );
+            )?;
 
             Ok(response.body("Email successfully confirmed. Redirecting..."))
         }
         Err(error) => Ok(create_temporary_redirect_response(
             EnvConfig::get().oauth_finish_redirect_url.clone(),
             error,
-        )
+        )?
         .finish()),
     }
 }
