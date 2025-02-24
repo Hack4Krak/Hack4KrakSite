@@ -55,7 +55,7 @@ argon2 = "0.6.0-pre.1"
 jsonwebtoken = "9.3.1"
 chrono = "0.4.39"
 oauth2 = { version = "5.0.0", features = ["reqwest"] }
-lettre = "0.11.13"
+lettre = "0.11.14"
 dashmap = "6.1.0"
 validator = { version = "0.20.0", features = ["derive"] }
 sha2 = "0.10.8"
