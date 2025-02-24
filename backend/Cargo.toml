@@ -1,7 +1,7 @@
 [package]
 name = "hack4krak-backend"
 version.workspace = true
-edition = "2021"
+edition = "2024"
 
 [features]
 full-test-suite = []

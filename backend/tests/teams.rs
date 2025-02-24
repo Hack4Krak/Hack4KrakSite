@@ -13,7 +13,7 @@ use hack4krak_backend::utils::app_state::AppState;
 use hack4krak_backend::utils::jwt::encode_jwt;
 use sea_orm::ActiveValue::Set;
 use sea_orm::{ActiveModelTrait, DatabaseBackend, MockDatabase};
-use utoipa::gen::serde_json::json;
+use serde_json::json;
 use utoipa_actix_web::scope;
 use uuid::Uuid;
 

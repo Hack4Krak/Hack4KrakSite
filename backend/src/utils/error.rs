@@ -1,7 +1,7 @@
 use actix_web::http::StatusCode;
 use actix_web::{error, HttpResponse};
+use serde_json::json;
 use thiserror::Error;
-use utoipa::gen::serde_json::json;
 
 use crate::entities::sea_orm_active_enums::UserRoles;
 use crate::routes::auth::AuthError;
