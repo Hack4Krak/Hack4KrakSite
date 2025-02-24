@@ -10,7 +10,7 @@ full-test-suite = []
 members = [".", "migration", "openapi-check"]
 
 [workspace.package]
-version = "0.2.0"
+version = "0.3.0"
 
 [workspace.dependencies]
 sea-orm = { version = "1.1.6", features = [ "sqlx-postgres", "sqlx-sqlite", "runtime-tokio-rustls", "macros", "mock" ] }
