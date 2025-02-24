@@ -2,14 +2,14 @@ use crate::services::auth::AuthService;
 use crate::services::env::EnvConfig;
 use crate::utils::app_state;
 use crate::utils::common_responses;
+use crate::utils::common_responses::create_temporary_redirect_response;
 use crate::utils::error::Error;
 use actix_web::{HttpResponse, get, web};
-use crate::utils::common_responses::create_temporary_redirect_response;
 
 #[utoipa::path(
     responses(
         (status = 200, description = "Email successfully confirmed. Redirecting..."),
-        (status = 401, description = "Invalid confirmation code."),
+        (status = 307, description = "Invalid confirmation code."),
         (status = 500, description = "Internal server error.")
     ),
     tag = "auth"
@@ -26,7 +26,11 @@ pub async fn confirm_email(
             );
 
             Ok(response.body("Email successfully confirmed. Redirecting..."))
-        },
-        Err(error) => Ok(create_temporary_redirect_response(EnvConfig::get().oauth_finish_redirect_url.clone(), error).finish())
+        }
+        Err(error) => Ok(create_temporary_redirect_response(
+            EnvConfig::get().oauth_finish_redirect_url.clone(),
+            error,
+        )
+        .finish()),
     }
 }

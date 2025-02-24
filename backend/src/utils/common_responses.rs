@@ -1,5 +1,5 @@
-use actix_web::{HttpResponse, HttpResponseBuilder};
 use crate::utils::error::Error;
+use actix_web::{HttpResponse, HttpResponseBuilder};
 
 pub fn create_redirect_response(location: String) -> HttpResponseBuilder {
     let mut response = HttpResponse::Ok();
@@ -7,7 +7,10 @@ pub fn create_redirect_response(location: String) -> HttpResponseBuilder {
     response
 }
 
-pub fn create_temporary_redirect_response(location: String, error_message: Error) -> HttpResponseBuilder {
+pub fn create_temporary_redirect_response(
+    location: String,
+    error_message: Error,
+) -> HttpResponseBuilder {
     let mut response = HttpResponse::TemporaryRedirect();
     response.append_header(("Location", format!("{}?error={}", location, error_message)));
     response

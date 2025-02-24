@@ -6,10 +6,10 @@ use serde::Deserialize;
 use crate::routes::auth::AuthError::InvalidCredentials;
 use crate::services::env::EnvConfig;
 use crate::utils::app_state::AppState;
+use crate::utils::common_responses::create_temporary_redirect_response;
 use crate::utils::error::Error;
 use crate::utils::error::Error::OAuth;
 use crate::utils::oauth::OAuthProvider;
-use crate::utils::common_responses::create_temporary_redirect_response;
 
 #[derive(Deserialize, Debug)]
 struct QueryParams {
@@ -43,7 +43,7 @@ async fn send_github_request(url: Url, token: &String) -> Result<Response, reqwe
     ),
     responses(
         (status = 200, description = "OAuth2 flow completed successfully"),
-        (status = 401, description = "Invalid credentials"),
+        (status = 307, description = "Invalid credentials"),
         (status = 500, description = "Internal server errors."),
     ),
     tag = "auth/oauth"
@@ -56,9 +56,16 @@ pub async fn github_callback(
     let token = match app_state
         .github_oauth_provider
         .exchange_code(data.code.to_string())
-        .await {
+        .await
+    {
         Ok(token) => token,
-        Err(error) => return Ok(create_temporary_redirect_response(EnvConfig::get().oauth_finish_redirect_url.clone(), error).finish())
+        Err(error) => {
+            return Ok(create_temporary_redirect_response(
+                EnvConfig::get().oauth_finish_redirect_url.clone(),
+                error,
+            )
+            .finish())
+        }
     };
 
     let response =
