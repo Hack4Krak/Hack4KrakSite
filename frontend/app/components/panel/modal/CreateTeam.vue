@@ -12,12 +12,14 @@ const state = reactive<Partial<Schema>>({
   name: undefined,
 })
 
+const { $auth } = useNuxtApp()
+
 const toast = useToast()
 const open = defineModel<boolean>()
 const formRef = useTemplateRef('form')
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  const { error } = await useAuth('/teams/create', {
+  const response = await $auth('/teams/create', {
     key: 'teams-create',
     method: 'POST',
     body: {
@@ -25,8 +27,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     },
   })
 
-  if (error.value?.data) {
-    const response = error.value.data as any
+  if (response.error !== undefined) {
     toast.add({ title: 'Błąd', description: response.message, color: 'error' })
   } else {
     toast.add({ title: 'Sukces', description: 'Pomyślnie stworzono team', color: 'success' })

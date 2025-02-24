@@ -8,6 +8,8 @@ const props = defineProps<{
   redirectTo: string
 }>()
 
+const { $auth } = useNuxtApp()
+
 const toast = useToast()
 const open = defineModel<boolean>()
 
@@ -20,11 +22,10 @@ async function onSubmit() {
   if (props.requestBody !== undefined) {
     request = Object.assign(request, { body: props.requestBody })
   }
-  const { error } = await useAuth(props.url, request)
+  const data: any = await $auth(props.url, request)
 
-  if (error.value) {
-    const response = error.value as any
-    toast.add({ title: 'Błąd', description: response.message, color: 'error' })
+  if (data.error != null) {
+    toast.add({ title: 'Błąd', description: data.message, color: 'error' })
   } else {
     toast.add({ title: 'Sukces', description: props.toastSuccessMessage, color: 'success' })
     open.value = false
