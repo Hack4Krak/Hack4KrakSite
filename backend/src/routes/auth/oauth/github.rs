@@ -9,6 +9,7 @@ use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use crate::utils::error::Error::OAuth;
 use crate::utils::oauth::OAuthProvider;
+use crate::utils::common_responses::create_temporary_redirect_response;
 
 #[derive(Deserialize, Debug)]
 struct QueryParams {
@@ -57,9 +58,7 @@ pub async fn github_callback(
         .exchange_code(data.code.to_string())
         .await {
         Ok(token) => token,
-        Err(err) => return Ok(HttpResponse::TemporaryRedirect()
-            .insert_header(("Location", format!("{}?error={err}", EnvConfig::get().oauth_finish_redirect_url.clone())))
-            .finish())
+        Err(error) => return Ok(create_temporary_redirect_response(EnvConfig::get().oauth_finish_redirect_url.clone(), error).finish())
     };
 
     let response =

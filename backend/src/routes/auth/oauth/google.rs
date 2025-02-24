@@ -4,6 +4,7 @@ use serde::Deserialize;
 use crate::routes::auth::AuthError::InvalidCredentials;
 use crate::services::env::EnvConfig;
 use crate::utils::app_state::AppState;
+use crate::utils::common_responses::create_temporary_redirect_response;
 use crate::utils::error::Error;
 use crate::utils::oauth::OAuthProvider;
 
@@ -39,9 +40,7 @@ pub async fn google_callback(
         .exchange_code(data.code.to_string())
         .await {
         Ok(token) => token,
-        Err(err) => return Ok(HttpResponse::TemporaryRedirect()
-            .insert_header(("Location", format!("{}?error={err}", EnvConfig::get().oauth_finish_redirect_url.clone())))
-            .finish())
+        Err(error) => return Ok(create_temporary_redirect_response(EnvConfig::get().oauth_finish_redirect_url.clone(), error).finish())
     };
 
     let response = reqwest::Client::new()

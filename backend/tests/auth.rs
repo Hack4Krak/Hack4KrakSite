@@ -308,5 +308,5 @@ async fn email_confirmation_expired() {
 
     let response = test::call_service(&app, request).await;
 
-    assert_eq!(response.status(), 401);
+    assert_eq!(response.status(), 307);
 }
