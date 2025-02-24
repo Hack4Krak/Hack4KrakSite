@@ -32,7 +32,7 @@ pub async fn update(
     id: Path<Uuid>,
     update_user_json: Json<UpdateUserModel>,
 ) -> Result<HttpResponse, Error> {
-    users::Model::update(
+    users::Model::update_as_admin(
         &app_state.database,
         user,
         app_state.task_manager.event_config.lock().await.deref(),

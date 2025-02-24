@@ -30,11 +30,7 @@ impl AuthService {
             return Err(Error::Auth(InvalidEmailAddress));
         }
 
-        let salt = SaltString::generate(&mut OsRng);
-        let password_hash = Argon2::default()
-            .hash_password(credentials.password.as_bytes(), &salt)
-            .map_err(HashPasswordFailed)?
-            .to_string();
+        let password_hash = Self::generate_password_hash(credentials.password.clone())?;
 
         let user_info =
             UserInformation::new(&app_state.database, password_hash, &credentials).await?;
@@ -140,5 +136,29 @@ impl AuthService {
         confirmation_link.push_str(confirmation_code);
 
         confirmation_link
+    }
+
+    pub fn generate_password_hash(password: String) -> Result<String, Error> {
+        let salt = SaltString::generate(&mut OsRng);
+
+        Ok(Argon2::default()
+            .hash_password(password.as_bytes(), &salt)
+            .map_err(HashPasswordFailed)?
+            .to_string())
+    }
+
+    pub async fn change_password(
+        app_state: &app_state::AppState,
+        user: users::Model,
+        new_password: String,
+        old_password: String,
+    ) -> Result<(), Error> {
+        Self::assert_password_is_valid(&user, &old_password)?;
+
+        let password_hash = Self::generate_password_hash(new_password)?;
+
+        users::Model::update_password(&app_state.database, user, password_hash).await?;
+
+        Ok(())
     }
 }
