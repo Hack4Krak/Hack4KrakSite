@@ -85,7 +85,7 @@ pub enum Error {
     #[error("You cannot access this endpoint after our event has finished")]
     AccessAfterEventEnd,
     #[error("Failed to parse URL {0}")]
-    UrlParsingError(#[from] url::ParseError),
+    FailedToParseUrl(#[from] url::ParseError),
     #[error(transparent)]
     Auth(#[from] AuthError),
     #[error(transparent)]
@@ -111,7 +111,7 @@ impl error::ResponseError for Error {
             | Error::FailedToSendEmail(_)
             | Error::InvalidJson(_)
             | Error::FailedToBuildEmail(_)
-            | Error::UrlParsingError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            | Error::FailedToParseUrl(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Unauthorized => StatusCode::UNAUTHORIZED,
             Error::InvalidJsonWebToken => StatusCode::UNAUTHORIZED,
             Error::InvalidAuthorizationHeader | Error::MissingExtension { .. } => {
