@@ -2,8 +2,7 @@ use crate::entities::sea_orm_active_enums::UserRoles;
 use crate::entities::users::ActiveModel;
 use crate::entities::{teams, users};
 use crate::models::task::EventConfig;
-use crate::routes::account::update::UpdateUserModel;
-use crate::routes::admin::users::update::UpdateUserModel as UpdateUserModelAdmin;
+use crate::routes::admin::users::update::UpdateUserModelAdmin;
 use crate::routes::auth::AuthError::UserAlreadyExists;
 use crate::routes::auth::RegisterModel;
 use crate::utils::error::Error;
@@ -157,36 +156,6 @@ impl users::Model {
         Ok(())
     }
 
-    pub async fn update_base(
-        database: &DatabaseConnection,
-        user: users::Model,
-        username: Option<String>,
-        email: Option<String>,
-    ) -> Result<ActiveModel, Error> {
-        let mut active_user: ActiveModel = user.into();
-
-        if let Some(username) = username {
-            active_user.username = Set(username);
-        }
-
-        if let Some(email) = email {
-            active_user.email = Set(email);
-        }
-
-        if Self::assert_is_unique(
-            database,
-            &active_user.email.clone().unwrap(),
-            &active_user.username.clone().unwrap(),
-            Some(active_user.id.clone().unwrap()),
-        )
-        .await
-        .is_err()
-        {
-            return Err(Error::UserWithEmailOrUsernameAlreadyExists);
-        }
-
-        Ok(active_user)
-    }
     pub async fn update_as_admin(
         database: &DatabaseConnection,
         user: users::Model,
@@ -203,13 +172,27 @@ impl users::Model {
             return Err(Error::UserMustHaveHigherRoleThanAffectedUser);
         }
 
-        let mut active_user = users::Model::update_base(
+        let mut active_user: ActiveModel = updated_user.into();
+
+        if let Some(username) = update_user_json.username {
+            active_user.username = Set(username);
+        }
+
+        if let Some(email) = update_user_json.email {
+            active_user.email = Set(email);
+        }
+
+        if Self::assert_is_unique(
             database,
-            updated_user,
-            update_user_json.username,
-            update_user_json.email,
+            &active_user.email.clone().unwrap(),
+            &active_user.username.clone().unwrap(),
+            Some(active_user.id.clone().unwrap()),
         )
-        .await?;
+        .await
+        .is_err()
+        {
+            return Err(Error::UserWithEmailOrUsernameAlreadyExists);
+        }
 
         if let Some(team) = update_user_json.team {
             teams::Model::assert_correct_team_size(
@@ -244,25 +227,22 @@ impl users::Model {
         Ok(())
     }
 
-    pub async fn update_password(
-        database: &DatabaseConnection,
-        user: users::Model,
-        new_password_hash: String,
-    ) -> Result<(), Error> {
-        let mut active_user: ActiveModel = user.into();
-        active_user.password = Set(Some(new_password_hash));
-        active_user.save(database).await?;
-
-        Ok(())
-    }
-
     pub async fn update(
         database: &DatabaseConnection,
         user: users::Model,
-        model: UpdateUserModel,
+        username: Option<String>,
+        password_hash: Option<String>,
     ) -> Result<(), Error> {
-        let active_user =
-            users::Model::update_base(database, user, model.username, model.email).await?;
+        let mut active_user: ActiveModel = user.clone().into();
+
+        if let Some(username) = username {
+            users::Model::assert_is_unique(database, &user.email, &username, Some(user.id)).await?;
+            active_user.username = Set(username);
+        }
+
+        if let Some(password) = password_hash {
+            active_user.password = Set(Some(password));
+        }
 
         active_user.save(database).await?;
 
