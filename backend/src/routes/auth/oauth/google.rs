@@ -46,7 +46,7 @@ pub async fn google_callback(
                 EnvConfig::get().oauth_finish_redirect_url.clone(),
                 error,
             )
-            .finish())
+            .finish());
         }
     };
 

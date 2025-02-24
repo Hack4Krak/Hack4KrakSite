@@ -64,7 +64,7 @@ pub async fn github_callback(
                 EnvConfig::get().oauth_finish_redirect_url.clone(),
                 error,
             )
-            .finish())
+            .finish());
         }
     };
 
