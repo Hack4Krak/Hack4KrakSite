@@ -1,5 +1,6 @@
 use crate::entities::{email_confirmation, users};
 use crate::models::user::UserInformation;
+use crate::routes::account::update::UpdateUserModel;
 use crate::routes::auth::AuthError::{
     InvalidCredentials, InvalidEmailAddress, PasswordAuthNotAvailable,
 };
@@ -30,7 +31,7 @@ impl AuthService {
             return Err(Error::Auth(InvalidEmailAddress));
         }
 
-        let password_hash = Self::generate_password_hash(credentials.password.clone())?;
+        let password_hash = Self::hash_password(credentials.password.clone())?;
 
         let user_info =
             UserInformation::new(&app_state.database, password_hash, &credentials).await?;
@@ -138,7 +139,7 @@ impl AuthService {
         confirmation_link
     }
 
-    pub fn generate_password_hash(password: String) -> Result<String, Error> {
+    pub fn hash_password(password: String) -> Result<String, Error> {
         let salt = SaltString::generate(&mut OsRng);
 
         Ok(Argon2::default()
@@ -147,17 +148,27 @@ impl AuthService {
             .to_string())
     }
 
-    pub async fn change_password(
+    pub async fn update_user(
         app_state: &app_state::AppState,
         user: users::Model,
-        new_password: String,
-        old_password: String,
+        model: UpdateUserModel,
     ) -> Result<(), Error> {
-        Self::assert_password_is_valid(&user, &old_password)?;
+        Self::assert_password_is_valid(&user, &model.old_password)?;
 
-        let password_hash = Self::generate_password_hash(new_password)?;
+        if let Some(password) = model.new_password {
+            let password_hash = Self::hash_password(password)?;
+            users::Model::update(
+                &app_state.database,
+                user,
+                model.username,
+                Some(password_hash),
+            )
+            .await?;
 
-        users::Model::update_password(&app_state.database, user, password_hash).await?;
+            return Ok(());
+        }
+
+        users::Model::update(&app_state.database, user, model.username, None).await?;
 
         Ok(())
     }

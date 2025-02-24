@@ -1,4 +1,5 @@
 use crate::entities::users;
+use crate::middlewares::auth::AuthMiddleware;
 use crate::services::auth::AuthService;
 use crate::utils::app_state;
 use crate::utils::error::Error;
@@ -13,8 +14,8 @@ use validator::Validate;
 pub struct UpdateUserModel {
     #[validate(length(min = 3, max = 32))]
     pub username: Option<String>,
-    #[validate(email)]
-    pub email: Option<String>,
+    pub(crate) old_password: String,
+    pub(crate) new_password: Option<String>,
 }
 
 #[utoipa::path(
@@ -28,7 +29,7 @@ pub struct UpdateUserModel {
     ),
     tag = "account"
 )]
-#[patch("/account/update")]
+#[patch("/account/update", wrap = "AuthMiddleware::with_user()")]
 pub async fn update(
     app_state: Data<app_state::AppState>,
     user: users::Model,
@@ -36,11 +37,7 @@ pub async fn update(
 ) -> Result<HttpResponse, Error> {
     let model = model.into_inner();
 
-    users::Model::update(&app_state.database, user.clone(), model.clone()).await?;
-
-    if let Some(email) = model.email {
-        return AuthService::response_with_cookies(user.id, email);
-    }
+    AuthService::update_user(&app_state, user, model).await?;
 
     Ok(HttpResponse::Ok().finish())
 }
