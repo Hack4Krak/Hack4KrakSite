@@ -1,58 +1,25 @@
 use std::path::{Path, PathBuf};
 use std::sync::OnceLock;
 
-use Default;
 use serde::Deserialize;
 use std::str::FromStr;
 
-fn default_backend_address() -> String {
-    "127.0.0.1:8080".to_string()
-}
-fn default_oauth_finish_redirect_url() -> String {
-    "http://localhost:3000/login".to_string()
-}
-fn default_email_confirm_redirect_url() -> String {
-    "http://localhost:3000/login?redirect_from_confirmation=true".to_string()
-}
-fn default_email_confirm_backend_url() -> String {
-    "http://localhost:8080/auth/confirm".to_string()
-}
-fn default_openapi_json_frontend_path() -> String {
-    "../frontend/openapi/api/openapi.json".to_string()
-}
-fn default_cookies_domain() -> String {
-    "localhost".to_string()
-}
-fn default_tasks_base_path() -> PathBuf {
-    PathBuf::from_str("TasksTemplate/").unwrap()
-}
-fn default_relaxed_security_mode() -> bool {
-    false
-}
-
 pub static ENV: OnceLock<EnvConfig> = OnceLock::new();
 
-#[derive(Deserialize, Debug, Default)]
+#[derive(Deserialize, Debug)]
+#[serde(default)]
 pub struct EnvConfig {
     /// Configures some stuff to be a little bit less secure
     /// But allow for example makes vercel previews work correctly
-    #[serde(default = "default_relaxed_security_mode")]
     pub relaxed_security_mode: bool,
     pub database_url: String,
-    #[serde(default = "default_backend_address")]
     pub backend_address: String,
-    #[serde(default = "default_oauth_finish_redirect_url")]
     pub oauth_finish_redirect_url: String,
-    #[serde(default = "default_openapi_json_frontend_path")]
     pub openapi_json_frontend_path: String,
-    #[serde(default = "default_email_confirm_redirect_url")]
     pub email_confirm_redirect_url: String,
-    #[serde(default = "default_email_confirm_backend_url")]
     pub email_confirm_backend_url: String,
-    #[serde(default = "default_cookies_domain")]
     pub cookies_domain: String,
     pub jwt_secret: String,
-    #[serde(default = "default_tasks_base_path")]
     pub tasks_base_path: PathBuf,
     pub github_oauth_client_id: String,
     pub github_oauth_client_secret: String,
@@ -61,6 +28,31 @@ pub struct EnvConfig {
     pub google_oauth_client_secret: String,
     pub google_oauth_redirect_url: String,
     pub resend_api_key: String,
+}
+
+impl Default for EnvConfig {
+    fn default() -> Self {
+        EnvConfig {
+            relaxed_security_mode: false,
+            backend_address: "127.0.0.1:8080".to_string(),
+            oauth_finish_redirect_url: "http://localhost:3000/panel".to_string(),
+            openapi_json_frontend_path: "../frontend/openapi/api/openapi.json".to_string(),
+            email_confirm_redirect_url:
+                "http://localhost:3000/login?redirect_from_confirmation=true".to_string(),
+            email_confirm_backend_url: "http://localhost:8080/auth/confirm".to_string(),
+            cookies_domain: "localhost".to_string(),
+            tasks_base_path: PathBuf::from_str("TasksTemplate/").unwrap(),
+            database_url: Default::default(),
+            github_oauth_client_id: Default::default(),
+            github_oauth_client_secret: Default::default(),
+            github_oauth_redirect_url: Default::default(),
+            google_oauth_client_id: Default::default(),
+            google_oauth_client_secret: Default::default(),
+            google_oauth_redirect_url: Default::default(),
+            jwt_secret: Default::default(),
+            resend_api_key: Default::default(),
+        }
+    }
 }
 
 impl EnvConfig {
@@ -72,11 +64,6 @@ impl EnvConfig {
     pub fn load_test_config() {
         ENV.get_or_init(|| EnvConfig {
             jwt_secret: "skibidi-dziegiel-secret".to_string(),
-            // This is explicitly loaded here instead of using the default value
-            // because the default value doesn't work on test config right now, will be fixed in #277
-            oauth_finish_redirect_url: "http://localhost:3000/login".to_string(),
-            email_confirm_redirect_url:
-                "http://localhost:3000/login?redirect_from_confirmation=true".to_string(),
             ..Default::default()
         });
     }
