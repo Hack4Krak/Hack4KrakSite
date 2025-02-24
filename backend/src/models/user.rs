@@ -2,7 +2,7 @@ use crate::entities::sea_orm_active_enums::UserRoles;
 use crate::entities::users::ActiveModel;
 use crate::entities::{teams, users};
 use crate::models::task::EventConfig;
-use crate::routes::admin::UpdateUserModel;
+use crate::routes::admin::UpdateUserModelAdmin;
 use crate::routes::auth::AuthError::UserAlreadyExists;
 use crate::routes::auth::RegisterModel;
 use crate::utils::error::Error;
@@ -156,12 +156,12 @@ impl users::Model {
         Ok(())
     }
 
-    pub async fn update(
+    pub async fn update_as_admin(
         database: &DatabaseConnection,
         user: users::Model,
         event_config: &EventConfig,
         id: SeaOrmUuid,
-        update_user_json: UpdateUserModel,
+        update_user_json: UpdateUserModelAdmin,
     ) -> Result<(), Error> {
         let updated_user = users::Entity::find_by_id(id)
             .one(database)
@@ -182,6 +182,18 @@ impl users::Model {
             active_user.email = Set(email);
         }
 
+        if Self::assert_is_unique(
+            database,
+            &active_user.email.clone().unwrap(),
+            &active_user.username.clone().unwrap(),
+            Some(active_user.id.clone().unwrap()),
+        )
+        .await
+        .is_err()
+        {
+            return Err(Error::UserWithEmailOrUsernameAlreadyExists);
+        }
+
         if let Some(team) = update_user_json.team {
             teams::Model::assert_correct_team_size(
                 database,
@@ -190,18 +202,6 @@ impl users::Model {
             )
             .await?;
             active_user.team = Set(Some(team));
-        }
-
-        if Self::assert_is_unique(
-            database,
-            &active_user.email.clone().unwrap(),
-            &active_user.username.clone().unwrap(),
-            Some(id),
-        )
-        .await
-        .is_err()
-        {
-            return Err(Error::UserWithEmailOrUsernameAlreadyExists);
         }
 
         active_user.save(database).await?;
@@ -223,6 +223,28 @@ impl users::Model {
         }
 
         user_to_delete.delete(database).await?;
+
+        Ok(())
+    }
+
+    pub async fn update(
+        database: &DatabaseConnection,
+        user: users::Model,
+        username: Option<String>,
+        password_hash: Option<String>,
+    ) -> Result<(), Error> {
+        let mut active_user: ActiveModel = user.clone().into();
+
+        if let Some(username) = username {
+            users::Model::assert_is_unique(database, &user.email, &username, Some(user.id)).await?;
+            active_user.username = Set(username);
+        }
+
+        if let Some(password) = password_hash {
+            active_user.password = Set(Some(password));
+        }
+
+        active_user.save(database).await?;
 
         Ok(())
     }

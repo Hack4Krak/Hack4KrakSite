@@ -3,7 +3,7 @@ mod email_confirmations_list;
 mod list;
 mod update;
 
-pub use update::UpdateUserModel;
+pub use update::UpdateUserModelAdmin;
 
 pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(list::list);
