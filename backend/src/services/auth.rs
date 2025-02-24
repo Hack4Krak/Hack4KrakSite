@@ -1,5 +1,6 @@
 use crate::entities::{email_confirmation, users};
 use crate::models::user::UserInformation;
+use crate::routes::account::update::UpdateUserModel;
 use crate::routes::auth::AuthError::{
     InvalidCredentials, InvalidEmailAddress, PasswordAuthNotAvailable,
 };
@@ -30,11 +31,7 @@ impl AuthService {
             return Err(Error::Auth(InvalidEmailAddress));
         }
 
-        let salt = SaltString::generate(&mut OsRng);
-        let password_hash = Argon2::default()
-            .hash_password(credentials.password.as_bytes(), &salt)
-            .map_err(HashPasswordFailed)?
-            .to_string();
+        let password_hash = Self::hash_password(credentials.password.clone())?;
 
         let user_info =
             UserInformation::new(&app_state.database, password_hash, &credentials).await?;
@@ -138,5 +135,39 @@ impl AuthService {
         url = url.join(confirmation_code)?;
 
         Ok(url.to_string())
+    }
+
+    pub fn hash_password(password: String) -> Result<String, Error> {
+        let salt = SaltString::generate(&mut OsRng);
+
+        Ok(Argon2::default()
+            .hash_password(password.as_bytes(), &salt)
+            .map_err(HashPasswordFailed)?
+            .to_string())
+    }
+
+    pub async fn update_user(
+        app_state: &app_state::AppState,
+        user: users::Model,
+        model: UpdateUserModel,
+    ) -> Result<(), Error> {
+        Self::assert_password_is_valid(&user, &model.old_password)?;
+
+        if let Some(password) = model.new_password {
+            let password_hash = Self::hash_password(password)?;
+            users::Model::update(
+                &app_state.database,
+                user,
+                model.username,
+                Some(password_hash),
+            )
+            .await?;
+
+            return Ok(());
+        }
+
+        users::Model::update(&app_state.database, user, model.username, None).await?;
+
+        Ok(())
     }
 }

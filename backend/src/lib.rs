@@ -69,7 +69,7 @@ pub fn setup_actix_app(
                 .wrap(EventMiddleware::disallow_before_event())
                 .configure(routes::task::config),
         )
-        .service(scope("/user").configure(routes::user::config))
+        .service(scope("/account").configure(routes::account::config))
         .service(
             scope("/admin")
                 .wrap(AuthMiddleware::with_user_as_admin())
