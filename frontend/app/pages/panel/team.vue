@@ -46,6 +46,7 @@ const members = computed(() => {
       modal-description="Czy na pewno chcesz usunąć drużynę? Ta operacja jest nieodwracalna."
       toast-success-message="Pomyślnie usunięto drużynę"
       :request-body="undefined"
+      redirect-to="/panel/"
     />
     <PanelModalConfirmDeleteModal
       v-model="leaveTeamModal"
@@ -54,6 +55,7 @@ const members = computed(() => {
       modal-description="Czy na pewno chcesz opuścić drużynę? Ta operacja jest nieodwracalna."
       toast-success-message="Pomyślnie opuściłeś drużynę"
       :request-body="undefined"
+      redirect-to="/panel/"
     />
     <PanelModalConfirmDeleteModal
       v-model="kickUserModal"
@@ -62,6 +64,7 @@ const members = computed(() => {
       modal-description="Czy na pewno chcesz wyrzucić użytkownika z drużyny?"
       toast-success-message="Pomyślnie wyrzucono użytkownika"
       :request-body="{ username: kickedUser }"
+      redirect-to="/panel/team"
     />
     <PanelModalConfirmDeleteModal
       v-model="revokeInvitationModal"
@@ -70,20 +73,21 @@ const members = computed(() => {
       modal-description="Czy na pewno chcesz cofnąć zaproszenie?"
       toast-success-message="Pomyślnie cofnięto zaproszenie"
       :request-body="undefined"
+      redirect-to="/panel/team"
     />
 
     <NuxtLink to="/panel/" class="flex items-center gap-3 font-900 pt-5 pl-5">
       <Icon name="mdi:arrow-left" class="text-2xl" />
       Powrót
     </NuxtLink>
-    <div class="flex mx-20 gap-20 mt-10">
-      <div class="border-2 border-neutral-600 p-5 min-w-70 rounded-2xl flex flex-col">
+    <div class="flex flex-col md:flex-row md:mx-20 mx-10 gap-20 mt-10">
+      <div class="border-2 border-neutral-600 p-5 min-w-70 rounded-2xl flex flex-col h-40">
         <h1 class="flex-grow text-3xl font-bold">
           {{ team?.team_name }}
         </h1>
         <UButton v-if="is_user_leader" class="w-full" @click="deleteTeamModal = true">
           <p class="text-center w-full">
-            Opuść zespół
+            Usuń drużynę
           </p>
         </UButton>
         <UButton v-else class="w-full" @click="leaveTeamModal = true">

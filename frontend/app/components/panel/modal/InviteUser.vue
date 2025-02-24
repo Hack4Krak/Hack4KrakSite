@@ -30,9 +30,9 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     toast.add({ title: 'Błąd', description: response.message, color: 'error' })
   } else {
     toast.add({ title: 'Sukces', description: 'Pomyślnie zaproszono użytkownika', color: 'success' })
+    open.value = false
+    navigateTo('/panel/team', { external: true })
   }
-
-  open.value = false
 }
 </script>
 
