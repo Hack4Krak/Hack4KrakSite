@@ -32,7 +32,7 @@
 
 ## Załącznik nr 2
 
-- jeżeli zadanie rozwiąże 1 lub 2 drużyna, liczba punktów za rozwiązanie zadania wynosi 500,
+- jeżeli zadanie rozwiążą 1 lub 2 drużyny, liczba punktów za rozwiązanie zadania wynosi 500,
 - jeżeli zadanie rozwiąże 3 lub więcej drużyn, liczba punktów za rozwiązanie zadania obliczana jest wg wzoru: $500 - n\frac{400}{m}$ gdzie n to liczba drużyn, które rozwiązały zadanie, odjąć 2, a m to liczba wszystkich zapisanych drużyn.
 
 ### Regulamin ostatni raz aktualizowany: 20-02-2025
