@@ -3,7 +3,7 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 import * as z from 'zod'
 
 const schema = z.object({
-  name: z.string({ required_error: 'Nazwa użytkownika' }).min(5, 'Nazwa uzytkownika musi mieć min 5 znaków'),
+  name: z.string({ required_error: 'Nazwa użytkownika' }).min(3, 'Nazwa uzytkownika musi mieć min 3 znaki'),
 })
 
 type Schema = z.output<typeof schema>
