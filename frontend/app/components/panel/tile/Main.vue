@@ -24,8 +24,6 @@ function getEventState() {
 }
 
 function calculateTimeLeft() {
-  // console.log(getEventState())
-  // console.log(getEventState().diff.format('D[d] HH:mm:ss').replace(/^0*d /, ''))
   return getEventState().diff.format('D[d] HH:mm:ss').replace(/^0*d /, '')
 }
 

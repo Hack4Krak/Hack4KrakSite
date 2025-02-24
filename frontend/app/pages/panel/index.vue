@@ -45,10 +45,10 @@ async function logout() {
       <PanelTile class="min-h-25" />
       <PanelTile>
         <div class="p-5">
-          <h1>
+          <h1 class="font-bold text-2xl">
             Ustawienia konta
           </h1>
-          <UButton @click="logout">
+          <UButton class="mt-3" @click="logout">
             Wyloguj się
           </UButton>
         </div>

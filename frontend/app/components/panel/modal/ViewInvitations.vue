@@ -20,10 +20,7 @@ async function accept(team_name: string) {
 
   const toast = useToast()
 
-  if (error.value?.data) {
-    const response = error.value.data as any
-    toast.add({ title: 'Błąd', description: response.message, color: 'error' })
-  } else {
+  if (error.value?.data === undefined) {
     toast.add({ title: 'Sukces', description: 'Pomyślnie zaakceptowano użytkownika', color: 'success' })
     await navigateTo('/panel/team')
   }

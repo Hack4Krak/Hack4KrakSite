@@ -46,12 +46,14 @@ export default defineNuxtPlugin((nuxtApp) => {
             nuxtApp.ssrContext?.event.node.res.setHeader('Set-Cookie', cookies)
           }
         },
-        onResponseError({ error, response }) {
-          if (response.status !== 401) {
+        onResponseError({ response }) {
+          const data = response._data
+
+          // We sometimes get Unauthorized, but we handle it and refresh access token
+          if (data.error === 'Unauthorized') {
             return
           }
-
-          const description = `${response.status}: ${error?.message ?? 'Nieznany błąd'}`
+          const description = `${response.status}: ${data.message ?? 'Nieznany błąd'}`
           nuxtApp.runWithContext(() => useToast().add({ title: 'Błąd zapytania', description, color: 'error' }))
         },
         ...localOptions,
