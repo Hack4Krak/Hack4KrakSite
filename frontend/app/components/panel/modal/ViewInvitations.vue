@@ -3,6 +3,9 @@ const { data, refresh } = await useAuth('/teams/invitations/', {
   key: 'teams-invitations',
 })
 
+const { $auth } = useNuxtApp()
+const toast = useToast()
+
 const open = defineModel<boolean>()
 
 watch(open, (newValue) => {
@@ -12,16 +15,12 @@ watch(open, (newValue) => {
 })
 
 async function accept(team_name: string) {
-  const { error } = await useAuth('/teams/invitations/accept_invitation/{team_name}', {
-    key: 'accept-invitation',
+  const response: any = await $auth('/teams/invitations/accept_invitation/{team_name}', {
     method: 'POST',
     path: { team_name },
   })
 
-  const toast = useToast()
-
-  if (error.value?.data) {
-    const response = error.value.data as any
+  if (response.error !== undefined) {
     toast.add({ title: 'Błąd', description: response.message, color: 'error' })
   } else {
     toast.add({ title: 'Sukces', description: 'Pomyślnie zaakceptowano użytkownika', color: 'success' })
