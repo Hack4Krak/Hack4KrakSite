@@ -7,13 +7,13 @@ const items = ref(content)
 </script>
 
 <template>
-  <div>
-    <div class="font-semibold ml-14 mt-8 text-5xl text-yellow-400">
+  <div class="mx-7 md:mx-14">
+    <div class="font-semibold mt-14 text-5xl text-yellow-400">
       FAQ
     </div>
-    <div class="font-light ml-14 mt-3 text-2xl">
+    <div class="font-light mt-3 text-2xl">
       Czyli najczęśniej zadawane pytania, które nigdy nie padły :O
     </div>
-    <UAccordion class="cursor-pointer ml-8 md:ml-24 lg:ml-24 mt-16 w-5/6 md:w-[calc(100%-16rem)]" type="multiple" trailing-icon="i-lucide-arrow-down" :items="items" />
+    <UAccordion class="cursor-pointer mt-8" type="multiple" trailing-icon="i-material-symbols-keyboard-arrow-down-rounded" :items="items" />
   </div>
 </template>
