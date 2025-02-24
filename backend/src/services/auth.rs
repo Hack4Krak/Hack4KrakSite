@@ -16,11 +16,8 @@ use argon2::password_hash::rand_core::OsRng;
 use argon2::password_hash::SaltString;
 use argon2::{Argon2, PasswordHash, PasswordHasher, PasswordVerifier};
 use chrono::Duration;
-use regex::Regex;
 use uuid::Uuid;
-
-const EMAIL_REGEX: &str =
-    r"^([a-z0-9_+]([a-z0-9_+.]*[a-z0-9_+])?)@([a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6})$";
+use validator::ValidateEmail;
 
 pub struct AuthService;
 
@@ -29,8 +26,7 @@ impl AuthService {
         app_state: &app_state::AppState,
         credentials: RegisterModel,
     ) -> Result<HttpResponse, Error> {
-        let regex = Regex::new(EMAIL_REGEX).unwrap();
-        if !regex.is_match(&credentials.email) {
+        if !credentials.email.validate_email() {
             return Err(Error::Auth(InvalidEmailAddress));
         }
 
