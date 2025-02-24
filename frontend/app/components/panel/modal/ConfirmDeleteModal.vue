@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import type { paths } from '#open-fetch-schemas/auth'
+
 const props = defineProps<{
-  url: string
+  url: keyof paths
   modalTitle: string
   modalDescription: string
   toastSuccessMessage: string
@@ -12,20 +14,12 @@ const toast = useToast()
 const open = defineModel<boolean>()
 
 async function onSubmit() {
-  let request = {
-    key: `${props.url}-modal`,
+  const { error } = await useAuth(props.url, {
     method: 'DELETE',
-  }
-  console.error(props.requestBody)
-  if (props.requestBody !== undefined) {
-    request = Object.assign(request, { body: props.requestBody })
-  }
-  const { error } = await useAuth(props.url, request)
+    ...(props.requestBody && { body: props.requestBody }),
+  } as any)
 
-  if (error.value) {
-    const response = error.value as any
-    toast.add({ title: 'Błąd', description: response.message, color: 'error' })
-  } else {
+  if (error.value === undefined) {
     toast.add({ title: 'Sukces', description: props.toastSuccessMessage, color: 'success' })
     open.value = false
     navigateTo(props.redirectTo, { external: true })

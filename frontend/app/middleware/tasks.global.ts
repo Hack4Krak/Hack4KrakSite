@@ -4,14 +4,14 @@ export default defineNuxtRouteMiddleware(async (to) => {
     let description = 'Nieznany błąd'
 
     try {
-      const response = await useApi('/event/status', {
+      const { error } = await useApi('/event/status', {
         key: 'event-status',
         redirect: 'error',
       })
 
-      const error = response.error.value
-      if (error) {
-        switch (error.data.code) {
+      if (error.value?.data) {
+        const response = error.value.data as any
+        switch (response.code) {
           case 403:
             description = 'Nie możesz otworzyć tej strony przed rozpocząciem wydarzenia'
             break
@@ -19,7 +19,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
             description = 'Nie możesz otworzyć tej strony po zakończeniu wydarzenia'
         }
 
-        toast.add({ title: `Błąd ${error.data.code}`, description: `${description}`, color: 'error' })
+        toast.add({ title: `Błąd ${response.code}`, description: `${description}`, color: 'error' })
         return '/'
       }
     } catch {
