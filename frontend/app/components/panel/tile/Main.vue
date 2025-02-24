@@ -1,13 +1,13 @@
 <script setup>
 const dayjs = useDayjs()
 
-const { data: timeLeft } = useAsyncData('timeLeft', async () => calculateTimeLeft())
-const eventMessage = computed(() => getEventState().message)
-
 const { data } = await useAuth('/event/info', {
   method: 'GET',
   key: 'event-info',
 })
+
+const { data: timeLeft } = useAsyncData('timeLeft', async () => calculateTimeLeft())
+const eventMessage = computed(() => getEventState().message)
 
 function getEventState() {
   const now = dayjs()
@@ -24,6 +24,8 @@ function getEventState() {
 }
 
 function calculateTimeLeft() {
+  // console.log(getEventState())
+  // console.log(getEventState().diff.format('D[d] HH:mm:ss').replace(/^0*d /, ''))
   return getEventState().diff.format('D[d] HH:mm:ss').replace(/^0*d /, '')
 }
 
