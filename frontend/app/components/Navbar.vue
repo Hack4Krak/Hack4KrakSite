@@ -17,6 +17,10 @@ const items = [
       to: '/rules',
     },
     {
+      label: 'FAQ',
+      to: '/faq',
+    },
+    {
       label: 'Zadania',
       to: '/tasks',
     },
