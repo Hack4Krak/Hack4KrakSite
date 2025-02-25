@@ -1,5 +1,5 @@
 use crate::entities::teams::ActiveModel;
-use crate::entities::{teams, users};
+use crate::entities::{flag_capture, teams, users};
 use crate::routes::admin::teams::update::UpdateTeamModel;
 use crate::routes::teams::TeamError::*;
 use crate::utils::error::Error;
@@ -263,6 +263,21 @@ impl teams::Model {
         transaction.commit().await?;
 
         Ok(())
+    }
+
+    pub async fn get_completed_tasks(
+        database: &DatabaseConnection,
+        team_id: Uuid,
+    ) -> Result<Vec<String>, Error> {
+        let tasks = flag_capture::Entity::find()
+            .filter(flag_capture::Column::Team.eq(team_id))
+            .all(database)
+            .await?
+            .into_iter()
+            .map(|flag_capture| flag_capture.task)
+            .collect();
+
+        Ok(tasks)
     }
 }
 
