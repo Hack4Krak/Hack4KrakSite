@@ -15,6 +15,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20250203_105134_setup_roles_system::Migration),
             Box::new(m20250204_175306_add_email_confirmation_table::Migration),
             Box::new(m20250221_165419_add_flag_capture::Migration),
+            Box::new(m20250225_160500_create_password_reset_table::Migration),
             Box::new(m20250225_171450_add_confirmation_code_and_status_fields_to_team::Migration),
         ]
     }
@@ -28,4 +29,5 @@ mod m20250131_155122_rename_teamname_to_team_and_change_relation_to_team_id_in_u
 mod m20250203_105134_setup_roles_system;
 mod m20250204_175306_add_email_confirmation_table;
 mod m20250221_165419_add_flag_capture;
+mod m20250225_160500_create_password_reset_table;
 mod m20250225_171450_add_confirmation_code_and_status_fields_to_team;
