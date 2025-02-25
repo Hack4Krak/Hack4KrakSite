@@ -6,7 +6,7 @@ use actix_web::{HttpResponse, get};
 
 #[utoipa::path(
     responses(
-        (status = 200, description = "Successfully retrieved completed tasks."),
+        (status = 200, description = "Successfully retrieved completed tasks.", body = Vec<String>),
         (status = 500, description = "Internal server error.")
     ),
     security(

@@ -1,6 +1,6 @@
 use utoipa_actix_web::service_config::ServiceConfig;
 
-mod completed_tasks;
+pub mod completed_tasks;
 pub mod leave_team;
 pub mod my_team;
 
