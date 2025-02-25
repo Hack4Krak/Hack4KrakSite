@@ -30,6 +30,10 @@ fn default_relaxed_security_mode() -> bool {
     false
 }
 
+fn default_password_reset_frontend_url() -> String {
+    "http://localhost:3000/auth/reset_password".to_string()
+}
+
 pub static ENV: OnceLock<EnvConfig> = OnceLock::new();
 
 #[derive(Deserialize, Debug, Default)]
@@ -41,6 +45,8 @@ pub struct EnvConfig {
     pub database_url: String,
     #[serde(default = "default_backend_address")]
     pub backend_address: String,
+    #[serde(default = "default_password_reset_frontend_url")]
+    pub password_reset_frontend_url: String,
     #[serde(default = "default_oauth_finish_redirect_url")]
     pub oauth_finish_redirect_url: String,
     #[serde(default = "default_openapi_json_frontend_path")]
