@@ -41,6 +41,8 @@ async fn create_team_user_already_belongs_to_team() {
             id: team_id,
             name: "Dziengiel".to_string(),
             created_at: Default::default(),
+            confirmation_code: Default::default(),
+            status: Default::default(),
         }]])
         .append_exec_results([sea_orm::MockExecResult {
             last_insert_id: 15,
@@ -96,6 +98,8 @@ async fn create_duplicate_team() {
             id: Default::default(),
             name: "Dziengiel".to_string(),
             created_at: Default::default(),
+            confirmation_code: Default::default(),
+            status: Default::default(),
         }]])
         .append_exec_results([sea_orm::MockExecResult {
             last_insert_id: 15,

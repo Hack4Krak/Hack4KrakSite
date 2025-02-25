@@ -1,3 +1,4 @@
+use crate::entities::sea_orm_active_enums::TeamStatus;
 use crate::entities::teams::ActiveModel;
 use crate::entities::{flag_capture, teams, users};
 use crate::routes::admin::teams::update::UpdateTeamModel;
@@ -20,6 +21,8 @@ pub struct TeamWithMembers {
     pub team_name: String,
     pub created_at: DateTime,
     pub members: Vec<String>,
+    pub confirmation_code: String,
+    pub status: TeamStatus,
 }
 
 impl teams::Model {
@@ -198,6 +201,8 @@ impl teams::Model {
                     team_name: team.name,
                     created_at: team.created_at,
                     members: members_ids,
+                    confirmation_code: team.confirmation_code.to_string(),
+                    status: team.status,
                 }
             })
             .collect::<Vec<TeamWithMembers>>();
@@ -261,6 +266,23 @@ impl teams::Model {
         active_user.update(&transaction).await?;
 
         transaction.commit().await?;
+
+        Ok(())
+    }
+
+    pub async fn confirm(
+        database: &DatabaseConnection,
+        confirmation_code: Uuid,
+    ) -> Result<(), Error> {
+        let team = teams::Entity::find()
+            .filter(teams::Column::ConfirmationCode.eq(confirmation_code))
+            .one(database)
+            .await?
+            .ok_or(Error::Team(TeamNotFound))?;
+
+        let mut active_team: ActiveModel = team.into();
+        active_team.status = Set(TeamStatus::Confirmed);
+        active_team.update(database).await?;
 
         Ok(())
     }
