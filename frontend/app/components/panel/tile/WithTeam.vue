@@ -3,7 +3,29 @@ const props = defineProps<{
   teamName: string
 }>()
 
-const value = ref(0)
+const { data } = useAuth('/teams/membership/completed_tasks', {
+  method: 'GET',
+  key: 'completed-tasks',
+  server: false,
+})
+
+const completed_flags = data.value ?? []
+
+const { data: count_data } = useFetch('http://localhost:8080/tasks/count_all', {
+  method: 'GET',
+  key: 'tasks-count',
+  server: false,
+})
+
+const tasks_count = count_data.value ?? 1
+
+const value = computed(
+  () => (completed_flags.length * 100) / tasks_count,
+)
+
+const flags_left = computed(
+  () => tasks_count - completed_flags.length,
+)
 </script>
 
 <template>
@@ -12,7 +34,7 @@ const value = ref(0)
       Progress twojej drużyny:
     </h1>
     <UProgress v-model="value" size="md" :ui="{ base: 'bg-primary-darker' }" />
-    <span class="flex-grow">Brakuje wam 25 flag</span>
+    <span class="flex-grow">Pozostałe flagi: {{ flags_left }}</span>
 
     <h1 class="font-semibold text-2xl">
       Nazwa zespołu: <span class="text-(--ui-primary)">{{ props.teamName }}</span>
