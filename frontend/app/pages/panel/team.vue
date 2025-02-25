@@ -7,6 +7,7 @@ const { data: team } = await useAuth('/teams/membership/my_team', {
 let { data: invited_users } = await useAuth('/teams/management/invited_users', {
   key: 'teams-management-invited-users',
   method: 'GET',
+  onResponseError: undefined,
 })
 
 invited_users = invited_users.value || []
@@ -15,9 +16,10 @@ if (!team.value) {
   await navigateTo('/panel/')
 }
 
-const { _, error } = await useAuth('/teams/management/', {
+const { error } = await useAuth('/teams/management/', {
   key: 'is-user-leader',
   method: 'GET',
+  onResponseError: undefined,
 })
 
 const is_user_leader = error.value === undefined
