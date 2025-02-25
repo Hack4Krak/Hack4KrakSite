@@ -43,7 +43,6 @@ onMounted(() => {
     <h2 class="text-2xl font-bold mt-5">
       Wyślij flagę
     </h2>
-    <UInput :ui="{ base: 'h-12' }" placeholder="hack4KrakCTF{...}" :disabled="true" />
-    <ElevatedButton message="Wyślij" class="w-40" />
+    <PanelFlagForm />
   </div>
 </template>
