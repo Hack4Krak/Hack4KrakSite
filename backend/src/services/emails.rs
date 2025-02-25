@@ -1,10 +1,16 @@
+use crate::entities::users;
+use crate::routes::admin::email::send::EmailSendingModel;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::HttpResponse;
 use lettre::message::{Attachment, Mailbox, Mailboxes, MultiPart, SinglePart, header};
 use lettre::{Message, Transport};
+use sea_orm::DatabaseConnection;
+use serde::{Deserialize, Serialize};
 use std::option::Option;
+use utoipa::ToSchema;
 
+#[derive(Serialize, Deserialize, ToSchema)]
 pub enum EmailTemplate {
     HelloWorld,
     EmailConfirmation,
@@ -31,8 +37,12 @@ impl EmailTemplate {
             EmailTemplate::EmailConfirmation => true,
         }
     }
+    pub fn list() -> Vec<Self> {
+        vec![Self::HelloWorld, Self::EmailConfirmation]
+    }
 }
 
+#[derive(Serialize, Deserialize, ToSchema)]
 pub struct Email {
     pub sender: (Option<String>, String),
     pub recipients: Vec<String>,
@@ -89,6 +99,31 @@ impl Email {
         let _email = smtp_client.send(&email).map_err(Error::FailedToSendEmail)?;
 
         Ok(HttpResponse::Ok().json("Email successfully sent"))
+    }
+
+    pub async fn create_from_admin_sending_model(
+        database: &DatabaseConnection,
+        model: EmailSendingModel,
+    ) -> Result<Self, Error> {
+        let mut recipients = Vec::<String>::new();
+        for recipient in model.recipients {
+            let user = users::Model::find_by_username(database, &recipient).await?;
+            if let Some(user) = user {
+                recipients.push(user.email);
+            } else {
+                return Err(Error::RecipientNotFound {
+                    username: recipient,
+                });
+            }
+        }
+
+        Ok(Self {
+            sender: model.sender,
+            recipients,
+            subject: model.subject,
+            template: model.template,
+            placeholders: model.placeholders,
+        })
     }
 
     fn parse_placeholders(&self) -> Result<String, Error> {
