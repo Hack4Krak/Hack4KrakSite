@@ -9,7 +9,7 @@ fn default_backend_address() -> String {
     "127.0.0.1:8080".to_string()
 }
 fn default_oauth_finish_redirect_url() -> String {
-    "http://localhost:3000/panel".to_string()
+    "http://localhost:3000/login".to_string()
 }
 fn default_email_confirm_redirect_url() -> String {
     "http://localhost:3000/login?redirect_from_confirmation=true".to_string()
@@ -72,6 +72,11 @@ impl EnvConfig {
     pub fn load_test_config() {
         ENV.get_or_init(|| EnvConfig {
             jwt_secret: "skibidi-dziegiel-secret".to_string(),
+            // This is explicitly loaded here instead of using the default value
+            // because the default value doesn't work on test config right now, will be fixed in #277
+            oauth_finish_redirect_url: "http://localhost:3000/login".to_string(),
+            email_confirm_redirect_url:
+                "http://localhost:3000/login?redirect_from_confirmation=true".to_string(),
             ..Default::default()
         });
     }

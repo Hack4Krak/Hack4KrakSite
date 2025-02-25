@@ -274,6 +274,8 @@ async fn email_confirmation_success() {
 
 #[actix_web::test]
 async fn email_confirmation_expired() {
+    EnvConfig::load_test_config();
+
     let confirmation_code = uuid::Uuid::new_v4().to_string();
 
     let email_confirmation = email_confirmation::Model {
@@ -308,5 +310,5 @@ async fn email_confirmation_expired() {
 
     let response = test::call_service(&app, request).await;
 
-    assert_eq!(response.status(), 401);
+    assert_eq!(response.status(), 307);
 }

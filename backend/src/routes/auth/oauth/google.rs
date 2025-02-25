@@ -2,7 +2,9 @@ use actix_web::{HttpResponse, get, web};
 use serde::Deserialize;
 
 use crate::routes::auth::AuthError::InvalidCredentials;
+use crate::services::env::EnvConfig;
 use crate::utils::app_state::AppState;
+use crate::utils::common_responses::create_temporary_redirect_response;
 use crate::utils::error::Error;
 use crate::utils::oauth::OAuthProvider;
 
@@ -23,7 +25,7 @@ pub struct GoogleUser {
     ),
     responses(
         (status = 200, description = "OAuth2 flow completed successfully"),
-        (status = 401, description = "Invalid credentials"),
+        (status = 307, description = "Invalid credentials"),
         (status = 500, description = "Internal server errors."),
     ),
     tag = "auth/oauth"
@@ -33,10 +35,20 @@ pub async fn google_callback(
     app_state: web::Data<AppState>,
     data: web::Query<QueryParams>,
 ) -> Result<HttpResponse, Error> {
-    let token = app_state
+    let token = match app_state
         .google_oauth_provider
         .exchange_code(data.code.to_string())
-        .await?;
+        .await
+    {
+        Ok(token) => token,
+        Err(error) => {
+            return Ok(create_temporary_redirect_response(
+                EnvConfig::get().oauth_finish_redirect_url.clone(),
+                error,
+            )?
+            .finish());
+        }
+    };
 
     let response = reqwest::Client::new()
         .get("https://www.googleapis.com/oauth2/v3/userinfo")
