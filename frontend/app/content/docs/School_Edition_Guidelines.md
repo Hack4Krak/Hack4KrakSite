@@ -28,7 +28,7 @@
 
 ## Załącznik nr 1
 
-- Capture the Flag jest konkursem, w którym uczestnicy mają za zadanie znaleźć ciągi tekstowe/stringi udowadniające pokonanie/przełamanie zabezpieczeń zadania lub złamanie danego kryptosystemu, które nazywane są flagami. Są dwa główne warianty CTFa, ale dla nas ważny obecnie jest tylko jeopardy-style. CTF będzie odbywał się w takim systemie, w którym celem drużyn zawodników, jest odnajdywanie luk w zabezpieczeniach: stron, aplikacji, systemów informatycznych bądź kryptosystemów przygotowanych przez organizatorów. Przy każdym zadaniu dodatkowo będzie dokumentacja, mająca za zadanie ułatwiać ich wykonywanie. 
+- Capture the Flag jest konkursem, w którym uczestnicy mają za zadanie znaleźć ciągi tekstowe/stringi udowadniające pokonanie/przełamanie zabezpieczeń zadania lub złamanie danego kryptosystemu, które nazywane są flagami. Są dwa główne warianty CTFa, ale dla nas ważny obecnie jest tylko jeopardy-style. CTF będzie odbywał się w takim systemie, w którym celem drużyn zawodników, jest odnajdywanie luk w zabezpieczeniach: stron, aplikacji, systemów informatycznych bądź kryptosystemów przygotowanych przez organizatorów. Przy każdym zadaniu dodatkowo będzie dokumentacja, mająca za zadanie ułatwiać ich wykonywanie.
 
 ## Załącznik nr 2
 
