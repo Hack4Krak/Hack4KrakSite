@@ -253,3 +253,76 @@ async fn assert_incorrect_team_size() {
 
     assert_eq!(response.status(), 409);
 }
+
+#[actix_web::test]
+async fn confirm_team_success() {
+    EnvConfig::load_test_config();
+
+    let confirmation_code = Uuid::new_v4();
+
+    let team = teams::Model {
+        id: Default::default(),
+        name: "Dziengiel".to_string(),
+        created_at: Default::default(),
+        confirmation_code: Some(confirmation_code),
+        status: Default::default(),
+    };
+
+    let database = MockDatabase::new(DatabaseBackend::Postgres)
+        .append_query_results([
+            vec![team.clone()],
+            vec![team.clone()],
+            vec![team.clone()],
+            vec![team],
+        ])
+        .append_exec_results([sea_orm::MockExecResult {
+            last_insert_id: 15,
+            rows_affected: 1,
+        }])
+        .into_connection();
+
+    let app = test::init_service(
+        App::new()
+            .app_data(Data::new(AppState::with_database(database)))
+            .service(scope("/teams").configure(routes::teams::config)),
+    )
+    .await;
+
+    let request = test::TestRequest::get()
+        .uri(format!("/teams/confirm/{}", confirmation_code).as_str())
+        .method(actix_web::http::Method::POST)
+        .to_request();
+
+    let response = test::call_service(&app, request).await;
+
+    assert_eq!(response.status(), 200);
+}
+
+#[actix_web::test]
+async fn confirm_team_invalid_confirmation_code() {
+    EnvConfig::load_test_config();
+
+    let database = MockDatabase::new(DatabaseBackend::Postgres)
+        .append_query_results([Vec::<teams::Model>::new()])
+        .append_exec_results([sea_orm::MockExecResult {
+            last_insert_id: 15,
+            rows_affected: 1,
+        }])
+        .into_connection();
+
+    let app = test::init_service(
+        App::new()
+            .app_data(Data::new(AppState::with_database(database)))
+            .service(scope("/teams").configure(routes::teams::config)),
+    )
+    .await;
+
+    let request = test::TestRequest::get()
+        .uri(format!("/teams/confirm/{}", Uuid::new_v4()).as_str())
+        .method(actix_web::http::Method::POST)
+        .to_request();
+
+    let response = test::call_service(&app, request).await;
+
+    assert_eq!(response.status(), 400);
+}
