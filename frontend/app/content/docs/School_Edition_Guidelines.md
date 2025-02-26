@@ -28,11 +28,11 @@
 
 ## Załącznik nr 1
 
-- Capture the Flag jest konkursem, w którym uczestnicy mają za zadanie znaleźć ciągi tekstowe/stringi udowadniające pokonanie/przełamanie zabezpieczeń zadania lub złamanie danego kryptosystemu, które nazywane są flagami. Są dwa główne warianty CTFa, ale dla nas ważny obecnie jest tylko jeopardy-style. CTF będzie odbywał się w takim systemie, w którym celem drużyn zawodników, jest odnajdywanie luk w zabezpieczeniach: stron, aplikacji, systemów informatycznych bądź kryptosystemów przygotowanych przez organizatorów. Przy każdym zadaniu dodatkowo będzie dokumentacja, mająca za zadanie ułatwiać ich wykonywanie.
+- Capture the Flag jest konkursem, w którym uczestnicy mają za zadanie znaleźć ciągi tekstowe/stringi udowadniające pokonanie/przełamanie zabezpieczeń zadania lub złamanie danego kryptosystemu, które nazywane są flagami. Są dwa główne warianty CTFa, ale dla nas ważny obecnie jest tylko jeopardy-style. CTF będzie odbywał się w takim systemie, w którym celem drużyn zawodników, jest odnajdywanie luk w zabezpieczeniach: stron, aplikacji, systemów informatycznych bądź kryptosystemów przygotowanych przez organizatorów. Przy każdym zadaniu dodatkowo będzie dokumentacja, mająca za zadanie ułatwiać ich wykonywanie. 
 
 ## Załącznik nr 2
 
-- jeżeli zadanie rozwiążą 1 lub 2 drużyny, liczba punktów za rozwiązanie zadania wynosi 500,
-- jeżeli zadanie rozwiąże 3 lub więcej drużyn, liczba punktów za rozwiązanie zadania obliczana jest wg wzoru: $500 - n\frac{400}{m}$ gdzie n to liczba drużyn, które rozwiązały zadanie, odjąć 2, a m to liczba wszystkich zapisanych drużyn.
+- jeżeli zadanie rozwiąże 1 lub 2 drużyna, liczba punktów za rozwiązanie zadania wynosi 500,
+- jeżeli zadanie rozwiąże 3 lub więcej drużyn, liczba punktów za rozwiązanie zadania obliczana jest wg wzoru: $500 - (n-2)\frac{400}{m-2}$, gdzie n to liczba drużyn, które rozwiązały zadanie, a m to liczba wszystkich zapisanych drużyn.
 
-### Regulamin ostatni raz aktualizowany: 20-02-2025
+### Regulamin ostatni raz aktualizowany: 26-02-2025
