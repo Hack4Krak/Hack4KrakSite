@@ -3,18 +3,16 @@ const props = defineProps<{
   teamName: string
 }>()
 
-const { data } = useAuth('/teams/membership/completed_tasks', {
+const { data } = await useAuth('/teams/membership/completed_tasks', {
   method: 'GET',
   key: 'completed-tasks',
-  server: false,
 })
 
 const completed_flags = data.value ?? []
 
-const { data: count_data } = useFetch('http://localhost:8080/tasks/count_all', {
+const { data: count_data } = await useApi('/tasks/count', {
   method: 'GET',
   key: 'tasks-count',
-  server: false,
 })
 
 const tasks_count = count_data.value ?? 1

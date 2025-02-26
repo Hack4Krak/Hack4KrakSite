@@ -6,7 +6,7 @@ use utoipa_actix_web::scope;
 
 mod assets;
 mod background;
-mod count_all;
+mod count;
 mod description;
 mod icon;
 mod list;
@@ -19,7 +19,7 @@ pub fn config(cfg: &mut utoipa_actix_web::service_config::ServiceConfig) {
     cfg.service(background::background);
     cfg.service(description::description);
     cfg.service(scope("/assets").configure(assets::config));
-    cfg.service(count_all::count_all);
+    cfg.service(count::count);
 }
 
 #[derive(Debug, Error)]

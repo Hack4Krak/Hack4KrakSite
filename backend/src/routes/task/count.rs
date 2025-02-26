@@ -10,7 +10,7 @@ use actix_web::{HttpResponse, get};
     ),
     tag = "tasks"
 )]
-#[get("/count_all")]
-pub async fn count_all(app_state: Data<AppState>) -> Result<HttpResponse, Error> {
+#[get("/count")]
+pub async fn count(app_state: Data<AppState>) -> Result<HttpResponse, Error> {
     Ok(HttpResponse::Ok().json(app_state.task_manager.tasks.len() as u16))
 }
