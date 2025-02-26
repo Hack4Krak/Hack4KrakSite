@@ -280,6 +280,10 @@ impl teams::Model {
             .await?
             .ok_or(Error::Team(TeamNotFound))?;
 
+        if team.status == TeamStatus::Confirmed {
+            return Err(Error::Team(TeamAlreadyConfirmed));
+        }
+
         let mut active_team: ActiveModel = team.into();
         active_team.status = Set(TeamStatus::Confirmed);
         active_team.update(database).await?;

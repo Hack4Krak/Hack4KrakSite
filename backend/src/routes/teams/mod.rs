@@ -62,15 +62,19 @@ pub enum TeamError {
     TeamLeaderNotFound,
     #[error("Invalid confirmation code")]
     InvalidConfirmationCode,
+    #[error("Team already confirmed")]
+    TeamAlreadyConfirmed,
 }
 
 impl error::ResponseError for TeamError {
     fn status_code(&self) -> StatusCode {
         match self {
+            TeamError::InvalidConfirmationCode => StatusCode::BAD_REQUEST,
             TeamError::AlreadyExists
             | TeamError::UserCantRemoveYourself
             | TeamError::TeamIsFull { .. }
-            | TeamError::UserAlreadyInvited => StatusCode::CONFLICT,
+            | TeamError::UserAlreadyInvited
+            | TeamError::TeamAlreadyConfirmed => StatusCode::CONFLICT,
             TeamError::UserAlreadyBelongsToTeam { .. }
             | TeamError::UserDoesntBelongToAnyTeam { .. }
             | TeamError::UserDoesntBelongToYourTeam
@@ -80,8 +84,7 @@ impl error::ResponseError for TeamError {
             TeamError::TeamNotFound
             | TeamError::UserDoesntHaveAnyInvitations
             | TeamError::UserDoesntHaveInvitationsFromTeam { .. }
-            | TeamError::TeamLeaderNotFound
-            | TeamError::InvalidConfirmationCode => StatusCode::NOT_FOUND,
+            | TeamError::TeamLeaderNotFound => StatusCode::NOT_FOUND,
         }
     }
 
