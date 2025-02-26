@@ -30,6 +30,34 @@ const errorMessage = computed(() => {
           <h2 class="whitespace-pre-line text-3xl text-white">
             {{ errorMessage }}
           </h2>
+          <UModal title="Więcej informacji o błędzie:">
+            <UButton label="Więcej informacji..." color="neutral" variant="subtle" class="w-fit mt-4 hover:bg-black/25 hover:text-yellow-700" />
+
+            <template #body>
+              <div class="border border-white border-b-white rounded-md m-2 overflow-auto bg-black/25">
+                <div class="flex flex-col text-lg m-6">
+                  <div class="text-2xl font-bold text-yellow-600 mb-3">
+                    Numer:
+                  </div>
+                  <div class="ml-4 font-stretch-ultra-expanded font-light font-mono">
+                    {{ error?.statusCode }}
+                  </div>
+                  <div class="text-2xl font-bold text-yellow-600 mb-3 mt-5">
+                    Wiadomość:
+                  </div>
+                  <div class="ml-4 font-stretch-ultra-expanded font-light font-mono">
+                    {{ error?.message }}
+                  </div>
+                  <div class="text-2xl font-bold text-yellow-600 mb-3 mt-5">
+                    Dane:
+                  </div>
+                  <div class="ml-4 font-stretch-ultra-expanded font-light font-mono">
+                    {{ error?.data }}
+                  </div>
+                </div>
+              </div>
+            </template>
+          </UModal>
         </div>
         <div class="w-3/4 mb-10 md:w-150 md:mb-0 md:ml-10">
           <img class="w-full rendering-pixelated" src="assets/img/error_dragon.webp" alt="Dragon of (t)error">
