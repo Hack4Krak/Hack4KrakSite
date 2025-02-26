@@ -5,7 +5,7 @@ use crate::utils::error::Error;
 use actix_web::HttpResponse;
 use lettre::message::{Attachment, Mailbox, Mailboxes, MultiPart, SinglePart, header};
 use lettre::{Message, Transport};
-use sea_orm::DatabaseConnection;
+use sea_orm::{DatabaseConnection, EntityTrait};
 use serde::{Deserialize, Serialize};
 use std::option::Option;
 use utoipa::ToSchema;
@@ -105,21 +105,27 @@ impl Email {
         database: &DatabaseConnection,
         model: EmailSendingModel,
     ) -> Result<Self, Error> {
-        let mut recipients = Vec::<String>::new();
-        for recipient in model.recipients {
-            let user = users::Model::find_by_username(database, &recipient).await?;
-            if let Some(user) = user {
-                recipients.push(user.email);
-            } else {
-                return Err(Error::RecipientNotFound {
-                    username: recipient,
-                });
+        let mut recipients_emails = Vec::new();
+        if let Some(recipients) = model.recipients {
+            for recipient in recipients {
+                let user = users::Model::find_by_username(database, &recipient).await?;
+                recipients_emails.push(
+                    user.ok_or(Error::RecipientNotFound {
+                        username: recipient,
+                    })?
+                    .email,
+                );
+            }
+        } else {
+            let users = users::Entity::find().all(database).await?;
+            for user in users {
+                recipients_emails.push(user.email);
             }
         }
 
         Ok(Self {
             sender: model.sender,
-            recipients,
+            recipients: recipients_emails,
             subject: model.subject,
             template: model.template,
             placeholders: model.placeholders,

@@ -84,7 +84,7 @@ pub enum Error {
     AccessBeforeEventStart,
     #[error("You cannot access this endpoint after our event has finished")]
     AccessAfterEventEnd,
-    #[error("Recipient not found {username}")]
+    #[error("There is no user with username: {username}")]
     RecipientNotFound { username: String },
     #[error("You cannot access this endpoint after during event")]
     AccessDuringEvent,
