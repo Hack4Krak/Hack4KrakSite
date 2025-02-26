@@ -1,4 +1,6 @@
+mod clear_confirmation_code;
 mod delete;
+mod generate_confirmation_code;
 mod list;
 pub mod update;
 

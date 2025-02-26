@@ -23,7 +23,7 @@ impl MigrationTrait for Migration {
                     .add_column(
                         ColumnDef::new(Teams::ConfirmationCode)
                             .uuid()
-                            .not_null()
+                            .null()
                             .extra("DEFAULT gen_random_uuid()"),
                     )
                     .add_column(

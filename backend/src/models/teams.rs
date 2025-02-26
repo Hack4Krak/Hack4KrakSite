@@ -17,11 +17,11 @@ use uuid::Uuid;
 
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct TeamWithMembers {
-    pub id: String,
+    pub id: Uuid,
     pub team_name: String,
     pub created_at: DateTime,
-    pub members: Vec<String>,
-    pub confirmation_code: String,
+    pub members: Vec<(Uuid, String)>,
+    pub confirmation_code: Option<Uuid>,
     pub status: TeamStatus,
 }
 
@@ -194,14 +194,16 @@ impl teams::Model {
         let teams_with_members = teams
             .into_iter()
             .map(|(team, users)| {
-                let members_ids: Vec<String> =
-                    users.into_iter().map(|user| user.id.to_string()).collect();
+                let members: Vec<(Uuid, String)> = users
+                    .into_iter()
+                    .map(|user| (user.id, user.username))
+                    .collect();
                 TeamWithMembers {
-                    id: team.id.to_string(),
+                    id: team.id,
                     team_name: team.name,
                     created_at: team.created_at,
-                    members: members_ids,
-                    confirmation_code: team.confirmation_code.to_string(),
+                    members,
+                    confirmation_code: team.confirmation_code,
                     status: team.status,
                 }
             })
@@ -227,7 +229,7 @@ impl teams::Model {
             {
                 return Err(Error::Team(AlreadyExists));
             }
-            let mut active_team: ActiveModel = team.into();
+            let mut active_team: ActiveModel = team.clone().into();
             active_team.name = Set(team_name);
             active_team.update(database).await?;
         }
@@ -241,6 +243,12 @@ impl teams::Model {
             let leader = Self::leader(database, id).await?;
 
             Self::change_leader(database, new_leader, leader).await?;
+        }
+
+        if let Some(status) = update_team_json.status {
+            let mut active_team: ActiveModel = team.into();
+            active_team.status = Set(status);
+            active_team.update(database).await?;
         }
 
         Ok(())
@@ -278,15 +286,45 @@ impl teams::Model {
             .filter(teams::Column::ConfirmationCode.eq(confirmation_code))
             .one(database)
             .await?
-            .ok_or(Error::Team(TeamNotFound))?;
+            .ok_or(Error::Team(InvalidConfirmationCode))?;
 
-        if team.status == TeamStatus::Confirmed {
-            return Err(Error::Team(TeamAlreadyConfirmed));
-        }
-
-        let mut active_team: ActiveModel = team.into();
+        let mut active_team: ActiveModel = team.clone().into();
         active_team.status = Set(TeamStatus::Confirmed);
         active_team.update(database).await?;
+
+        Self::clear_confirmation_code(database, team.id).await?;
+
+        Ok(())
+    }
+
+    pub async fn clear_confirmation_code(
+        database: &DatabaseConnection,
+        id: Uuid,
+    ) -> Result<(), Error> {
+        let mut team: ActiveModel = teams::Entity::find_by_id(id)
+            .one(database)
+            .await?
+            .ok_or(Error::Team(TeamNotFound))?
+            .into();
+
+        team.confirmation_code = Set(None);
+        team.update(database).await?;
+
+        Ok(())
+    }
+
+    pub async fn generate_confirmation_code(
+        database: &DatabaseConnection,
+        id: Uuid,
+    ) -> Result<(), Error> {
+        let mut team: ActiveModel = teams::Entity::find_by_id(id)
+            .one(database)
+            .await?
+            .ok_or(Error::Team(TeamNotFound))?
+            .into();
+
+        team.confirmation_code = Set(Some(Uuid::new_v4()));
+        team.update(database).await?;
 
         Ok(())
     }

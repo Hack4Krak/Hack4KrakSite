@@ -87,7 +87,7 @@ pub async fn init_database_with_teams() -> (DatabaseConnection, Uuid, Uuid, Vec<
         id: Set(team_uuid),
         name: Set("dziengiel".to_string()),
         created_at: Set(Local::now().naive_local()),
-        confirmation_code: Set(team_uuid),
+        confirmation_code: Set(Some(team_uuid)),
         status: Set(TeamStatus::Absent),
     }
     .insert(&database)
