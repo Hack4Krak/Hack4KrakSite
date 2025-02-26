@@ -6,9 +6,13 @@ const { data } = await useApi('/tasks/list', {
   key: 'tasks-list',
 })
 
+const { data: completedTasks } = await useAuth('/teams/membership/completed_tasks', {
+  key: 'teams-membership-completed-tasks',
+})
+
 const elements = ref<Tasks>(data.value ?? [])
 </script>
 
 <template>
-  <Map :elements="elements" class="mt-1" />
+  <Map :elements="elements" :completed-tasks="completedTasks ?? []" class="mt-1" />
 </template>
