@@ -9,7 +9,7 @@ use utoipa::ToSchema;
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct EmailSendingModel {
     pub sender: (Option<String>, String),
-    // If recipients is None, the email will be sent to all users.
+    /// If recipients is None, the email will be sent to all users.
     pub recipients: Option<Vec<String>>,
     pub subject: String,
     pub template: EmailTemplate,
