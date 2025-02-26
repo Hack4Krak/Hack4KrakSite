@@ -35,20 +35,20 @@ const errorMessage = computed(() => {
 
             <template #body>
               <div class="border border-white border-b-white rounded-md m-2 overflow-auto bg-black/25">
-                <div class="flex flex-col text-lg m-6">
-                  <div class="text-2xl font-bold text-yellow-600 mb-3">
-                    Numer:
+                <div class="flex flex-col text-lg mb-6 ml-6">
+                  <div class="text-xl font-bold text-yellow-600 my-5">
+                    Kod:
                   </div>
                   <div class="ml-4 font-stretch-ultra-expanded font-light font-mono">
                     {{ error?.statusCode }}
                   </div>
-                  <div class="text-2xl font-bold text-yellow-600 mb-3 mt-5">
+                  <div class="text-xl font-bold text-yellow-600 my-5">
                     Wiadomość:
                   </div>
                   <div class="ml-4 font-stretch-ultra-expanded font-light font-mono">
                     {{ error?.message }}
                   </div>
-                  <div class="text-2xl font-bold text-yellow-600 mb-3 mt-5">
+                  <div class="text-xl font-bold text-yellow-600 my-5">
                     Dane:
                   </div>
                   <div class="ml-4 font-stretch-ultra-expanded font-light font-mono">
