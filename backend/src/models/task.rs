@@ -2,7 +2,8 @@ use chrono::{DateTime, FixedOffset};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
-#[derive(Serialize, Deserialize, Debug)]
+// TODO: Remove kebap-case
+#[derive(Serialize, Deserialize, ToSchema, Debug)]
 #[serde(rename_all = "kebab-case")]
 pub struct EventConfig {
     pub start_date: DateTime<FixedOffset>,
