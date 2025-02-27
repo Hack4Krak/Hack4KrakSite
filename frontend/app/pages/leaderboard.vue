@@ -12,7 +12,6 @@ import {
   Title,
   Tooltip,
 } from 'chart.js'
-import { ref } from 'vue'
 import { Line } from 'vue-chartjs'
 import 'chartjs-adapter-moment'
 

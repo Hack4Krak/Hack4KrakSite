@@ -6,7 +6,7 @@ use actix_web::{HttpResponse, get};
 
 #[utoipa::path(
     responses(
-        (status = 200, description = "Correctly submitted flag.", body = Chart),
+        (status = 200, description = "Successfully retrieved chart.", body = Chart),
         (status = 500, description = "Internal server error"),
     ),
     tag = "leaderboard"

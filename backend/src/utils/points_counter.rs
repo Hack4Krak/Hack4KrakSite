@@ -15,9 +15,9 @@ pub struct TeamPoints {
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Debug)]
-pub struct TeamFinalPoints {
+pub struct TeamCurrentPoints {
     pub team_name: String,
-    pub final_points: usize,
+    pub current_points: usize,
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Default, Debug, PartialEq)]
@@ -85,14 +85,14 @@ impl PointsCounter {
         Ok(output)
     }
 
-    pub fn get_final_team_points(&self) -> Vec<TeamFinalPoints> {
+    pub fn get_final_team_points(&self) -> Vec<TeamCurrentPoints> {
         self.team_points_over_time
             .iter()
             .map(|(team_name, points)| {
                 let final_points = *points.last().unwrap_or(&0);
-                TeamFinalPoints {
+                TeamCurrentPoints {
                     team_name: team_name.clone(),
-                    final_points,
+                    current_points: final_points,
                 }
             })
             .collect()
@@ -122,11 +122,10 @@ impl PointsCounter {
             return DEFAULT_POINTS_PER_TASK;
         }
 
-        let remaining_teams = (total_teams - 2) as f64;
         let solved_teams = (solves_amount - 2) as f64;
 
         let points = DEFAULT_POINTS_PER_TASK as f64
-            - solved_teams * (POINTS_TO_DISTRIBUTE as f64 / remaining_teams);
+            - solved_teams * (POINTS_TO_DISTRIBUTE as f64 / (total_teams - 2) as f64);
 
         points.round() as usize
     }

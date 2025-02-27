@@ -15,7 +15,7 @@ pub enum ScoreboardError {}
 
 impl ResponseError for ScoreboardError {
     fn status_code(&self) -> StatusCode {
-        todo!()
+        todo!("Status codes not implemented yet")
     }
 
     fn error_response(&self) -> HttpResponse {

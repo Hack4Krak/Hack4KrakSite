@@ -1,12 +1,12 @@
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
-use crate::utils::points_counter::{PointsCounter, TeamFinalPoints};
+use crate::utils::points_counter::{PointsCounter, TeamCurrentPoints};
 use actix_web::web::Data;
 use actix_web::{HttpResponse, get};
 
 #[utoipa::path(
     responses(
-        (status = 200, description = "Correctly submitted flag.", body = Vec<TeamFinalPoints>),
+        (status = 200, description = "Successfully retrieved leaderboard", body = Vec<TeamCurrentPoints>),
         (status = 500, description = "Internal server error"),
     ),
     tag = "leaderboard"
