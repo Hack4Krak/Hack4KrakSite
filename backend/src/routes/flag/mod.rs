@@ -17,6 +17,8 @@ pub enum FlagError {
     InvalidFlag,
     #[error("This team already submitted this flag")]
     AlreadySubmittedFlag,
+    #[error("This endpoint is only accessible for confirmed teams")]
+    TeamNotConfirmed,
 }
 
 impl ResponseError for FlagError {
@@ -24,6 +26,7 @@ impl ResponseError for FlagError {
         match self {
             FlagError::InvalidFlagFormat | FlagError::InvalidFlag => StatusCode::BAD_REQUEST,
             FlagError::AlreadySubmittedFlag => StatusCode::CONFLICT,
+            FlagError::TeamNotConfirmed => StatusCode::FORBIDDEN,
         }
     }
 
