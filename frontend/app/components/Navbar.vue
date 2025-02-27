@@ -13,6 +13,10 @@ watch(() => router.currentRoute.value, () => {
 const items = [
   [
     {
+      label: 'Ranking',
+      to: '/leaderboard',
+    },
+    {
       label: 'Regulamin',
       to: '/rules',
     },

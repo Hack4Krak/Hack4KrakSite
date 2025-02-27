@@ -1,3 +1,4 @@
+use crate::models::task::EventConfig;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::web::Data;
@@ -6,7 +7,7 @@ use std::ops::Deref;
 
 #[utoipa::path(
     responses(
-        (status = 200, description = "Correctly returned background image", body = String),
+        (status = 200, description = "Correctly returned event config", body = EventConfig),
     ),
     tag = "event"
 )]
