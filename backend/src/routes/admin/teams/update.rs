@@ -11,6 +11,7 @@ use uuid::Uuid;
 pub struct UpdateTeamModel {
     pub team_name: Option<String>,
     pub leader: Option<Uuid>,
+    pub status: Option<teams::TeamStatus>,
 }
 
 #[utoipa::path(

@@ -1,3 +1,4 @@
+use crate::entities::sea_orm_active_enums::TeamStatus;
 use crate::entities::{teams, users};
 use crate::middlewares::auth::AuthMiddleware;
 use crate::utils::app_state;
@@ -15,6 +16,7 @@ pub struct TeamWithMembers {
     pub team_name: String,
     pub created_at: DateTime,
     pub members: Vec<TeamMember>,
+    pub status: TeamStatus,
 }
 
 #[derive(Serialize, Deserialize, ToSchema)]
@@ -57,6 +59,7 @@ pub async fn my_team(
         team_name: team.name,
         created_at: team.created_at,
         members,
+        status: team.status,
     };
 
     Ok(HttpResponse::Ok().json(team_response))

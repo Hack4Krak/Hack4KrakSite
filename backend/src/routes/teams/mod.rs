@@ -4,6 +4,7 @@ use actix_web::{HttpResponse, error};
 use thiserror::Error;
 use utoipa_actix_web::scope;
 
+mod confirm;
 mod create;
 mod invitations;
 mod management;
@@ -11,6 +12,7 @@ mod membership;
 
 pub fn config(cfg: &mut utoipa_actix_web::service_config::ServiceConfig) {
     cfg.service(create::create);
+    cfg.service(confirm::confirm);
     cfg.service(
         scope("/invitations")
             .wrap(AuthMiddleware::with_user())
@@ -58,11 +60,14 @@ pub enum TeamError {
     TeamIsFull { max_size: u16 },
     #[error("Team leader not found")]
     TeamLeaderNotFound,
+    #[error("Invalid confirmation code")]
+    InvalidConfirmationCode,
 }
 
 impl error::ResponseError for TeamError {
     fn status_code(&self) -> StatusCode {
         match self {
+            TeamError::InvalidConfirmationCode => StatusCode::BAD_REQUEST,
             TeamError::AlreadyExists
             | TeamError::UserCantRemoveYourself
             | TeamError::TeamIsFull { .. }

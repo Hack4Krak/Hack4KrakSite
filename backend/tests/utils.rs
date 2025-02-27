@@ -3,7 +3,7 @@ use actix_web::dev::{ServiceFactory, ServiceRequest, ServiceResponse};
 use actix_web::web::Data;
 use actix_web::{App, Error};
 use chrono::Local;
-use hack4krak_backend::entities::sea_orm_active_enums::UserRoles;
+use hack4krak_backend::entities::sea_orm_active_enums::{TeamStatus, UserRoles};
 use hack4krak_backend::entities::{email_confirmation, flag_capture, team_invites, teams, users};
 use hack4krak_backend::services::task_manager::TaskManager;
 use hack4krak_backend::setup_actix_app;
@@ -87,6 +87,8 @@ pub async fn init_database_with_teams() -> (DatabaseConnection, Uuid, Uuid, Vec<
         id: Set(team_uuid),
         name: Set("dziengiel".to_string()),
         created_at: Set(Local::now().naive_local()),
+        confirmation_code: Set(Some(team_uuid)),
+        status: Set(TeamStatus::Absent),
     }
     .insert(&database)
     .await
