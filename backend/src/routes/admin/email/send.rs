@@ -28,11 +28,11 @@ pub struct EmailSendingModel {
     tag = "admin/email"
 )]
 #[post("/send")]
-pub async fn send_email(
+pub async fn send(
     app_state: Data<app_state::AppState>,
     model: Json<EmailSendingModel>,
 ) -> Result<HttpResponse, Error> {
-    Email::create_from_admin_sending_model(&app_state.database, model.into_inner())
+    Email::from_admin_sending_model(&app_state.database, model.into_inner())
         .await?
         .send(&app_state)
         .await?;

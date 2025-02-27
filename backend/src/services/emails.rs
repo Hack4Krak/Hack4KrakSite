@@ -23,6 +23,7 @@ impl EmailTemplate {
             EmailTemplate::EmailConfirmation => Some(vec!["user".to_string(), "link".to_string()]),
         }
     }
+
     pub fn get_template(&self) -> &'static str {
         match self {
             EmailTemplate::HelloWorld => include_str!("emails_assets/hello_world.html"),
@@ -31,12 +32,14 @@ impl EmailTemplate {
             }
         }
     }
+
     pub fn is_logo_attached(&self) -> bool {
         match self {
             EmailTemplate::HelloWorld => false,
             EmailTemplate::EmailConfirmation => true,
         }
     }
+
     pub fn list() -> Vec<Self> {
         vec![Self::HelloWorld, Self::EmailConfirmation]
     }
@@ -101,7 +104,7 @@ impl Email {
         Ok(HttpResponse::Ok().json("Email successfully sent"))
     }
 
-    pub async fn create_from_admin_sending_model(
+    pub async fn from_admin_sending_model(
         database: &DatabaseConnection,
         model: EmailSendingModel,
     ) -> Result<Self, Error> {
