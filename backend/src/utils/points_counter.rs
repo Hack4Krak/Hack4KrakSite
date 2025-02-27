@@ -60,7 +60,7 @@ impl PointsCounter {
             let solves_amount = task_to_teams[&task_name].len();
             let points = Self::calculate_task_points(solves_amount, teams.len());
 
-            task_points.insert(task_name.clone(), points as usize);
+            task_points.insert(task_name.clone(), points);
 
             for team in &teams {
                 let solves = team_to_tasks.get(&team.id);
