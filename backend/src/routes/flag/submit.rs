@@ -1,3 +1,4 @@
+use crate::entities::sea_orm_active_enums::TeamStatus;
 use crate::entities::{flag_capture, teams};
 use crate::routes::flag::AuthMiddleware;
 use crate::routes::flag::FlagError;
@@ -34,6 +35,10 @@ pub async fn submit(
     model: Validated<Json<SubmitModel>>,
     team: teams::Model,
 ) -> Result<HttpResponse, Error> {
+    if team.status != TeamStatus::Confirmed {
+        return Err(Error::Flag(FlagError::TeamNotConfirmed));
+    }
+
     let flag = model
         .flag
         .strip_prefix("hack4KrakCTF{")
