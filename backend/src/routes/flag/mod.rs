@@ -17,7 +17,7 @@ pub enum FlagError {
     InvalidFlag,
     #[error("This team already submitted this flag")]
     AlreadySubmittedFlag,
-    #[error("This team is not confirmed yet")]
+    #[error("This endpoint is only accessible for confirmed teams")]
     TeamNotConfirmed,
 }
 
