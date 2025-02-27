@@ -8,28 +8,28 @@ const { error } = await useApi('/event/status', {
   key: 'event-status',
 })
 
-const is_event_in_progress = ref(error.value === undefined)
+const isEventInProgress = computed(() => error.value === undefined)
 
 const { data } = await useAuth('/teams/membership/completed_tasks', {
   method: 'GET',
   key: 'completed-tasks',
 })
 
-const completed_flags = data.value ?? []
+const completedFlags = data.value ?? []
 
-const { data: count_data } = await useApi('/tasks/count', {
+const { data: countData } = await useApi('/tasks/count', {
   method: 'GET',
   key: 'tasks-count',
 })
 
-const tasks_count = count_data.value ?? 1
+const tasksCount = countData.value ?? 1
 
 const value = computed(
-  () => (completed_flags.length * 100) / tasks_count,
+  () => (completedFlags.length * 100) / tasksCount,
 )
 
-const flags_left = computed(
-  () => tasks_count - completed_flags.length,
+const flagsLeft = computed(
+  () => tasksCount - completedFlags.length,
 )
 </script>
 
@@ -39,8 +39,7 @@ const flags_left = computed(
       Progress twojej drużyny:
     </h1>
     <UProgress v-model="value" size="md" :ui="{ base: 'bg-primary-darker' }" />
-    <span v-if="is_event_in_progress" class="flex-grow">Pozostałe flagi: {{ flags_left }}</span>
-    <span v-else class="flex-grow">Liczba zdobytych flag będzie widoczna po rozpoczęciu wydarzenia</span>
+    <span class="flex-grow">{{ isEventInProgress ? `Pozostałe flagi: ${flagsLeft}` : "Liczba zdobytych flag będzie widoczna po rozpoczęciu wydarzenia" }}</span>
 
     <h1 class="font-semibold text-2xl">
       Nazwa zespołu: <span class="text-(--ui-primary)">{{ props.teamName }}</span>
