@@ -14,6 +14,7 @@ use utoipa::ToSchema;
 pub enum EmailTemplate {
     HelloWorld,
     EmailConfirmation,
+    Generic,
 }
 
 impl EmailTemplate {
@@ -21,6 +22,7 @@ impl EmailTemplate {
         match self {
             EmailTemplate::HelloWorld => None,
             EmailTemplate::EmailConfirmation => Some(vec!["user".to_string(), "link".to_string()]),
+            EmailTemplate::Generic => Some(vec!["body".to_string()]),
         }
     }
 
@@ -30,6 +32,7 @@ impl EmailTemplate {
             EmailTemplate::EmailConfirmation => {
                 include_str!("emails_assets/email_confirmation.html")
             }
+            EmailTemplate::Generic => include_str!("emails_assets/generic.html"),
         }
     }
 
@@ -37,11 +40,12 @@ impl EmailTemplate {
         match self {
             EmailTemplate::HelloWorld => false,
             EmailTemplate::EmailConfirmation => true,
+            EmailTemplate::Generic => true,
         }
     }
 
     pub fn list() -> Vec<Self> {
-        vec![Self::HelloWorld, Self::EmailConfirmation]
+        vec![Self::HelloWorld, Self::EmailConfirmation, Self::Generic]
     }
 }
 
