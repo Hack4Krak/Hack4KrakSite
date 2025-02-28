@@ -9,7 +9,9 @@ const { data } = await useAuth('/user/', {
 const { data: team, error } = await useAuth('/teams/membership/my_team', {
   method: 'GET',
   key: 'my-team',
-  onResponseError: undefined,
+  onResponseError: () => {
+    throw new Error('Response error')
+  },
 })
 
 async function logout() {
