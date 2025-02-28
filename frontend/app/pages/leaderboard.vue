@@ -12,7 +12,9 @@ import {
   Title,
   Tooltip,
 } from 'chart.js'
+import moment from 'moment-timezone'
 import { Line } from 'vue-chartjs'
+
 import 'chartjs-adapter-moment'
 
 ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, TimeScale)
@@ -39,12 +41,19 @@ const { data } = await useApi('/leaderboard/chart', {
   key: 'leaderboard-chart',
 })
 
+const targetTimezone = 'Europe/Warsaw'
+
+const adjustedTimestamps = data.value?.event_timestamps.map((ts: string) =>
+  moment.utc(ts).tz(targetTimezone).format(),
+)
+
 const chartData = ref({
-  labels: data.value?.event_timestamps ?? [],
+  labels: adjustedTimestamps ?? [],
   datasets: (data.value?.team_points_over_time || []).map((item, index) => ({
     label: item.label,
     data: item.points,
     borderColor: colors[index % colors.length],
+    lineTension: 0.2,
   })),
 })
 
