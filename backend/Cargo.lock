@@ -1616,7 +1616,7 @@ dependencies = [
 
 [[package]]
 name = "hack4krak-backend"
-version = "0.3.0"
+version = "1.0.0"
 dependencies = [
  "actix-cors",
  "actix-files",
@@ -2357,7 +2357,7 @@ checksum = "78ca9ab1a0babb1e7d5695e3530886289c18cf2f87ec19a575a0abdce112e3a3"
 
 [[package]]
 name = "migration"
-version = "0.3.0"
+version = "1.0.0"
 dependencies = [
  "async-std",
  "sea-orm-migration",
@@ -2548,7 +2548,7 @@ checksum = "1261fe7e33c73b354eab43b1273a57c8f967d0391e80353e51f764ac02cf6775"
 
 [[package]]
 name = "openapi-check"
-version = "0.3.0"
+version = "1.0.0"
 dependencies = [
  "hack4krak-backend",
  "tokio",
