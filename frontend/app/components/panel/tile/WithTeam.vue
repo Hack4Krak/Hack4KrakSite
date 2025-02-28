@@ -3,7 +3,34 @@ const props = defineProps<{
   teamName: string
 }>()
 
-const value = ref(0)
+const { error } = await useApi('/event/status', {
+  method: 'GET',
+  key: 'event-status',
+})
+
+const isEventInProgress = computed(() => error.value === undefined)
+
+const { data } = await useAuth('/teams/membership/completed_tasks', {
+  method: 'GET',
+  key: 'completed-tasks',
+})
+
+const completedFlags = data.value ?? []
+
+const { data: countData } = await useApi('/tasks/count', {
+  method: 'GET',
+  key: 'tasks-count',
+})
+
+const tasksCount = countData.value ?? 1
+
+const value = computed(
+  () => (completedFlags.length * 100) / tasksCount,
+)
+
+const flagsLeft = computed(
+  () => tasksCount - completedFlags.length,
+)
 </script>
 
 <template>
@@ -12,7 +39,7 @@ const value = ref(0)
       Progress twojej drużyny:
     </h1>
     <UProgress v-model="value" size="md" :ui="{ base: 'bg-primary-darker' }" />
-    <span class="flex-grow">Brakuje wam 25 flag</span>
+    <span class="flex-grow">{{ isEventInProgress ? `Pozostałe flagi: ${flagsLeft}` : "Liczba zdobytych flag będzie widoczna po rozpoczęciu wydarzenia" }}</span>
 
     <h1 class="font-semibold text-2xl">
       Nazwa zespołu: <span class="text-(--ui-primary)">{{ props.teamName }}</span>
