@@ -53,6 +53,7 @@ const chartData = ref({
     label: item.label,
     data: item.points,
     borderColor: colors[index % colors.length],
+    lineTension: 0.2,
   })),
 })
 
