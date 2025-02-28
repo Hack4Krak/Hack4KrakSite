@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   text: string
-  class: string | undefined
+  class?: string | undefined
 }>()
 </script>
 

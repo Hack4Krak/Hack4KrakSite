@@ -40,6 +40,16 @@ const { data: assets } = await useAuth(`/tasks/assets/list/{task_id}`, {
   key: `task-${props.taskId}`,
 })
 
+const { error: solutionError } = await useAuth('/tasks/solution/{task_id}', {
+  path: {
+    task_id: props.taskId?.toString() ?? '',
+  },
+  key: `task-solution-${props.taskId}`,
+  onResponseError: () => {
+    throw new Error('Response error')
+  },
+})
+
 const baseAssetsPath = `${useRuntimeConfig().public.openFetch.api.baseURL}/tasks/assets/get`
 </script>
 
@@ -56,5 +66,14 @@ const baseAssetsPath = `${useRuntimeConfig().public.openFetch.api.baseURL}/tasks
         </a>
       </li>
     </ul>
+    <div v-if="!solutionError">
+      <h2 class="text-4xl font-bold pb-5">
+        Rozwiązanie
+      </h2>
+      Wydarzenie już się zakończyło! Możesz zobaczyć rozwiązanie
+      <NuxtLink :to="`/tasks/solution/${props.taskId}`" class="link">
+        tutaj
+      </NuxtLink>
+    </div>
   </div>
 </template>

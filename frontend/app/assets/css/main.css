@@ -30,3 +30,13 @@
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+@utility link {
+  text-decoration: underline;
+  color: white;
+  cursor: pointer;
+
+  @variant hover {
+    color: var(--ui-primary);
+  }
+}
