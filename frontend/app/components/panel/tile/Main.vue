@@ -19,7 +19,7 @@ function getEventState() {
   } else if (now.isBefore(eventStart)) {
     return { message: 'Czas do rozpoczęcia wydarzenia', diff: dayjs.duration(eventStart.diff(now)) }
   } else {
-    return { message: 'Wydarzenie zakończyło się:', diff: dayjs.duration(now.diff(eventEnd)) }
+    return { message: 'Wydarzenie jest zakończone od', diff: dayjs.duration(now.diff(eventEnd)) }
   }
 }
 
