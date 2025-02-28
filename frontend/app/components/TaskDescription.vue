@@ -2,7 +2,7 @@
 import { FetchError } from 'ofetch'
 
 const props = defineProps<{
-  taskId: string | string[] | undefined
+  taskId?: string | undefined
 }>()
 
 const description = ref('')
@@ -33,20 +33,21 @@ try {
   showError(error)
 }
 
-const { data } = await useAuth(`/tasks/assets/list/${props.taskId}`, {
+const { data: assets } = await useAuth(`/tasks/assets/list/{task_id}`, {
+  path: {
+    task_id: props.taskId ?? '',
+  },
   key: `task-${props.taskId}`,
 })
 
 const baseAssetsPath = `${useRuntimeConfig().public.openFetch.api.baseURL}/tasks/assets/get`
-
-const assets = ref(data)
 </script>
 
 <template>
   <div class="flex flex-col mx-[10vw] w-[80vw] pt-5 gap-5">
     <MarkdownContent :text="description" />
     <h2 class="text-4xl font-bold">
-      Assets
+      Załączniki
     </h2>
     <ul class="flex flex-col list-disc pl-5">
       <li v-for="asset in assets" :key="asset.description">
