@@ -10,6 +10,7 @@ mod count;
 mod description;
 mod icon;
 mod list;
+mod solution;
 mod story;
 
 pub fn config(cfg: &mut utoipa_actix_web::service_config::ServiceConfig) {
@@ -18,6 +19,7 @@ pub fn config(cfg: &mut utoipa_actix_web::service_config::ServiceConfig) {
     cfg.service(story::story);
     cfg.service(background::background);
     cfg.service(description::description);
+    cfg.service(solution::solution);
     cfg.service(scope("/assets").configure(assets::config));
     cfg.service(count::count);
 }

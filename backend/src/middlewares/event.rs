@@ -16,20 +16,30 @@ use std::rc::Rc;
 /// Restricts access to endpoints if event is not stared
 #[derive(Clone, Copy)]
 pub struct EventMiddleware {
-    allow_access_after: bool,
+    allow_before_event: bool,
+    allow_during_event: bool,
+    allow_after_event: bool,
 }
 
 impl EventMiddleware {
-    pub fn allow_after_event() -> Self {
+    pub fn new(before: bool, during: bool, after: bool) -> Self {
         Self {
-            allow_access_after: true,
+            allow_before_event: before,
+            allow_during_event: during,
+            allow_after_event: after,
         }
     }
 
-    pub fn allow_during_event_only() -> Self {
-        Self {
-            allow_access_after: false,
-        }
+    pub fn allow_only_during_event() -> Self {
+        Self::new(false, true, false)
+    }
+
+    pub fn allow_only_after_event() -> Self {
+        Self::new(false, false, true)
+    }
+
+    pub fn disallow_before_event() -> Self {
+        Self::new(false, true, true)
     }
 }
 
@@ -107,12 +117,17 @@ impl<S> EventMiddlewareService<S> {
         let event_config = task_manager.event_config.lock().await;
 
         let now = Utc::now();
-        if now <= event_config.start_date {
+        if !config.allow_before_event && now < event_config.start_date {
             return Err(Error::AccessBeforeEventStart);
         }
-
-        if !config.allow_access_after && now > event_config.end_date {
+        if !config.allow_after_event && now > event_config.end_date {
             return Err(Error::AccessAfterEventEnd);
+        }
+        if !config.allow_during_event
+            && event_config.start_date < now
+            && now < event_config.end_date
+        {
+            return Err(Error::AccessDuringEvent);
         }
 
         Ok(())
