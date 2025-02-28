@@ -86,7 +86,8 @@ impl PointsCounter {
     }
 
     pub fn get_final_team_points(&self) -> Vec<TeamCurrentPoints> {
-        self.team_points_over_time
+        let mut points = self
+            .team_points_over_time
             .iter()
             .map(|(team_name, points)| {
                 let final_points = *points.last().unwrap_or(&0);
@@ -95,7 +96,12 @@ impl PointsCounter {
                     current_points: final_points,
                 }
             })
-            .collect()
+            .collect::<Vec<TeamCurrentPoints>>();
+
+        points.sort_by_key(|team_current_points| team_current_points.current_points);
+        points.reverse();
+
+        points
     }
 
     pub fn to_chart(self) -> Chart {
