@@ -3,7 +3,6 @@ import type { ChartOptions } from 'chart.js'
 import {
   CategoryScale,
   Chart as ChartJS,
-
   Legend,
   LinearScale,
   LineElement,
@@ -43,12 +42,14 @@ const { data } = await useApi('/leaderboard/chart', {
 
 const targetTimezone = 'Europe/Warsaw'
 
-const adjustedTimestamps = data.value?.event_timestamps.map((ts: string) =>
-  moment.utc(ts).tz(targetTimezone).format(),
-)
+const adjustedTimestamps = computed(() => {
+  return data.value?.event_timestamps.map((timeStamp: string) =>
+    moment.utc(timeStamp).tz(targetTimezone).format(),
+  ) ?? []
+})
 
 const chartData = ref({
-  labels: adjustedTimestamps ?? [],
+  labels: adjustedTimestamps,
   datasets: (data.value?.team_points_over_time || []).map((item, index) => ({
     label: item.label,
     data: item.points,
@@ -88,7 +89,7 @@ const chartOptions = ref<ChartOptions<'line'>>({
 })
 
 const { data: teams } = await useApi('/leaderboard/teams', {
-  key: 'leaderboard-chart',
+  key: 'leaderboard-teams',
 })
 </script>
 
@@ -100,6 +101,6 @@ const { data: teams } = await useApi('/leaderboard/teams', {
     <div class="h-screen">
       <Line :data="chartData" :options="chartOptions" class="m-5 " />
     </div>
-    <UTable :data="teams" class="flex-1  mx-10" />
+    <UTable :data="teams ?? []" class="flex-1  mx-10" />
   </div>
 </template>
