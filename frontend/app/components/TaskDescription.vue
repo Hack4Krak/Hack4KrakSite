@@ -50,7 +50,7 @@ const assets = ref(data)
     </h2>
     <ul class="flex flex-col list-disc pl-5">
       <li v-for="asset in assets" :key="asset.description">
-        <a :href="`${baseAssetsPath}/${taskId}/${asset.path}`" download class="w-auto text-blue-400 underline" target="_blank" @click="getAsset(asset.path)">
+        <a :href="`${baseAssetsPath}/${taskId}/${asset.path}`" download class="w-auto text-blue-400 underline" target="_blank">
           {{ asset.description }}
         </a>
       </li>
