@@ -45,7 +45,7 @@ async function logout() {
       <PanelTile class="row-span-2">
         <PanelTileMain />
       </PanelTile>
-      <PanelTile class="min-h-25" />
+      <PanelTile class="min-h-25 overflow-hidden" />
       <PanelTile>
         <div class="p-5">
           <h1 class="font-bold text-2xl">
