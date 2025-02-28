@@ -8,7 +8,7 @@
 
 Welcome to the official Hack4Krak website repository!
 
-Hack4Krak is the largest Capture The Flag (CTF) competition for high schools in Poland, bringing together the brightest young minds in cybersecurity. This event challenges participants with exciting puzzles and security challenges, fostering learning and collaboration in the world of ethical hacking.
+Hack4Krak is the largest Capture The Flag (CTF) competition for high schools in Poland, bringing together the brightest young minds in cybersecurity. This event challenges participants with exciting puzzles and security challenges, fostering learning and collaboration in the world of ethical hacking!
 
 ## Requirements
 - Node v22
