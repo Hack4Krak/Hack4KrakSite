@@ -84,6 +84,8 @@ pub enum Error {
     AccessBeforeEventStart,
     #[error("You cannot access this endpoint after our event has finished")]
     AccessAfterEventEnd,
+    #[error("You cannot access this endpoint after during event")]
+    AccessDuringEvent,
     #[error("Failed to parse URL {0}")]
     FailedToParseUrl(#[from] url::ParseError),
     #[error(transparent)]
@@ -120,6 +122,7 @@ impl error::ResponseError for Error {
             Error::UserNotFound | Error::RouteNotFound => StatusCode::NOT_FOUND,
             Error::Forbidden { .. }
             | Error::UserMustHaveHigherRoleThanAffectedUser
+            | Error::AccessDuringEvent
             | Error::AccessBeforeEventStart => StatusCode::FORBIDDEN,
             Error::UserWithEmailOrUsernameAlreadyExists => StatusCode::CONFLICT,
             Error::AccessAfterEventEnd => StatusCode::GONE,

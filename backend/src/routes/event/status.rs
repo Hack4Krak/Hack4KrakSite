@@ -9,7 +9,7 @@ use actix_web::{HttpResponse, get};
     ),
     tag = "event"
 )]
-#[get("/status", wrap = "EventMiddleware::allow_after_event()")]
+#[get("/status", wrap = "EventMiddleware::disallow_before_event()")]
 pub async fn status() -> Result<HttpResponse, Error> {
     Ok(SuccessResponse::default().http_response())
 }

@@ -68,7 +68,7 @@ pub fn setup_actix_app(
         .service(scope("/teams").configure(routes::teams::config))
         .service(
             scope("/tasks")
-                .wrap(EventMiddleware::allow_after_event())
+                .wrap(EventMiddleware::disallow_before_event())
                 .configure(routes::task::config),
         )
         .service(scope("/user").configure(routes::user::config))
@@ -100,7 +100,7 @@ pub fn setup_actix_app(
         app = app.service(
             scope("/flag")
                 .wrap(Governor::new(&flag_governor))
-                .wrap(EventMiddleware::allow_during_event_only())
+                .wrap(EventMiddleware::allow_only_during_event())
                 .configure(routes::flag::config),
         );
     }
