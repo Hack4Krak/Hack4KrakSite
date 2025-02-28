@@ -109,7 +109,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
           <span class="text-sm text-neutral-500">
             {{ isLogin ? 'Nie masz konta?' : 'Masz już konto?' }}
-            <NuxtLink class="underline text-white cursor-pointer hover:text-(--ui-primary)" :to="props.isLogin ? '/register' : '/login'">
+            <NuxtLink class="link" :to="props.isLogin ? '/register' : '/login'">
               {{ isLogin ? 'Załóż je' : 'Zaloguj się' }}
             </NuxtLink>
           </span>
