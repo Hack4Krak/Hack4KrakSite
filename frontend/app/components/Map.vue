@@ -18,7 +18,7 @@ const mapImage = ref<HTMLImageElement | null>(null)
 const isLoaded = ref(false)
 const scaleFactor = ref(1)
 
-const MAP_IMAGE_ASPECT_RATIO = 510 / 96
+const MAP_IMAGE_ASPECT_RATIO = 473 / 96
 const IDEAL_VERTICAL_OVERFLOW_VALUE = 88
 
 const taskIconBaseUrl = `${useRuntimeConfig().public.openFetch.api.baseURL}/tasks/icon/`
