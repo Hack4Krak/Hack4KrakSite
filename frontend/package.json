@@ -38,7 +38,7 @@
     "@antfu/eslint-config": "^4.4.0",
     "@nuxt/devtools": "2.1.0",
     "@nuxt/eslint": "^1.1.0",
-    "@nuxt/test-utils": "3.17.0",
+    "@nuxt/test-utils": "3.17.1",
     "@tailwindcss/typography": "^0.5.16",
     "@vue/test-utils": "^2.4.6",
     "eslint": "^9.21.0",
