@@ -8,6 +8,7 @@ const { data } = await useApi('/tasks/list', {
 
 const { data: completedTasks } = await useAuth('/teams/membership/completed_tasks', {
   key: 'teams-membership-completed-tasks',
+  redirect: 'error',
 })
 
 const elements = ref<Tasks>(data.value ?? [])
