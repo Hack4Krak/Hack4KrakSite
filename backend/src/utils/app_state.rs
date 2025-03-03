@@ -4,6 +4,7 @@ use crate::utils::oauth::OAuthProvider;
 use lettre::SmtpTransport;
 use lettre::transport::smtp::authentication::Credentials;
 use sea_orm::DatabaseConnection;
+use tokio::sync::broadcast;
 
 pub struct AppState {
     pub database: DatabaseConnection,
@@ -11,6 +12,7 @@ pub struct AppState {
     pub github_oauth_provider: OAuthProvider,
     pub google_oauth_provider: OAuthProvider,
     pub smtp_client: SmtpTransport,
+    pub leaderboard_updates_transmitter: broadcast::Sender<String>,
 }
 
 impl AppState {
@@ -43,12 +45,15 @@ impl AppState {
             ))
             .build();
 
+        let (leaderboard_updates_transmitter, _) = broadcast::channel(16);
+
         AppState {
             task_manager,
             database,
             github_oauth_provider,
             google_oauth_provider,
             smtp_client,
+            leaderboard_updates_transmitter,
         }
     }
 
@@ -87,12 +92,14 @@ impl Default for AppState {
             "https://token",
             "https://redirect",
         );
+
         AppState {
             database: Default::default(),
             task_manager: TaskManager::default(),
             github_oauth_provider: oauth_provider.clone(),
             google_oauth_provider: oauth_provider,
             smtp_client: SmtpTransport::relay("email.example.com").unwrap().build(),
+            leaderboard_updates_transmitter: broadcast::channel(16).0,
         }
     }
 }

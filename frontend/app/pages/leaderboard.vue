@@ -91,6 +91,43 @@ const chartOptions = ref<ChartOptions<'line'>>({
 const { data: teams } = await useApi('/leaderboard/teams', {
   key: 'leaderboard-teams',
 })
+
+const teamsTableData = ref(teams.value ?? [])
+
+async function updateLeaderboard() {
+  const { $api } = useNuxtApp()
+
+  const chartDataResponse = await $api('/leaderboard/chart')
+  const teamsResponse = await $api('/leaderboard/teams')
+
+  const adjustedTimestamps = chartDataResponse.event_timestamps.map((timeStamp: string) =>
+    moment.utc(timeStamp).tz(targetTimezone).format(),
+  ) ?? []
+  chartData.value = {
+    labels: adjustedTimestamps,
+    datasets: (data.value?.team_points_over_time || []).map((item, index) => ({
+      label: item.label,
+      data: item.points,
+      borderColor: colors[index % colors.length],
+      lineTension: 0.2,
+    })),
+  }
+
+  teamsTableData.value = teamsResponse ?? []
+}
+
+if (import.meta.client) {
+  const sseBackendAddress = `${useRuntimeConfig().public.openFetch.api.baseURL}/leaderboard/events`
+
+  const eventSource = new EventSource(sseBackendAddress)
+  eventSource.onmessage = async () => {
+    await updateLeaderboard()
+  }
+
+  eventSource.onerror = (error) => {
+    console.error('SSE connection error', error)
+  }
+}
 </script>
 
 <template>
@@ -101,6 +138,6 @@ const { data: teams } = await useApi('/leaderboard/teams', {
     <div class="h-screen">
       <Line :data="chartData" :options="chartOptions" class="m-5 " />
     </div>
-    <UTable :data="teams ?? []" class="flex-1  mx-10" />
+    <UTable :data="teamsTableData && teamsTableData.length > 0 ? teamsTableData : [{ team_name: 'No data', current_points: 'No data', captured_flags: 'No data' }]" class="flex-1  mx-10" />
   </div>
 </template>

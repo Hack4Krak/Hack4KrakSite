@@ -1645,6 +1645,7 @@ dependencies = [
  "actix-web",
  "actix-web-validation",
  "argon2",
+ "async-stream",
  "chrono",
  "dashmap",
  "dotenvy",
