@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import file from 'assets/faq.json?raw'
-
-const content = JSON.parse(file)
-
-const items = ref(content)
+import file from 'assets/faq.json'
 </script>
 
 <template>
@@ -20,7 +16,7 @@ const items = ref(content)
         trailingIcon: 'text-yellow-500 size-6',
         trigger: 'cursor-pointer',
         body: 'cursor-default text-md font-light',
-      }" :items="items"
+      }" :items="file"
     />
   </div>
 </template>
