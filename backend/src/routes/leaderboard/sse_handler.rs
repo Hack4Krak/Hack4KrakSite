@@ -9,7 +9,7 @@ pub async fn sse_handler(app_state: web::Data<app_state::AppState>) -> impl Resp
 
     let server_events = stream! {
         while let Ok(msg) = rx.recv().await {
-            let data = format!("data: {}\n\n", msg);
+            let data = format!("{}\n\n", msg);
             yield Ok::<Bytes, actix_web::Error>(web::Bytes::from(data));
         }
     };
