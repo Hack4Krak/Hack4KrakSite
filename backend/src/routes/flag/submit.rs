@@ -55,13 +55,9 @@ pub async fn submit(
 
     flag_capture::Model::completed(&app_state.database, team, task.key().to_string()).await?;
 
-    //TODO: log error somehow, but don't return it to user, because they shouldn't be concerned by sse not working
-    match app_state
+    let _ = app_state
         .leaderboard_updates_transmitter
-        .send("Flag submitted".to_string())
-    {
-        _ => {}
-    };
+        .send("Flag submitted".to_string());
 
     Ok(HttpResponse::Ok().json(SubmitModel {
         flag: task.key().clone(),
