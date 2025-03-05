@@ -13,7 +13,7 @@ use actix_web::{HttpResponse, get};
     ),
     tag = "admin/email"
 )]
-#[get("/get_placeholders/{template}")]
+#[get("/placeholders/{template}")]
 pub async fn placeholders(template: Path<EmailTemplate>) -> Result<HttpResponse, Error> {
     let placeholders = template.get_placeholder_elements().unwrap_or_default();
 
