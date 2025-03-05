@@ -36,7 +36,7 @@ const colors = [
   '#800000',
 ]
 
-const { data } = await useApi('/leaderboard/chart', {
+const { data, refresh: chartRefresh } = await useApi('/leaderboard/chart', {
   key: 'leaderboard-chart',
 })
 
@@ -88,40 +88,34 @@ const chartOptions = ref<ChartOptions<'line'>>({
   },
 })
 
-const { data: teams } = await useApi('/leaderboard/teams', {
+const { data: teams, refresh: teamsRefresh } = await useApi('/leaderboard/teams', {
   key: 'leaderboard-teams',
 })
 
-const teamsTableData = ref(teams.value ?? [])
+const teamsTableData = ref(teams.value && teams.value.length > 0 ? teams.value : [{ team_name: 'No data', current_points: 'No data', captured_flags: 'No data' }])
 
 async function updateLeaderboard() {
-  const { $api } = useNuxtApp()
+  // It's necessary to reassign the value, because if it was undefined before, it will not update after the refresh
 
-  const chartDataResponse = await $api('/leaderboard/chart')
-  const teamsResponse = await $api('/leaderboard/teams')
-
-  const adjustedTimestamps = chartDataResponse.event_timestamps.map((timeStamp: string) =>
-    moment.utc(timeStamp).tz(targetTimezone).format(),
-  ) ?? []
-  chartData.value = {
-    labels: adjustedTimestamps,
-    datasets: (data.value?.team_points_over_time || []).map((item, index) => ({
-      label: item.label,
-      data: item.points,
-      borderColor: colors[index % colors.length],
-      lineTension: 0.2,
-    })),
-  }
-
-  teamsTableData.value = teamsResponse ?? []
+  console.log(teams.value)
 }
 
 if (import.meta.client) {
   const sseBackendAddress = `${useRuntimeConfig().public.openFetch.api.baseURL}/leaderboard/events`
 
   const eventSource = new EventSource(sseBackendAddress)
-  eventSource.onmessage = async () => {
-    await updateLeaderboard()
+  eventSource.onmessage = (event) => {
+    console.log(`Event received ${event.data}`)
+    // chartRefresh()
+    // console.log('Chart updated')
+    // teamsRefresh()
+    // console.log('Teams updated')
+    // teamsTableData.value = teams.value
+    // console.log('Leaderboard updated')
+  }
+
+  eventSource.onopen = () => {
+    console.log('SSE connection opened')
   }
 
   eventSource.onerror = (error) => {
@@ -138,6 +132,6 @@ if (import.meta.client) {
     <div class="h-screen">
       <Line :data="chartData" :options="chartOptions" class="m-5 " />
     </div>
-    <UTable :data="teamsTableData && teamsTableData.length > 0 ? teamsTableData : [{ team_name: 'No data', current_points: 'No data', captured_flags: 'No data' }]" class="flex-1  mx-10" />
+    <UTable :data="teamsTableData" class="flex-1  mx-10" />
   </div>
 </template>
