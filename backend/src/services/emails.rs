@@ -1,13 +1,20 @@
+use crate::entities::users;
+use crate::routes::admin::email::send::EmailSendingModel;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::HttpResponse;
 use lettre::message::{Attachment, Mailbox, Mailboxes, MultiPart, SinglePart, header};
 use lettre::{Message, Transport};
+use sea_orm::{DatabaseConnection, EntityTrait};
+use serde::{Deserialize, Serialize};
 use std::option::Option;
+use utoipa::ToSchema;
 
+#[derive(Serialize, Deserialize, ToSchema)]
 pub enum EmailTemplate {
     HelloWorld,
     EmailConfirmation,
+    Generic,
 }
 
 impl EmailTemplate {
@@ -15,24 +22,34 @@ impl EmailTemplate {
         match self {
             EmailTemplate::HelloWorld => None,
             EmailTemplate::EmailConfirmation => Some(vec!["user".to_string(), "link".to_string()]),
+            EmailTemplate::Generic => Some(vec!["body".to_string()]),
         }
     }
+
     pub fn get_template(&self) -> &'static str {
         match self {
             EmailTemplate::HelloWorld => include_str!("emails_assets/hello_world.html"),
             EmailTemplate::EmailConfirmation => {
                 include_str!("emails_assets/email_confirmation.html")
             }
+            EmailTemplate::Generic => include_str!("emails_assets/generic.html"),
         }
     }
+
     pub fn is_logo_attached(&self) -> bool {
         match self {
             EmailTemplate::HelloWorld => false,
             EmailTemplate::EmailConfirmation => true,
+            EmailTemplate::Generic => true,
         }
+    }
+
+    pub fn list() -> Vec<Self> {
+        vec![Self::HelloWorld, Self::EmailConfirmation, Self::Generic]
     }
 }
 
+#[derive(Serialize, Deserialize, ToSchema)]
 pub struct Email {
     pub sender: (Option<String>, String),
     pub recipients: Vec<String>,
@@ -89,6 +106,35 @@ impl Email {
         let _email = smtp_client.send(&email).map_err(Error::FailedToSendEmail)?;
 
         Ok(HttpResponse::Ok().json("Email successfully sent"))
+    }
+
+    pub async fn from_admin_sending_model(
+        database: &DatabaseConnection,
+        model: EmailSendingModel,
+    ) -> Result<Self, Error> {
+        let mut recipients_emails = Vec::new();
+        if let Some(recipients) = model.recipients {
+            for recipient in recipients {
+                let user = users::Model::find_by_username(database, &recipient).await?;
+                recipients_emails.push(
+                    user.ok_or(Error::RecipientNotFound {
+                        username: recipient,
+                    })?
+                    .email,
+                );
+            }
+        } else {
+            let users = users::Entity::find().all(database).await?;
+            recipients_emails.extend(users.into_iter().map(|user| user.email));
+        }
+
+        Ok(Self {
+            sender: model.sender,
+            recipients: recipients_emails,
+            subject: model.subject,
+            template: model.template,
+            placeholders: model.placeholders,
+        })
     }
 
     fn parse_placeholders(&self) -> Result<String, Error> {

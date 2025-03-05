@@ -84,6 +84,8 @@ pub enum Error {
     AccessBeforeEventStart,
     #[error("You cannot access this endpoint after our event has finished")]
     AccessAfterEventEnd,
+    #[error("There is no user with username: {username}")]
+    RecipientNotFound { username: String },
     #[error("You cannot access this endpoint after during event")]
     AccessDuringEvent,
     #[error("Failed to parse URL {0}")]
@@ -119,7 +121,9 @@ impl error::ResponseError for Error {
             Error::InvalidAuthorizationHeader | Error::MissingExtension { .. } => {
                 StatusCode::BAD_REQUEST
             }
-            Error::UserNotFound | Error::RouteNotFound => StatusCode::NOT_FOUND,
+            Error::UserNotFound | Error::RouteNotFound | Error::RecipientNotFound { .. } => {
+                StatusCode::NOT_FOUND
+            }
             Error::Forbidden { .. }
             | Error::UserMustHaveHigherRoleThanAffectedUser
             | Error::AccessDuringEvent
