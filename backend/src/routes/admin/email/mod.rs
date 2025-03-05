@@ -1,9 +1,9 @@
-pub mod get_placeholders;
-pub mod get_templates;
+pub mod placeholders;
 pub mod send;
+pub mod templates;
 
 pub fn config(cfg: &mut utoipa_actix_web::service_config::ServiceConfig) {
     cfg.service(send::send);
-    cfg.service(get_placeholders::get_placeholders);
-    cfg.service(get_templates::get_templates);
+    cfg.service(placeholders::placeholders);
+    cfg.service(templates::templates);
 }

@@ -13,7 +13,7 @@ use actix_web::{HttpResponse, get};
     tag = "admin/email"
 )]
 #[get("/get_templates")]
-pub async fn get_templates() -> Result<HttpResponse, Error> {
+pub async fn templates() -> Result<HttpResponse, Error> {
     let templates = EmailTemplate::list();
     Ok(HttpResponse::Ok().json(templates))
 }

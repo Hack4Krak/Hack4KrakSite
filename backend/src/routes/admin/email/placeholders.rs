@@ -14,7 +14,7 @@ use actix_web::{HttpResponse, get};
     tag = "admin/email"
 )]
 #[get("/get_placeholders/{template}")]
-pub async fn get_placeholders(template: Path<EmailTemplate>) -> Result<HttpResponse, Error> {
+pub async fn placeholders(template: Path<EmailTemplate>) -> Result<HttpResponse, Error> {
     let placeholders = template.get_placeholder_elements().unwrap_or_default();
 
     Ok(HttpResponse::Ok().json(placeholders))

@@ -125,9 +125,7 @@ impl Email {
             }
         } else {
             let users = users::Entity::find().all(database).await?;
-            for user in users {
-                recipients_emails.push(user.email);
-            }
+            recipients_emails.extend(users.into_iter().map(|user| user.email));
         }
 
         Ok(Self {
