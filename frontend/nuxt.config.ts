@@ -13,6 +13,9 @@ export default defineNuxtConfig({
   experimental: {
     componentIslands: true,
   },
+  typescript: {
+    typeCheck: true,
+  },
 
   site: {
     url: baseUrl,

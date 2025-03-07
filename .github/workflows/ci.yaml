@@ -33,6 +33,9 @@ jobs:
         run: |
           pnpm frontend:install
 
+      - name: "Run type checks"
+        run: pnpm frontend:typecheck
+
       - name: "Run tests"
         run: pnpm frontend:test
 

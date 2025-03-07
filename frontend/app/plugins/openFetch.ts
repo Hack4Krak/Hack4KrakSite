@@ -21,7 +21,7 @@ export default defineNuxtPlugin((nuxtApp) => {
           context.error = data?.error
         },
         ...localOptions,
-      }), localFetch),
+      }), localFetch as typeof $fetch),
       auth: createOpenFetch(localOptions => ({
         ...clients.auth,
         retryStatusCodes: [401],
@@ -91,7 +91,7 @@ export default defineNuxtPlugin((nuxtApp) => {
           context.error = data.error
         },
         ...localOptions,
-      }), localFetch),
+      }), localFetch as typeof $fetch),
     },
   }
 })
