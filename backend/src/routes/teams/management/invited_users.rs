@@ -7,7 +7,7 @@ use actix_web::{HttpResponse, get};
 
 #[utoipa::path(
     responses(
-        (status = 200, description = "Successfully retrieved invitations to team"),
+        (status = 200, description = "Successfully retrieved invitations to team", body = Vec<String>),
         (status = 500, description = "Internal server error"),
     ),
     security(
