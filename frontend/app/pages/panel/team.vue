@@ -1,16 +1,16 @@
 <script setup lang="ts">
+import type { ApiResponse } from '#open-fetch'
+
 const { data: team } = await useAuth('/teams/membership/my_team', {
   key: 'teams-membership-my-team',
   method: 'GET',
 })
 
-let { data: invited_users } = await useAuth('/teams/management/invited_users', {
+const { data: invitedUsers } = await useAuth('/teams/management/invited_users', {
   key: 'teams-management-invited-users',
   method: 'GET',
   onResponseError: undefined,
 })
-
-invited_users = invited_users.value || []
 
 if (!team.value) {
   await navigateTo('/panel/')
@@ -32,9 +32,11 @@ const kickedUser = ref('')
 const revokeInvitationModal = ref(false)
 const revokedInvitation = ref('')
 
-const members = computed(() => {
-  const teamMembers = team?.value?.members || []
-  return [...teamMembers, ...Array.from({ length: 5 }).fill(null)].slice(0, 5)
+type Members = ApiResponse<'my_team'>['members']
+
+const members = computed<Members | null>(() => {
+  const teamMembers = (team?.value?.members as Members) || []
+  return [...teamMembers, ...Array.from({ length: 5 }).fill(null) as Members].slice(0, 5)
 })
 </script>
 
@@ -70,7 +72,7 @@ const members = computed(() => {
     />
     <PanelModalConfirmDeleteModal
       v-model="revokeInvitationModal"
-      :url="`/teams/management/revoke_invitation/${revokedInvitation}`"
+      :url="`/teams/management/revoke_invitation/${revokedInvitation}` as any"
       modal-title="Cofnięcie zaproszenia"
       modal-description="Czy na pewno chcesz cofnąć zaproszenie?"
       toast-success-message="Pomyślnie cofnięto zaproszenie"
@@ -121,9 +123,9 @@ const members = computed(() => {
             </div>
           </div>
         </div>
-        <div v-if="invited_users.length > 0" class="border-2 border-neutral-600 flex-grow rounded-2xl">
+        <div v-if="(invitedUsers ?? []).length > 0" class="border-2 border-neutral-600 flex-grow rounded-2xl">
           <div
-            v-for="(user) in invited_users" :key="user"
+            v-for="(user) in invitedUsers" :key="user"
             class="border-b-1 border-neutral-600 last-of-type:border-0 p-5"
           >
             <div class="flex justify-between items-center">

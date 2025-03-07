@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const route = useRoute()
-const taskId = route.params.id
+const taskId = String(route.params.id)
 </script>
 
 <template>
