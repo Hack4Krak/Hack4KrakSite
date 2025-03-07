@@ -1,10 +1,11 @@
+use crate::models::task::TaskAsset;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use actix_web::{HttpResponse, get, web};
 
 #[utoipa::path(
     responses(
-        (status = 200, description = "List of task assets."),
+        (status = 200, description = "List of task assets.", body = Vec<TaskAsset>),
         (status = 404, description = "Task does not exist."),
         (status = 500, description = "Internal server error.")
     ),
