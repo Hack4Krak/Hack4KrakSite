@@ -6,6 +6,7 @@
     "frontend:build": "pnpm --prefix ./frontend/ build",
     "frontend:install": "pnpm --filter ./frontend/ install",
     "frontend:test": "pnpm --prefix ./frontend/ test",
+    "frontend:typecheck": "pnpm --prefix ./frontend/ typecheck",
     "frontend:dev": "pnpm --prefix ./frontend/ dev",
     "frontend:lint": "pnpm --prefix ./frontend/ lint .",
     "frontend:lint:fix": "pnpm --prefix ./frontend/ lint:fix",
@@ -35,7 +36,13 @@
       "allowAny": [
         "*"
       ]
+    },
+    "patchedDependencies": {
+      "@nuxt/image": "patches/@nuxt__image.patch"
     }
+  },
+  "resolutions": {
+    "unimport": "3.14.5"
   },
   "engines": {
     "node": ">=22.5.1"

@@ -2,17 +2,16 @@
 import { FetchError } from 'ofetch'
 
 const props = defineProps<{
-  taskId?: string | undefined
+  taskId: string
 }>()
 
 const description = ref('')
 
 try {
-  const taskId = String(props.taskId)
   const address = '/tasks/description/{task_id}'
   const { data: response } = await useApi(address, {
-    path: { task_id: taskId },
-    key: `task-description-${taskId}`,
+    path: { task_id: props.taskId },
+    key: `task-description-${props.taskId}`,
   })
 
   if (response.value === undefined) {
@@ -33,7 +32,7 @@ try {
   showError(error)
 }
 
-const { data: assets } = await useAuth(`/tasks/assets/list/{task_id}`, {
+const { data: assets } = await useAuth('/tasks/assets/list/{task_id}', {
   path: {
     task_id: props.taskId ?? '',
   },
@@ -42,7 +41,7 @@ const { data: assets } = await useAuth(`/tasks/assets/list/{task_id}`, {
 
 const { error: solutionError } = await useAuth('/tasks/solution/{task_id}', {
   path: {
-    task_id: props.taskId?.toString() ?? '',
+    task_id: props.taskId,
   },
   key: `task-solution-${props.taskId}`,
   onResponseError: () => {
