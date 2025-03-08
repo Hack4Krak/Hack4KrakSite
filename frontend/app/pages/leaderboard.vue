@@ -92,34 +92,25 @@ const { data: teams, refresh: teamsRefresh } = await useApi('/leaderboard/teams'
   key: 'leaderboard-teams',
 })
 
-const teamsTableData = ref(teams.value && teams.value.length > 0 ? teams.value : [{ team_name: 'No data', current_points: 'No data', captured_flags: 'No data' }])
+const defaultTableData = [{ team_name: 'No data', current_points: 0, captured_flags: 0 }]
 
-async function updateLeaderboard() {
-  // It's necessary to reassign the value, because if it was undefined before, it will not update after the refresh
+const teamsTableData = ref(teams.value && teams.value.length > 0 ? teams.value : defaultTableData)
 
-  console.log(teams.value)
-}
+const toast = useToast()
 
 if (import.meta.client) {
-  const sseBackendAddress = `${useRuntimeConfig().public.openFetch.api.baseURL}/leaderboard/events`
+  const sseBackendAddress = `${useRuntimeConfig().public.openFetch.api.baseURL}/leaderboard/updates`
 
   const eventSource = new EventSource(sseBackendAddress)
-  eventSource.onmessage = (event) => {
-    console.log(`Event received ${event.data}`)
-    // chartRefresh()
-    // console.log('Chart updated')
-    // teamsRefresh()
-    // console.log('Teams updated')
-    // teamsTableData.value = teams.value
-    // console.log('Leaderboard updated')
-  }
-
-  eventSource.onopen = () => {
-    console.log('SSE connection opened')
+  eventSource.onmessage = async () => {
+    await chartRefresh()
+    await teamsRefresh()
+    // It's necessary to reassign the value, because if it was undefined before, it will not update after the refresh
+    teamsTableData.value = teams.value ?? defaultTableData
   }
 
   eventSource.onerror = (error) => {
-    console.error('SSE connection error', error)
+    toast.add({ title: 'Błąd połączenia', description: error.message ?? 'Nie można połączyć się z serwerem', color: 'error' })
   }
 }
 </script>
