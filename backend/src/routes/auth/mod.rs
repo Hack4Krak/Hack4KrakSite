@@ -4,6 +4,7 @@ mod logout;
 mod oauth;
 mod refresh;
 mod register;
+pub mod reset_password;
 
 use crate::utils::error::error_response_builder;
 use actix_web::error;
@@ -22,6 +23,8 @@ pub fn config(cfg: &mut utoipa_actix_web::service_config::ServiceConfig) {
     cfg.service(oauth::google::google_callback);
     cfg.service(oauth::google::google);
     cfg.service(confirm::confirm_email);
+    cfg.service(reset_password::request_reset_password);
+    cfg.service(reset_password::reset_password);
 }
 
 #[derive(Debug, Error)]
