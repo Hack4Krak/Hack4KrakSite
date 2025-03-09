@@ -36,7 +36,7 @@ const colors = [
   '#800000',
 ]
 
-const { data, refresh: chartRefresh } = await useApi('/leaderboard/chart', {
+const { data, refresh: refreshChart } = await useApi('/leaderboard/chart', {
   key: 'leaderboard-chart',
 })
 
@@ -88,7 +88,7 @@ const chartOptions = ref<ChartOptions<'line'>>({
   },
 })
 
-const { data: teams, refresh: teamsRefresh } = await useApi('/leaderboard/teams', {
+const { data: teams, refresh: refreshTeams } = await useApi('/leaderboard/teams', {
   key: 'leaderboard-teams',
 })
 
@@ -103,8 +103,8 @@ if (import.meta.client) {
 
   const eventSource = new EventSource(sseBackendAddress)
   eventSource.onmessage = async () => {
-    await chartRefresh()
-    await teamsRefresh()
+    await refreshChart()
+    await refreshTeams()
     // It's necessary to reassign the value, because if it was undefined before, it will not update after the refresh
     teamsTableData.value = teams.value ?? defaultTableData
   }
