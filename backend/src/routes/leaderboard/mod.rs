@@ -3,11 +3,16 @@ use actix_web::{HttpResponse, ResponseError};
 use thiserror::Error;
 
 mod chart;
+mod sse_handler;
 mod teams;
 
 pub fn config(cfg: &mut utoipa_actix_web::service_config::ServiceConfig) {
     cfg.service(chart::chart);
     cfg.service(teams::teams);
+    cfg.route(
+        "/updates",
+        actix_web::web::get().to(sse_handler::sse_handler),
+    );
 }
 
 #[derive(Debug, Error)]
