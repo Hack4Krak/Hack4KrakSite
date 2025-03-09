@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { ApiResponse } from '#open-fetch'
+import type { TableColumn } from '@nuxt/ui'
 import type { ChartOptions } from 'chart.js'
 import {
   CategoryScale,
@@ -12,9 +14,12 @@ import {
   Tooltip,
 } from 'chart.js'
 import moment from 'moment-timezone'
+
 import { Line } from 'vue-chartjs'
 
 import 'chartjs-adapter-moment'
+
+export type Team = ApiResponse<'teams'>[0]
 
 ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, TimeScale)
 
@@ -48,7 +53,7 @@ const adjustedTimestamps = computed(() => {
   ) ?? []
 })
 
-const chartData = ref({
+const chartData = computed(() => ({
   labels: adjustedTimestamps,
   datasets: (data.value?.team_points_over_time || []).map((item, index) => ({
     label: item.label,
@@ -56,7 +61,7 @@ const chartData = ref({
     borderColor: colors[index % colors.length],
     lineTension: 0.2,
   })),
-})
+}))
 
 const { data: eventInformation } = await useApi('/event/info', {
   key: 'leaderboard-event-info',
@@ -92,9 +97,19 @@ const { data: teams, refresh: refreshTeams } = await useApi('/leaderboard/teams'
   key: 'leaderboard-teams',
 })
 
-const defaultTableData = [{ team_name: 'No data', current_points: 0, captured_flags: 0 }]
+const columns: TableColumn<Team>[] = [
+  {
+    accessorKey: 'team_name',
+  },
+  {
+    accessorKey: 'current_points',
+  },
+  {
+    accessorKey: 'captured_flags',
+  },
+]
 
-const teamsTableData = ref(teams.value && teams.value.length > 0 ? teams.value : defaultTableData)
+const teamsTableData = computed(() => teams.value ?? [])
 
 const toast = useToast()
 
@@ -105,8 +120,6 @@ if (import.meta.client) {
   eventSource.onmessage = async () => {
     await refreshChart()
     await refreshTeams()
-    // It's necessary to reassign the value, because if it was undefined before, it will not update after the refresh
-    teamsTableData.value = teams.value ?? defaultTableData
   }
 
   eventSource.onerror = (error) => {
@@ -123,6 +136,6 @@ if (import.meta.client) {
     <div class="h-screen">
       <Line :data="chartData" :options="chartOptions" class="m-5 " />
     </div>
-    <UTable :data="teamsTableData" class="flex-1  mx-10" />
+    <UTable :data="teamsTableData" :columns="columns" class="flex-1  mx-10" />
   </div>
 </template>
