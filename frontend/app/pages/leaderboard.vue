@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { ApiResponse } from '#open-fetch'
+import type { TableColumn } from '@nuxt/ui'
 import type { ChartOptions } from 'chart.js'
 import {
   CategoryScale,
@@ -12,9 +14,12 @@ import {
   Tooltip,
 } from 'chart.js'
 import moment from 'moment-timezone'
+
 import { Line } from 'vue-chartjs'
 
 import 'chartjs-adapter-moment'
+
+export type Team = ApiResponse<'teams'>[0]
 
 ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, TimeScale)
 
@@ -36,7 +41,7 @@ const colors = [
   '#800000',
 ]
 
-const { data } = await useApi('/leaderboard/chart', {
+const { data, refresh: refreshChart } = await useApi('/leaderboard/chart', {
   key: 'leaderboard-chart',
 })
 
@@ -48,7 +53,7 @@ const adjustedTimestamps = computed(() => {
   ) ?? []
 })
 
-const chartData = ref({
+const chartData = computed(() => ({
   labels: adjustedTimestamps,
   datasets: (data.value?.team_points_over_time || []).map((item, index) => ({
     label: item.label,
@@ -56,7 +61,7 @@ const chartData = ref({
     borderColor: colors[index % colors.length],
     lineTension: 0.2,
   })),
-})
+}))
 
 const { data: eventInformation } = await useApi('/event/info', {
   key: 'leaderboard-event-info',
@@ -88,9 +93,39 @@ const chartOptions = ref<ChartOptions<'line'>>({
   },
 })
 
-const { data: teams } = await useApi('/leaderboard/teams', {
+const { data: teams, refresh: refreshTeams } = await useApi('/leaderboard/teams', {
   key: 'leaderboard-teams',
 })
+
+const columns: TableColumn<Team>[] = [
+  {
+    accessorKey: 'team_name',
+  },
+  {
+    accessorKey: 'current_points',
+  },
+  {
+    accessorKey: 'captured_flags',
+  },
+]
+
+const teamsTableData = computed(() => teams.value ?? [])
+
+const toast = useToast()
+
+if (import.meta.client) {
+  const sseBackendAddress = `${useRuntimeConfig().public.openFetch.api.baseURL}/leaderboard/updates`
+
+  const eventSource = new EventSource(sseBackendAddress)
+  eventSource.onmessage = async () => {
+    await refreshChart()
+    await refreshTeams()
+  }
+
+  eventSource.onerror = (error) => {
+    toast.add({ title: 'Błąd połączenia', description: error.message ?? 'Nie można połączyć się z serwerem', color: 'error' })
+  }
+}
 </script>
 
 <template>
@@ -101,6 +136,6 @@ const { data: teams } = await useApi('/leaderboard/teams', {
     <div class="h-screen">
       <Line :data="chartData" :options="chartOptions" class="m-5 " />
     </div>
-    <UTable :data="teams ?? []" class="flex-1  mx-10" />
+    <UTable :data="teamsTableData" :columns="columns" class="flex-1  mx-10" />
   </div>
 </template>

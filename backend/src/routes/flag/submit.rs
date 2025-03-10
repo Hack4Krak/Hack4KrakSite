@@ -55,6 +55,10 @@ pub async fn submit(
 
     flag_capture::Model::completed(&app_state.database, team, task.key().to_string()).await?;
 
+    let _ = app_state
+        .leaderboard_updates_transmitter
+        .send("Flag submitted".to_string());
+
     Ok(HttpResponse::Ok().json(SubmitModel {
         flag: task.key().clone(),
     }))
