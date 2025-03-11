@@ -10,20 +10,20 @@ mod invitations;
 mod management;
 mod membership;
 
-pub fn config(cfg: &mut utoipa_actix_web::service_config::ServiceConfig) {
-    cfg.service(create::create);
-    cfg.service(confirm::confirm);
-    cfg.service(
+pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
+    config.service(create::create);
+    config.service(confirm::confirm);
+    config.service(
         scope("/invitations")
             .wrap(AuthMiddleware::with_user())
             .configure(invitations::config),
     );
-    cfg.service(
+    config.service(
         scope("/membership")
             .wrap(AuthMiddleware::with_team_as_member())
             .configure(membership::config),
     );
-    cfg.service(
+    config.service(
         scope("/management")
             .wrap(AuthMiddleware::with_team_as_leader())
             .configure(management::config),

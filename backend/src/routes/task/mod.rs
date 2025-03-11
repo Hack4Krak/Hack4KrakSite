@@ -13,15 +13,15 @@ mod list;
 mod solution;
 mod story;
 
-pub fn config(cfg: &mut utoipa_actix_web::service_config::ServiceConfig) {
-    cfg.service(list::list);
-    cfg.service(icon::icon);
-    cfg.service(story::story);
-    cfg.service(background::background);
-    cfg.service(description::description);
-    cfg.service(solution::solution);
-    cfg.service(scope("/assets").configure(assets::config));
-    cfg.service(count::count);
+pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
+    config.service(list::list);
+    config.service(icon::icon);
+    config.service(story::story);
+    config.service(background::background);
+    config.service(description::description);
+    config.service(solution::solution);
+    config.service(scope("/assets").configure(assets::config));
+    config.service(count::count);
 }
 
 #[derive(Debug, Error)]

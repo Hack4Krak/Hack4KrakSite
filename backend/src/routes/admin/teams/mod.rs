@@ -4,8 +4,8 @@ mod generate_confirmation_code;
 mod list;
 pub mod update;
 
-pub fn config(cfg: &mut utoipa_actix_web::service_config::ServiceConfig) {
-    cfg.service(list::list);
-    cfg.service(update::update);
-    cfg.service(delete::delete);
+pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
+    config.service(list::list);
+    config.service(update::update);
+    config.service(delete::delete);
 }
