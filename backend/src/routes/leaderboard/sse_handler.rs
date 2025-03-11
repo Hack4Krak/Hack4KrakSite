@@ -24,10 +24,11 @@ pub async fn sse_handler(app_state: web::Data<app_state::AppState>) -> impl Resp
 }
 
 #[derive(Serialize)]
-pub enum SSEMessage {
+pub enum SseMessage {
     LeaderboardUpdate {
         task_id: String,
         task_name: String,
+        is_first_flag_submission: bool,
         team_name: String,
         username: String,
     },

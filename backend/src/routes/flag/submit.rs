@@ -2,7 +2,7 @@ use crate::entities::sea_orm_active_enums::TeamStatus;
 use crate::entities::{flag_capture, teams, users};
 use crate::routes::flag::AuthMiddleware;
 use crate::routes::flag::FlagError;
-use crate::routes::leaderboard::sse_handler::SSEMessage;
+use crate::routes::leaderboard::sse_handler::SseMessage;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::web::{Data, Json};
@@ -55,14 +55,16 @@ pub async fn submit(
         .find_by_flag(flag)
         .ok_or(Error::Flag(FlagError::InvalidFlag))?;
 
-    flag_capture::Model::completed(&app_state.database, team.clone(), task.key().to_string())
-        .await?;
+    let is_first_submission =
+        flag_capture::Model::completed(&app_state.database, team.clone(), task.key().to_string())
+            .await?;
 
     let _ = app_state
         .leaderboard_updates_transmitter
-        .send(serde_json::to_string(&SSEMessage::LeaderboardUpdate {
+        .send(serde_json::to_string(&SseMessage::LeaderboardUpdate {
             task_id: task.key().to_string(),
             task_name: task.value().description.name.to_string(),
+            is_first_flag_submission: is_first_submission,
             team_name: team.name,
             username: user.username,
         })?);
