@@ -27,7 +27,7 @@ migration = { path = "migration" }
 # Web
 actix-web = { version = "4.10.2", features = ["cookies"] }
 actix-web-validation = { version = "0.8.0", features = ["validator"] }
-actix-cors = "0.7.0"
+actix-cors = "0.7.1"
 actix-governor = "0.8.0"
 
 # Serde
