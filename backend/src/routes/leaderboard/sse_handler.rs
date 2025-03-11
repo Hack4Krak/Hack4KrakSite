@@ -2,6 +2,7 @@ use crate::utils::app_state;
 use actix_web::web::Bytes;
 use actix_web::{HttpResponse, Responder, web};
 use async_stream::stream;
+use serde::Serialize;
 
 pub async fn sse_handler(app_state: web::Data<app_state::AppState>) -> impl Responder {
     let tx = &app_state.leaderboard_updates_transmitter;
@@ -20,4 +21,14 @@ pub async fn sse_handler(app_state: web::Data<app_state::AppState>) -> impl Resp
     HttpResponse::Ok()
         .content_type("text/event-stream")
         .streaming(server_events)
+}
+
+#[derive(Serialize)]
+pub enum SSEMessage {
+    LeaderboardUpdate {
+        task_id: String,
+        task_name: String,
+        team_name: String,
+        username: String,
+    },
 }

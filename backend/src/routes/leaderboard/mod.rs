@@ -3,7 +3,7 @@ use actix_web::{HttpResponse, ResponseError};
 use thiserror::Error;
 
 mod chart;
-mod sse_handler;
+pub mod sse_handler;
 mod teams;
 
 pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {

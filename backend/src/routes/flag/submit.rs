@@ -1,7 +1,8 @@
 use crate::entities::sea_orm_active_enums::TeamStatus;
-use crate::entities::{flag_capture, teams};
+use crate::entities::{flag_capture, teams, users};
 use crate::routes::flag::AuthMiddleware;
 use crate::routes::flag::FlagError;
+use crate::routes::leaderboard::sse_handler::SSEMessage;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::web::{Data, Json};
@@ -34,6 +35,7 @@ pub async fn submit(
     app_state: Data<AppState>,
     model: Validated<Json<SubmitModel>>,
     team: teams::Model,
+    user: users::Model,
 ) -> Result<HttpResponse, Error> {
     if team.status != TeamStatus::Confirmed {
         return Err(Error::Flag(FlagError::TeamNotConfirmed));
@@ -53,11 +55,17 @@ pub async fn submit(
         .find_by_flag(flag)
         .ok_or(Error::Flag(FlagError::InvalidFlag))?;
 
-    flag_capture::Model::completed(&app_state.database, team, task.key().to_string()).await?;
+    flag_capture::Model::completed(&app_state.database, team.clone(), task.key().to_string())
+        .await?;
 
     let _ = app_state
         .leaderboard_updates_transmitter
-        .send("Flag submitted".to_string());
+        .send(serde_json::to_string(&SSEMessage::LeaderboardUpdate {
+            task_id: task.key().to_string(),
+            task_name: task.value().description.name.to_string(),
+            team_name: team.name,
+            username: user.username,
+        })?);
 
     Ok(HttpResponse::Ok().json(SubmitModel {
         flag: task.key().clone(),
