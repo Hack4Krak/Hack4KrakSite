@@ -53,15 +53,17 @@ const adjustedTimestamps = computed(() => {
   ) ?? []
 })
 
-const chartData = computed(() => ({
+const datasets = computed(() => (data.value?.team_points_over_time || []).map((item, index) => ({
+  label: item.label,
+  data: item.points,
+  borderColor: colors[index % colors.length],
+  lineTension: 0.2,
+})))
+
+const chartData = ref({
   labels: adjustedTimestamps,
-  datasets: (data.value?.team_points_over_time || []).map((item, index) => ({
-    label: item.label,
-    data: item.points,
-    borderColor: colors[index % colors.length],
-    lineTension: 0.2,
-  })),
-}))
+  datasets,
+})
 
 const { data: eventInformation } = await useApi('/event/info', {
   key: 'leaderboard-event-info',
