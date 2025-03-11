@@ -5,9 +5,9 @@ use thiserror::Error;
 mod chart;
 mod teams;
 
-pub fn config(cfg: &mut utoipa_actix_web::service_config::ServiceConfig) {
-    cfg.service(chart::chart);
-    cfg.service(teams::teams);
+pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
+    config.service(chart::chart);
+    config.service(teams::teams);
 }
 
 #[derive(Debug, Error)]

@@ -1,5 +1,5 @@
 mod refresh;
 
-pub fn config(cfg: &mut utoipa_actix_web::service_config::ServiceConfig) {
-    cfg.service(refresh::refresh);
+pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
+    config.service(refresh::refresh);
 }

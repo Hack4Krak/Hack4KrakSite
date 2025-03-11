@@ -12,16 +12,16 @@ pub use login::LoginModel;
 pub use register::RegisterModel;
 use thiserror::Error;
 
-pub fn config(cfg: &mut utoipa_actix_web::service_config::ServiceConfig) {
-    cfg.service(register::register);
-    cfg.service(login::login);
-    cfg.service(logout::logout);
-    cfg.service(refresh::refresh);
-    cfg.service(oauth::github::github);
-    cfg.service(oauth::github::github_callback);
-    cfg.service(oauth::google::google_callback);
-    cfg.service(oauth::google::google);
-    cfg.service(confirm::confirm_email);
+pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
+    config.service(register::register);
+    config.service(login::login);
+    config.service(logout::logout);
+    config.service(refresh::refresh);
+    config.service(oauth::github::github);
+    config.service(oauth::github::github_callback);
+    config.service(oauth::google::google_callback);
+    config.service(oauth::google::google);
+    config.service(confirm::confirm_email);
 }
 
 #[derive(Debug, Error)]
