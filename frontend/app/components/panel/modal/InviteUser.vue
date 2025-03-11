@@ -12,24 +12,27 @@ const state = reactive<Partial<Schema>>({
   name: undefined,
 })
 
+const { $auth } = useNuxtApp()
+
 const toast = useToast()
 const open = defineModel<boolean>()
 const formRef = useTemplateRef('form')
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  const { error } = await useAuth('/teams/management/invite_user', {
-    key: 'teams-invite',
+  const response = await $auth('/teams/management/invite_user', {
     method: 'POST',
     body: {
       username: event.data.name,
     },
-  })
+  }).catch()
 
-  if (error.value?.data === undefined) {
-    toast.add({ title: 'Sukces', description: 'Pomyślnie zaproszono użytkownika', color: 'success' })
-    open.value = false
-    navigateTo('/panel/team', { external: true })
+  if ((response as any).error) {
+    return
   }
+
+  toast.add({ title: 'Sukces', description: 'Pomyślnie zaproszono użytkownika', color: 'success' })
+  open.value = false
+  navigateTo('/panel/team', { external: true })
 }
 </script>
 
