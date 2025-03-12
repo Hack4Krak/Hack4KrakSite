@@ -33,9 +33,6 @@ importers:
       '@nuxt/image':
         specifier: 1.9.0
         version: 1.9.0(patch_hash=855617cd17c2c22d6dc8a8220d774a5dbf9ebcf72b2510b0848046d404f21192)(db0@0.3.1(@libsql/client@0.14.0)(better-sqlite3@11.8.1))(ioredis@5.6.0)(magicast@0.3.5)(rollup@4.34.9)
-      '@nuxt/scripts':
-        specifier: 0.11.1
-        version: 0.11.1(@types/google.maps@3.58.1)(@types/vimeo__player@2.18.3)(@types/youtube@0.1.0)(@unhead/vue@2.0.0-rc.10(vue@3.5.13(typescript@5.8.2)))(db0@0.3.1(@libsql/client@0.14.0)(better-sqlite3@11.8.1))(ioredis@5.6.0)(magicast@0.3.5)(nuxt@3.16.0(@libsql/client@0.14.0)(@parcel/watcher@2.5.1)(@types/node@22.13.4)(better-sqlite3@11.8.1)(db0@0.3.1(@libsql/client@0.14.0)(better-sqlite3@11.8.1))(eslint@9.22.0(jiti@2.4.2))(ioredis@5.6.0)(lightningcss@1.29.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.34.9)(terser@5.38.1)(tsx@4.19.2)(typescript@5.8.2)(vite@6.2.1(@types/node@22.13.4)(jiti@2.4.2)(lightningcss@1.29.1)(terser@5.38.1)(tsx@4.19.2)(yaml@2.7.0))(vue-tsc@2.2.2(typescript@5.8.2))(yaml@2.7.0))(rollup@4.34.9)(typescript@5.8.2)
       '@nuxt/ui':
         specifier: https://pkg.pr.new/@nuxt/ui@6e03d9c
         version: https://pkg.pr.new/@nuxt/ui@6e03d9c(@babel/parser@7.26.9)(change-case@5.4.4)(db0@0.3.1(@libsql/client@0.14.0)(better-sqlite3@11.8.1))(embla-carousel@8.5.2)(focus-trap@7.6.4)(ioredis@5.6.0)(magicast@0.3.5)(rollup@4.34.9)(typescript@5.8.2)(vite@6.2.1(@types/node@22.13.4)(jiti@2.4.2)(lightningcss@1.29.1)(terser@5.38.1)(tsx@4.19.2)(yaml@2.7.0))
@@ -1156,25 +1153,6 @@ packages:
     resolution: {integrity: sha512-uCpcqWO6C4P5c4vi1/sq5GyajO0EOp+ZWFtPrnKaJ1pXAhA+W1aMVxAjfi2f18QMJHuRXBz1TouFg1RmWA6FuA==}
     engines: {node: ^14.18.0 || >=16.10.0}
 
-  '@nuxt/scripts@0.11.1':
-    resolution: {integrity: sha512-nRZ/GXcH9Gc3iGvuBZqz+34Enl9KFMapcMJVcMyg0b0dKbQjwLeQ644ToPWLJmlOE0tQmvTiUU8hTWLjE5EB6Q==}
-    peerDependencies:
-      '@stripe/stripe-js': ^5.10.0
-      '@types/google.maps': ^3.58.1
-      '@types/vimeo__player': ^2.18.3
-      '@types/youtube': ^0.1.0
-      '@unhead/vue': ^2.0.0-rc.8
-      nuxt: ^3.16.0
-    peerDependenciesMeta:
-      '@stripe/stripe-js':
-        optional: true
-      '@types/google.maps':
-        optional: true
-      '@types/vimeo__player':
-        optional: true
-      '@types/youtube':
-        optional: true
-
   '@nuxt/telemetry@2.6.5':
     resolution: {integrity: sha512-lwMp9OHML/m0mjh7P5iz9PxINnk5smGkGebh88Wh8PjvnRooY1TBsbyq7mlSrNibpwD1BkwqhV5IAZOXWHLxMQ==}
     engines: {node: '>=18.12.0'}
@@ -1965,9 +1943,6 @@ packages:
   '@types/estree@1.0.6':
     resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
 
-  '@types/google.maps@3.58.1':
-    resolution: {integrity: sha512-X9QTSvGJ0nCfMzYOnaVs/k6/4L+7F5uCS+4iUmkLEls6J9S/Phv+m/i3mDeyc49ZBgwab3EFO1HEoBY7k98EGQ==}
-
   '@types/hast@3.0.4':
     resolution: {integrity: sha512-WPs+bbQw5aCj+x6laNGWLH3wviHtoCv/P3+otBhbOhJgG8qtpdAMlTCxLtsTWA7LH1Oh/bFCHsBn0TPS5m30EQ==}
 
@@ -2007,9 +1982,6 @@ packages:
   '@types/unist@3.0.3':
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
 
-  '@types/vimeo__player@2.18.3':
-    resolution: {integrity: sha512-IzSzb6doT4I4uAnBHa+mBCiNtK7iAllEJjtpkX0sKY6/s1Vi+aX1134IAiPgiyFlMvFab/oZQpSeccK4r0/T2A==}
-
   '@types/web-bluetooth@0.0.20':
     resolution: {integrity: sha512-g9gZnnXVq7gM7v3tJCWV/qw7w+KeOlSHAhgF9RytFyifW6AF61hdT2ucrYhPq9hLs5JIryeupHV3qGk95dH9ow==}
 
@@ -2018,9 +1990,6 @@ packages:
 
   '@types/ws@8.18.0':
     resolution: {integrity: sha512-8svvI3hMyvN0kKCJMvTJP/x6Y/EoQbepff882wL+Sn5QsXb3etnamgrJq4isrBxSJj5L2AuXcI0+bgkoAXGUJw==}
-
-  '@types/youtube@0.1.0':
-    resolution: {integrity: sha512-Pg33m3X2mFgdmhtvzOlAfUfgOa3341N3/2JCrVY/mXVxb4hagcqqEG6w4vGCfB64StQNWHSj/T8Eotb1Rko/FQ==}
 
   '@typescript-eslint/eslint-plugin@8.26.1':
     resolution: {integrity: sha512-2X3mwqsj9Bd3Ciz508ZUtoQQYpOhU/kWoUqIf49H8Z0+Vbh6UF/y0OEYp0Q0axOGzaBGs7QxRwq0knSQ8khQNA==}
@@ -6027,14 +5996,6 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  valibot@1.0.0-rc.3:
-    resolution: {integrity: sha512-LT0REa7Iqx4QGcaHLiTiTkcmJqJ9QdpOy89HALFFBJgejTS64GQFRIbDF7e4f6pauQbo/myfKGmWXCLhMeM6+g==}
-    peerDependencies:
-      typescript: '>=5'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-
   validate-npm-package-license@3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
 
@@ -7663,53 +7624,6 @@ snapshots:
       pathe: 2.0.3
       std-env: 3.8.1
 
-  '@nuxt/scripts@0.11.1(@types/google.maps@3.58.1)(@types/vimeo__player@2.18.3)(@types/youtube@0.1.0)(@unhead/vue@2.0.0-rc.10(vue@3.5.13(typescript@5.8.2)))(db0@0.3.1(@libsql/client@0.14.0)(better-sqlite3@11.8.1))(ioredis@5.6.0)(magicast@0.3.5)(nuxt@3.16.0(@libsql/client@0.14.0)(@parcel/watcher@2.5.1)(@types/node@22.13.4)(better-sqlite3@11.8.1)(db0@0.3.1(@libsql/client@0.14.0)(better-sqlite3@11.8.1))(eslint@9.22.0(jiti@2.4.2))(ioredis@5.6.0)(lightningcss@1.29.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.34.9)(terser@5.38.1)(tsx@4.19.2)(typescript@5.8.2)(vite@6.2.1(@types/node@22.13.4)(jiti@2.4.2)(lightningcss@1.29.1)(terser@5.38.1)(tsx@4.19.2)(yaml@2.7.0))(vue-tsc@2.2.2(typescript@5.8.2))(yaml@2.7.0))(rollup@4.34.9)(typescript@5.8.2)':
-    dependencies:
-      '@nuxt/kit': 3.16.0(magicast@0.3.5)(rollup@4.34.9)
-      '@unhead/vue': 2.0.0-rc.10(vue@3.5.13(typescript@5.8.2))
-      '@vueuse/core': 12.8.2(typescript@5.8.2)
-      consola: 3.4.0
-      defu: 6.1.4
-      h3: 1.15.1
-      magic-string: 0.30.17
-      nuxt: 3.16.0(@libsql/client@0.14.0)(@parcel/watcher@2.5.1)(@types/node@22.13.4)(better-sqlite3@11.8.1)(db0@0.3.1(@libsql/client@0.14.0)(better-sqlite3@11.8.1))(eslint@9.22.0(jiti@2.4.2))(ioredis@5.6.0)(lightningcss@1.29.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.34.9)(terser@5.38.1)(tsx@4.19.2)(typescript@5.8.2)(vite@6.2.1(@types/node@22.13.4)(jiti@2.4.2)(lightningcss@1.29.1)(terser@5.38.1)(tsx@4.19.2)(yaml@2.7.0))(vue-tsc@2.2.2(typescript@5.8.2))(yaml@2.7.0)
-      ofetch: 1.4.1
-      ohash: 2.0.11
-      pathe: 2.0.3
-      pkg-types: 2.1.0
-      sirv: 3.0.1
-      std-env: 3.8.1
-      ufo: 1.5.4
-      unplugin: 2.2.0
-      unstorage: 1.15.0(db0@0.3.1(@libsql/client@0.14.0)(better-sqlite3@11.8.1))(ioredis@5.6.0)
-      valibot: 1.0.0-rc.3(typescript@5.8.2)
-    optionalDependencies:
-      '@types/google.maps': 3.58.1
-      '@types/vimeo__player': 2.18.3
-      '@types/youtube': 0.1.0
-    transitivePeerDependencies:
-      - '@azure/app-configuration'
-      - '@azure/cosmos'
-      - '@azure/data-tables'
-      - '@azure/identity'
-      - '@azure/keyvault-secrets'
-      - '@azure/storage-blob'
-      - '@capacitor/preferences'
-      - '@deno/kv'
-      - '@netlify/blobs'
-      - '@planetscale/database'
-      - '@upstash/redis'
-      - '@vercel/blob'
-      - '@vercel/kv'
-      - aws4fetch
-      - db0
-      - idb-keyval
-      - ioredis
-      - magicast
-      - rollup
-      - typescript
-      - uploadthing
-
   '@nuxt/telemetry@2.6.5(magicast@0.3.5)(rollup@4.34.9)':
     dependencies:
       '@nuxt/kit': 3.16.0(magicast@0.3.5)(rollup@4.34.9)
@@ -8617,9 +8531,6 @@ snapshots:
 
   '@types/estree@1.0.6': {}
 
-  '@types/google.maps@3.58.1':
-    optional: true
-
   '@types/hast@3.0.4':
     dependencies:
       '@types/unist': 3.0.3
@@ -8654,9 +8565,6 @@ snapshots:
 
   '@types/unist@3.0.3': {}
 
-  '@types/vimeo__player@2.18.3':
-    optional: true
-
   '@types/web-bluetooth@0.0.20': {}
 
   '@types/web-bluetooth@0.0.21': {}
@@ -8664,9 +8572,6 @@ snapshots:
   '@types/ws@8.18.0':
     dependencies:
       '@types/node': 22.13.4
-    optional: true
-
-  '@types/youtube@0.1.0':
     optional: true
 
   '@typescript-eslint/eslint-plugin@8.26.1(@typescript-eslint/parser@8.26.1(eslint@9.22.0(jiti@2.4.2))(typescript@5.8.2))(eslint@9.22.0(jiti@2.4.2))(typescript@5.8.2)':
@@ -13758,10 +13663,6 @@ snapshots:
   urlpattern-polyfill@8.0.2: {}
 
   util-deprecate@1.0.2: {}
-
-  valibot@1.0.0-rc.3(typescript@5.8.2):
-    optionalDependencies:
-      typescript: 5.8.2
 
   validate-npm-package-license@3.0.4:
     dependencies:
