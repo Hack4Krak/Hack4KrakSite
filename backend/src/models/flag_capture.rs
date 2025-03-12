@@ -1,12 +1,10 @@
 use crate::entities::{flag_capture, teams};
 use crate::routes::flag::FlagError;
-use crate::routes::task::TaskError;
 use crate::utils::error::Error;
 use chrono::Local;
 use sea_orm::ActiveValue::Set;
 use sea_orm::{
-    ColumnTrait, DatabaseConnection, EntityTrait, PaginatorTrait, QueryFilter, TryInsertResult,
-    sea_query,
+    ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, TryInsertResult, sea_query,
 };
 
 impl flag_capture::Model {
@@ -15,9 +13,11 @@ impl flag_capture::Model {
         team: teams::Model,
         task_id: String,
     ) -> Result<bool, Error> {
+        let is_first_flag_submission = Self::any_flags_submitted(database, task_id.clone()).await?;
+
         let result = flag_capture::Entity::insert(flag_capture::ActiveModel {
             team: Set(team.id),
-            task: Set(task_id.clone()),
+            task: Set(task_id),
             submitted_at: Set(Local::now().naive_local()),
             ..Default::default()
         })
@@ -34,25 +34,19 @@ impl flag_capture::Model {
         .await?;
 
         match result {
-            TryInsertResult::Inserted(_) => {
-                Ok(Self::is_first_flag_submission(database, task_id).await?)
-            }
+            TryInsertResult::Inserted(_) => Ok(is_first_flag_submission),
             _ => Err(Error::Flag(FlagError::AlreadySubmittedFlag)),
         }
     }
 
-    pub async fn is_first_flag_submission(
+    pub async fn any_flags_submitted(
         database: &DatabaseConnection,
         task_id: String,
     ) -> Result<bool, Error> {
-        match flag_capture::Entity::find()
+        Ok(flag_capture::Entity::find()
             .filter(flag_capture::Column::Task.eq(task_id))
-            .count(database)
-            .await
-            .map_err(|_| Error::Task(TaskError::InvalidTaskId))?
-        {
-            1 => Ok(true),
-            _ => Ok(false),
-        }
+            .one(database)
+            .await?
+            .is_some())
     }
 }
