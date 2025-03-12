@@ -8,7 +8,8 @@ pub mod rename;
 mod revoke_invitation;
 
 pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
-    config.service(change_leader::change_leader)
+    config
+        .service(change_leader::change_leader)
         .service(invite_user::invite_user)
         .service(kick_user::kick_user)
         .service(rename::rename)

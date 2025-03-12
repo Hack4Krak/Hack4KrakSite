@@ -6,6 +6,7 @@ use hack4krak_backend::entities::{email_confirmation, users};
 use hack4krak_backend::routes;
 use hack4krak_backend::services::env::EnvConfig;
 use hack4krak_backend::utils::app_state::AppState;
+use quoted_printable::decode;
 use sea_orm::MockExecResult;
 use sea_orm::{DatabaseBackend, MockDatabase};
 use serde_json::json;
@@ -158,10 +159,13 @@ async fn auth_flow() {
     let items = response["items"].as_array().unwrap();
 
     let first_email = &items[0];
-    let email_body = first_email["Content"]["Body"].as_str().unwrap();
+    let email_body_encoded = first_email["Content"]["Body"].as_str().unwrap();
+    let decoded_body_bytes =
+        decode(email_body_encoded, quoted_printable::ParseMode::Robust).unwrap();
+    let email_body = String::from_utf8(decoded_body_bytes).unwrap();
 
     let regex = regex::Regex::new(UUID_REGEX).unwrap();
-    let confirmation_code = regex.find(email_body).unwrap().as_str();
+    let confirmation_code = regex.find(&email_body).unwrap().as_str();
 
     let request = test::TestRequest::get()
         .uri(&format!("/auth/confirm/{}", confirmation_code))
