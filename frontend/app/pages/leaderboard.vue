@@ -124,8 +124,8 @@ if (import.meta.client) {
     await refreshTeams()
   }
 
-  eventSource.onerror = (error) => {
-    toast.add({ title: 'Błąd połączenia', description: error.message ?? 'Nie można połączyć się z serwerem', color: 'error' })
+  eventSource.onerror = () => {
+    toast.add({ title: 'Błąd połączenia', description: 'Nie można połączyć się z serwerem', color: 'error' })
   }
 }
 </script>
