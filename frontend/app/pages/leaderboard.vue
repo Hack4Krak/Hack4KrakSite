@@ -76,8 +76,8 @@ const chartOptions = ref<ChartOptions<'line'>>({
         display: true,
         text: 'Date',
       },
-      min: eventInformation.value?.['start-date'],
-      max: eventInformation.value?.['end-date'],
+      min: eventInformation.value?.start_date,
+      max: eventInformation.value?.end_date,
     },
     y: {
       title: {

@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, ToSchema, Debug)]
-#[serde(rename_all = "kebab-case")]
+#[serde(rename_all(deserialize = "kebab-case"))]
 pub struct EventConfig {
     pub start_date: DateTime<FixedOffset>,
     pub end_date: DateTime<FixedOffset>,

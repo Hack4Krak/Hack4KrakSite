@@ -11,9 +11,9 @@ const eventMessage = computed(() => getEventState().message)
 
 function getEventState() {
   const now = dayjs()
-  const eventStart = dayjs(data.value?.['start-date'])
+  const eventStart = dayjs(data.value?.start_date)
 
-  const eventEnd = dayjs(data.value?.['end-date'])
+  const eventEnd = dayjs(data.value?.end_date)
   if (now.isBetween(eventStart, eventEnd)) {
     return { message: 'Czas do zakończenia wydarzenia', diff: dayjs.duration(eventEnd.diff()) }
   } else if (now.isBefore(eventStart)) {
