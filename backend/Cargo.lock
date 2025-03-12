@@ -1654,6 +1654,7 @@ dependencies = [
  "lettre",
  "migration",
  "oauth2",
+ "quoted_printable",
  "regex",
  "reqwest",
  "sea-orm",
