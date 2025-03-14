@@ -16,18 +16,21 @@ const toast = useToast()
 const open = defineModel<boolean>()
 const formRef = useTemplateRef('form')
 
+const { $auth } = useNuxtApp()
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  const { error } = await useAuth('/teams/create', {
-    key: 'teams-create',
+  const response = await $auth('/teams/create', {
     method: 'POST',
     body: {
       team_name: event.data.name,
     },
   })
 
-  if (error.value?.data === undefined) {
-    toast.add({ title: 'Sukces', description: 'Pomyślnie stworzono team', color: 'success' })
+  if ((response as any).error) {
+    return
   }
+
+  toast.add({ title: 'Sukces', description: 'Pomyślnie stworzono team', color: 'success' })
 }
 </script>
 

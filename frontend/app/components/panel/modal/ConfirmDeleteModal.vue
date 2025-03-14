@@ -13,17 +13,21 @@ const props = defineProps<{
 const toast = useToast()
 const open = defineModel<boolean>()
 
+const { $auth } = useNuxtApp()
+
 async function onSubmit() {
-  const { error } = await useAuth(props.url, {
+  const response = await $auth(props.url, {
     method: 'DELETE',
     ...(props.requestBody && { body: props.requestBody }),
-  } as any)
+  } as any).catch()
 
-  if (error.value === undefined) {
-    toast.add({ title: 'Sukces', description: props.toastSuccessMessage, color: 'success' })
-    open.value = false
-    navigateTo(props.redirectTo, { external: true })
+  if ((response as any).error) {
+    return
   }
+
+  toast.add({ title: 'Sukces', description: props.toastSuccessMessage, color: 'success' })
+  open.value = false
+  navigateTo(props.redirectTo, { external: true })
 }
 </script>
 
