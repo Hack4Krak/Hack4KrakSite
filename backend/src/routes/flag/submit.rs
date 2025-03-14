@@ -4,7 +4,7 @@ use crate::routes::flag::AuthMiddleware;
 use crate::routes::flag::FlagError;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
-use crate::utils::sse_handler::SseMessage;
+use crate::utils::sse_message::SseMessage;
 use actix_web::web::{Data, Json};
 use actix_web::{HttpResponse, post};
 use actix_web_validation::Validated;
