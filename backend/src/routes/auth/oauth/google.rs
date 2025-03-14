@@ -42,11 +42,9 @@ pub async fn google_callback(
     {
         Ok(token) => token,
         Err(error) => {
-            return Ok(create_temporary_redirect_response(
-                EnvConfig::get().oauth_finish_redirect_url.clone(),
-                error,
-            )?
-            .finish());
+            let mut url = EnvConfig::get().frontend_domain.clone();
+            url.push_str(&EnvConfig::get().oauth_finish_redirect_url.clone());
+            return Ok(create_temporary_redirect_response(url, error)?.finish());
         }
     };
 

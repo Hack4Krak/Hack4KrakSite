@@ -134,8 +134,11 @@ impl AuthService {
     }
 
     fn create_email_confirmation_link(confirmation_code: &str) -> String {
+        let mut url = EnvConfig::get().backend_domain.clone();
+        url.push_str(&EnvConfig::get().email_confirm_backend_url.clone());
+
         let mut confirmation_link = "".to_string();
-        confirmation_link.push_str(&EnvConfig::get().email_confirm_backend_url.clone());
+        confirmation_link.push_str(&url);
         confirmation_link.push('/');
         confirmation_link.push_str(confirmation_code);
 
