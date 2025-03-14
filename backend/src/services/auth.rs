@@ -188,6 +188,12 @@ impl AuthService {
             .await?
             .to_string();
 
+        let reset_password_link = EnvConfig::get().password_reset_frontend_url.clone();
+
+        let email_body = format!(
+            "<p style=\"margin: 0 0 24px; font-size: 16px; line-height: 24px; color: #475569\">\nZ twojego konta zostało wysłane rządanie zresetowania hasła. Aby to zrobić skopiuj poniższy kod i otwórz link podany poniżej.\n</p>\n<p style=\"display: flex; height: 48px; width: 100%; align-items: center; justify-content: center; border-radius: 6px; background-color: #111827; color: #fffffe\">{confirmation_code}\n</p>\n<a href=\"{reset_password_link}\" style=\"color: #1e293b; text-decoration: underline\">{reset_password_link}</a>"
+        );
+
         Email {
             sender: (
                 Some("Hack4Krak Authentication".to_string()),
@@ -195,15 +201,8 @@ impl AuthService {
             ),
             recipients: vec![email],
             subject: "Resetowanie hasła".to_string(),
-            template: EmailTemplate::ResetPassword,
-            placeholders: Some(vec![
-                ("user".to_string(), user.username),
-                ("code".to_string(), confirmation_code),
-                (
-                    "link".to_string(),
-                    EnvConfig::get().password_reset_frontend_url.clone(),
-                ),
-            ]),
+            template: EmailTemplate::Generic,
+            placeholders: Some(vec![("body".to_string(), email_body)]),
         }
         .send(app_state)
         .await?;
