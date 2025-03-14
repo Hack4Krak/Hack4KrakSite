@@ -21,7 +21,7 @@ impl SseMessage {
         mut rx: Receiver<String>,
     ) -> AsyncStream<Result<Bytes, Error>, impl Future<Output = ()>> {
         stream! {
-                while let Ok(msg) = rx.recv().await {
+            while let Ok(msg) = rx.recv().await {
                 // Due to server-sent events requirements, sent data should be formated with
                 // "data: " prefix and two newlines at the end
                 // https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#event_stream_format
