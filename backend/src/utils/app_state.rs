@@ -1,6 +1,7 @@
 use crate::services::env::EnvConfig;
 use crate::services::task_manager::TaskManager;
 use crate::utils::oauth::OAuthProvider;
+use crate::utils::sse_event::SseEvent;
 use lettre::SmtpTransport;
 use lettre::transport::smtp::authentication::Credentials;
 use sea_orm::DatabaseConnection;
@@ -14,7 +15,7 @@ pub struct AppState {
     pub github_oauth_provider: OAuthProvider,
     pub google_oauth_provider: OAuthProvider,
     pub smtp_client: SmtpTransport,
-    pub leaderboard_updates_transmitter: broadcast::Sender<String>,
+    pub sse_event_sender: broadcast::Sender<SseEvent>,
 }
 
 impl AppState {
@@ -56,7 +57,7 @@ impl AppState {
             github_oauth_provider,
             google_oauth_provider,
             smtp_client,
-            leaderboard_updates_transmitter,
+            sse_event_sender: leaderboard_updates_transmitter,
         }
     }
 
@@ -102,10 +103,7 @@ impl Default for AppState {
             github_oauth_provider: oauth_provider.clone(),
             google_oauth_provider: oauth_provider,
             smtp_client: SmtpTransport::relay("email.example.com").unwrap().build(),
-            leaderboard_updates_transmitter: broadcast::channel(
-                LEADERBOARD_UPDATES_CHANNEL_CAPACITY as usize,
-            )
-            .0,
+            sse_event_sender: broadcast::channel(LEADERBOARD_UPDATES_CHANNEL_CAPACITY as usize).0,
         }
     }
 }

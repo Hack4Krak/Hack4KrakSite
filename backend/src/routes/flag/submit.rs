@@ -4,7 +4,7 @@ use crate::routes::flag::AuthMiddleware;
 use crate::routes::flag::FlagError;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
-use crate::utils::sse_message::SseMessage;
+use crate::utils::sse_event::SseEvent;
 use actix_web::web::{Data, Json};
 use actix_web::{HttpResponse, post};
 use actix_web_validation::Validated;
@@ -60,14 +60,14 @@ pub async fn submit(
             .await?;
 
     let _ = app_state
-        .leaderboard_updates_transmitter
-        .send(serde_json::to_string(&SseMessage::LeaderboardUpdate {
+        .sse_event_sender
+        .send(SseEvent::LeaderboardUpdate {
             task_id: task.key().to_string(),
             task_name: task.value().description.name.to_string(),
             is_first_flag_submission: is_first_submission,
             team_name: team.name,
             username: user.username,
-        })?);
+        });
 
     Ok(HttpResponse::Ok().json(SubmitModel {
         flag: task.key().clone(),
