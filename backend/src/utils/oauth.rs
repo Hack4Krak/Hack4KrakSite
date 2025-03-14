@@ -78,11 +78,10 @@ impl OAuthProvider {
     ) -> Result<actix_web::HttpResponse, Error> {
         let user = users::Model::create_from_oauth(database, username, email).await?;
 
+        let url = EnvConfig::get().frontend_url.join("/panel")?;
+
         let mut response = actix_web::HttpResponse::Ok();
-        response.append_header((
-            "Refresh",
-            format!("0; {}", EnvConfig::get().oauth_finish_redirect_url.clone()),
-        ));
+        response.append_header(("Refresh", format!("0; {}", url)));
         AuthService::append_tokens_as_cookies(user.id, user.email, &mut response)?;
         Ok(response.body("Redirecting..."))
     }

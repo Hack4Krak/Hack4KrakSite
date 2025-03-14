@@ -1,12 +1,11 @@
-use actix_web::{HttpResponse, get, web};
-use serde::Deserialize;
-
 use crate::routes::auth::AuthError::InvalidCredentials;
 use crate::services::env::EnvConfig;
 use crate::utils::app_state::AppState;
 use crate::utils::common_responses::create_temporary_redirect_response;
 use crate::utils::error::Error;
 use crate::utils::oauth::OAuthProvider;
+use actix_web::{HttpResponse, get, web};
+use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
 struct QueryParams {
@@ -42,11 +41,8 @@ pub async fn google_callback(
     {
         Ok(token) => token,
         Err(error) => {
-            return Ok(create_temporary_redirect_response(
-                EnvConfig::get().oauth_finish_redirect_url.clone(),
-                error,
-            )?
-            .finish());
+            let url = EnvConfig::get().frontend_url.join("/panel")?;
+            return Ok(create_temporary_redirect_response(url, error)?.finish());
         }
     };
 
