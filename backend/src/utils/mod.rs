@@ -6,4 +6,5 @@ pub mod jwt;
 pub mod oauth;
 pub mod openapi;
 pub mod points_counter;
+pub mod sse_event;
 pub mod success_response;

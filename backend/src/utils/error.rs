@@ -1,13 +1,13 @@
-use actix_web::http::StatusCode;
-use actix_web::{HttpResponse, error};
-use serde_json::json;
-use thiserror::Error;
-
 use crate::entities::sea_orm_active_enums::UserRoles;
 use crate::routes::auth::AuthError;
 use crate::routes::flag::FlagError;
 use crate::routes::task::TaskError;
 use crate::routes::teams::TeamError;
+use actix_web::http::StatusCode;
+use actix_web::{HttpResponse, error};
+use serde_json::json;
+use thiserror::Error;
+use tokio::sync::broadcast;
 
 pub struct ErrorHttpResponseExtension {
     pub error: String,
@@ -90,6 +90,8 @@ pub enum Error {
     AccessDuringEvent,
     #[error("Failed to parse URL {0}")]
     FailedToParseUrl(#[from] url::ParseError),
+    #[error("Failed to send server event {0}")]
+    ServerEventSendingError(#[from] broadcast::error::SendError<String>),
     #[error(transparent)]
     Auth(#[from] AuthError),
     #[error(transparent)]
@@ -115,7 +117,8 @@ impl error::ResponseError for Error {
             | Error::FailedToSendEmail(_)
             | Error::InvalidJson(_)
             | Error::FailedToBuildEmail(_)
-            | Error::FailedToParseUrl(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            | Error::FailedToParseUrl(_)
+            | Error::ServerEventSendingError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Unauthorized => StatusCode::UNAUTHORIZED,
             Error::InvalidJsonWebToken => StatusCode::UNAUTHORIZED,
             Error::InvalidAuthorizationHeader | Error::MissingExtension { .. } => {
