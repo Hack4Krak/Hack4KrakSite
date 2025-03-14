@@ -56,7 +56,7 @@ pub async fn submit(
         .ok_or(Error::Flag(FlagError::InvalidFlag))?;
 
     let is_first_submission =
-        flag_capture::Model::completed(&app_state.database, team.clone(), task.key().to_string())
+        !flag_capture::Model::completed(&app_state.database, team.clone(), task.key().to_string())
             .await?;
 
     let _ = app_state

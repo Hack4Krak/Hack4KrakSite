@@ -13,7 +13,7 @@ impl flag_capture::Model {
         team: teams::Model,
         task_id: String,
     ) -> Result<bool, Error> {
-        let is_first_flag_submission = Self::any_flags_submitted(database, task_id.clone()).await?;
+        let is_first_flag_submission = Self::has_flags_for_task(database, task_id.clone()).await?;
 
         let result = flag_capture::Entity::insert(flag_capture::ActiveModel {
             team: Set(team.id),
@@ -39,7 +39,7 @@ impl flag_capture::Model {
         }
     }
 
-    pub async fn any_flags_submitted(
+    pub async fn has_flags_for_task(
         database: &DatabaseConnection,
         task_id: String,
     ) -> Result<bool, Error> {
