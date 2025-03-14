@@ -9,14 +9,14 @@ use utoipa::ToSchema;
 use uuid::Uuid;
 
 #[derive(Serialize, Deserialize, ToSchema)]
-pub struct UpdateUserModel {
+pub struct UpdateUserModelAdmin {
     pub username: Option<String>,
     pub email: Option<String>,
     pub team: Option<Uuid>,
 }
 
 #[utoipa::path(
-    request_body = UpdateUserModel,
+    request_body = UpdateUserModelAdmin,
     responses(
         (status = 200, description = "User successfully updated."),
         (status = 403, description = "User must have higher role than updated user."),
@@ -30,9 +30,9 @@ pub async fn update(
     app_state: Data<app_state::AppState>,
     user: users::Model,
     id: Path<Uuid>,
-    update_user_json: Json<UpdateUserModel>,
+    update_user_json: Json<UpdateUserModelAdmin>,
 ) -> Result<HttpResponse, Error> {
-    users::Model::update(
+    users::Model::update_as_admin(
         &app_state.database,
         user,
         app_state.task_manager.event_config.lock().await.deref(),
