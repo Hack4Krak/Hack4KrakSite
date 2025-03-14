@@ -43,7 +43,7 @@ actix-files = "0.6.6"
 regex = "1.11.1"
 futures-util = "0.3.31"
 reqwest = { version = "0.12.14", features = ["json"] }
-uuid = { version = "1.15.1", features = ["serde", "v4"] }
+uuid = { version = "1.16.0", features = ["serde", "v4"] }
 tokio = {  version = "1.44.0", features = ["fs", "macros"] }
 envy = "0.4.2"
 dotenvy = "0.15"
