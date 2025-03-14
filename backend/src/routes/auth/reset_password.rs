@@ -18,7 +18,6 @@ pub struct RequestResetPasswordModel {
         (status = 200, description = "Password reset email sent."),
         (status = 500, description = "Internal server error.")
     ),
-    operation_id = "reset_password",
     tag = "auth"
 )]
 #[post("/request_reset_password")]
@@ -44,7 +43,6 @@ pub struct ResetPasswordModel {
         (status = 400, description = "Invalid reset code."),
         (status = 500, description = "Internal server error.")
     ),
-    operation_id = "reset_password",
     tag = "auth"
 )]
 #[patch("/reset_password")]
