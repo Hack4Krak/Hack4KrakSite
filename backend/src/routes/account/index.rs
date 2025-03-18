@@ -3,6 +3,7 @@ use crate::middlewares::auth::AuthMiddleware;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::jwt::JwtClaims;
+use crate::utils::success_response::SuccessResponse;
 use actix_web::web::Data;
 use actix_web::{HttpResponse, get};
 use sea_orm::EntityTrait;
@@ -23,7 +24,7 @@ pub struct UserInformationResponse {
     security(
         ("access_token" = [])
     ),
-    operation_id = "user_index",
+    operation_id = "account_index",
     tag = "account"
 )]
 #[get("/", wrap = "AuthMiddleware::default()")]
@@ -54,5 +55,5 @@ pub async fn index(
 )]
 #[get("/admin", wrap = "AuthMiddleware::with_user_as_admin()")]
 pub async fn only_admins() -> Result<HttpResponse, Error> {
-    Ok(HttpResponse::Ok().finish())
+    Ok(SuccessResponse::default().http_response())
 }

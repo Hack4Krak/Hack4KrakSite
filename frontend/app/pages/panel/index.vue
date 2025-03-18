@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { $api } = useNuxtApp()
 
-const { data } = await useAuth('/user/')
+const { data } = await useAuth('/account/')
 
 const { data: team, error } = await useAuth('/teams/membership/my_team', {
   onResponseError: () => {

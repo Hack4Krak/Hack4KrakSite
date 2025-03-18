@@ -3,6 +3,7 @@ use crate::middlewares::auth::AuthMiddleware;
 use crate::services::auth::AuthService;
 use crate::utils::app_state;
 use crate::utils::error::Error;
+use crate::utils::success_response::SuccessResponse;
 use actix_web::web::{Data, Json};
 use actix_web::{HttpResponse, patch};
 use actix_web_validation::Validated;
@@ -37,7 +38,15 @@ pub async fn update(
 ) -> Result<HttpResponse, Error> {
     let model = model.into_inner();
 
-    AuthService::update_user(&app_state, user, model).await?;
+    AuthService::assert_password_is_valid(&user, &model.old_password)?;
 
-    Ok(HttpResponse::Ok().finish())
+    users::Model::update(
+        &app_state.database,
+        user,
+        model.username,
+        model.new_password,
+    )
+    .await?;
+
+    Ok(SuccessResponse::default().http_response())
 }

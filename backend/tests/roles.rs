@@ -33,14 +33,14 @@ async fn middleware_user_is_not_admin() {
     let app = test::init_service(
         App::new()
             .app_data(Data::new(AppState::with_database(database)))
-            .service(scope("/user").configure(routes::account::config)),
+            .service(scope("/account").configure(routes::account::config)),
     )
     .await;
 
     let access_token = encode_jwt(uuid, "example@gmail.com".to_string(), Duration::minutes(10));
 
     let request = test::TestRequest::get()
-        .uri("/user/admin")
+        .uri("/account/admin")
         .insert_header((
             header::COOKIE,
             format!("access_token={}", access_token.unwrap()),
@@ -74,14 +74,14 @@ async fn middleware_user_is_admin() {
     let app = test::init_service(
         App::new()
             .app_data(Data::new(AppState::with_database(database)))
-            .service(scope("/user").configure(routes::account::config)),
+            .service(scope("/account").configure(routes::account::config)),
     )
     .await;
 
     let access_token = encode_jwt(uuid, "example@gmail.com".to_string(), Duration::minutes(10));
 
     let request = test::TestRequest::get()
-        .uri("/user/admin")
+        .uri("/account/admin")
         .insert_header((
             header::COOKIE,
             format!("access_token={}", access_token.unwrap()),
