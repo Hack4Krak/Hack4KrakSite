@@ -5,6 +5,7 @@ use crate::models::task::EventConfig;
 use crate::routes::admin::UpdateUserModelAdmin;
 use crate::routes::auth::AuthError::UserAlreadyExists;
 use crate::routes::auth::RegisterModel;
+use crate::services::auth::AuthService;
 use crate::utils::error::Error;
 use actix_web::dev::Payload;
 use actix_web::{FromRequest, HttpMessage, HttpRequest};
@@ -230,18 +231,20 @@ impl users::Model {
     pub async fn update(
         database: &DatabaseConnection,
         user: users::Model,
-        username: Option<String>,
-        password_hash: Option<String>,
+        new_username: Option<String>,
+        new_password: Option<String>,
     ) -> Result<(), Error> {
         let mut active_user: ActiveModel = user.clone().into();
 
-        if let Some(username) = username {
-            users::Model::assert_is_unique(database, &user.email, &username, Some(user.id)).await?;
-            active_user.username = Set(username);
+        if let Some(new_username) = new_username {
+            users::Model::assert_is_unique(database, &user.email, &new_username, Some(user.id))
+                .await?;
+            active_user.username = Set(new_username);
         }
 
-        if let Some(password) = password_hash {
-            active_user.password = Set(Some(password));
+        if let Some(new_password) = new_password {
+            let password_hash = AuthService::hash_password(new_password)?;
+            active_user.password = Set(Some(password_hash));
         }
 
         active_user.save(database).await?;

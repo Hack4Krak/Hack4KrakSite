@@ -1,6 +1,5 @@
 use crate::entities::{email_confirmation, password_reset, users};
 use crate::models::user::UserInformation;
-use crate::routes::account::update::UpdateUserModel;
 use crate::routes::auth::AuthError::{
     ConfirmationCodeExpired, InvalidConfirmationCode, InvalidCredentials, InvalidEmailAddress,
     PasswordAuthNotAvailable,
@@ -149,31 +148,6 @@ impl AuthService {
             .to_string())
     }
 
-    pub async fn update_user(
-        app_state: &app_state::AppState,
-        user: users::Model,
-        model: UpdateUserModel,
-    ) -> Result<(), Error> {
-        Self::assert_password_is_valid(&user, &model.old_password)?;
-
-        if let Some(password) = model.new_password {
-            let password_hash = Self::hash_password(password)?;
-            users::Model::update(
-                &app_state.database,
-                user,
-                model.username,
-                Some(password_hash),
-            )
-            .await?;
-
-            return Ok(());
-        }
-
-        users::Model::update(&app_state.database, user, model.username, None).await?;
-
-        Ok(())
-    }
-
     pub async fn request_password_reset(
         app_state: &app_state::AppState,
         email: String,
@@ -189,7 +163,10 @@ impl AuthService {
         let reset_password_link = EnvConfig::get().password_reset_frontend_url.clone();
 
         let email_body = format!(
-            "<p style=\"margin: 0 0 24px; font-size: 16px; line-height: 24px; color: #475569\">\nZ twojego konta zostało wysłane rządanie zresetowania hasła. Aby to zrobić skopiuj poniższy kod i otwórz link podany poniżej.\n</p>\n<p style=\"display: flex; height: 48px; width: 100%; align-items: center; justify-content: center; border-radius: 6px; background-color: #111827; color: #fffffe\">{confirmation_code}\n</p>\n<a href=\"{reset_password_link}\" style=\"color: #1e293b; text-decoration: underline\">{reset_password_link}</a>"
+            include_str!("emails_assets/reset_password_body.html"),
+            confirmation_code,
+            reset_password_link.clone(),
+            reset_password_link
         );
 
         Email {
@@ -225,10 +202,8 @@ impl AuthService {
             return Err(Error::Auth(ConfirmationCodeExpired));
         }
 
-        let password_hash = Self::hash_password(model.new_password)?;
-
         if let Some(user) = user {
-            users::Model::update(&app_state.database, user, None, Some(password_hash)).await?;
+            users::Model::update(&app_state.database, user, None, Some(model.new_password)).await?;
 
             let active_password_reset: password_reset::ActiveModel = password_reset.into();
             active_password_reset.delete(&app_state.database).await?;
