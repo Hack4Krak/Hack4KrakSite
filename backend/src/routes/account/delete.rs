@@ -2,6 +2,7 @@ use crate::entities::users;
 use crate::middlewares::auth::AuthMiddleware;
 use crate::utils::app_state;
 use crate::utils::error::Error;
+use crate::utils::success_response::SuccessResponse;
 use actix_web::web::Data;
 use actix_web::{HttpResponse, delete};
 use sea_orm::ModelTrait;
@@ -23,5 +24,5 @@ pub async fn delete(
 ) -> Result<HttpResponse, Error> {
     user.delete(&app_state.database).await?;
 
-    Ok(HttpResponse::Ok().finish())
+    Ok(SuccessResponse::default().http_response())
 }
