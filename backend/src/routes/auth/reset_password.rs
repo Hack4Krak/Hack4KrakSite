@@ -1,6 +1,7 @@
 use crate::services::auth::AuthService;
 use crate::utils::app_state;
 use crate::utils::error::Error;
+use crate::utils::success_response::SuccessResponse;
 use actix_web::web::{Data, Json};
 use actix_web::{HttpResponse, patch, post};
 use serde::{Deserialize, Serialize};
@@ -27,7 +28,7 @@ pub async fn request_reset_password(
 ) -> Result<HttpResponse, Error> {
     AuthService::request_password_reset(&app_state, model.into_inner().email).await?;
 
-    Ok(HttpResponse::Ok().body("Password reset email sent."))
+    Ok(SuccessResponse::default().http_response())
 }
 
 #[derive(Serialize, Deserialize, ToSchema)]
@@ -52,5 +53,5 @@ pub async fn reset_password(
 ) -> Result<HttpResponse, Error> {
     AuthService::reset_password(&app_state, model.into_inner()).await?;
 
-    Ok(HttpResponse::Ok().body("Password successfully reset."))
+    Ok(SuccessResponse::default().http_response())
 }
