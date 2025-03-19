@@ -17,7 +17,7 @@
   "dependencies": {
     "@formkit/auto-animate": "^0.8.2",
     "@iconify-json/lucide": "^1.2.30",
-    "@nuxt/image": "1.9.0",
+    "@nuxt/image": "1.10.0",
     "@nuxt/ui": "https://pkg.pr.new/@nuxt/ui@6e03d9c",
     "@nuxtjs/mdc": "0.15.0",
     "@nuxtjs/seo": "^3.0.1",
