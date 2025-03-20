@@ -16,8 +16,18 @@ use sea_orm::{ActiveModelTrait, EntityTrait};
 use sea_orm::{ColumnTrait, DatabaseConnection};
 use sea_orm::{ModelTrait, QueryFilter};
 use serde::{Deserialize, Serialize};
-use std::future;
+use std::{fmt, future};
+use utoipa::ToSchema;
 use uuid::Uuid as uuid_gen;
+
+#[derive(Serialize, Deserialize, ToSchema, Clone)]
+pub struct Password(pub String);
+
+impl fmt::Debug for Password {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_tuple("Password").field(&"******").finish()
+    }
+}
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UserInformation {
@@ -232,7 +242,7 @@ impl users::Model {
         database: &DatabaseConnection,
         user: users::Model,
         new_username: Option<String>,
-        new_password: Option<String>,
+        new_password: Option<Password>,
     ) -> Result<(), Error> {
         let mut active_user: ActiveModel = user.clone().into();
 

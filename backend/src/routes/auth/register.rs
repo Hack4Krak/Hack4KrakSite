@@ -1,3 +1,4 @@
+use crate::models::user::Password;
 use crate::services::auth::AuthService;
 use crate::utils::app_state;
 use crate::utils::error::Error;
@@ -8,15 +9,14 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use validator::Validate;
 
-#[derive(Debug, Serialize, Deserialize, ToSchema, Validate)]
+#[derive(Serialize, Deserialize, ToSchema, Validate, Debug)]
 pub struct RegisterModel {
     #[validate(length(min = 3, max = 32))]
     pub name: String,
     #[validate(email)]
     pub email: String,
-    pub(crate) password: String,
+    pub password: Password,
 }
-
 #[utoipa::path(
     request_body = RegisterModel,
     responses(
