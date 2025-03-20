@@ -1,5 +1,5 @@
 use crate::entities::{email_confirmation, password_reset, users};
-use crate::models::user::UserInformation;
+use crate::models::user::{Password, UserInformation};
 use crate::routes::auth::AuthError::{
     ConfirmationCodeExpired, InvalidConfirmationCode, InvalidCredentials, InvalidEmailAddress,
     PasswordAuthNotAvailable,
@@ -63,7 +63,7 @@ impl AuthService {
 
     pub fn assert_password_is_valid(
         user: &users::Model,
-        password_to_verify: &str,
+        password_to_verify: &Password,
     ) -> Result<(), Error> {
         let password = user
             .password
@@ -73,7 +73,7 @@ impl AuthService {
         let parsed_hash = PasswordHash::new(&password).map_err(Error::HashPasswordFailed)?;
 
         let is_verified = Argon2::default()
-            .verify_password(password_to_verify.as_bytes(), &parsed_hash)
+            .verify_password(password_to_verify.0.as_bytes(), &parsed_hash)
             .is_ok();
 
         if !is_verified {
@@ -139,11 +139,11 @@ impl AuthService {
         Ok(url.to_string())
     }
 
-    pub fn hash_password(password: String) -> Result<String, Error> {
+    pub fn hash_password(password: Password) -> Result<String, Error> {
         let salt = SaltString::generate(&mut OsRng);
 
         Ok(Argon2::default()
-            .hash_password(password.as_bytes(), &salt)
+            .hash_password(password.0.as_bytes(), &salt)
             .map_err(HashPasswordFailed)?
             .to_string())
     }

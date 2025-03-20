@@ -1,5 +1,6 @@
 use crate::entities::users;
 use crate::middlewares::auth::AuthMiddleware;
+use crate::models::user::Password;
 use crate::services::auth::AuthService;
 use crate::utils::app_state;
 use crate::utils::error::Error;
@@ -11,12 +12,12 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use validator::Validate;
 
-#[derive(Debug, Serialize, Deserialize, ToSchema, Validate, Clone)]
+#[derive(Serialize, Deserialize, ToSchema, Validate, Clone, Debug)]
 pub struct UpdateUserModel {
     #[validate(length(min = 3, max = 32))]
     pub username: Option<String>,
-    pub(crate) old_password: String,
-    pub(crate) new_password: Option<String>,
+    pub old_password: Password,
+    pub new_password: Option<Password>,
 }
 
 #[utoipa::path(
