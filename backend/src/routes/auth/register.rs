@@ -5,16 +5,26 @@ use actix_web::web::Json;
 use actix_web::{HttpResponse, post, web};
 use actix_web_validation::Validated;
 use serde::{Deserialize, Serialize};
+use std::fmt;
 use utoipa::ToSchema;
 use validator::Validate;
 
-#[derive(Debug, Serialize, Deserialize, ToSchema, Validate)]
+#[derive(Serialize, Deserialize, ToSchema, Validate)]
 pub struct RegisterModel {
     #[validate(length(min = 3, max = 32))]
     pub name: String,
     #[validate(email)]
     pub email: String,
-    pub(crate) password: String,
+    pub password: String,
+}
+
+impl fmt::Debug for RegisterModel {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("UpdateUserModel")
+            .field("name", &self.name)
+            .field("email", &self.email)
+            .finish()
+    }
 }
 
 #[utoipa::path(

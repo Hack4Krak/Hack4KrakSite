@@ -5,6 +5,7 @@ use crate::utils::success_response::SuccessResponse;
 use actix_web::web::{Data, Json};
 use actix_web::{HttpResponse, patch, post};
 use serde::{Deserialize, Serialize};
+use std::fmt;
 use utoipa::ToSchema;
 use uuid::Uuid;
 
@@ -34,7 +35,15 @@ pub async fn request_reset_password(
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct ResetPasswordModel {
     pub code: Uuid,
-    pub(crate) new_password: String,
+    pub new_password: String,
+}
+
+impl fmt::Debug for ResetPasswordModel {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("ResetPasswordModel")
+            .field("reset_password_code", &self.code)
+            .finish()
+    }
 }
 
 #[utoipa::path(
