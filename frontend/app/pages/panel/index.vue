@@ -1,14 +1,9 @@
 <script setup lang="ts">
 const { $api } = useNuxtApp()
 
-const { data } = await useAuth('/user/', {
-  method: 'GET',
-  key: 'user-panel',
-})
+const { data } = await useAuth('/user/')
 
 const { data: team, error } = await useAuth('/teams/membership/my_team', {
-  method: 'GET',
-  key: 'my-team',
   onResponseError: () => {
     throw new Error('Response error')
   },

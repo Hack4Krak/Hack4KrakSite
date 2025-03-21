@@ -1,10 +1,7 @@
 <script setup>
 const dayjs = useDayjs()
 
-const { data } = await useAuth('/event/info', {
-  method: 'GET',
-  key: 'event-info',
-})
+const { data } = await useAuth('/event/info')
 
 const { data: timeLeft } = useAsyncData('timeLeft', async () => calculateTimeLeft())
 const eventMessage = computed(() => getEventState().message)

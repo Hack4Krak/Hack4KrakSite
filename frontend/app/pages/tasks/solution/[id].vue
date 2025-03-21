@@ -6,7 +6,6 @@ const { data } = await useAuth('/tasks/solution/{task_id}', {
   path: {
     task_id: taskId?.toString() ?? '',
   },
-  key: `task-solution-${taskId}`,
 })
 </script>
 

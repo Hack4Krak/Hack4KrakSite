@@ -60,9 +60,9 @@ importers:
       nuxt:
         specifier: ^3.16.1
         version: 3.16.1(@libsql/client@0.14.0)(@parcel/watcher@2.5.1)(@types/node@22.13.10)(better-sqlite3@11.8.1)(db0@0.3.1(@libsql/client@0.14.0)(better-sqlite3@11.8.1))(eslint@9.22.0(jiti@2.4.2))(ioredis@5.6.0)(lightningcss@1.29.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.36.0)(terser@5.39.0)(tsx@4.19.2)(typescript@5.8.2)(vite@6.2.2(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.1)(terser@5.39.0)(tsx@4.19.2)(yaml@2.7.0))(vue-tsc@2.2.2(typescript@5.8.2))(yaml@2.7.0)
-      nuxt-open-fetch:
-        specifier: ^0.9.5
-        version: 0.9.5(magicast@0.3.5)(rollup@4.36.0)(typescript@5.8.2)
+      nuxt-open-fetch-x:
+        specifier: ^0.10.0
+        version: 0.10.0(magicast@0.3.5)(rollup@4.36.0)(typescript@5.8.2)
       party-js:
         specifier: ^2.2.0
         version: 2.2.0
@@ -1278,15 +1278,8 @@ packages:
   '@redocly/ajv@8.11.2':
     resolution: {integrity: sha512-io1JpnwtIcvojV7QKDUSIuMN/ikdOUd1ReEnUnMKGfDVridQZ31J0MmIuqwuRjWDZfmvr+Q0MqCcfHM2gTivOg==}
 
-  '@redocly/config@0.20.3':
-    resolution: {integrity: sha512-Nyyv1Bj7GgYwj/l46O0nkH1GTKWbO3Ixe7KFcn021aZipkZd+z8Vlu1BwkhqtVgivcKaClaExtWU/lDHkjBzag==}
-
   '@redocly/config@0.22.1':
     resolution: {integrity: sha512-1CqQfiG456v9ZgYBG9xRQHnpXjt8WoSnDwdkX6gxktuK69v2037hTAR1eh0DGIqpZ1p4k82cGH8yTNwt7/pI9g==}
-
-  '@redocly/openapi-core@1.27.2':
-    resolution: {integrity: sha512-qVrDc27DHpeO2NRCMeRdb4299nijKQE3BY0wrA+WUHlOLScorIi/y7JzammLk22IaTvjR9Mv9aTAdjE1aUwJnA==}
-    engines: {node: '>=14.19.0', npm: '>=7.0.0'}
 
   '@redocly/openapi-core@1.34.0':
     resolution: {integrity: sha512-Ji00EiLQRXq0pJIz5pAjGF9MfQvQVsQehc6uIis6sqat8tG/zh25Zi64w6HVGEDgJEzUeq/CuUlD0emu3Hdaqw==}
@@ -4574,8 +4567,8 @@ packages:
       '@unhead/vue': ^2.0.0-rc.1
       unstorage: ^1.0.0
 
-  nuxt-open-fetch@0.9.5:
-    resolution: {integrity: sha512-tck+NEddk7dbHlcVM/ZvjMN1bMmBZALJrzNisNXpEdp6Tg8/js6QX50ZmvgbWgrSTbaYFZoHT1SW1rfAqrxTIQ==}
+  nuxt-open-fetch-x@0.10.0:
+    resolution: {integrity: sha512-Hjr97fhbJ4mueMe02rQBcU1YiDLXtBT+xOFquEYwFo7Yugx/1TgMqff6jjtCBxEiK/MnhtcK1k8vhQn7WHQM6A==}
 
   nuxt-schema-org@5.0.4:
     resolution: {integrity: sha512-NM4OIECR2pWJL/jJnaZq/L8OjG7mx8O1LaXRnVmBLFXDO6DtIrzEPM8y8hhLs9PUQSkPs83CpJxlnb1qs++Rlg==}
@@ -4652,12 +4645,6 @@ packages:
 
   openapi-typescript-helpers@0.0.15:
     resolution: {integrity: sha512-opyTPaunsklCBpTK8JGef6mfPhLSnyy5a0IN9vKtx3+4aExf+KxEqYwIy3hqkedXIB97u357uLMJsOnm3GVjsw==}
-
-  openapi-typescript@7.6.0:
-    resolution: {integrity: sha512-p/xxKcWFR7aZDOAdnqYBQ1NdNyWdine+gHKHKvjxGXmlq8JT1G9+SkY8I5csKaktLHMbDDH6ZDeWQpydwBHa+Q==}
-    hasBin: true
-    peerDependencies:
-      typescript: ^5.x
 
   openapi-typescript@7.6.1:
     resolution: {integrity: sha512-F7RXEeo/heF3O9lOXo2bNjCOtfp7u+D6W3a3VNEH2xE6v+fxLtn5nq0uvUcA1F5aT+CMhNeC5Uqtg5tlXFX/ag==}
@@ -8010,25 +7997,7 @@ snapshots:
       require-from-string: 2.0.2
       uri-js-replace: 1.0.1
 
-  '@redocly/config@0.20.3': {}
-
   '@redocly/config@0.22.1': {}
-
-  '@redocly/openapi-core@1.27.2(supports-color@9.4.0)':
-    dependencies:
-      '@redocly/ajv': 8.11.2
-      '@redocly/config': 0.20.3
-      colorette: 1.4.0
-      https-proxy-agent: 7.0.6(supports-color@9.4.0)
-      js-levenshtein: 1.1.6
-      js-yaml: 4.1.0
-      minimatch: 5.1.6
-      node-fetch: 2.7.0
-      pluralize: 8.0.0
-      yaml-ast-parser: 0.0.43
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
 
   '@redocly/openapi-core@1.34.0(supports-color@9.4.0)':
     dependencies:
@@ -11847,18 +11816,17 @@ snapshots:
       - vite
       - vue
 
-  nuxt-open-fetch@0.9.5(magicast@0.3.5)(rollup@4.36.0)(typescript@5.8.2):
+  nuxt-open-fetch-x@0.10.0(magicast@0.3.5)(rollup@4.36.0)(typescript@5.8.2):
     dependencies:
-      '@nuxt/kit': 3.15.4(magicast@0.3.5)(rollup@4.36.0)
+      '@nuxt/kit': 3.16.1(magicast@0.3.5)(rollup@4.36.0)
       defu: 6.1.4
-      openapi-typescript: 7.6.0(typescript@5.8.2)
+      ohash: 2.0.11
+      openapi-typescript: 7.6.1(typescript@5.8.2)
       openapi-typescript-helpers: 0.0.15
       scule: 1.3.0
     transitivePeerDependencies:
-      - encoding
       - magicast
       - rollup
-      - supports-color
       - typescript
 
   nuxt-schema-org@5.0.4(magicast@0.3.5)(rollup@4.36.0)(vue@3.5.13(typescript@5.8.2)):
@@ -12106,18 +12074,6 @@ snapshots:
       is-wsl: 2.2.0
 
   openapi-typescript-helpers@0.0.15: {}
-
-  openapi-typescript@7.6.0(typescript@5.8.2):
-    dependencies:
-      '@redocly/openapi-core': 1.27.2(supports-color@9.4.0)
-      ansi-colors: 4.1.3
-      change-case: 5.4.4
-      parse-json: 8.1.0
-      supports-color: 9.4.0
-      typescript: 5.8.2
-      yargs-parser: 21.1.1
-    transitivePeerDependencies:
-      - encoding
 
   openapi-typescript@7.6.1(typescript@5.8.2):
     dependencies:

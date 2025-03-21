@@ -41,9 +41,7 @@ const colors = [
   '#800000',
 ]
 
-const { data, refresh: refreshChart } = await useApi('/leaderboard/chart', {
-  key: 'leaderboard-chart',
-})
+const { data, refresh: refreshChart } = await useApi('/leaderboard/chart')
 
 const targetTimezone = 'Europe/Warsaw'
 
@@ -65,9 +63,7 @@ const chartData = ref({
   datasets,
 })
 
-const { data: eventInformation } = await useApi('/event/info', {
-  key: 'leaderboard-event-info',
-})
+const { data: eventInformation } = await useApi('/event/info')
 
 const chartOptions = ref<ChartOptions<'line'>>({
   responsive: true,
@@ -95,9 +91,7 @@ const chartOptions = ref<ChartOptions<'line'>>({
   },
 })
 
-const { data: teams, refresh: refreshTeams } = await useApi('/leaderboard/teams', {
-  key: 'leaderboard-teams',
-})
+const { data: teams, refresh: refreshTeams } = await useApi('/leaderboard/teams')
 
 const columns: TableColumn<Team>[] = [
   {

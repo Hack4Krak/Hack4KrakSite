@@ -2,12 +2,9 @@
 import type { Tasks } from '~/components/Map.vue'
 import Map from '@/components/Map.vue'
 
-const { data } = await useApi('/tasks/list', {
-  key: 'tasks-list',
-})
+const { data } = await useApi('/tasks/list')
 
 const { data: completedTasks } = await useAuth('/teams/membership/completed_tasks', {
-  key: 'teams-membership-completed-tasks',
   redirect: 'error',
 })
 
