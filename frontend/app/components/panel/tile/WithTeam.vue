@@ -3,24 +3,15 @@ const props = defineProps<{
   teamName: string
 }>()
 
-const { error } = await useApi('/event/status', {
-  method: 'GET',
-  key: 'event-status',
-})
+const { error } = await useApi('/event/status')
 
 const isEventInProgress = computed(() => error.value === undefined)
 
-const { data } = await useAuth('/teams/membership/completed_tasks', {
-  method: 'GET',
-  key: 'completed-tasks',
-})
+const { data } = await useAuth('/teams/membership/completed_tasks')
 
 const completedFlags = data.value ?? []
 
-const { data: countData } = await useApi('/tasks/count', {
-  method: 'GET',
-  key: 'tasks-count',
-})
+const { data: countData } = await useApi('/tasks/count')
 
 const tasksCount = countData.value ?? 1
 

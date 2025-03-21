@@ -1,14 +1,9 @@
 <script setup lang="ts">
 import type { ApiResponse } from '#open-fetch'
 
-const { data: team } = await useAuth('/teams/membership/my_team', {
-  key: 'teams-membership-my-team',
-  method: 'GET',
-})
+const { data: team } = await useAuth('/teams/membership/my_team')
 
 const { data: invitedUsers } = await useAuth('/teams/management/invited_users', {
-  key: 'teams-management-invited-users',
-  method: 'GET',
   onResponseError: undefined,
 })
 
@@ -17,8 +12,6 @@ if (!team.value) {
 }
 
 const { error } = await useAuth('/teams/management/', {
-  key: 'is-user-leader',
-  method: 'GET',
   onResponseError: undefined,
 })
 

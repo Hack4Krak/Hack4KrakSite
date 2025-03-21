@@ -5,7 +5,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
     try {
       const { error } = await useApi('/event/status', {
-        key: 'event-status',
         redirect: 'error',
       })
 

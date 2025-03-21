@@ -21,7 +21,6 @@ function checkImage() {
 try {
   const { data: storyResponse } = await useApi('/tasks/story/{task_id}', {
     path: { task_id: taskId },
-    key: `task-story-${taskId}`,
   })
 
   if (storyResponse.value === undefined) {
