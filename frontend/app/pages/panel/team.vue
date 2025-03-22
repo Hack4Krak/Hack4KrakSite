@@ -18,12 +18,41 @@ const { error } = await useAuth('/teams/management/', {
 const is_user_leader = error.value === undefined
 
 const inviteUserModal = ref(false)
-const leaveTeamModal = ref(false)
-const deleteTeamModal = ref(false)
-const kickUserModal = ref(false)
 const kickedUser = ref('')
-const revokeInvitationModal = ref(false)
 const revokedInvitation = ref('')
+
+const { open: openDeleteTeamModal } = useConfirmModal({
+  url: '/teams/management/delete',
+  modalTitle: 'Usuwanie drużyny',
+  modalDescription: 'Czy na pewno chcesz usunąć drużynę? Ta operacja jest nieodwracalna.',
+  toastSuccessMessage: 'Pomyślnie usunięto drużynę',
+  requestBody: undefined,
+  redirectTo: '/panel/',
+})
+const { open: openLeaveTeamModal } = useConfirmModal({
+  url: '/teams/membership/leave_team',
+  modalTitle: 'Opuść drużynę',
+  modalDescription: 'Czy na pewno chcesz opuścić drużynę? Ta operacja jest nieodwracalna.',
+  toastSuccessMessage: 'Pomyślnie opuściłeś drużynę',
+  requestBody: undefined,
+  redirectTo: '/panel/',
+})
+const { open: openKickUserModal } = useConfirmModal({
+  url: '/teams/management/kick_user',
+  modalTitle: 'Wyrzucenie użytkownika',
+  modalDescription: 'Czy na pewno chcesz opuścić drużynę? Ta operacja jest nieodwracalna.',
+  toastSuccessMessage: 'Pomyślnie wyrzucono użytkownika',
+  requestBody: { username: kickedUser },
+  redirectTo: '/panel/team',
+})
+const { open: openRevokeInvitationModal } = useConfirmModal({
+  url: `/teams/management/revoke_invitation/${revokedInvitation.value}` as any,
+  modalTitle: 'Cofnięcie zaproszenia',
+  modalDescription: 'Czy na pewno chcesz cofnąć zaproszenie?',
+  toastSuccessMessage: 'Pomyślnie cofnięto zaproszenie',
+  requestBody: undefined,
+  redirectTo: '/panel/team',
+})
 
 type Members = ApiResponse<'my_team'>['members']
 
@@ -36,42 +65,6 @@ const members = computed<Members | null>(() => {
 <template>
   <div>
     <PanelModalInviteUser v-model="inviteUserModal" />
-    <PanelModalConfirmDeleteModal
-      v-model="deleteTeamModal"
-      url="/teams/management/delete"
-      modal-title="Usuwanie drużyny"
-      modal-description="Czy na pewno chcesz usunąć drużynę? Ta operacja jest nieodwracalna."
-      toast-success-message="Pomyślnie usunięto drużynę"
-      :request-body="undefined"
-      redirect-to="/panel/"
-    />
-    <PanelModalConfirmDeleteModal
-      v-model="leaveTeamModal"
-      url="/teams/membership/leave_team"
-      modal-title="Opuść drużynę"
-      modal-description="Czy na pewno chcesz opuścić drużynę? Ta operacja jest nieodwracalna."
-      toast-success-message="Pomyślnie opuściłeś drużynę"
-      :request-body="undefined"
-      redirect-to="/panel/"
-    />
-    <PanelModalConfirmDeleteModal
-      v-model="kickUserModal"
-      url="/teams/management/kick_user"
-      modal-title="Wyrzucenie użytkownika"
-      modal-description="Czy na pewno chcesz wyrzucić użytkownika z drużyny?"
-      toast-success-message="Pomyślnie wyrzucono użytkownika"
-      :request-body="{ username: kickedUser }"
-      redirect-to="/panel/team"
-    />
-    <PanelModalConfirmDeleteModal
-      v-model="revokeInvitationModal"
-      :url="`/teams/management/revoke_invitation/${revokedInvitation}` as any"
-      modal-title="Cofnięcie zaproszenia"
-      modal-description="Czy na pewno chcesz cofnąć zaproszenie?"
-      toast-success-message="Pomyślnie cofnięto zaproszenie"
-      :request-body="undefined"
-      redirect-to="/panel/team"
-    />
 
     <NuxtLink to="/panel/" class="flex items-center gap-3 font-900 pt-5 pl-5">
       <Icon name="mdi:arrow-left" class="text-2xl" />
@@ -82,12 +75,12 @@ const members = computed<Members | null>(() => {
         <h1 class="flex-grow text-3xl font-bold">
           {{ team?.team_name }}
         </h1>
-        <UButton v-if="is_user_leader" class="w-full" @click="deleteTeamModal = true">
+        <UButton v-if="is_user_leader" class="w-full" @click="openDeleteTeamModal">
           <p class="text-center w-full">
             Usuń drużynę
           </p>
         </UButton>
-        <UButton v-else class="w-full" @click="leaveTeamModal = true">
+        <UButton v-else class="w-full" @click="openLeaveTeamModal">
           <p class="text-center w-full">
             Opuść zespół
           </p>
@@ -104,7 +97,7 @@ const members = computed<Members | null>(() => {
                 <UIcon v-if="user.is_leader" name="i-material-symbols-crown" class="text-yellow-400" />
                 {{ user.name }}
               </div>
-              <UButton v-if="is_user_leader" @click="kickUserModal = true; kickedUser = user.name">
+              <UButton v-if="is_user_leader" @click="openKickUserModal(); kickedUser = user.name">
                 Wyrzuć
               </UButton>
             </div>
@@ -123,7 +116,7 @@ const members = computed<Members | null>(() => {
           >
             <div class="flex justify-between items-center">
               {{ user }}
-              <UButton v-if="is_user_leader" @click="revokeInvitationModal = true; revokedInvitation = user">
+              <UButton v-if="is_user_leader" @click="openRevokeInvitationModal(); revokedInvitation = user">
                 Cofnij zaproszenie
               </UButton>
             </div>
