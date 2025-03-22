@@ -6,7 +6,6 @@ use hack4krak_backend::entities::{email_confirmation, users};
 use hack4krak_backend::routes;
 use hack4krak_backend::services::env::EnvConfig;
 use hack4krak_backend::utils::app_state::AppState;
-use quoted_printable::decode;
 use sea_orm::MockExecResult;
 use sea_orm::{DatabaseBackend, MockDatabase};
 use serde_json::json;
@@ -105,6 +104,7 @@ async fn auth_flow() {
     use actix_web::http::header;
     use lettre::SmtpTransport;
     use lettre::transport::smtp::client::Tls;
+    use quoted_printable::decode;
     use serde_json::Value;
     use testcontainers::GenericImage;
     use testcontainers::core::IntoContainerPort;
@@ -197,7 +197,7 @@ async fn auth_flow() {
         .unwrap();
 
     let user_request = test::TestRequest::get()
-        .uri("/user/")
+        .uri("/account/")
         .insert_header((
             header::COOKIE,
             format!("access_token={}", access_token.value()),

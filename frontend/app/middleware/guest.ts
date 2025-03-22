@@ -1,6 +1,6 @@
 export default defineNuxtRouteMiddleware(async () => {
   try {
-    const user = await useAuth('/user/', {
+    const user = await useAuth('/account/', {
       key: 'guest-user',
       redirect: 'error',
     })
