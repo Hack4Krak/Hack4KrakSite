@@ -1,5 +1,6 @@
 use crate::entities::users;
 use crate::middlewares::auth::AuthMiddleware;
+use crate::models::user::UserPassword;
 use crate::services::auth::AuthService;
 use crate::utils::app_state;
 use crate::utils::error::Error;
@@ -8,24 +9,15 @@ use actix_web::web::{Data, Json};
 use actix_web::{HttpResponse, patch};
 use actix_web_validation::Validated;
 use serde::{Deserialize, Serialize};
-use std::fmt;
 use utoipa::ToSchema;
 use validator::Validate;
 
-#[derive(Serialize, Deserialize, ToSchema, Validate, Clone)]
+#[derive(Serialize, Deserialize, ToSchema, Validate, Clone, Debug)]
 pub struct UpdateUserModel {
     #[validate(length(min = 3, max = 32))]
     pub username: Option<String>,
-    pub old_password: String,
-    pub new_password: Option<String>,
-}
-
-impl fmt::Debug for UpdateUserModel {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("UpdateUserModel")
-            .field("username", &self.username)
-            .finish()
-    }
+    pub old_password: UserPassword,
+    pub new_password: Option<UserPassword>,
 }
 
 #[utoipa::path(
