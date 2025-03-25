@@ -321,20 +321,14 @@ async fn email_confirmation_expired() {
 #[actix_web::test]
 async fn reset_password_flow() {
     EnvConfig::load_test_config();
-    use chrono::Local;
     use lettre::SmtpTransport;
     use lettre::transport::smtp::client::Tls;
     use quoted_printable::decode;
-    use sea_orm::{EntityTrait, Set};
     use serde_json::Value;
     use testcontainers::GenericImage;
     use testcontainers::core::IntoContainerPort;
     use testcontainers::core::WaitFor;
     use testcontainers::runners::AsyncRunner;
-    use utils::setup_database_with_schema;
-    use uuid::Uuid;
-
-    use hack4krak_backend::entities::sea_orm_active_enums::UserRoles;
 
     const UUID_REGEX: &str =
         r"[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}";
@@ -357,21 +351,7 @@ async fn reset_password_flow() {
         .port(smtp_port)
         .build();
 
-    let database = setup_database_with_schema().await;
-
-    users::Entity::insert(users::ActiveModel {
-        id: Set(Uuid::new_v4()),
-        username: Set("test_user".to_string()),
-        email: Set("example@gmail.com".to_string()),
-        created_at: Set(Local::now().naive_local()),
-        team: Set(None),
-        is_leader: Set(false),
-        password: Set(None),
-        roles: Set(UserRoles::Default),
-    })
-    .exec(&database)
-    .await
-    .unwrap();
+    let (database, _) = utils::init_database_with_user().await;
 
     let app =
         test::init_service(setup_test_app(Some(smtp_client), Some(database), None).await).await;
