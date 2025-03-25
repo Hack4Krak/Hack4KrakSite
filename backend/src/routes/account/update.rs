@@ -31,7 +31,7 @@ pub struct UpdateUserModel {
     ),
     tag = "account"
 )]
-#[patch("/account/update", wrap = "AuthMiddleware::with_user()")]
+#[patch("/update", wrap = "AuthMiddleware::with_user()")]
 pub async fn update(
     app_state: Data<app_state::AppState>,
     user: users::Model,
