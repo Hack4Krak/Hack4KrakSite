@@ -165,7 +165,8 @@ pub async fn init_database_with_user() -> (DatabaseConnection, Uuid) {
         created_at: Set(Local::now().naive_local()),
         team: Set(None),
         is_leader: Set(false),
-        password: Set(None),
+        // Password is Dziengiel
+        password: Set(Some("$argon2id$v=19$m=19456,t=2,p=1$GuyDKoLJCF5tt+MDGJqRfA$8NZPkyNbR/IWuLg6tR7tn0RH/lJGahLYDODj23ajP3Y".to_string())),
         roles: Set(UserRoles::Default),
     })
     .exec(&database)
