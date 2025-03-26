@@ -1,8 +1,8 @@
 use utoipa_actix_web::service_config::ServiceConfig;
 
-pub mod completed_tasks;
-pub mod leave_team;
-pub mod my_team;
+mod completed_tasks;
+mod leave_team;
+mod my_team;
 
 pub fn config(config: &mut ServiceConfig) {
     config
