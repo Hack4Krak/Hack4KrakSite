@@ -1,5 +1,5 @@
 use crate::entities::users;
-use crate::models::user::UserPassword;
+use crate::models::user::Password;
 use crate::routes::auth::AuthError::InvalidCredentials;
 use crate::services::auth::AuthService;
 use crate::utils::app_state;
@@ -32,7 +32,7 @@ pub async fn login(
         .await?
         .ok_or(Error::Auth(InvalidCredentials))?;
 
-    AuthService::assert_password_is_valid(&user, &UserPassword(login_json.password.clone()))?;
+    AuthService::assert_password_is_valid(&user, &Password(login_json.password.clone()))?;
 
     AuthService::response_with_cookies(user.id, user.email)
 }

@@ -21,11 +21,11 @@ use utoipa::ToSchema;
 use uuid::Uuid as uuid_gen;
 
 #[derive(Serialize, Deserialize, ToSchema, Clone)]
-pub struct UserPassword(pub String);
+pub struct Password(pub String);
 
-impl fmt::Debug for UserPassword {
+impl fmt::Debug for Password {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_tuple("UserPassword").field(&"******").finish()
+        f.debug_tuple("Password").field(&"******").finish()
     }
 }
 
@@ -242,7 +242,7 @@ impl users::Model {
         database: &DatabaseConnection,
         user: users::Model,
         new_username: Option<String>,
-        new_password: Option<UserPassword>,
+        new_password: Option<Password>,
     ) -> Result<(), Error> {
         let mut active_user: ActiveModel = user.clone().into();
 

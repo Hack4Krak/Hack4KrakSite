@@ -1,4 +1,4 @@
-use crate::models::user::UserPassword;
+use crate::models::user::Password;
 use crate::services::auth::AuthService;
 use crate::utils::app_state;
 use crate::utils::error::Error;
@@ -15,7 +15,7 @@ pub struct RegisterModel {
     pub name: String,
     #[validate(email)]
     pub email: String,
-    pub password: UserPassword,
+    pub password: Password,
 }
 #[utoipa::path(
     request_body = RegisterModel,

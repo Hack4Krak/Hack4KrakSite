@@ -1,6 +1,6 @@
 use crate::entities::users;
 use crate::middlewares::auth::AuthMiddleware;
-use crate::models::user::UserPassword;
+use crate::models::user::Password;
 use crate::services::auth::AuthService;
 use crate::utils::app_state;
 use crate::utils::error::Error;
@@ -16,8 +16,8 @@ use validator::Validate;
 pub struct UpdateUserModel {
     #[validate(length(min = 3, max = 32))]
     pub username: Option<String>,
-    pub old_password: UserPassword,
-    pub new_password: Option<UserPassword>,
+    pub old_password: Password,
+    pub new_password: Option<Password>,
 }
 
 #[utoipa::path(

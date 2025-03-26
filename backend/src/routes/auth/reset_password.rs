@@ -1,4 +1,4 @@
-use crate::models::user::UserPassword;
+use crate::models::user::Password;
 use crate::services::auth::AuthService;
 use crate::utils::app_state;
 use crate::utils::error::Error;
@@ -35,7 +35,7 @@ pub async fn request_reset_password(
 #[derive(Serialize, Deserialize, ToSchema, Debug)]
 pub struct ResetPasswordModel {
     pub code: Uuid,
-    pub new_password: UserPassword,
+    pub new_password: Password,
 }
 
 #[utoipa::path(
