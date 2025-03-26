@@ -1,5 +1,5 @@
 use crate::entities::users;
-use crate::routes::admin::email::send::EmailSendingModel;
+use crate::routes::admin::EmailSendingModel;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::HttpResponse;

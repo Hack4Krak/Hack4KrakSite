@@ -1,9 +1,14 @@
 use utoipa_actix_web::scope;
 
-pub mod email;
+mod email;
 mod tasks;
-pub mod teams;
-pub mod users;
+mod teams;
+mod users;
+
+// TODO: Reorganize our codebase to make those modules private
+pub use email::EmailSendingModel;
+pub use teams::UpdateTeamModel;
+pub use users::UpdateUserModel;
 
 pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(scope("/users").configure(users::config));

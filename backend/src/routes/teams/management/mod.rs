@@ -1,10 +1,10 @@
-pub mod change_leader;
+mod change_leader;
 mod delete;
 mod index;
-pub mod invite_user;
+mod invite_user;
 mod invited_users;
-pub mod kick_user;
-pub mod rename;
+mod kick_user;
+mod rename;
 mod revoke_invitation;
 
 pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {

@@ -8,7 +8,6 @@ mod register;
 use crate::utils::error::error_response_builder;
 use actix_web::error;
 use actix_web::http::StatusCode;
-pub use login::LoginModel;
 pub use register::RegisterModel;
 use thiserror::Error;
 

@@ -1,6 +1,8 @@
-pub mod placeholders;
-pub mod send;
-pub mod templates;
+mod placeholders;
+mod send;
+mod templates;
+
+pub use send::EmailSendingModel;
 
 pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(send::send);
