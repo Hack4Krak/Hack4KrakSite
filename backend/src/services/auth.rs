@@ -46,7 +46,7 @@ impl AuthService {
 
         Email {
             sender: (
-                Some("Hack4Krak Authentication".to_string()),
+                Some("Autoryzacja Hack4Krak".to_string()),
                 "auth@hack4krak.pl".to_string(),
             ),
             recipients: vec![credentials.email],
