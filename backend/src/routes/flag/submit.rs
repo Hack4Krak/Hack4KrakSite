@@ -1,4 +1,3 @@
-use crate::entities::sea_orm_active_enums::TeamStatus;
 use crate::entities::{flag_capture, teams, users};
 use crate::routes::flag::AuthMiddleware;
 use crate::routes::flag::FlagError;
@@ -30,17 +29,13 @@ pub struct SubmitResponse {
     ),
     tag = "flag"
 )]
-#[post("/submit", wrap = "AuthMiddleware::with_team_as_member()")]
+#[post("/submit", wrap = "AuthMiddleware::with_confirmed_team_as_member()")]
 pub async fn submit(
     app_state: Data<AppState>,
     model: Validated<Json<SubmitModel>>,
     team: teams::Model,
     user: users::Model,
 ) -> Result<HttpResponse, Error> {
-    if team.status != TeamStatus::Confirmed {
-        return Err(Error::Flag(FlagError::TeamNotConfirmed));
-    }
-
     let flag = model
         .flag
         .strip_prefix("hack4KrakCTF{")
