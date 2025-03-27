@@ -3,12 +3,12 @@ use crate::middlewares::auth::AuthMiddleware;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::jwt::JwtClaims;
+use crate::utils::success_response::SuccessResponse;
 use actix_web::web::Data;
-use actix_web::{HttpResponse, delete, get};
-use sea_orm::{EntityTrait, ModelTrait};
+use actix_web::{HttpResponse, get};
+use sea_orm::EntityTrait;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
-use utoipa_actix_web::service_config::ServiceConfig;
 
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct UserInformationResponse {
@@ -24,8 +24,8 @@ pub struct UserInformationResponse {
     security(
         ("access_token" = [])
     ),
-    operation_id = "user_index",
-    tag = "user"
+    operation_id = "account_index",
+    tag = "account"
 )]
 #[get("/", wrap = "AuthMiddleware::default()")]
 pub async fn index(
@@ -55,31 +55,5 @@ pub async fn index(
 )]
 #[get("/admin", wrap = "AuthMiddleware::with_user_as_admin()")]
 pub async fn only_admins() -> Result<HttpResponse, Error> {
-    Ok(HttpResponse::Ok().finish())
-}
-
-#[utoipa::path(
-    responses(
-        (status = 200, description = "Account successfully deleted"),
-        (status = 500, description = "Internal server error.")
-    ),
-    security(
-        ("access_token" = [])
-    ),
-    tag = "user"
-)]
-#[delete("/delete", wrap = "AuthMiddleware::with_user()")]
-pub async fn delete(
-    app_state: Data<app_state::AppState>,
-    user: users::Model,
-) -> Result<HttpResponse, Error> {
-    user.delete(&app_state.database).await?;
-
-    Ok(HttpResponse::Ok().finish())
-}
-
-pub fn config(config: &mut ServiceConfig) {
-    config.service(index);
-    config.service(only_admins);
-    config.service(delete);
+    Ok(SuccessResponse::default().http_response())
 }

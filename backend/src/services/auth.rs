@@ -1,9 +1,11 @@
-use crate::entities::{email_confirmation, users};
-use crate::models::user::UserInformation;
+use crate::entities::{email_confirmation, password_reset, users};
+use crate::models::user::{Password, UserInformation};
 use crate::routes::auth::AuthError::{
-    InvalidCredentials, InvalidEmailAddress, PasswordAuthNotAvailable,
+    ConfirmationCodeExpired, InvalidConfirmationCode, InvalidCredentials, InvalidEmailAddress,
+    PasswordAuthNotAvailable,
 };
 use crate::routes::auth::RegisterModel;
+use crate::routes::auth::reset_password::ResetPasswordModel;
 use crate::services::emails::{Email, EmailTemplate};
 use crate::services::env::EnvConfig;
 use crate::utils::app_state;
@@ -16,6 +18,7 @@ use argon2::password_hash::SaltString;
 use argon2::password_hash::rand_core::OsRng;
 use argon2::{Argon2, PasswordHash, PasswordHasher, PasswordVerifier};
 use chrono::Duration;
+use sea_orm::{ActiveModelTrait, EntityTrait};
 use uuid::Uuid;
 use validator::ValidateEmail;
 
@@ -30,11 +33,7 @@ impl AuthService {
             return Err(Error::Auth(InvalidEmailAddress));
         }
 
-        let salt = SaltString::generate(&mut OsRng);
-        let password_hash = Argon2::default()
-            .hash_password(credentials.password.as_bytes(), &salt)
-            .map_err(HashPasswordFailed)?
-            .to_string();
+        let password_hash = Self::hash_password(credentials.password.clone())?;
 
         let user_info =
             UserInformation::new(&app_state.database, password_hash, &credentials).await?;
@@ -65,7 +64,7 @@ impl AuthService {
 
     pub fn assert_password_is_valid(
         user: &users::Model,
-        password_to_verify: &str,
+        password_to_verify: &Password,
     ) -> Result<(), Error> {
         let password = user
             .password
@@ -75,7 +74,7 @@ impl AuthService {
         let parsed_hash = PasswordHash::new(&password).map_err(Error::HashPasswordFailed)?;
 
         let is_verified = Argon2::default()
-            .verify_password(password_to_verify.as_bytes(), &parsed_hash)
+            .verify_password(password_to_verify.0.as_bytes(), &parsed_hash)
             .is_ok();
 
         if !is_verified {
@@ -140,5 +139,80 @@ impl AuthService {
         confirmation_link.push_str(confirmation_code);
 
         confirmation_link
+    }
+
+    pub fn hash_password(password: Password) -> Result<String, Error> {
+        let salt = SaltString::generate(&mut OsRng);
+
+        Ok(Argon2::default()
+            .hash_password(password.0.as_bytes(), &salt)
+            .map_err(HashPasswordFailed)?
+            .to_string())
+    }
+
+    pub async fn request_password_reset(
+        app_state: &app_state::AppState,
+        email: String,
+    ) -> Result<(), Error> {
+        let user = users::Model::find_by_email(&app_state.database, &email)
+            .await?
+            .ok_or(Error::Auth(InvalidEmailAddress))?;
+
+        let confirmation_code = password_reset::Model::create(&app_state.database, user.id)
+            .await?
+            .to_string();
+
+        let reset_password_link = EnvConfig::get().password_reset_frontend_url.clone();
+
+        let email_body = format!(
+            include_str!("emails_assets/reset_password_body.html"),
+            confirmation_code,
+            reset_password_link.clone(),
+            reset_password_link
+        );
+
+        Email {
+            sender: (
+                Some("Hack4Krak Authentication".to_string()),
+                "auth@hack4krak.pl".to_string(),
+            ),
+            recipients: vec![email],
+            subject: "Resetowanie hasła".to_string(),
+            template: EmailTemplate::Generic,
+            placeholders: Some(vec![("body".to_string(), email_body)]),
+        }
+        .send(app_state)
+        .await?;
+
+        Ok(())
+    }
+
+    pub async fn reset_password(
+        app_state: &app_state::AppState,
+        model: ResetPasswordModel,
+    ) -> Result<(), Error> {
+        let (password_reset, user) = password_reset::Entity::find_by_id(model.code)
+            .find_also_related(users::Entity)
+            .one(&app_state.database)
+            .await?
+            .ok_or(Error::Auth(InvalidConfirmationCode))?;
+
+        if password_reset.expiration_date < chrono::Local::now().naive_local() {
+            let active_password_reset: password_reset::ActiveModel = password_reset.into();
+            active_password_reset.delete(&app_state.database).await?;
+
+            return Err(Error::Auth(ConfirmationCodeExpired));
+        }
+
+        if let Some(user) = user {
+            users::Model::update(&app_state.database, user, None, Some(model.new_password)).await?;
+
+            let active_password_reset: password_reset::ActiveModel = password_reset.into();
+            active_password_reset.delete(&app_state.database).await?;
+
+            return Ok(());
+        }
+
+        Err(Error::UserNotFound)
     }
 }

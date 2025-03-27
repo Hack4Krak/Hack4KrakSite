@@ -2,21 +2,32 @@ use crate::entities::sea_orm_active_enums::UserRoles;
 use crate::entities::users::ActiveModel;
 use crate::entities::{teams, users};
 use crate::models::task::EventConfig;
-use crate::routes::admin::users::update::UpdateUserModel;
+use crate::routes::admin::users::update::UpdateUserModelAdmin;
 use crate::routes::auth::AuthError::UserAlreadyExists;
 use crate::routes::auth::RegisterModel;
+use crate::services::auth::AuthService;
 use crate::utils::error::Error;
 use actix_web::dev::Payload;
 use actix_web::{FromRequest, HttpMessage, HttpRequest};
 use chrono::Local;
 use sea_orm::ActiveValue::Set;
-use sea_orm::prelude::Uuid as SeaOrmUuid;
+use sea_orm::prelude::{DateTime, Uuid as SeaOrmUuid};
 use sea_orm::{ActiveModelTrait, EntityTrait};
 use sea_orm::{ColumnTrait, DatabaseConnection};
 use sea_orm::{ModelTrait, QueryFilter};
 use serde::{Deserialize, Serialize};
-use std::future;
+use std::{fmt, future};
+use utoipa::ToSchema;
 use uuid::Uuid as uuid_gen;
+
+#[derive(Serialize, Deserialize, ToSchema, Clone)]
+pub struct Password(pub String);
+
+impl fmt::Debug for Password {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_tuple("Password").field(&"******").finish()
+    }
+}
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UserInformation {
@@ -156,12 +167,12 @@ impl users::Model {
         Ok(())
     }
 
-    pub async fn update(
+    pub async fn update_as_admin(
         database: &DatabaseConnection,
         user: users::Model,
         event_config: &EventConfig,
         id: SeaOrmUuid,
-        update_user_json: UpdateUserModel,
+        update_user_json: UpdateUserModelAdmin,
     ) -> Result<(), Error> {
         let updated_user = users::Entity::find_by_id(id)
             .one(database)
@@ -182,6 +193,18 @@ impl users::Model {
             active_user.email = Set(email);
         }
 
+        if Self::assert_is_unique(
+            database,
+            &active_user.email.clone().unwrap(),
+            &active_user.username.clone().unwrap(),
+            Some(active_user.id.clone().unwrap()),
+        )
+        .await
+        .is_err()
+        {
+            return Err(Error::UserWithEmailOrUsernameAlreadyExists);
+        }
+
         if let Some(team) = update_user_json.team {
             teams::Model::assert_correct_team_size(
                 database,
@@ -190,18 +213,6 @@ impl users::Model {
             )
             .await?;
             active_user.team = Set(Some(team));
-        }
-
-        if Self::assert_is_unique(
-            database,
-            &active_user.email.clone().unwrap(),
-            &active_user.username.clone().unwrap(),
-            Some(id),
-        )
-        .await
-        .is_err()
-        {
-            return Err(Error::UserWithEmailOrUsernameAlreadyExists);
         }
 
         active_user.save(database).await?;
@@ -223,6 +234,30 @@ impl users::Model {
         }
 
         user_to_delete.delete(database).await?;
+
+        Ok(())
+    }
+
+    pub async fn update(
+        database: &DatabaseConnection,
+        user: users::Model,
+        new_username: Option<String>,
+        new_password: Option<Password>,
+    ) -> Result<(), Error> {
+        let mut active_user: ActiveModel = user.clone().into();
+
+        if let Some(new_username) = new_username {
+            users::Model::assert_is_unique(database, &user.email, &new_username, Some(user.id))
+                .await?;
+            active_user.username = Set(new_username);
+        }
+
+        if let Some(new_password) = new_password {
+            let password_hash = AuthService::hash_password(new_password)?;
+            active_user.password = Set(Some(password_hash));
+        }
+
+        active_user.save(database).await?;
 
         Ok(())
     }
@@ -264,5 +299,54 @@ impl UserRoles {
             UserRoles::Admin => 1,
             UserRoles::Default => 0,
         }
+    }
+}
+
+pub mod macros {
+    use sea_orm::prelude::DateTime;
+    use uuid::Uuid;
+    use crate::entities::sea_orm_active_enums::UserRoles;
+    use crate::entities::users;
+    use crate::models::user::Password;
+
+    pub struct Username;
+    pub struct Email;
+    pub struct CreatedAt;
+    pub struct ModelPassword;
+    pub struct Id;
+    pub struct IsLeader;
+    pub struct Team;
+    pub struct Roles;
+
+    trait FieldType<T> {
+        type Type;
+    }
+
+    // Implement FieldType for each field
+    impl FieldType<Username> for users::Model { type Type = String; }
+    impl FieldType<Email> for users::Model { type Type = String; }
+    impl FieldType<CreatedAt> for users::Model { type Type = DateTime; }
+    impl FieldType<ModelPassword> for users::Model { type Type = Password; }
+    impl FieldType<Id> for users::Model { type Type = Uuid; }
+    impl FieldType<IsLeader> for users::Model { type Type = bool; }
+    impl FieldType<Team> for users::Model { type Type = Option<Uuid>; }
+    impl FieldType<Roles> for users::Model { type Type = UserRoles; }
+
+    #[macro_export]
+    pub macro_rules! create_partial_user_struct {
+        ($name:ident { $($field:ident),* }, old_password) => {
+            #[derive(Serialize, Deserialize, ToSchema, Clone, Debug)]
+            pub struct $name {
+                $(pub $field: Option<<Model as FieldType<$field>>::Type>),*,
+                pub old_password: Password,
+            }
+        };
+
+        ($name:ident { $($field:ident),* }) => {
+            #[derive(Serialize, Deserialize, ToSchema)]
+            pub struct $name {
+                $(pub $field: Option<<Model as FieldType<$field>>::Type>),*
+            }
+        };
     }
 }
