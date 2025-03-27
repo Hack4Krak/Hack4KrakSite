@@ -11,7 +11,7 @@ use actix_web::dev::Payload;
 use actix_web::{FromRequest, HttpMessage, HttpRequest};
 use chrono::Local;
 use sea_orm::ActiveValue::Set;
-use sea_orm::prelude::Uuid as SeaOrmUuid;
+use sea_orm::prelude::{DateTime, Uuid as SeaOrmUuid};
 use sea_orm::{ActiveModelTrait, EntityTrait};
 use sea_orm::{ColumnTrait, DatabaseConnection};
 use sea_orm::{ModelTrait, QueryFilter};
@@ -299,5 +299,54 @@ impl UserRoles {
             UserRoles::Admin => 1,
             UserRoles::Default => 0,
         }
+    }
+}
+
+pub mod macros {
+    use sea_orm::prelude::DateTime;
+    use uuid::Uuid;
+    use crate::entities::sea_orm_active_enums::UserRoles;
+    use crate::entities::users;
+    use crate::models::user::Password;
+
+    pub struct Username;
+    pub struct Email;
+    pub struct CreatedAt;
+    pub struct ModelPassword;
+    pub struct Id;
+    pub struct IsLeader;
+    pub struct Team;
+    pub struct Roles;
+
+    trait FieldType<T> {
+        type Type;
+    }
+
+    // Implement FieldType for each field
+    impl FieldType<Username> for users::Model { type Type = String; }
+    impl FieldType<Email> for users::Model { type Type = String; }
+    impl FieldType<CreatedAt> for users::Model { type Type = DateTime; }
+    impl FieldType<ModelPassword> for users::Model { type Type = Password; }
+    impl FieldType<Id> for users::Model { type Type = Uuid; }
+    impl FieldType<IsLeader> for users::Model { type Type = bool; }
+    impl FieldType<Team> for users::Model { type Type = Option<Uuid>; }
+    impl FieldType<Roles> for users::Model { type Type = UserRoles; }
+
+    #[macro_export]
+    pub macro_rules! create_partial_user_struct {
+        ($name:ident { $($field:ident),* }, old_password) => {
+            #[derive(Serialize, Deserialize, ToSchema, Clone, Debug)]
+            pub struct $name {
+                $(pub $field: Option<<Model as FieldType<$field>>::Type>),*,
+                pub old_password: Password,
+            }
+        };
+
+        ($name:ident { $($field:ident),* }) => {
+            #[derive(Serialize, Deserialize, ToSchema)]
+            pub struct $name {
+                $(pub $field: Option<<Model as FieldType<$field>>::Type>),*
+            }
+        };
     }
 }

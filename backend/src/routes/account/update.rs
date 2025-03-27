@@ -1,6 +1,7 @@
 use crate::entities::users;
 use crate::middlewares::auth::AuthMiddleware;
 use crate::models::user::Password;
+use crate::models::user::macros::*;
 use crate::services::auth::AuthService;
 use crate::utils::app_state;
 use crate::utils::error::Error;
@@ -11,14 +12,9 @@ use actix_web_validation::Validated;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use validator::Validate;
+use crate::create_partial_user_struct;
 
-#[derive(Serialize, Deserialize, ToSchema, Validate, Clone, Debug)]
-pub struct UpdateUserModel {
-    #[validate(length(min = 3, max = 32))]
-    pub username: Option<String>,
-    pub old_password: Password,
-    pub new_password: Option<Password>,
-}
+create_partial_user_struct!(UpdateUserModel { Username, ModelPassword }, old_password);
 
 #[utoipa::path(
     request_body = UpdateUserModel,
@@ -44,8 +40,8 @@ pub async fn update(
     users::Model::update(
         &app_state.database,
         user,
-        model.username,
-        model.new_password,
+        model.Username,
+        model.ModelPassword,
     )
     .await?;
 
