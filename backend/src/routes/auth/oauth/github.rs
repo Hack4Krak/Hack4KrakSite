@@ -60,11 +60,12 @@ pub async fn github_callback(
     {
         Ok(token) => token,
         Err(error) => {
-            return Ok(create_temporary_redirect_response(
-                EnvConfig::get().oauth_finish_redirect_url.clone(),
-                error,
-            )?
-            .finish());
+            let mut url = Url::parse(&EnvConfig::get().frontend_url.clone())
+                .map_err(Error::FailedToParseUrl)?;
+            url = url
+                .join(&EnvConfig::get().oauth_finish_redirect_url.clone())
+                .map_err(Error::FailedToParseUrl)?;
+            return Ok(create_temporary_redirect_response(url, error)?.finish());
         }
     };
 
