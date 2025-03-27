@@ -2,15 +2,14 @@ use crate::utils::error::Error;
 use actix_web::{HttpResponse, HttpResponseBuilder, http::header::LOCATION};
 use url::Url;
 
-pub fn create_redirect_response(location: String) -> Result<HttpResponseBuilder, Error> {
+pub fn create_redirect_response(location: Url) -> Result<HttpResponseBuilder, Error> {
     let mut response = HttpResponse::Ok();
-    let url = Url::parse(location.as_str()).map_err(Error::FailedToParseUrl)?;
-    response.append_header(("Refresh", format!("0; {}", url)));
+    response.append_header(("Refresh", format!("0; {}", location)));
     Ok(response)
 }
 
 pub fn create_temporary_redirect_response(
-    location: String,
+    location: Url,
     error_message: Error,
 ) -> Result<HttpResponseBuilder, Error> {
     let mut response = HttpResponse::TemporaryRedirect();

@@ -42,7 +42,7 @@ impl Default for EnvConfig {
             oauth_finish_redirect_url: "/panel".to_string(),
             openapi_json_frontend_path: "../frontend/openapi/api/openapi.json".to_string(),
             email_confirm_redirect_url: "/login?redirect_from_confirmation=true".to_string(),
-            email_confirm_backend_url: "/auth/confirm".to_string(),
+            email_confirm_backend_url: "/auth/confirm/".to_string(),
             cookies_domain: "localhost".to_string(),
             tasks_base_path: PathBuf::from_str("TasksTemplate/").unwrap(),
             database_url: Default::default(),
