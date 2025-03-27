@@ -7,7 +7,7 @@ edition = "2024"
 full-test-suite = []
 
 [workspace]
-members = [".", "migration", "openapi-check"]
+members = [".", "migration", "openapi-cli"]
 
 [workspace.package]
 version = "1.0.0"

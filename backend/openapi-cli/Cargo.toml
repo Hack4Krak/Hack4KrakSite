@@ -1,5 +1,5 @@
 [package]
-name = "openapi-check"
+name = "openapi-cli"
 edition = "2024"
 version.workspace = true
 publish = false
