@@ -78,7 +78,7 @@ impl OAuthProvider {
     ) -> Result<actix_web::HttpResponse, Error> {
         let user = users::Model::create_from_oauth(database, username, email).await?;
 
-        let mut url = EnvConfig::get().frontend_domain.clone();
+        let mut url = EnvConfig::get().frontend_url.clone();
         url.push_str(&EnvConfig::get().oauth_finish_redirect_url.clone());
 
         let mut response = actix_web::HttpResponse::Ok();

@@ -21,7 +21,7 @@ pub async fn confirm_email(
 ) -> Result<HttpResponse, Error> {
     match AuthService::confirm_email(&app_state, confirmation_code.into_inner()).await {
         Ok(()) => {
-            let mut url = EnvConfig::get().backend_domain.clone();
+            let mut url = EnvConfig::get().backend_url.clone();
             url.push_str(&EnvConfig::get().email_confirm_redirect_url.clone());
 
             let mut response = common_responses::create_redirect_response(url)?;
@@ -29,7 +29,7 @@ pub async fn confirm_email(
             Ok(response.body("Email successfully confirmed. Redirecting..."))
         }
         Err(error) => {
-            let mut url = EnvConfig::get().frontend_domain.clone();
+            let mut url = EnvConfig::get().frontend_url.clone();
             url.push_str(&EnvConfig::get().oauth_finish_redirect_url.clone());
             Ok(create_temporary_redirect_response(url, error)?.finish())
         }
