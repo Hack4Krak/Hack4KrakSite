@@ -4,7 +4,7 @@ use thiserror::Error;
 
 mod chart;
 mod teams;
-pub mod updates;
+mod updates;
 
 pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(chart::chart);
