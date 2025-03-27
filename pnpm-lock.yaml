@@ -28,8 +28,8 @@ importers:
         specifier: ^0.8.2
         version: 0.8.2
       '@iconify-json/lucide':
-        specifier: ^1.2.32
-        version: 1.2.32
+        specifier: ^1.2.33
+        version: 1.2.33
       '@nuxt/image':
         specifier: 1.10.0
         version: 1.10.0(patch_hash=855617cd17c2c22d6dc8a8220d774a5dbf9ebcf72b2510b0848046d404f21192)(db0@0.3.1(@libsql/client@0.14.0)(better-sqlite3@11.8.1))(ioredis@5.6.0)(magicast@0.3.5)(rollup@4.36.0)
@@ -775,8 +775,8 @@ packages:
     resolution: {integrity: sha512-xeO57FpIu4p1Ri3Jq/EXq4ClRm86dVF2z/+kvFnyqVYRavTZmaFaUBbWCOuuTh0o/g7DSsk6kc2vrS4Vl5oPOQ==}
     engines: {node: '>=18.18'}
 
-  '@iconify-json/lucide@1.2.32':
-    resolution: {integrity: sha512-M5efeHQJhlT8FkAXjW+xGu5/lHUt5VBSjd/u9XxmQy6RGXLRCRi0PcUBosAuKALRT15j+U8dN4eWiDhDZjTbSw==}
+  '@iconify-json/lucide@1.2.33':
+    resolution: {integrity: sha512-2Ty+rI0tRHJEbM6J48G40ONvCPrcFC3o4PpAqOXZ3X+Uz2vMzrGj6tl2XHToZ64nc6lg+fC3WhkJebyyQxLVcw==}
 
   '@iconify/collections@1.0.518':
     resolution: {integrity: sha512-bRCp3uPlb8QTyjT1xq3UnVj1fAeuJorGaNR+TqN1Pq/1dSdVL/jc2+6Dq+2VlGBPa7WbV203yz8bPupcgPKOOQ==}
@@ -6971,7 +6971,7 @@ snapshots:
 
   '@humanwhocodes/retry@0.4.2': {}
 
-  '@iconify-json/lucide@1.2.32':
+  '@iconify-json/lucide@1.2.33':
     dependencies:
       '@iconify/types': 2.0.0
 
