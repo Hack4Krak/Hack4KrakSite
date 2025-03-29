@@ -1,5 +1,6 @@
-use crate::entities::sea_orm_active_enums::UserRoles;
+use crate::entities::sea_orm_active_enums::{TeamStatus, UserRoles};
 use crate::entities::{teams, users};
+use crate::routes::flag::FlagError::TeamNotConfirmed;
 use crate::routes::teams::TeamError;
 use crate::utils::app_state::AppState;
 use crate::utils::cookies::ACCESS_TOKEN_COOKIE;
@@ -23,6 +24,7 @@ use std::rc::Rc;
 pub struct AuthMiddleware {
     insert_user_extension: bool,
     insert_team_extension: bool,
+    require_confirmed_team: bool,
     team_requirement: TeamRequirement,
     role_requirement: UserRoles,
 }
@@ -48,7 +50,7 @@ impl AuthMiddleware {
             insert_user_extension: true,
             insert_team_extension: true,
             team_requirement: TeamRequirement::Member,
-            role_requirement: UserRoles::Default,
+            ..Default::default()
         }
     }
 
@@ -57,7 +59,17 @@ impl AuthMiddleware {
             insert_user_extension: true,
             insert_team_extension: true,
             team_requirement: TeamRequirement::Leader,
-            role_requirement: UserRoles::Default,
+            ..Default::default()
+        }
+    }
+
+    pub fn with_confirmed_team_as_member() -> Self {
+        AuthMiddleware {
+            insert_user_extension: true,
+            insert_team_extension: true,
+            team_requirement: TeamRequirement::Member,
+            require_confirmed_team: true,
+            ..Default::default()
         }
     }
 
@@ -173,12 +185,14 @@ impl<S> AuthMiddlewareService<S> {
                 if !user.is_leader && config.team_requirement == TeamRequirement::Leader {
                     return Err(TeamError::UserIsNotTeamLeader.into());
                 }
+                let team = teams::Entity::find_by_id(team)
+                    .one(database)
+                    .await?
+                    .ok_or(Error::Team(TeamError::TeamNotFound))?;
+                if team.status != TeamStatus::Confirmed && config.require_confirmed_team {
+                    return Err(Error::Flag(TeamNotConfirmed));
+                }
                 if config.insert_team_extension {
-                    let team = teams::Entity::find_by_id(team)
-                        .one(database)
-                        .await?
-                        .ok_or(Error::Team(TeamError::TeamNotFound))?;
-
                     request.extensions_mut().insert(team);
                 }
             }
