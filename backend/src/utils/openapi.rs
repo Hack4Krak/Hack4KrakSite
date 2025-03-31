@@ -4,9 +4,9 @@ use crate::utils::error::Error;
 use serde_json::to_string;
 use std::fs::File;
 use std::io::Write;
-use utoipa::Modify;
-use utoipa::openapi::OpenApi;
 use utoipa::openapi::security::{ApiKey, ApiKeyValue, SecurityScheme};
+use utoipa::openapi::{OpenApi, Server};
+use utoipa::{Modify, OpenApi as _};
 
 #[derive(utoipa::OpenApi)]
 #[openapi(
@@ -16,12 +16,19 @@ use utoipa::openapi::security::{ApiKey, ApiKeyValue, SecurityScheme};
         version = env!("CARGO_PKG_VERSION")
     ),
     modifiers(&SecurityAddon),
-    servers(
-        (url = "http://localhost:8080", description = "Local development server"),
-        (url = "https://api.hack4krak.pl", description = "Main API server"),
-    )
 )]
 pub struct ApiDoc;
+
+impl ApiDoc {
+    pub fn openapi_with_server() -> OpenApi {
+        let mut api = Self::openapi();
+        let server = Server::new(EnvConfig::get().backend_url.clone().to_string());
+
+        api.servers = Some(vec![server]);
+
+        api
+    }
+}
 
 struct SecurityAddon;
 

@@ -44,11 +44,11 @@ impl AuthService {
 
         let confirmation_link = Self::create_email_confirmation_link(&confirmation_code)?;
 
+        let mut sender_email = "auth@".to_string();
+        sender_email.push_str(&EnvConfig::get().domain_name);
+
         Email {
-            sender: (
-                Some("Autoryzacja Hack4Krak".to_string()),
-                "auth@hack4krak.pl".to_string(),
-            ),
+            sender: (Some("Autoryzacja Hack4Krak".to_string()), sender_email),
             recipients: vec![credentials.email],
             subject: "Potwierdzenie rejestracji".to_string(),
             template: EmailTemplate::EmailConfirmation,

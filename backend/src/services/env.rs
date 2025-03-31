@@ -15,6 +15,7 @@ pub struct EnvConfig {
     pub relaxed_security_mode: bool,
     pub database_url: String,
     pub backend_address: String,
+    pub domain_name: String,
     pub backend_url: Url,
     pub frontend_url: Url,
     pub openapi_json_frontend_path: String,
@@ -33,6 +34,7 @@ impl Default for EnvConfig {
         EnvConfig {
             relaxed_security_mode: false,
             backend_address: "127.0.0.1:8080".to_string(),
+            domain_name: "hack4krak.pl".to_string(),
             backend_url: Url::parse("http://localhost:8080").unwrap(),
             frontend_url: Url::parse("http://localhost:3000").unwrap(),
             openapi_json_frontend_path: "../frontend/openapi/api/openapi.json".to_string(),
