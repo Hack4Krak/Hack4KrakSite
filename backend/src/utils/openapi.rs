@@ -20,7 +20,7 @@ use utoipa::{Modify, OpenApi as _};
 pub struct ApiDoc;
 
 impl ApiDoc {
-    pub fn openapi_with_server() -> OpenApi {
+    pub fn with_server() -> OpenApi {
         let mut api = Self::openapi();
         let server = Server::new(EnvConfig::get().backend_url.clone().to_string());
 

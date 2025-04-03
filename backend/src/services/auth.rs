@@ -44,7 +44,7 @@ impl AuthService {
 
         let confirmation_link = Self::create_email_confirmation_link(&confirmation_code)?;
 
-        let sender_email = format!("auth@{}", &EnvConfig::get().domain_name);
+        let sender_email = format!("auth@{}", &EnvConfig::get().domain);
 
         Email {
             sender: (Some("Autoryzacja Hack4Krak".to_string()), sender_email),

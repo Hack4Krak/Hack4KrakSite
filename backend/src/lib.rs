@@ -60,7 +60,7 @@ pub fn setup_actix_app(
         .wrap(Logger::default())
         .wrap(cors_middleware)
         .into_utoipa_app()
-        .openapi(ApiDoc::openapi_with_server())
+        .openapi(ApiDoc::with_server())
         .service(routes::index::index)
         .service(scope("/auth").configure(routes::auth::config))
         .service(scope("/teams").configure(routes::teams::config))
