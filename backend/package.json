@@ -9,6 +9,6 @@
     "lint:fix": "cargo fmt && cargo clippy --fix --allow-staged --allow-dirty",
     "test": "cargo test",
     "test:full": "cargo test --features=full-test-suite",
-    "openapi-check": "cargo run -p openapi-check"
+    "openapi-cli": "cargo run -p openapi-cli"
   }
 }

@@ -62,7 +62,7 @@ jobs:
       - name: Verify if openapi is up to date
         run: |
           cd backend/
-          cargo run -p openapi-check
+          cargo run -p openapi-cli
           cd ..
 
       - name: Run tests
