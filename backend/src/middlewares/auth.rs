@@ -80,14 +80,6 @@ impl AuthMiddleware {
             ..Default::default()
         }
     }
-
-    pub fn with_user_as_owner() -> Self {
-        AuthMiddleware {
-            insert_user_extension: true,
-            role_requirement: UserRoles::Owner,
-            ..Default::default()
-        }
-    }
 }
 
 impl<S, B> Transform<S, ServiceRequest> for AuthMiddleware
