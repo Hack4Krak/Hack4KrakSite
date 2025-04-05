@@ -32,8 +32,6 @@ pub enum TaskError {
     CouldNotLoadTaskAsset { id: String },
     #[error("Task \"{id}\" does not exists")]
     MissingTask { id: String },
-    #[error("Could not load task description for task \"{id}\"")]
-    CouldNotLoadTaskDescription { id: String },
     #[error("Error while reading task description: {0}")]
     ErrorWhileReadingDescription(#[from] string::FromUtf8Error),
 }
@@ -44,7 +42,6 @@ impl error::ResponseError for TaskError {
             TaskError::InvalidTaskId => StatusCode::BAD_REQUEST,
             TaskError::MissingTask { .. } => StatusCode::NOT_FOUND,
             TaskError::CouldNotLoadTaskAsset { .. }
-            | TaskError::CouldNotLoadTaskDescription { .. }
             | TaskError::ErrorWhileReadingDescription(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
