@@ -52,8 +52,6 @@ pub enum TeamError {
     UserCantRemoveTeamLeader,
     #[error("User doesn't have invitations from {team_name}")]
     UserDoesntHaveInvitationsFromTeam { team_name: String },
-    #[error("Team leader can't leave team")]
-    TeamLeaderCantLeaveTeam,
     #[error("User already has an invitation to this team")]
     UserAlreadyInvited,
     #[error("Team is full. Max team size is {max_size}")]
@@ -76,8 +74,7 @@ impl error::ResponseError for TeamError {
             | TeamError::UserDoesntBelongToAnyTeam { .. }
             | TeamError::UserDoesntBelongToYourTeam
             | TeamError::UserIsNotTeamLeader
-            | TeamError::UserCantRemoveTeamLeader
-            | TeamError::TeamLeaderCantLeaveTeam => StatusCode::FORBIDDEN,
+            | TeamError::UserCantRemoveTeamLeader => StatusCode::FORBIDDEN,
             TeamError::TeamNotFound
             | TeamError::UserDoesntHaveAnyInvitations
             | TeamError::UserDoesntHaveInvitationsFromTeam { .. }

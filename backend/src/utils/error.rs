@@ -52,10 +52,6 @@ pub enum Error {
     Forbidden { required_role: UserRoles },
     #[error("Invalid Json Web Token")]
     InvalidJsonWebToken,
-    #[error("Invalid authorization header content")]
-    InvalidAuthorizationHeader,
-    #[error("Lock is poisoned")]
-    PoisonedLock,
     #[error("IO Error")]
     Io(#[from] std::io::Error),
     #[error("User not found")]
@@ -111,7 +107,6 @@ impl error::ResponseError for Error {
             Error::HashPasswordFailed(_)
             | Error::DatabaseOperation(_)
             | Error::OAuth
-            | Error::PoisonedLock
             | Error::Io(_)
             | Error::Request(_)
             | Error::FailedToSendEmail(_)
@@ -121,9 +116,7 @@ impl error::ResponseError for Error {
             | Error::ServerEventSendingError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Unauthorized => StatusCode::UNAUTHORIZED,
             Error::InvalidJsonWebToken => StatusCode::UNAUTHORIZED,
-            Error::InvalidAuthorizationHeader | Error::MissingExtension { .. } => {
-                StatusCode::BAD_REQUEST
-            }
+            Error::MissingExtension { .. } => StatusCode::BAD_REQUEST,
             Error::UserNotFound | Error::RouteNotFound | Error::RecipientNotFound { .. } => {
                 StatusCode::NOT_FOUND
             }
