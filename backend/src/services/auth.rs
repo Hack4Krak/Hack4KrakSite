@@ -42,13 +42,12 @@ impl AuthService {
         let confirmation_code =
             email_confirmation::Model::create_with_userinfo(&app_state.database, user_info).await?;
 
-        let confirmation_link = Self::create_email_confirmation_link(&confirmation_code);
+        let confirmation_link = Self::create_email_confirmation_link(&confirmation_code)?;
+
+        let sender_email = format!("auth@{}", &EnvConfig::get().domain);
 
         Email {
-            sender: (
-                Some("Autoryzacja Hack4Krak".to_string()),
-                "auth@hack4krak.pl".to_string(),
-            ),
+            sender: (Some("Autoryzacja Hack4Krak".to_string()), sender_email),
             recipients: vec![credentials.email],
             subject: "Potwierdzenie rejestracji".to_string(),
             template: EmailTemplate::EmailConfirmation,
@@ -133,12 +132,11 @@ impl AuthService {
         Ok(())
     }
 
-    fn create_email_confirmation_link(confirmation_code: &str) -> String {
-        let mut confirmation_link = "".to_string();
-        confirmation_link.push_str(&EnvConfig::get().email_confirm_backend_url.clone());
-        confirmation_link.push('/');
-        confirmation_link.push_str(confirmation_code);
+    fn create_email_confirmation_link(confirmation_code: &str) -> Result<String, Error> {
+        let mut url = EnvConfig::get().backend_url.clone();
+        url = url.join("/auth/confirm/")?;
+        url = url.join(confirmation_code)?;
 
-        confirmation_link
+        Ok(url.to_string())
     }
 }

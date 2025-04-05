@@ -60,11 +60,8 @@ pub async fn github_callback(
     {
         Ok(token) => token,
         Err(error) => {
-            return Ok(create_temporary_redirect_response(
-                EnvConfig::get().oauth_finish_redirect_url.clone(),
-                error,
-            )?
-            .finish());
+            let url = EnvConfig::get().frontend_url.join("/panel")?;
+            return Ok(create_temporary_redirect_response(url, error)?.finish());
         }
     };
 

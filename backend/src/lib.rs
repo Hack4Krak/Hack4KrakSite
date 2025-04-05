@@ -12,7 +12,6 @@ use actix_web::body::MessageBody;
 use actix_web::dev::{ServiceFactory, ServiceRequest, ServiceResponse};
 use actix_web::middleware::Logger;
 use actix_web::{App, Error, ResponseError};
-use utoipa::OpenApi;
 use utoipa_actix_web::{AppExt, UtoipaApp, scope};
 use utoipa_scalar::{Scalar, Servable};
 
@@ -35,8 +34,7 @@ pub fn setup_actix_app(
     >,
 > {
     let cors_middleware = Cors::default()
-        .allowed_origin("http://localhost:3000")
-        .allowed_origin("https://hack4krak.pl")
+        .allowed_origin(EnvConfig::get().frontend_url.as_str())
         .allowed_origin_fn(|origin, request| {
             let Ok(origin) = origin.to_str() else {
                 return false;
@@ -62,7 +60,7 @@ pub fn setup_actix_app(
         .wrap(Logger::default())
         .wrap(cors_middleware)
         .into_utoipa_app()
-        .openapi(ApiDoc::openapi())
+        .openapi(ApiDoc::with_server())
         .service(routes::index::index)
         .service(scope("/auth").configure(routes::auth::config))
         .service(scope("/teams").configure(routes::teams::config))

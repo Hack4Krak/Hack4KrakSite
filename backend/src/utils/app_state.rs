@@ -27,7 +27,11 @@ impl AppState {
             config.github_oauth_client_secret.clone(),
             "https://github.com/login/oauth/authorize",
             "https://github.com/login/oauth/access_token",
-            &config.github_oauth_redirect_url,
+            EnvConfig::get()
+                .backend_url
+                .join("/auth/oauth/github/callback")
+                .unwrap()
+                .as_str(),
         );
 
         let google_oauth_provider = OAuthProvider::new(
@@ -35,7 +39,11 @@ impl AppState {
             config.google_oauth_client_secret.clone(),
             "https://accounts.google.com/o/oauth2/v2/auth",
             "https://www.googleapis.com/oauth2/v3/token",
-            &config.google_oauth_redirect_url,
+            EnvConfig::get()
+                .backend_url
+                .join("/auth/oauth/google/callback")
+                .unwrap()
+                .as_str(),
         );
 
         let task_manager = TaskManager::load().await;
