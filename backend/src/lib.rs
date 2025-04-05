@@ -17,7 +17,7 @@ use utoipa_actix_web::{AppExt, UtoipaApp, scope};
 use utoipa_scalar::{Scalar, Servable};
 
 pub mod entities;
-pub(crate) mod middlewares;
+pub mod middlewares;
 pub mod models;
 pub mod routes;
 pub mod services;

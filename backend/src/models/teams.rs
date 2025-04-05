@@ -1,7 +1,7 @@
 use crate::entities::sea_orm_active_enums::TeamStatus;
 use crate::entities::teams::ActiveModel;
 use crate::entities::{flag_capture, teams, users};
-use crate::routes::admin::teams::update::UpdateTeamModel;
+use crate::routes::admin::UpdateTeamModel;
 use crate::routes::teams::TeamError::*;
 use crate::utils::error::Error;
 use actix_web::dev::Payload;

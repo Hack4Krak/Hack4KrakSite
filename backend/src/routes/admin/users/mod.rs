@@ -1,7 +1,9 @@
 mod delete;
 mod email_confirmations_list;
 mod list;
-pub mod update;
+mod update;
+
+pub use update::UpdateUserModel;
 
 pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(list::list);

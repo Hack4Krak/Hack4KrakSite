@@ -2,7 +2,7 @@ use crate::entities::sea_orm_active_enums::UserRoles;
 use crate::entities::users::ActiveModel;
 use crate::entities::{teams, users};
 use crate::models::task::EventConfig;
-use crate::routes::admin::users::update::UpdateUserModel;
+use crate::routes::admin::UpdateUserModel;
 use crate::routes::auth::AuthError::UserAlreadyExists;
 use crate::routes::auth::RegisterModel;
 use crate::utils::error::Error;
