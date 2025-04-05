@@ -4,7 +4,9 @@ use actix_web::web::Data;
 use actix_web::{App, Error};
 use chrono::Local;
 use hack4krak_backend::entities::sea_orm_active_enums::{TeamStatus, UserRoles};
-use hack4krak_backend::entities::{email_confirmation, flag_capture, team_invites, teams, users};
+use hack4krak_backend::entities::{
+    email_confirmation, flag_capture, password_reset, team_invites, teams, users,
+};
 use hack4krak_backend::services::task_manager::TaskManager;
 use hack4krak_backend::setup_actix_app;
 use hack4krak_backend::utils::app_state::AppState;
@@ -35,6 +37,7 @@ pub async fn setup_database_with_schema() -> DatabaseConnection {
     setup_schema(&database, users::Entity).await;
     setup_schema(&database, email_confirmation::Entity).await;
     setup_schema(&database, flag_capture::Entity).await;
+    setup_schema(&database, password_reset::Entity).await;
 
     // We have to manually create all indexes
     database
@@ -147,4 +150,28 @@ pub async fn init_database_with_teams() -> (DatabaseConnection, Uuid, Uuid, Vec<
     .unwrap();
 
     (database, user_uuid, team_uuid, users_with_team)
+}
+
+#[allow(dead_code)]
+pub async fn init_database_with_user() -> (DatabaseConnection, Uuid) {
+    let database = setup_database_with_schema().await;
+
+    let uuid = Uuid::new_v4();
+
+    users::Entity::insert(users::ActiveModel {
+        id: Set(uuid),
+        username: Set("test_user".to_string()),
+        email: Set("example@gmail.com".to_string()),
+        created_at: Set(Local::now().naive_local()),
+        team: Set(None),
+        is_leader: Set(false),
+        // Password is Dziengiel
+        password: Set(Some("$argon2id$v=19$m=19456,t=2,p=1$GuyDKoLJCF5tt+MDGJqRfA$8NZPkyNbR/IWuLg6tR7tn0RH/lJGahLYDODj23ajP3Y".to_string())),
+        roles: Set(UserRoles::Default),
+    })
+    .exec(&database)
+    .await
+    .unwrap();
+
+    (database, uuid)
 }

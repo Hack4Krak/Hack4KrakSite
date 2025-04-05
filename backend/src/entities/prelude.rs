@@ -2,6 +2,7 @@
 
 pub use super::email_confirmation::Entity as EmailConfirmation;
 pub use super::flag_capture::Entity as FlagCapture;
+pub use super::password_reset::Entity as PasswordReset;
 pub use super::team_invites::Entity as TeamInvites;
 pub use super::teams::Entity as Teams;
 pub use super::users::Entity as Users;
