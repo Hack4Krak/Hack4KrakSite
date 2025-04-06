@@ -8,6 +8,7 @@ export default defineNuxtConfig({
 
   routeRules: {
     '/tasks/description/**': { swr: true },
+    '/faq': { swr: true },
   },
 
   experimental: {
