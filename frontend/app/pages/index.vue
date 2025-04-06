@@ -16,10 +16,10 @@ useSeoMeta({
         Organization responsible for managing the largest Capture the Flag (CTF) competition for high school students in Kraków, Poland.
       </p>
       <div class="mt-10 flex justify-center md:justify-start h-10 text-2xl md:text-4xl items-center ">
-        <a class="mr-5" href="https://discord.gg/ASPqckzEd8" target="_blank">
+        <a class="mr-5" href="https://discord.gg/ASPqckzEd8" target="_blank" aria-label="Discord">
           <Icon name="logos:discord" class="[&>path]:fill-black dark:[&>path]:fill-white hover:[&>path]:fill-(--ui-primary)" mode="svg" alt="Discord" />
         </a>
-        <a class="group hover:text-(--ui-primary)" href="https://github.com/Hack4Krak/Hack4KrakSite/" target="_blank">
+        <a class="group hover:text-(--ui-primary)" href="https://github.com/Hack4Krak/Hack4KrakSite/" target="_blank" aria-label="GitHub">
           <Icon name="mdi:github" class="mr-2" />
           <Icon name="octicon:logo-github-24" alt="GitHub" />
         </a>

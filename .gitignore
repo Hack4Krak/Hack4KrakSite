@@ -37,3 +37,8 @@ backend/target/
 
 # Docker
 database/
+
+# Other modules
+frontend/.unlighthouse
+.unlighthouse
+.vercel
