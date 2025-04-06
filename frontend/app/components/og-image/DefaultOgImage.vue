@@ -10,8 +10,8 @@ const props = withDefaults(defineProps<{
   description?: string
   icon?: string
   siteName?: string
-  theme: string
-  colorMode: string
+  theme?: string
+  colorMode?: string
 }>(), {
   colorMode: 'dark',
   icon: '/img/logo.svg',
