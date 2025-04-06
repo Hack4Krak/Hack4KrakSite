@@ -54,14 +54,15 @@ const items = [
       </NuxtLink>
 
       <!-- Desktop Navigation -->
-      <UNavigationMenu
+      <LazyUNavigationMenu
         :items="items" variant="link" class="hidden md:flex w-full"
         :ui="{ linkLabel: 'text-lg hover:underline underline-offset-5 text-(--ui-bg) dark:text-white' }"
+        hydrate-on-media-query="(min-width: 768px)"
       >
         <template #button>
           <ElevatedButton message="START GRY" />
         </template>
-      </UNavigationMenu>
+      </LazyUNavigationMenu>
 
       <button class="md:hidden p-2 ml-auto cursor-pointer" @click="toggleMobileMenu">
         <Icon :name="isMobileMenuOpen ? 'mdi:close' : 'mdi:hamburger-menu'" size="24" />
@@ -74,10 +75,11 @@ const items = [
       leave-to-class="opacity-0 translate-x-[100%]"
       enter-active-class="transition duration-200"
       leave-active-class="transition duration-200"
+      hydrate-on-media-query="(max-width: 768px)"
     >
       <div v-if="isMobileMenuOpen" class="md:hidden h-screen [&>a]:text-5xl ">
         <USeparator class="mb-2" />
-        <UNavigationMenu
+        <LazyUNavigationMenu
           :items="items"
           orientation="vertical"
           variant="link"
@@ -89,7 +91,7 @@ const items = [
               <ElevatedButton message="START GRY" class="w-70 mt-2" />
             </div>
           </template>
-        </UNavigationMenu>
+        </LazyUNavigationMenu>
       </div>
     </Transition>
   </UContainer>
