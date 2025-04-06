@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
-pnpm backend:openapi-cli
-pnpm test
-pnpm lint
+bun backend:openapi-cli
+bun test
+bun lint
