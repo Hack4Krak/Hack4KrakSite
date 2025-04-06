@@ -18,11 +18,12 @@ const toast = useToast()
 const open = defineModel<boolean>()
 const formRef = useTemplateRef('form')
 
-async function onSubmit(event: FormSubmitEvent<Schema>) {
+async function onSubmit(event: FormSubmitEvent<object>) {
+  const data = event.data as Schema
   const response = await $auth('/teams/management/invite_user', {
     method: 'POST',
     body: {
-      username: event.data.name,
+      username: data.name,
     },
   }).catch()
 

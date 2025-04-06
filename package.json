@@ -36,9 +36,6 @@
       "allowAny": [
         "*"
       ]
-    },
-    "patchedDependencies": {
-      "@nuxt/image": "patches/@nuxt__image.patch"
     }
   },
   "resolutions": {

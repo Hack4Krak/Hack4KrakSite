@@ -41,8 +41,9 @@ if (route.query.redirect_from_confirmation === 'true') {
   useRouter().replace({ query })
 }
 
-async function onSubmit(event: FormSubmitEvent<Schema>) {
+async function onSubmit(event: FormSubmitEvent<object>) {
   event.preventDefault()
+  const data = event.data as Schema
 
   loading.value = true
 
@@ -55,7 +56,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     await useNuxtApp().$api(address, {
       method: 'POST',
       credentials: 'include',
-      body: event.data,
+      body: data,
     })
 
     if (props.isLogin) {

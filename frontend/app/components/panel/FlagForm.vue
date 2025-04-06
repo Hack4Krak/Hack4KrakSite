@@ -18,11 +18,12 @@ const state = reactive<Partial<Schema>>({
 const toast = useToast()
 const { $auth } = useNuxtApp()
 
-async function onSubmit(event: FormSubmitEvent<Schema>) {
+async function onSubmit(event: FormSubmitEvent<object>) {
+  const data = event.data as Schema
   const response = await $auth('/flag/submit', {
     method: 'POST',
     body: {
-      flag: event.data.flag,
+      flag: data.flag,
     },
   }).catch()
 

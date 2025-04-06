@@ -18,7 +18,7 @@
     "@formkit/auto-animate": "^0.8.2",
     "@iconify-json/lucide": "^1.2.34",
     "@nuxt/image": "1.10.0",
-    "@nuxt/ui": "https://pkg.pr.new/@nuxt/ui@6e03d9c",
+    "@nuxt/ui": "https://pkg.pr.new/@nuxt/ui@21fbd07",
     "@nuxtjs/mdc": "0.16.1",
     "@nuxtjs/seo": "^3.0.2",
     "chart.js": "^4.4.8",
@@ -49,6 +49,6 @@
     "playwright-core": "^1.51.1",
     "typescript": "^5.8.2",
     "vitest": "^3.1.1",
-    "vue-tsc": "2.2.2"
+    "vue-tsc": "3.0.0-alpha.2"
   }
 }

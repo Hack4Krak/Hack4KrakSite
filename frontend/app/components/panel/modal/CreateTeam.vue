@@ -18,11 +18,12 @@ const formRef = useTemplateRef('form')
 
 const { $auth } = useNuxtApp()
 
-async function onSubmit(event: FormSubmitEvent<Schema>) {
+async function onSubmit(event: FormSubmitEvent<object>) {
+  const data = event.data as Schema
   const response = await $auth('/teams/create', {
     method: 'POST',
     body: {
-      team_name: event.data.name,
+      team_name: data.name,
     },
   })
 
