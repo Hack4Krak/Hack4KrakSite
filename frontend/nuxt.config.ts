@@ -95,6 +95,9 @@ export default defineNuxtConfig({
     defaultLocale: 'pl',
     defaultTimezone: 'Poland/Warsaw',
   },
+  schemaOrg: {
+    enabled: false,
+  },
   components: [
     {
       path: '~/components/',
