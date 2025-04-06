@@ -64,7 +64,7 @@ const items = [
         </template>
       </LazyUNavigationMenu>
 
-      <button class="md:hidden p-2 ml-auto cursor-pointer" @click="toggleMobileMenu">
+      <button class="md:hidden p-2 ml-auto cursor-pointer" aria-label="Toogle navbar" @click="toggleMobileMenu">
         <Icon :name="isMobileMenuOpen ? 'mdi:close' : 'mdi:hamburger-menu'" size="24" />
       </button>
     </div>
