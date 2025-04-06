@@ -12,7 +12,7 @@ Hack4Krak is the largest Capture The Flag (CTF) competition for high schools in 
 
 ## Requirements
 - Node v22
-- Pnpm
+- Bun
 - Rust
 - Docker
 
@@ -20,7 +20,7 @@ Hack4Krak is the largest Capture The Flag (CTF) competition for high schools in 
 
 ### 1. Download all required dependencies
 ```shell
-pnpm install
+bun install
 ```
 
 ### 2. Configure `.env` file
@@ -32,18 +32,18 @@ pnpm install
 docker compose up
 
 # Run each task separately
-pnpm frontend:dev
-pnpm backend:dev
+bun frontend:dev
+bun backend:dev
 
 # Or all at the same time
-pnpm dev
+bun dev
 ```
 ## Full Test Suite
 
 Because some backend tests are expensive and require docker (e.g. email integration tests), they are not run locally by default. To run the full test suite, use the following command:
 
 ```shell
-pnpm backend:test:full
+bun backend:test:full
 ```
 
 ### Security ⚠️

@@ -3,48 +3,38 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "frontend:build": "pnpm --prefix ./frontend/ build",
-    "frontend:install": "pnpm --filter ./frontend/ install",
-    "frontend:test": "pnpm --prefix ./frontend/ test",
-    "frontend:typecheck": "pnpm --prefix ./frontend/ typecheck",
-    "frontend:dev": "pnpm --prefix ./frontend/ dev",
-    "frontend:lint": "pnpm --prefix ./frontend/ lint .",
-    "frontend:lint:fix": "pnpm --prefix ./frontend/ lint:fix",
-    "backend:build": "pnpm --prefix ./backend/ build",
-    "backend:install": "pnpm --prefix ./backend/ install",
-    "backend:test": "pnpm --prefix ./backend/ test",
-    "backend:test:full": "pnpm --prefix ./backend/ test:full",
-    "backend:dev": "pnpm --prefix ./backend/ dev",
-    "backend:lint": "pnpm --prefix ./backend/ lint",
-    "backend:lint:fix": "pnpm --prefix ./backend/ lint:fix",
-    "backend:openapi-cli": "pnpm --prefix ./backend/ openapi-cli",
-    "test": "pnpm run /:test$/",
-    "dev": "pnpm run /:dev$/",
-    "lint": "pnpm run /:lint$/",
-    "lint:fix": "pnpm run /:lint:fix/",
+    "frontend:build": "cd frontend/ && bun run build",
+    "frontend:install": "cd frontend/ && bun install",
+    "frontend:test": "cd frontend/ && bun run test",
+    "frontend:typecheck": "cd frontend/ && bun typecheck",
+    "frontend:dev": "cd frontend/ && bun dev",
+    "frontend:lint": "cd frontend/ && bun lint",
+    "frontend:lint:fix": "cd frontend/ && bun lint:fix",
+    "backend:build": "cd backend/ && bun run build",
+    "backend:install": "cd backend/ && bun install",
+    "backend:test": "cd backend/ && bun run test",
+    "backend:test:full": "cd backend/ && bun test:full",
+    "backend:dev": "cd backend/ && bun dev",
+    "backend:lint": "cd backend/ && bun lint",
+    "backend:lint:fix": "cd backend/ && bun lint:fix",
+    "backend:openapi-cli": "cd backend/ && bun openapi-cli",
+    "test": "bun --filter '*' test",
+    "dev": "bun --filter '*' dev",
+    "lint": "bun --filter '*' lint",
+    "lint:fix": "bun --filter '*' lint:fix",
     "prepare": "husky"
   },
   "devDependencies": {
     "husky": "^9.1.7"
   },
-  "packageManager": "pnpm@10.2.1",
-  "pnpm": {
-    "peerDependencyRules": {
-      "ignoreMissing": [
-        "*"
-      ],
-      "allowAny": [
-        "*"
-      ]
-    },
-    "patchedDependencies": {
-      "@nuxt/image": "patches/@nuxt__image.patch"
-    }
-  },
-  "resolutions": {
-    "unimport": "3.14.5"
-  },
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
   "engines": {
     "node": ">=22.5.1"
+  },
+  "patchedDependencies": {
+    "@nuxt/image@1.10.0": "patches/@nuxt__image.patch"
   }
 }
