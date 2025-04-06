@@ -78,13 +78,15 @@ onMounted(() => {
     <div>
       <div class="relative w-full mx-auto p-4 bg-black/80 text-white shadow-lg text-center">
         <div class="overflow-y-auto mb-10 ">
-          <MDC :value="currentMessage.title" class="font-extrabold text-2xl sm:text-3xl md:text-4xl mb-3" />
+          <h2 class="font-extrabold text-2xl sm:text-3xl md:text-4xl mb-3">
+            {{ currentMessage.title }}
+          </h2>
           <div class="flex justify-center items-center mb-3">
             <div class="w-[12px] h-[12px] bg-yellow-500" />
             <div class="w-1/2 h-[2px] bg-yellow-500" />
             <div class="w-[12px] h-[12px] bg-yellow-500" />
           </div>
-          <MDC :value="displayedPhrase" class="text-xl md:text-2xl font-semibold" />
+          <MarkdownContent :text="displayedPhrase" class="text-xl md:text-2xl font-semibold" />
         </div>
       </div>
     </div>
