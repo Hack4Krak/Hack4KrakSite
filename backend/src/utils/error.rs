@@ -5,6 +5,7 @@ use crate::routes::task::TaskError;
 use crate::routes::teams::TeamError;
 use actix_web::http::StatusCode;
 use actix_web::{HttpResponse, error};
+use sea_orm::RuntimeErr::SqlxError;
 use serde_json::json;
 use thiserror::Error;
 use tokio::sync::broadcast;
@@ -44,8 +45,13 @@ pub enum Error {
     OAuth,
     #[error("Request error: {0}")]
     Request(#[from] reqwest::Error),
+
     #[error("Database operation failed")]
-    DatabaseOperation(#[from] sea_orm::DbErr),
+    DatabaseOperation(sea_orm::DbErr),
+
+    #[error("Conflict in database")]
+    ConflictInDatabase,
+
     #[error("Unauthorized")]
     Unauthorized,
     #[error("Thou shall not pass, required role: {required_role:?}")]
@@ -74,6 +80,8 @@ pub enum Error {
     InvalidEmailRecipients(String),
     #[error("User must have higher role than the affected user")]
     UserMustHaveHigherRoleThanAffectedUser,
+    #[error("User must be owner to update roles")]
+    UserMustBeOwnerToUpdateRoles,
     #[error("User with such email or username already exists")]
     UserWithEmailOrUsernameAlreadyExists,
     #[error("You cannot access this endpoint before our event has started")]
@@ -113,6 +121,7 @@ impl error::ResponseError for Error {
             | Error::InvalidJson(_)
             | Error::FailedToBuildEmail(_)
             | Error::FailedToParseUrl(_)
+            | Error::ConflictInDatabase
             | Error::ServerEventSendingError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Unauthorized => StatusCode::UNAUTHORIZED,
             Error::InvalidJsonWebToken => StatusCode::UNAUTHORIZED,
@@ -123,6 +132,7 @@ impl error::ResponseError for Error {
             Error::Forbidden { .. }
             | Error::UserMustHaveHigherRoleThanAffectedUser
             | Error::AccessDuringEvent
+            | Error::UserMustBeOwnerToUpdateRoles
             | Error::AccessBeforeEventStart => StatusCode::FORBIDDEN,
             Error::UserWithEmailOrUsernameAlreadyExists => StatusCode::CONFLICT,
             Error::AccessAfterEventEnd => StatusCode::GONE,
@@ -135,5 +145,21 @@ impl error::ResponseError for Error {
 
     fn error_response(&self) -> HttpResponse {
         error_response_builder(self)
+    }
+}
+
+impl From<sea_orm::DbErr> for Error {
+    fn from(value: sea_orm::DbErr) -> Self {
+        match &value {
+            sea_orm::DbErr::Query(SqlxError(sqlx_error)) => {
+                if let Some(pg_err) = sqlx_error.as_database_error() {
+                    if pg_err.is_unique_violation() {
+                        return Error::ConflictInDatabase;
+                    }
+                }
+                Error::DatabaseOperation(value)
+            }
+            _ => Error::DatabaseOperation(value),
+        }
     }
 }

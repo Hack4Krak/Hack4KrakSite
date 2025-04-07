@@ -1,5 +1,6 @@
 use crate::entities::{email_confirmation, password_reset, users};
 use crate::models::user::{Password, UserInformation};
+use crate::routes::account::update::UpdateUserModel;
 use crate::routes::auth::AuthError::{
     ConfirmationCodeExpired, InvalidConfirmationCode, InvalidCredentials, InvalidEmailAddress,
     PasswordAuthNotAvailable,
@@ -203,7 +204,15 @@ impl AuthService {
         }
 
         if let Some(user) = user {
-            users::Model::update(&app_state.database, user, None, Some(model.new_password)).await?;
+            users::Model::update(
+                &app_state.database,
+                user,
+                UpdateUserModel {
+                    new_password: Some(model.new_password),
+                    ..Default::default()
+                },
+            )
+            .await?;
 
             let active_password_reset: password_reset::ActiveModel = password_reset.into();
             active_password_reset.delete(&app_state.database).await?;

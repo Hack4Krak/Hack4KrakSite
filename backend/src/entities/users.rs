@@ -4,7 +4,16 @@ use super::sea_orm_active_enums::UserRoles;
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
+#[derive(
+    Clone,
+    Debug,
+    PartialEq,
+    DeriveEntityModel,
+    Eq,
+    Serialize,
+    Deserialize,
+    hack4krak_backend_macros :: DeriveUpdatableModel,
+)]
 #[sea_orm(table_name = "users")]
 pub struct Model {
     pub username: String,

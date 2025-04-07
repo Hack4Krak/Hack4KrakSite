@@ -7,7 +7,7 @@ edition = "2024"
 full-test-suite = []
 
 [workspace]
-members = [".", "migration", "openapi-cli"]
+members = [".", "hack4krak-backend-macros", "migration", "openapi-cli"]
 
 [workspace.package]
 version = "1.0.0"
@@ -23,6 +23,7 @@ utoipa-scalar = { version = "0.3.0", features = ["actix-web"] }
 
 # Custom crates
 migration = { path = "migration" }
+hack4krak-backend-macros = { path = "hack4krak-backend-macros" }
 
 # Web
 actix-web = { version = "4.10.2", features = ["cookies"] }

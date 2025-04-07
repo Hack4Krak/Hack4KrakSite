@@ -12,7 +12,7 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use validator::Validate;
 
-#[derive(Serialize, Deserialize, ToSchema, Validate, Clone, Debug)]
+#[derive(Serialize, Deserialize, ToSchema, Validate, Clone, Debug, Default)]
 pub struct UpdateUserModel {
     #[validate(length(min = 3, max = 32))]
     pub username: Option<String>,
@@ -41,13 +41,7 @@ pub async fn update(
 
     AuthService::assert_password_is_valid(&user, &model.old_password)?;
 
-    users::Model::update(
-        &app_state.database,
-        user,
-        model.username,
-        model.new_password,
-    )
-    .await?;
+    users::Model::update(&app_state.database, user, model).await?;
 
     Ok(SuccessResponse::default().http_response())
 }
