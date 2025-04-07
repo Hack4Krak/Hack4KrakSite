@@ -5,5 +5,5 @@ version.workspace = true
 publish = false
 
 [dependencies]
-tokio = { version = "1.44.1", features = ["fs", "macros", "rt", "rt-multi-thread"] }
+tokio = { version = "1.44.2", features = ["fs", "macros", "rt", "rt-multi-thread"] }
 hack4krak-backend = { path = "../" }
