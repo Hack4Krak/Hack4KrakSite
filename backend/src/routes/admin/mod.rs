@@ -8,7 +8,6 @@ mod users;
 // TODO: Reorganize our codebase to make those modules private
 pub use email::EmailSendingModel;
 pub use teams::UpdateTeamModel;
-pub use users::UpdateUserModelAdmin;
 
 pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(scope("/users").configure(users::config));

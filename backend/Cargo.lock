@@ -1472,6 +1472,7 @@ dependencies = [
  "dotenvy",
  "envy",
  "futures-util",
+ "hack4krak-backend-macros",
  "jsonwebtoken",
  "lettre",
  "migration",
@@ -1495,6 +1496,15 @@ dependencies = [
  "utoipa-scalar",
  "uuid",
  "validator",
+]
+
+[[package]]
+name = "hack4krak-backend-macros"
+version = "1.0.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.96",
 ]
 
 [[package]]

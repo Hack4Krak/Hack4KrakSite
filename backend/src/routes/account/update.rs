@@ -1,4 +1,5 @@
 use crate::entities::users;
+use crate::entities::users::UpdatableModel;
 use crate::middlewares::auth::AuthMiddleware;
 use crate::models::user::Password;
 use crate::services::auth::AuthService;
@@ -12,7 +13,7 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use validator::Validate;
 
-#[derive(Serialize, Deserialize, ToSchema, Validate, Clone, Debug)]
+#[derive(Serialize, Deserialize, ToSchema, Validate, Clone, Debug, Default)]
 pub struct UpdateUserModel {
     #[validate(length(min = 3, max = 32))]
     pub username: Option<String>,
@@ -41,13 +42,16 @@ pub async fn update(
 
     AuthService::assert_password_is_valid(&user, &model.old_password)?;
 
-    users::Model::update(
-        &app_state.database,
-        user,
-        model.username,
-        model.new_password,
-    )
-    .await?;
+    let mut updatable_model = UpdatableModel {
+        username: model.username,
+        ..Default::default()
+    };
+
+    if let Some(password) = model.new_password {
+        updatable_model.password = Some(Some(AuthService::hash_password(password)?));
+    }
+
+    users::Model::update(&app_state.database, user, updatable_model).await?;
 
     Ok(SuccessResponse::default().http_response())
 }
