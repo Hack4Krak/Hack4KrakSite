@@ -1,0 +1,30 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "timezone": "Europe/Warsaw",
+  "extends": [
+    "config:recommended",
+    "group:allNonMajor",
+    ":semanticCommitTypeAll(chore)",
+    "disableDependencyDashboard",
+    "schedule:earlyMondays",
+  ],
+  "ignoreDeps": [
+    "vue-tsc"
+  ],
+  "packageRules": [
+    {
+      "groupName": "Frontend dependencies",
+      "matchPaths": ["frontend/**"]
+    },
+    {
+      "groupName": "Backend dependencies",
+      "matchPaths": ["backend/**"]
+    },
+    {
+      "groupName": "Frontend icons",
+      "matchPackageNames": [
+        "iconify-json/*"
+      ]
+    }
+  ]
+}
