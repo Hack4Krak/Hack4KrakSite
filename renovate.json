@@ -5,9 +5,9 @@
     "config:recommended",
     "group:allNonMajor",
     ":semanticCommitTypeAll(chore)",
-    "disableDependencyDashboard",
-    "schedule:earlyMondays",
+    "workarounds:all"
   ],
+  "dependencyDashboard": false,
   "ignoreDeps": [
     "vue-tsc"
   ],
