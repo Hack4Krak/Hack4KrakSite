@@ -18,10 +18,8 @@ const errorMessage = computed(() => {
 </script>
 
 <template>
-  <NuxtLoadingIndicator color="var(--ui-primary)" :height="2" />
-  <UApp class="font-roboto">
-    <Navbar />
-    <main class="min-h-[calc(100vh-var(--spacing)*19)] content-center items-center justify-center ">
+  <NuxtLayout>
+    <main class="content-center items-center justify-center min-h-[calc(100vh-var(--ui-header-height))]">
       <div class="flex content-center items-center justify-center flex-col-reverse md:flex-row">
         <div class="flex flex-col md:mr-10 max-w-3/4 md:max-w-2/5">
           <h1 class="text-balance text-8xl text-yellow-500 font-bold mb-3">
@@ -64,5 +62,5 @@ const errorMessage = computed(() => {
         </div>
       </div>
     </main>
-  </UApp>
+  </NuxtLayout>
 </template>
