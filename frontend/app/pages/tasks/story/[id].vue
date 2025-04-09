@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FetchError } from 'ofetch'
 
-const route = useRoute()
+const route = useRoute('tasks-description-id')
 const taskId = String(route.params.id)
 
 const story = ref<{ title: string, message: string }[]>([])
