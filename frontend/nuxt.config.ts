@@ -8,7 +8,9 @@ export default defineNuxtConfig({
 
   routeRules: {
     '/tasks/description/**': { swr: true },
-    '/faq': { swr: true },
+    '/faq': { prerender: true },
+    '/rules': { prerender: true },
+    '/': { prerender: true },
   },
 
   experimental: {

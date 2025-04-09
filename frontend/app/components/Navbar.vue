@@ -45,7 +45,7 @@ const items = [
 
 <template>
   <UContainer class="top-0 z-10 sticky max-w-full border-b-1 border-neutral-600 font-pixelify bg-(--ui-bg)">
-    <div class="mx-auto flex items-center">
+    <div class="mx-auto flex items-center h-(--ui-header-height)">
       <NuxtLink to="/" class="flex items-center space-x-2 py-3">
         <Logo class="size-10 text-black dark:text-white" />
         <h1 class="md:hidden text-2xl font-semibold">
@@ -54,18 +54,17 @@ const items = [
       </NuxtLink>
 
       <!-- Desktop Navigation -->
-      <LazyUNavigationMenu
+      <UNavigationMenu
         :items="items" variant="link" class="hidden md:flex w-full"
         :ui="{ linkLabel: 'text-lg hover:underline underline-offset-5 text-(--ui-bg) dark:text-white' }"
-        hydrate-on-media-query="(min-width: 768px)"
       >
         <template #button>
           <ElevatedButton message="START GRY" />
         </template>
-      </LazyUNavigationMenu>
+      </UNavigationMenu>
 
-      <button class="md:hidden p-2 ml-auto cursor-pointer" aria-label="Toogle navbar" @click="toggleMobileMenu">
-        <Icon :name="isMobileMenuOpen ? 'mdi:close' : 'mdi:hamburger-menu'" size="24" />
+      <button class="md:hidden p-2 ml-auto cursor-pointer flex justify-center" aria-label="Toogle navbar" @click="toggleMobileMenu">
+        <Icon :name="isMobileMenuOpen ? 'mdi:close' : 'mdi:hamburger-menu'" size="28" />
       </button>
     </div>
 

@@ -11,6 +11,8 @@
   --font-sans: 'Public Sans', sans-serif;
   --font-pixelify: Pixelify Sans;
   --color-primary-darker: #987117;
+
+  --ui-header-height: --spacing(18);
 }
 
 @utility rendering-pixelated {
