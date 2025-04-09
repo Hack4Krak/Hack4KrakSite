@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
     Eq,
     Serialize,
     Deserialize,
-    hack4krak_backend_macros :: DeriveUpdatableModel,
+    hack4krak_macros :: DeriveUpdatableModel,
 )]
 #[sea_orm(table_name = "email_confirmation")]
 pub struct Model {

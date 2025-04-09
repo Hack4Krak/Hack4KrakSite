@@ -1,19 +1,21 @@
 [package]
 name = "hack4krak-backend"
 version.workspace = true
-edition = "2024"
+edition.workspace = true
 
 [features]
 full-test-suite = []
 
 [workspace]
-members = [".", "hack4krak-backend-macros", "migration", "openapi-cli"]
+members = [".", "macros", "migration", "openapi-cli"]
 
 [workspace.package]
 version = "1.0.0"
+edition = "2024"
 
 [workspace.dependencies]
 sea-orm = { version = "1.1.8", features = [ "sqlx-postgres", "sqlx-sqlite", "runtime-tokio-rustls", "macros", "mock" ] }
+tokio = { version = "1.44.2", features = ["macros", "rt", "rt-multi-thread", "fs"] }
 
 [dependencies]
 # Generating OpenAPI
@@ -23,7 +25,7 @@ utoipa-scalar = { version = "0.3.0", features = ["actix-web"] }
 
 # Custom crates
 migration = { path = "migration" }
-hack4krak-backend-macros = { path = "hack4krak-backend-macros" }
+hack4krak-macros = { path = "macros" }
 
 # Web
 actix-web = { version = "4.10.2", features = ["cookies"] }
@@ -45,7 +47,7 @@ regex = "1.11.1"
 futures-util = "0.3.31"
 reqwest = { version = "0.12.15", features = ["json"] }
 uuid = { version = "1.16.0", features = ["serde", "v4"] }
-tokio = {  version = "1.44.2", features = ["fs", "macros"] }
+tokio.workspace = true
 envy = "0.4.2"
 dotenvy = "0.15"
 thiserror = "2.0.12"

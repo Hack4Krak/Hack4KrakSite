@@ -1,9 +1,8 @@
 [package]
 name = "openapi-cli"
-edition = "2024"
 version.workspace = true
-publish = false
+edition.workspace = true
 
 [dependencies]
-tokio = { version = "1.44.2", features = ["fs", "macros", "rt", "rt-multi-thread"] }
+tokio.workspace = true
 hack4krak-backend = { path = "../" }
