@@ -66,5 +66,5 @@ git submodule update --remote
 - Generate entities from the database
 
     ```sh
-      sea-orm-cli generate entity --with-serde both -o src/entities/ --model-extra-derives hack4krak_backend_macros::DeriveUpdatableModel
+      sea-orm-cli generate entity --with-serde both -o src/entities/ --model-extra-derives hack4krak_macros::DeriveUpdatableModel
     ```
