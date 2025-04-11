@@ -42,3 +42,7 @@ database/
 frontend/.unlighthouse
 .unlighthouse
 .vercel
+
+# Tests
+frontend/playwright-report
+frontend/test-results

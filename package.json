@@ -6,6 +6,7 @@
     "frontend:build": "cd frontend/ && bun run build",
     "frontend:install": "cd frontend/ && bun install",
     "frontend:test": "cd frontend/ && bun run test",
+    "frontend:e2e": "cd frontend/ && bun run e2e",
     "frontend:typecheck": "cd frontend/ && bun typecheck",
     "frontend:dev": "cd frontend/ && bun dev",
     "frontend:lint": "cd frontend/ && bun lint",
