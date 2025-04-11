@@ -27,14 +27,30 @@ jobs:
         run: |
           bun frontend:install
 
+      - name: "Run lint"
+        run: bun frontend:lint
+
       - name: "Run type checks"
         run: bun frontend:typecheck
 
       - name: "Run tests"
         run: bun frontend:test
 
-      - name: "Run lint"
-        run: bun frontend:lint
+      - name: "Cache Playwright binaries"
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('bun.lock') }}
+
+      - name: "Prepare for e2e tests"
+        run: bunx playwright install chromium --with-deps
+
+      - name: "Build frontend"
+        run: bun frontend:build
+
+      - name: "Run e2e tests"
+        run: bun frontend:e2e
+
   backend:
     runs-on: ubuntu-latest
     steps:
