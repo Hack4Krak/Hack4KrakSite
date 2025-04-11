@@ -40,5 +40,6 @@ database/
 
 # Other modules
 frontend/.unlighthouse
+frontend/playwright-report
 .unlighthouse
 .vercel
