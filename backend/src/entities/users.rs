@@ -4,7 +4,16 @@ use super::sea_orm_active_enums::UserRoles;
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
+#[derive(
+    Clone,
+    Debug,
+    PartialEq,
+    DeriveEntityModel,
+    Eq,
+    Serialize,
+    Deserialize,
+    hack4krak_macros :: DeriveUpdatableModel,
+)]
 #[sea_orm(table_name = "users")]
 pub struct Model {
     pub username: String,
@@ -20,6 +29,8 @@ pub struct Model {
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
+    #[sea_orm(has_many = "super::password_reset::Entity")]
+    PasswordReset,
     #[sea_orm(has_many = "super::team_invites::Entity")]
     TeamInvites,
     #[sea_orm(
@@ -30,6 +41,12 @@ pub enum Relation {
         on_delete = "SetNull"
     )]
     Teams,
+}
+
+impl Related<super::password_reset::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::PasswordReset.def()
+    }
 }
 
 impl Related<super::team_invites::Entity> for Entity {

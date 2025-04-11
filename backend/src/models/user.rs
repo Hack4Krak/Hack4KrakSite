@@ -1,11 +1,12 @@
 use crate::entities::sea_orm_active_enums::UserRoles;
-use crate::entities::users::ActiveModel;
+use crate::entities::users::{ActiveModel, UpdatableModel};
 use crate::entities::{teams, users};
-use crate::models::task::EventConfig;
-use crate::routes::admin::UpdateUserModel;
+use crate::routes::account::update::UpdateUserModel;
 use crate::routes::auth::AuthError::UserAlreadyExists;
 use crate::routes::auth::RegisterModel;
+use crate::services::auth::AuthService;
 use crate::utils::error::Error;
+use crate::utils::handle_database_error::handle_database_error;
 use actix_web::dev::Payload;
 use actix_web::{FromRequest, HttpMessage, HttpRequest};
 use chrono::Local;
@@ -15,8 +16,18 @@ use sea_orm::{ActiveModelTrait, EntityTrait};
 use sea_orm::{ColumnTrait, DatabaseConnection};
 use sea_orm::{ModelTrait, QueryFilter};
 use serde::{Deserialize, Serialize};
-use std::future;
+use std::{fmt, future};
+use utoipa::ToSchema;
 use uuid::Uuid as uuid_gen;
+
+#[derive(Serialize, Deserialize, ToSchema, Clone, Default)]
+pub struct Password(pub String);
+
+impl fmt::Debug for Password {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_tuple("Password").field(&"******").finish()
+    }
+}
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UserInformation {
@@ -156,58 +167,6 @@ impl users::Model {
         Ok(())
     }
 
-    pub async fn update(
-        database: &DatabaseConnection,
-        user: users::Model,
-        event_config: &EventConfig,
-        id: SeaOrmUuid,
-        update_user_json: UpdateUserModel,
-    ) -> Result<(), Error> {
-        let updated_user = users::Entity::find_by_id(id)
-            .one(database)
-            .await?
-            .ok_or(Error::UserNotFound)?;
-
-        if user.roles <= updated_user.roles {
-            return Err(Error::UserMustHaveHigherRoleThanAffectedUser);
-        }
-
-        let mut active_user: ActiveModel = updated_user.into();
-
-        if let Some(username) = update_user_json.username {
-            active_user.username = Set(username);
-        }
-
-        if let Some(email) = update_user_json.email {
-            active_user.email = Set(email);
-        }
-
-        if let Some(team) = update_user_json.team {
-            teams::Model::assert_correct_team_size(
-                database,
-                event_config.max_team_size,
-                &team.clone(),
-            )
-            .await?;
-            active_user.team = Set(Some(team));
-        }
-
-        if Self::assert_is_unique(
-            database,
-            &active_user.email.clone().unwrap(),
-            &active_user.username.clone().unwrap(),
-            Some(id),
-        )
-        .await
-        .is_err()
-        {
-            return Err(Error::UserWithEmailOrUsernameAlreadyExists);
-        }
-
-        active_user.save(database).await?;
-        Ok(())
-    }
-
     pub async fn delete(
         database: &DatabaseConnection,
         user: users::Model,
@@ -225,6 +184,53 @@ impl users::Model {
         user_to_delete.delete(database).await?;
 
         Ok(())
+    }
+
+    pub async fn update(
+        database: &DatabaseConnection,
+        user: users::Model,
+        update_user_model: UpdateUserModel,
+    ) -> Result<(), Error> {
+        let mut updatable_model = UpdatableModel {
+            username: update_user_model.username,
+            ..Default::default()
+        };
+
+        if let Some(password) = update_user_model.new_password {
+            updatable_model.password = Some(Some(AuthService::hash_password(password)?));
+        }
+
+        let active_model = updatable_model.update(user);
+
+        let result = active_model.save(database).await;
+
+        handle_database_error(result)
+    }
+
+    pub async fn update_as_admin(
+        database: &DatabaseConnection,
+        user: users::Model,
+        updated_user: users::Model,
+        mut updatable_user_model: UpdatableModel,
+    ) -> Result<(), Error> {
+        if user.roles <= updated_user.roles {
+            return Err(Error::UserMustHaveHigherRoleThanAffectedUser);
+        }
+
+        if user.roles.permission_level() < 2 && updatable_user_model.roles.is_some() {
+            return Err(Error::UserMustBeOwnerToUpdateRoles);
+        }
+
+        if let Some(Some(password)) = updatable_user_model.password {
+            updatable_user_model.password =
+                Some(Some(AuthService::hash_password(Password(password))?));
+        }
+
+        let active_user = updatable_user_model.update(updated_user);
+
+        let result = active_user.save(database).await;
+
+        handle_database_error(result)
     }
 }
 

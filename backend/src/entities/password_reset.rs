@@ -13,30 +13,29 @@ use serde::{Deserialize, Serialize};
     Deserialize,
     hack4krak_macros :: DeriveUpdatableModel,
 )]
-#[sea_orm(table_name = "flag_capture")]
+#[sea_orm(table_name = "password_reset")]
 pub struct Model {
-    #[sea_orm(primary_key)]
-    pub id: i32,
-    pub team: Uuid,
-    pub task: String,
-    pub submitted_at: DateTime,
+    #[sea_orm(primary_key, auto_increment = false)]
+    pub code: Uuid,
+    pub expiration_date: DateTime,
+    pub user: Uuid,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
     #[sea_orm(
-        belongs_to = "super::teams::Entity",
-        from = "Column::Team",
-        to = "super::teams::Column::Id",
+        belongs_to = "super::users::Entity",
+        from = "Column::User",
+        to = "super::users::Column::Id",
         on_update = "NoAction",
         on_delete = "Cascade"
     )]
-    Teams,
+    Users,
 }
 
-impl Related<super::teams::Entity> for Entity {
+impl Related<super::users::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::Teams.def()
+        Relation::Users.def()
     }
 }
 
