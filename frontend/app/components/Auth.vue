@@ -120,8 +120,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         <USeparator class="my-3" label="Albo kontynuuj z" :ui="{ label: 'text-zinc-400' }" />
 
         <div class="flex text-center gap-2 justify-center items-center">
-          <a :href="`${OAuthBaseUrl}/google`"><UIcon name="logos:google-icon" size="45" class="cursor-pointer hover:scale-110 duration-300" mode="svg" /></a>
-          <a :href="`${OAuthBaseUrl}/github`"><UIcon name="mdi:github" size="50" class="cursor-pointer hover:scale-110 duration-300" /></a>
+          <a :href="`${OAuthBaseUrl}/google`" aria-label="Login with Google"><UIcon name="logos:google-icon" size="45" class="cursor-pointer hover:scale-110 duration-300" mode="svg" /></a>
+          <a :href="`${OAuthBaseUrl}/github`" aria-label="Login with GitHub"><UIcon name="mdi:github" size="50" class="cursor-pointer hover:scale-110 duration-300" /></a>
         </div>
       </div>
     </div>
