@@ -7,6 +7,6 @@ const props = defineProps<{
 
 <template>
   <div class="prose prose-invert">
-    <MDC :value="props.text" :class="props.class" />
+    <MDC :value="text" :class="props.class" />
   </div>
 </template>

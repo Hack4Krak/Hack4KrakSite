@@ -70,7 +70,7 @@ const baseAssetsPath = `${useRuntimeConfig().public.openFetch.api.baseURL}/tasks
         Rozwiązanie
       </h2>
       Wydarzenie już się zakończyło! Możesz zobaczyć rozwiązanie
-      <NuxtLink :to="`/tasks/solution/${props.taskId}`" class="link">
+      <NuxtLink :to="`/tasks/solution/${taskId}`" class="link">
         tutaj
       </NuxtLink>
     </div>
