@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   teamName: string
 }>()
 
@@ -33,7 +33,7 @@ const flagsLeft = computed(
     <span class="flex-grow">{{ isEventInProgress ? `Pozostałe flagi: ${flagsLeft}` : "Liczba zdobytych flag będzie widoczna po rozpoczęciu wydarzenia" }}</span>
 
     <h1 class="font-semibold text-2xl">
-      Nazwa zespołu: <span class="text-(--ui-primary)">{{ props.teamName }}</span>
+      Nazwa zespołu: <span class="text-(--ui-primary)">{{ teamName }}</span>
     </h1>
     <NuxtLink to="/panel/team" class="flex items-center gap-5 border-neutral-800 border-2 rounded-2xl px-5 py-2 cursor-pointer hover:bg-neutral-800 transition-all duration-150">
       <UIcon name="mdi:account-group" class="size-15" />

@@ -32,7 +32,7 @@ async function onSubmit() {
 </script>
 
 <template>
-  <UModal v-model:open="open" :title="props.modalTitle" :description="props.modalDescription" :ui="{ footer: 'justify-end' }">
+  <UModal v-model:open="open" :title="modalTitle" :description="modalDescription" :ui="{ footer: 'justify-end' }">
     <template #footer>
       <UButton label="Anuluj" color="neutral" variant="outline" @click="open = false" />
       <UButton label="Potwierdź" @click="onSubmit()" />

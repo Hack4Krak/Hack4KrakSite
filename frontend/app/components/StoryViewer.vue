@@ -72,7 +72,7 @@ onMounted(() => {
 <template>
   <div
     class="rendering-pixelated relative max-w-full max-h-screen justify-end flex flex-col bg-cover bg-center cursor-pointer"
-    :style="{ backgroundImage: `url('${props.image}')` }"
+    :style="{ backgroundImage: `url('${image}')` }"
     @click="handleClick"
   >
     <div>
