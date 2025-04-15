@@ -14,8 +14,6 @@ use sea_orm::ActiveValue::Set;
 use serde_json::json;
 use uuid::Uuid;
 
-mod utils;
-
 async fn submit_flag(access_token: &str, flag: &str) -> TestRequest {
     TestRequest::post()
         .uri("/flag/submit")

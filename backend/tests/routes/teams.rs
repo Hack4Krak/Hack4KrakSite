@@ -1,6 +1,4 @@
-use utils::setup_test_app;
-
-use crate::utils::init_database_with_teams;
+use crate::utils::{init_database_with_teams, setup_test_app};
 use actix_web::http::header;
 use actix_web::web::Data;
 use actix_web::{App, test};
@@ -16,8 +14,6 @@ use sea_orm::{ActiveModelTrait, DatabaseBackend, MockDatabase};
 use serde_json::json;
 use utoipa_actix_web::scope;
 use uuid::Uuid;
-
-mod utils;
 
 #[actix_web::test]
 async fn create_team_user_already_belongs_to_team() {

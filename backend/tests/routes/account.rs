@@ -1,3 +1,4 @@
+use crate::utils;
 use crate::utils::setup_test_app;
 use actix_web::http::header;
 use actix_web::test;
@@ -6,8 +7,6 @@ use hack4krak_backend::entities::users;
 use hack4krak_backend::services::env::EnvConfig;
 use hack4krak_backend::utils::jwt::encode_jwt;
 use sea_orm::EntityTrait;
-
-mod utils;
 
 #[actix_web::test]
 async fn account_delete() {
