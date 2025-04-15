@@ -12,8 +12,6 @@ use sea_orm::{DatabaseBackend, MockDatabase};
 use serde_json::json;
 use utoipa_actix_web::scope;
 
-mod utils;
-
 #[cfg(feature = "full-test-suite")]
 #[actix_web::test]
 async fn register() {
@@ -323,6 +321,7 @@ async fn email_confirmation_expired() {
 #[actix_web::test]
 async fn reset_password_flow() {
     EnvConfig::load_test_config();
+    use crate::utils::setup_database_with_schema;
     use chrono::Local;
     use lettre::SmtpTransport;
     use lettre::transport::smtp::client::Tls;
@@ -333,7 +332,6 @@ async fn reset_password_flow() {
     use testcontainers::core::IntoContainerPort;
     use testcontainers::core::WaitFor;
     use testcontainers::runners::AsyncRunner;
-    use utils::setup_database_with_schema;
     use uuid::Uuid;
 
     use hack4krak_backend::entities::sea_orm_active_enums::UserRoles;
