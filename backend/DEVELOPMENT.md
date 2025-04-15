@@ -3,9 +3,11 @@
 Technical documentation for Hack4Krak backend.
 
 ## 🛫 Requirements
- - Newest stable version of [Rust](https://www.rust-lang.org/)
- - [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/) (for running development PostgreSQL)
- - `sea-orm-cli` tool (for generating database entities) - `cargo install sea-orm-cli`
+
+- Newest stable version of [Rust](https://www.rust-lang.org/)
+- [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/) (for running development
+  PostgreSQL)
+- `sea-orm-cli` tool (for generating database entities) - `cargo install sea-orm-cli`
 
 ## 🛖 Architecture
 
@@ -14,7 +16,7 @@ To learn more about code architecture and our crates refer to [ARCHITECTURE.md](
 ## 🏗️ Running
 
 1. First, make sure all environment variables are configured properly.
-For basic development purposes you can just copy `.env.example` as `.env`
+   For basic development purposes you can just copy [`.env.example`](../.env.example) as `.env`
 
 2. Initialize git submodules (more information in [Submodules](#-submodules) section)
     ```shell
@@ -42,16 +44,19 @@ For basic development purposes you can just copy `.env.example` as `.env`
 ## 📜 Environment Variables
 
 - `BACKEND_ADDRESS`: The address to bind the backend server to. Example: `127.0.0.1:8080`
-- `OPENAPI_JSON_FRONTEND_PATH`: The path to write openapi json in frontend, relative to backend/ directory. Example: `../frontend/openapi/api/openapi.json`
-- `RUST_LOG`: The log level for crates. [Docs](https://docs.rs/tracing-subscriber/latest/tracing_subscriber/filter/struct.EnvFilter.html). Example: `hack4krak_backend=trace,actix-web=info`
+- `RUST_LOG`: The log level for
+  crates. [Docs](https://docs.rs/tracing-subscriber/latest/tracing_subscriber/filter/struct.EnvFilter.html). Example:
+  `hack4krak_backend=trace,actix-web=info`
 - `TASKS_BASE_PATH`: Path to `tasks` directory of `TasksTemplate` repository
 
 And more defined are defined in [env.rs](src/utils/env.rs)...
 
 ## 🚤 Submodules
 
-This repository parses the [TasksTemplate](https://github.com/Hack4Krak/TasksTemplate) repository to display tasks in a data-driven way.
-For development purposes, the template repository is included as a [Git submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules).
+This repository parses the [TasksTemplate](https://github.com/Hack4Krak/TasksTemplate) repository to display tasks in a
+data-driven way.
+For development purposes, the template repository is included as
+a [Git submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules).
 
 ```shell
 # Initialize / update your local submodules
@@ -78,9 +83,11 @@ bun test:full
 > [!TIP]
 > Running full test suite may require you to run them in privileged mode.
 > This is because the tests are run in a Docker container and require access to the host's network.
-> If running the tests in privileged mode is not an option, we recommend using alternatives like [Podman](https://podman.io/) instead of Docker
+> If running the tests in privileged mode is not an option, we recommend using alternatives
+> like [Podman](https://podman.io/) instead of Docker
 
 ## 🌸 Other commands
+
 ```shell
 # Run linter and formatter
 bun lint:fix
@@ -93,10 +100,17 @@ bun openapi-cli -- write
 
 ## 👣 Managing database
 
-We use [SeaORM](https://www.sea-ql.org/SeaORM) as our ORM. You can use it's CLI to generate entities, manage migrations and more.
+We use [SeaORM](https://www.sea-ql.org/SeaORM) as our ORM. You can use it's CLI to generate entities, manage migrations
+and more.
+
+- Generate entities from the database
+  ```sh
+  # You should run this command from `backend/` directory
+  sea-orm-cli generate entity --with-serde both -o src/entities/ --model-extra-derives hack4krak_macros::DeriveUpdatableModel
+  ```
 
 > [!NOTE]  
-> All of those commands should be run from the `backend/migration/` directory
+> All the following commands should be run from the `backend/migration/` directory
 > You have to set the `DATABASE_URL` environment variable before.
 
 - Generate a new migration file
@@ -110,9 +124,4 @@ We use [SeaORM](https://www.sea-ql.org/SeaORM) as our ORM. You can use it's CLI 
 - Drop all tables from the database, then reapply all migrations
   ```sh
   cargo run -- fresh
-  ```
-- Generate entities from the database
-  ```sh
-  # You can run this command from `backend/` directory
-  sea-orm-cli generate entity --with-serde both -o src/entities/ --model-extra-derives hack4krak_macros::DeriveUpdatableModel
   ```

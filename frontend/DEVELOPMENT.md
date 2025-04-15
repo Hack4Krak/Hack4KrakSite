@@ -16,7 +16,7 @@ Technical documentation for Hack4Krak frontend.
 ## 🏗️ Running
 
 1. First, make sure all environment variables are configured properly.
-   For basic development purposes you can just copy `.env.example` as `.env`
+   For basic development purposes you can just copy [`.env.example`](../.env.example) as `.env`
 
 2. Install all packages
 

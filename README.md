@@ -10,7 +10,9 @@
 
 **Welcome to the official Hack4Krak website repository!**
 
-Hack4Krak is the largest Capture The Flag (CTF) competition for high schools in Poland, bringing together the brightest young minds in cybersecurity. This event challenges participants with exciting puzzles and security challenges, fostering learning and collaboration in the world of ethical hacking!
+Hack4Krak is the largest Capture The Flag (CTF) competition for high schools in Poland, bringing together the brightest
+young minds in cybersecurity. This event challenges participants with exciting puzzles and security challenges,
+fostering learning and collaboration in the world of ethical hacking!
 
 ## 📅 Project status
 
@@ -23,10 +25,12 @@ We have to complete more features and fix some bugs before we can call it a day.
 
 ## 🚜 Development
 
-This repository is a monorepo containing the [frontend](frontend/) and [backend](backend/) code for the Hack4Krak website.
+This repository is a monorepo containing the [frontend](frontend/) and [backend](backend/) code for the Hack4Krak
+website.
 The frontend is built with Nuxt and the backend is built with Rust. The two parts are connected via a REST API.
 
 For documentation refer to specific `DEVELOPMENT.md` files:
+
 - [Frontend](frontend/DEVELOPMENT.md)
 - [Backend](backend/DEVELOPMENT.md)
 
@@ -35,7 +39,8 @@ For documentation refer to specific `DEVELOPMENT.md` files:
 The frontend is deployed on [Vercel](https://vercel.com/) and the backend is deployed on [Fly.io](https://fly.io/).
 To read more about deployment, env variables and other settings, refer to the [`DEPLOYMENT.md`](DEPLOYMENT.md) file.
 
-You access our frontend at [hack4krak.pl](https://hack4krak.pl/) and backend at [api.hack4krak.pl](https://api.hack4krak.pl/).
+You access our frontend at [hack4krak.pl](https://hack4krak.pl/) and backend
+at [api.hack4krak.pl](https://api.hack4krak.pl/).
 
 ## 🎉 Stats
 
