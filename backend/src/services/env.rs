@@ -27,7 +27,6 @@ pub struct EnvConfig {
     pub google_oauth_client_id: String,
     pub google_oauth_client_secret: String,
     pub resend_api_key: String,
-    pub password_reset_frontend_url: String,
 }
 
 impl Default for EnvConfig {
@@ -41,7 +40,6 @@ impl Default for EnvConfig {
             openapi_json_frontend_path: "../frontend/openapi/api/openapi.json".to_string(),
             cookies_domain: "localhost".to_string(),
             tasks_base_path: PathBuf::from_str("TasksTemplate/").unwrap(),
-            password_reset_frontend_url: "http://localhost:3000/auth/reset_password".to_string(),
             database_url: Default::default(),
             github_oauth_client_id: Default::default(),
             github_oauth_client_secret: Default::default(),

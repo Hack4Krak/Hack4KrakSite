@@ -161,7 +161,8 @@ impl AuthService {
             .await?
             .to_string();
 
-        let reset_password_link = EnvConfig::get().password_reset_frontend_url.clone();
+        let mut reset_password_link = EnvConfig::get().backend_url.clone();
+        reset_password_link = reset_password_link.join("/auth/reset_password")?;
 
         let email_body = format!(
             include_str!("emails_assets/reset_password_body.html"),
