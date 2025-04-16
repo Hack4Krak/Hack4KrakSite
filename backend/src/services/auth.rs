@@ -171,11 +171,10 @@ impl AuthService {
             reset_password_link
         );
 
+        let sender_email = format!("auth@{}", &EnvConfig::get().domain);
+
         Email {
-            sender: (
-                Some("Hack4Krak Authentication".to_string()),
-                "auth@hack4krak.pl".to_string(),
-            ),
+            sender: (Some("Autoryzacja Hack4Krak".to_string()), sender_email),
             recipients: vec![email],
             subject: "Resetowanie hasła".to_string(),
             template: EmailTemplate::Generic,
