@@ -1,5 +1,6 @@
-use crate::utils::setup_test_app;
+use crate::test_utils::setup_test_app;
 
+use crate::test_utils::mail::SmtpTestClient;
 use actix_web::test::read_body_json;
 use actix_web::web::Data;
 use actix_web::{App, test};
@@ -16,33 +17,11 @@ use utoipa_actix_web::scope;
 #[actix_web::test]
 async fn register() {
     EnvConfig::load_test_config();
-    use lettre::SmtpTransport;
-    use lettre::transport::smtp::client::Tls;
-    use serde_json::Value;
-    use testcontainers::GenericImage;
-    use testcontainers::core::IntoContainerPort;
-    use testcontainers::core::WaitFor;
-    use testcontainers::runners::AsyncRunner;
 
-    let container = GenericImage::new("mailhog/mailhog", "latest")
-        .with_exposed_port(1025.tcp()) // SMTP port
-        .with_exposed_port(8025.tcp()) // HTTP API port
-        .with_wait_for(WaitFor::message_on_stdout("Creating API v2 with WebPath:"))
-        .start()
-        .await
-        .unwrap();
-
-    let host = container.get_host().await.unwrap();
-
-    let smtp_port = container.get_host_port_ipv4(1025).await.unwrap();
-    let http_port = container.get_host_port_ipv4(8025).await.unwrap();
-
-    let smtp_client = SmtpTransport::builder_dangerous(host.to_string())
-        .tls(Tls::None)
-        .port(smtp_port)
-        .build();
-
-    let app = test::init_service(setup_test_app(Some(smtp_client), None, None).await).await;
+    let mail_client = SmtpTestClient::new().await;
+    let app =
+        test::init_service(setup_test_app(Some(mail_client.smtp_client.clone()), None, None).await)
+            .await;
 
     let register_payload = json!({
         "email": "test@example.com",
@@ -56,23 +35,10 @@ async fn register() {
         .to_request();
 
     let response = test::call_service(&app, request).await;
-
     assert!(response.status().is_success());
-    let api_url = format!("http://{}:{}/api/v2/messages", host, http_port);
-    let response = reqwest::get(&api_url)
-        .await
-        .expect("Failed to call MailHog API")
-        .json::<Value>()
-        .await
-        .expect("Failed to parse API response");
-    let items = response["items"].as_array().unwrap();
 
-    let first_email = &items[0];
-
-    assert_eq!(
-        first_email["Raw"]["To"][0].as_str().unwrap(),
-        "test@example.com"
-    );
+    let first_email = &mail_client.get_emails().await.items[0];
+    assert_eq!(first_email.raw.to[0].as_str(), "test@example.com");
 }
 
 #[actix_web::test]
@@ -102,37 +68,15 @@ async fn auth_flow() {
     EnvConfig::load_test_config();
     use actix_web::cookie::Cookie;
     use actix_web::http::header;
-    use lettre::SmtpTransport;
-    use lettre::transport::smtp::client::Tls;
-    use quoted_printable::decode;
-    use serde_json::Value;
-    use testcontainers::GenericImage;
-    use testcontainers::core::IntoContainerPort;
-    use testcontainers::core::WaitFor;
-    use testcontainers::runners::AsyncRunner;
 
     const UUID_REGEX: &str =
         r"[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}";
 
-    let container = GenericImage::new("mailhog/mailhog", "latest")
-        .with_exposed_port(1025.tcp()) // SMTP port
-        .with_exposed_port(8025.tcp()) // HTTP API port
-        .with_wait_for(WaitFor::message_on_stdout("Creating API v2 with WebPath:"))
-        .start()
-        .await
-        .unwrap();
+    let mail_client = SmtpTestClient::new().await;
 
-    let host = container.get_host().await.unwrap();
-
-    let smtp_port = container.get_host_port_ipv4(1025).await.unwrap();
-    let http_port = container.get_host_port_ipv4(8025).await.unwrap();
-
-    let smtp_client = SmtpTransport::builder_dangerous(host.to_string())
-        .tls(Tls::None)
-        .port(smtp_port)
-        .build();
-
-    let app = test::init_service(setup_test_app(Some(smtp_client), None, None).await).await;
+    let app =
+        test::init_service(setup_test_app(Some(mail_client.smtp_client.clone()), None, None).await)
+            .await;
 
     let register_payload = json!({
         "email": "test@example.com",
@@ -149,23 +93,11 @@ async fn auth_flow() {
 
     assert!(response.status().is_success());
 
-    let api_url = format!("http://{}:{}/api/v2/messages", host, http_port);
-    let response = reqwest::get(&api_url)
-        .await
-        .expect("Failed to call MailHog API")
-        .json::<Value>()
-        .await
-        .expect("Failed to parse API response");
-    let items = response["items"].as_array().unwrap();
-
-    let first_email = &items[0];
-    let email_body_encoded = first_email["Content"]["Body"].as_str().unwrap();
-    let decoded_body_bytes =
-        decode(email_body_encoded, quoted_printable::ParseMode::Robust).unwrap();
-    let email_body = String::from_utf8(decoded_body_bytes).unwrap();
+    let emails = mail_client.get_emails().await;
+    let email_body = &emails.items[0].content.body;
 
     let regex = regex::Regex::new(UUID_REGEX).unwrap();
-    let confirmation_code = regex.find(&email_body).unwrap().as_str();
+    let confirmation_code = regex.find(email_body).unwrap().as_str();
 
     let request = test::TestRequest::get()
         .uri(&format!("/auth/confirm/{}", confirmation_code))
@@ -321,17 +253,11 @@ async fn email_confirmation_expired() {
 #[actix_web::test]
 async fn reset_password_flow() {
     EnvConfig::load_test_config();
-    use crate::utils::setup_database_with_schema;
+    use crate::test_utils::setup_database_with_schema;
     use chrono::Local;
-    use lettre::SmtpTransport;
-    use lettre::transport::smtp::client::Tls;
-    use quoted_printable::decode;
+
     use sea_orm::{EntityTrait, Set};
-    use serde_json::Value;
-    use testcontainers::GenericImage;
-    use testcontainers::core::IntoContainerPort;
-    use testcontainers::core::WaitFor;
-    use testcontainers::runners::AsyncRunner;
+
     use uuid::Uuid;
 
     use hack4krak_backend::entities::sea_orm_active_enums::UserRoles;
@@ -339,23 +265,7 @@ async fn reset_password_flow() {
     const UUID_REGEX: &str =
         r"[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}";
 
-    let container = GenericImage::new("mailhog/mailhog", "latest")
-        .with_exposed_port(1025.tcp()) // SMTP port
-        .with_exposed_port(8025.tcp()) // HTTP API port
-        .with_wait_for(WaitFor::message_on_stdout("Creating API v2 with WebPath:"))
-        .start()
-        .await
-        .unwrap();
-
-    let host = container.get_host().await.unwrap();
-
-    let smtp_port = container.get_host_port_ipv4(1025).await.unwrap();
-    let http_port = container.get_host_port_ipv4(8025).await.unwrap();
-
-    let smtp_client = SmtpTransport::builder_dangerous(host.to_string())
-        .tls(Tls::None)
-        .port(smtp_port)
-        .build();
+    let mail_client = SmtpTestClient::new().await;
 
     let database = setup_database_with_schema().await;
 
@@ -373,8 +283,10 @@ async fn reset_password_flow() {
     .await
     .unwrap();
 
-    let app =
-        test::init_service(setup_test_app(Some(smtp_client), Some(database), None).await).await;
+    let app = test::init_service(
+        setup_test_app(Some(mail_client.smtp_client.clone()), Some(database), None).await,
+    )
+    .await;
 
     let payload = json!({
         "email": "example@gmail.com"
@@ -389,23 +301,9 @@ async fn reset_password_flow() {
 
     assert_eq!(response.status(), 200);
 
-    let api_url = format!("http://{}:{}/api/v2/messages", host, http_port);
-    let response = reqwest::get(&api_url)
-        .await
-        .expect("Failed to call MailHog API")
-        .json::<Value>()
-        .await
-        .expect("Failed to parse API response");
-    let items = response["items"].as_array().unwrap();
-
-    let first_email = &items[0];
-    let email_body_encoded = first_email["Content"]["Body"].as_str().unwrap();
-    let decoded_body_bytes =
-        decode(email_body_encoded, quoted_printable::ParseMode::Robust).unwrap();
-    let email_body = String::from_utf8(decoded_body_bytes).unwrap();
-
+    let email_body = &mail_client.get_emails().await.items[0].content.body;
     let regex = regex::Regex::new(UUID_REGEX).unwrap();
-    let reset_code = regex.find(&email_body).unwrap().as_str();
+    let reset_code = regex.find(email_body).unwrap().as_str();
 
     let new_password = "meow123".to_string();
 

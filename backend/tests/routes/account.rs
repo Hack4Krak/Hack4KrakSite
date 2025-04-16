@@ -1,5 +1,5 @@
-use crate::utils;
-use crate::utils::setup_test_app;
+use crate::test_utils;
+use crate::test_utils::setup_test_app;
 use actix_web::http::header;
 use actix_web::test;
 use chrono::Duration;
@@ -12,7 +12,7 @@ use sea_orm::EntityTrait;
 async fn account_delete() {
     EnvConfig::load_test_config();
 
-    let (database, user_uuid) = utils::init_database_with_user().await;
+    let (database, user_uuid) = test_utils::init_database_with_user().await;
 
     let user = users::Entity::find_by_id(user_uuid)
         .one(&database)
@@ -50,7 +50,7 @@ async fn account_delete() {
 async fn account_update() {
     EnvConfig::load_test_config();
 
-    let (database, user_uuid) = utils::init_database_with_user().await;
+    let (database, user_uuid) = test_utils::init_database_with_user().await;
 
     let user = users::Entity::find_by_id(user_uuid)
         .one(&database)

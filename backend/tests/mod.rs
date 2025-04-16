@@ -1,3 +1,3 @@
 mod points_counter;
 mod routes;
-pub mod utils;
+pub mod test_utils;

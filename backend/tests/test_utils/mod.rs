@@ -1,3 +1,5 @@
+pub mod mail;
+
 use actix_web::body::MessageBody;
 use actix_web::dev::{ServiceFactory, ServiceRequest, ServiceResponse};
 use actix_web::web::Data;
@@ -48,6 +50,12 @@ pub async fn setup_database_with_schema() -> DatabaseConnection {
     database
 }
 
+pub struct TestApp {
+    pub database: DatabaseConnection,
+    pub smtp_client: Option<SmtpTransport>,
+    pub task_manager: Option<TaskManager>,
+}
+
 pub async fn setup_test_app(
     email_client: Option<SmtpTransport>,
     database_connection: Option<DatabaseConnection>,
@@ -79,8 +87,6 @@ pub async fn setup_test_app(
         .app_data(Data::new(app_state))
 }
 
-// This will be fixed properly in #189
-#[allow(dead_code)]
 pub async fn init_database_with_teams() -> (DatabaseConnection, Uuid, Uuid, Vec<Uuid>) {
     let database = setup_database_with_schema().await;
 
@@ -152,7 +158,6 @@ pub async fn init_database_with_teams() -> (DatabaseConnection, Uuid, Uuid, Vec<
     (database, user_uuid, team_uuid, users_with_team)
 }
 
-#[allow(dead_code)]
 pub async fn init_database_with_user() -> (DatabaseConnection, Uuid) {
     let database = setup_database_with_schema().await;
 
@@ -175,3 +180,5 @@ pub async fn init_database_with_user() -> (DatabaseConnection, Uuid) {
 
     (database, uuid)
 }
+
+pub struct TestDatabase {}
