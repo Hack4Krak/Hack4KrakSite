@@ -1,4 +1,4 @@
-use crate::utils::{init_database_with_teams, setup_test_app};
+use crate::test_utils::{init_database_with_teams, setup_test_app};
 use actix_web::http::header;
 use actix_web::web::Data;
 use actix_web::{App, test};

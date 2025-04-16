@@ -1,4 +1,4 @@
-use crate::utils::{setup_database_with_schema, setup_test_app};
+use crate::test_utils::{setup_database_with_schema, setup_test_app};
 use actix_web::http::header;
 use actix_web::test;
 use actix_web::test::TestRequest;
