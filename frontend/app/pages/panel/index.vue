@@ -3,6 +3,10 @@ const { $api } = useNuxtApp()
 
 const { data } = await useAuth('/account/')
 
+const updateAccountModal = ref(false)
+const deleteAccountModal = ref(false)
+const changePasswordModal = ref(false)
+
 const { data: team, error } = await useAuth('/teams/membership/my_team', {
   onResponseError: () => {
     throw new Error('Response error')
@@ -21,6 +25,18 @@ async function logout() {
 
 <template>
   <div class="flex flex-col p-12 pb-12 items-center gap-12">
+    <PanelModalUpdateAccountModal v-model="updateAccountModal" />
+    <PanelModalChangePasswordModal v-model="changePasswordModal" />
+    <PanelModalConfirmDeleteModal
+      v-model="deleteAccountModal"
+      url="/account/delete"
+      modal-title="Usuwanie konta"
+      modal-description="Czy na pewno chcesz usunąć konto? Ta operacja jest nieodwracalna."
+      toast-success-message="Pomyślnie usunięto konto"
+      :request-body="undefined"
+      redirect-to="/"
+    />
+
     <div class="flex flex-col flex-grow items-center justify-center max-h-[15em]">
       <div class="text-center">
         <h1 class="text-5xl font-bold">
@@ -46,9 +62,12 @@ async function logout() {
           <h1 class="font-bold text-2xl">
             Ustawienia konta
           </h1>
-          <UButton class="mt-3" @click="logout">
-            Wyloguj się
-          </UButton>
+          <div class="flex flex-col gap-3 mt-3 justify-center">
+            <GhostButtonWithIcon icon="mdi:account-cog" description="Zmień ustawienia konta" @click="updateAccountModal = true" />
+            <GhostButtonWithIcon icon="mdi:account-key" description="Zmień hasło" @click="changePasswordModal = true" />
+            <GhostButtonWithIcon icon="mdi:account-remove" description="Usuń konto" @click="deleteAccountModal = true" />
+            <GhostButtonWithIcon icon="mdi:logout" description="Wyloguj się" @click="logout" />
+          </div>
         </div>
       </PanelTile>
     </div>
