@@ -1,78 +1,81 @@
 <script setup lang="ts">
-import { FetchError } from 'ofetch'
+import { DialogContent, DialogOverlay, DialogPortal, DialogRoot } from 'reka-ui'
 
 const props = defineProps<{
   taskId: string
 }>()
 
+const open = defineModel<boolean>()
+
 const description = ref('')
 
-try {
-  const address = '/tasks/description/{task_id}'
-  const { data: response } = await useApi(address, {
-    path: { task_id: props.taskId },
-    key: `task-description-${props.taskId}`,
+const address = '/tasks/description/{task_id}'
+const { data: response } = await useApi(address, {
+  path: { task_id: props.taskId },
+  key: `task-description-${props.taskId}`,
+  onResponseError: undefined,
+})
+
+if (response.value && props.taskId) {
+  showError({
+    statusCode: 404,
+    message: 'Zadanie nie zostało znalezione',
   })
-
-  if (response.value === undefined) {
-    showError({
-      statusCode: 404,
-      message: 'Zadanie nie zostało znalezione',
-    })
-    console.error('Task not found')
-  } else {
-    description.value = String(response.value)
-  }
-} catch (error) {
-  console.error(error)
-  if (!(error instanceof FetchError)) {
-    throw error
-  }
-
-  showError(error)
+} else {
+  description.value = String(response.value)
 }
 
-const { data: assets } = await useAuth('/tasks/assets/list/{task_id}', {
+const { data: assets } = await useApi('/tasks/assets/list/{task_id}', {
   path: {
     task_id: props.taskId ?? '',
   },
   key: `task-${props.taskId}`,
+  onResponseError: undefined,
 })
 
-const { error: solutionError } = await useAuth('/tasks/solution/{task_id}', {
+const { error: solutionError } = await useApi('/tasks/solution/{task_id}', {
   path: {
     task_id: props.taskId,
   },
   key: `task-solution-${props.taskId}`,
-  onResponseError: () => {
-    throw new Error('Response error')
-  },
+  onResponseError: undefined,
 })
 
 const baseAssetsPath = `${useRuntimeConfig().public.openFetch.api.baseURL}/tasks/assets/get`
 </script>
 
 <template>
-  <div class="flex flex-col mx-[10vw] w-[80vw] pt-5 gap-5">
-    <MarkdownContent :text="description" />
-    <h2 class="text-4xl font-bold">
-      Załączniki
-    </h2>
-    <ul class="flex flex-col list-disc pl-5">
-      <li v-for="asset in assets" :key="asset.description">
-        <a :href="`${baseAssetsPath}/${taskId}/${asset.path}`" download class="w-auto text-blue-400 underline" target="_blank">
-          {{ asset.description }}
-        </a>
-      </li>
-    </ul>
-    <div v-if="!solutionError">
-      <h2 class="text-4xl font-bold pb-5">
-        Rozwiązanie
-      </h2>
-      Wydarzenie już się zakończyło! Możesz zobaczyć rozwiązanie
-      <NuxtLink :to="`/tasks/solution/${taskId}`" class="link">
-        tutaj
-      </NuxtLink>
-    </div>
-  </div>
+  <DialogRoot v-model:open="open" class="border-none">
+    <DialogPortal>
+      <DialogOverlay class="fixed inset-0 bg-black/50" />
+      <DialogContent class="flex fixed top-[15vh] left-[15vw] w-[70vw] focus:outline-none">
+        <div class="bg-[url(assets/img/scroll_left.png)] w-40 bg-no-repeat bg-contain h-[70vh] bg-right" />
+        <div class="bg-[url(assets/img/scroll_middle.png)] flex-grow w-full bg-repeat-x bg-contain h-[70vh]">
+          <div class="max-h-[50vh] overflow-y-auto my-[10vh] scrollbar-scroll">
+            <MarkdownContent :text="description" class="w-full h-full" />
+            <h2 class="text-4xl font-bold text-black">
+              Załączniki
+            </h2>
+            <ul class="flex flex-col list-disc pl-5">
+              <li v-for="asset in assets" :key="asset.description">
+                <a :href="`${baseAssetsPath}/${taskId}/${asset.path}`" download class="w-auto text-blue-700 underline" target="_blank">
+                  {{ asset.description }}
+                </a>
+              </li>
+            </ul>
+            <div v-if="!solutionError" class="text-gray-900">
+              <h2 class="text-4xl font-bold pb-5 text-black">
+                Rozwiązanie
+              </h2>
+              Wydarzenie już się zakończyło! Możesz zobaczyć rozwiązanie
+              <NuxtLink :to="`/tasks/solution/${taskId}`" class="link text-gray-700">
+                tutaj
+              </NuxtLink>
+            </div>
+          </div>
+        </div>
+        <div class="bg-[url(assets/img/scroll_right.png)] w-40 bg-no-repeat bg-contain h-[70vh]" />
+      </DialogContent>
+    </DialogPortal>
+  </DialogRoot>
 </template>

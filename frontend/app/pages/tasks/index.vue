@@ -2,7 +2,7 @@
 import type { Tasks } from '~/components/Map.vue'
 import Map from '@/components/Map.vue'
 
-const { data } = await useApi('/tasks/list')
+const { data } = await useApi('/tasks/list', { key: 'tasks-list', onResponseError: undefined })
 
 const { data: completedTasksRaw } = await useAuth('/teams/membership/completed_tasks', {
   onResponseError: undefined,
@@ -14,8 +14,21 @@ const completedTasks = computed(() =>
 )
 
 const elements = ref<Tasks>(data.value ?? [])
+const taskDescriptionPopover = ref(false)
+
+const taskIdString = ref('')
+const route = useRoute()
+
+const taskId = route.query.id
+if (taskId !== undefined) {
+  taskDescriptionPopover.value = true
+  taskIdString.value = String(taskId)
+}
 </script>
 
 <template>
-  <Map :elements="elements" :completed-tasks="completedTasks" class="mt-1" />
+  <div>
+    <TaskDescription v-model:open="taskDescriptionPopover" :task-id="taskIdString" />
+    <Map :elements="elements" :completed-tasks="completedTasks" class="mt-1" />
+  </div>
 </template>
