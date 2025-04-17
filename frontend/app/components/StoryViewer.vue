@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-
 const props = defineProps<{
   storyDialogues: { title: string, message: string }[]
   image: string
@@ -9,28 +7,11 @@ const props = defineProps<{
 const emit = defineEmits(['complete'])
 
 const phraseIndex = ref(0)
-const displayedPhrase = ref('')
 const currentMessage = computed(() => props.storyDialogues[phraseIndex.value] ?? { title: '', message: '' })
-
-let interval: NodeJS.Timeout | undefined
-
-function typeMessage(message: string) {
-  displayedPhrase.value = message[0] ?? ' '
-  let index = 1
-  interval = setInterval(() => {
-    if (index < message.length) {
-      displayedPhrase.value += message[index]
-      index++
-    } else {
-      clearInterval(interval)
-    }
-  }, 35)
-}
 
 function nextDialogue() {
   if (phraseIndex.value < props.storyDialogues.length - 1) {
     phraseIndex.value++
-    clearInterval(interval)
   } else {
     emit('complete')
   }
@@ -39,7 +20,6 @@ function nextDialogue() {
 function prevDialogue() {
   if (phraseIndex.value > 0) {
     phraseIndex.value--
-    clearInterval(interval)
   }
 }
 
@@ -59,13 +39,12 @@ function handleClick(event: MouseEvent) {
   }
 }
 
-watch(currentMessage, (newCharacter) => {
-  typeMessage(newCharacter.message)
-})
-
 onMounted(() => {
   window.addEventListener('keydown', handleKeydown)
-  typeMessage(currentMessage.value.message)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeydown)
 })
 </script>
 
@@ -86,9 +65,7 @@ onMounted(() => {
             <div class="w-1/2 h-[2px] bg-yellow-500" />
             <div class="w-[12px] h-[12px] bg-yellow-500" />
           </div>
-          <span class="text-xl md:text-2xl">
-            {{ displayedPhrase }}
-          </span>
+          <AnimatedText :text="currentMessage.message" class="text-xl md:text-2xl" />
         </div>
       </div>
     </div>
