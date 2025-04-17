@@ -44,7 +44,7 @@ try {
 }
 
 function redirectToTaskDescription() {
-  navigateTo(`/tasks/description/${taskId}`)
+  navigateTo(`/tasks?id=${taskId}`)
 }
 
 onMounted(() => {
