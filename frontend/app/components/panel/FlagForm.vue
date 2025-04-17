@@ -5,8 +5,8 @@ import * as z from 'zod'
 
 const flagPattern = /^hack4KrakCTF\{.*\}$/
 const schema = z.object({
-  flag: z.string({ required_error: 'Wpisz flagę' })
-    .regex(flagPattern, 'Flaga musi być w formacie "hack4KrakCTF{...}"'),
+  flag: z.string({ error: 'Wpisz flagę' })
+    .regex(flagPattern, { error: 'Flaga musi być w formacie "hack4KrakCTF{...}"' }),
 })
 
 type Schema = z.output<typeof schema>
