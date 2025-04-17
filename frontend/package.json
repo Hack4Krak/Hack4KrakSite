@@ -23,7 +23,7 @@
     "@nuxt/image": "1.10.0",
     "@nuxt/ui": "https://pkg.pr.new/@nuxt/ui@6e03d9c",
     "@nuxtjs/mdc": "0.16.1",
-    "@nuxtjs/seo": "^3.0.2",
+    "@nuxtjs/seo": "^3.0.3",
     "chart.js": "^4.4.9",
     "chartjs-adapter-moment": "^1.0.1",
     "dayjs-nuxt": "^2.1.11",
