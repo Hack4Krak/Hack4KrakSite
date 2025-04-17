@@ -36,6 +36,20 @@
   scrollbar-width: none; /* Firefox */
 }
 
+@utility scrollbar-scroll {
+  /* For Webkit-based browsers (Chrome, Safari and Opera) */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background: #364153;
+    color: #99a1af;
+  }
+
+  -ms-overflow-style: scrollbar; /* IE and Edge */
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #99a1af #364153; /* Firefox */
+}
+
 @utility link {
   text-decoration: underline;
   color: white;
