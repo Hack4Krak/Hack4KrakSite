@@ -86,7 +86,9 @@ onMounted(() => {
             <div class="w-1/2 h-[2px] bg-yellow-500" />
             <div class="w-[12px] h-[12px] bg-yellow-500" />
           </div>
-          <MarkdownContent :text="displayedPhrase" class="text-xl md:text-2xl font-semibold" />
+          <span class="text-xl md:text-2xl">
+            {{ displayedPhrase }}
+          </span>
         </div>
       </div>
     </div>
