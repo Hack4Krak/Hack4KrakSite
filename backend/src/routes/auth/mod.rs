@@ -9,8 +9,8 @@ pub mod reset_password;
 use crate::utils::error::error_response_builder;
 use actix_web::error;
 use actix_web::http::StatusCode;
+use hack4krak_macros::error_with_messages;
 pub use register::RegisterModel;
-use thiserror::Error;
 
 pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(register::register);
@@ -26,19 +26,13 @@ pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(reset_password::reset_password);
 }
 
-#[derive(Debug, Error)]
+#[error_with_messages]
 pub enum AuthError {
-    #[error("User already exists")]
     UserAlreadyExists,
-    #[error("Invalid username and/or password")]
     InvalidCredentials,
-    #[error("Invalid email address")]
     InvalidEmailAddress,
-    #[error("Password & email authentication is not available for this account")]
     PasswordAuthNotAvailable,
-    #[error("Invalid confirmation code")]
     InvalidConfirmationCode,
-    #[error("Confirmation code expired, please try sending email again")]
     ConfirmationCodeExpired,
 }
 

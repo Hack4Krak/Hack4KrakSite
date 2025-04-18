@@ -1,7 +1,7 @@
 use crate::middlewares::auth::AuthMiddleware;
 use actix_web::http::StatusCode;
 use actix_web::{HttpResponse, ResponseError};
-use thiserror::Error;
+use hack4krak_macros::error_with_messages;
 
 mod submit;
 
@@ -9,15 +9,11 @@ pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(submit::submit);
 }
 
-#[derive(Debug, Error)]
+#[error_with_messages]
 pub enum FlagError {
-    #[error("Flag has to be in specified format: hack4KrakCTF{{...}}")]
     InvalidFlagFormat,
-    #[error("This flag is not correct! Keep trying again...")]
     InvalidFlag,
-    #[error("This team already submitted this flag")]
     AlreadySubmittedFlag,
-    #[error("This endpoint is only accessible for confirmed teams")]
     TeamNotConfirmed,
 }
 

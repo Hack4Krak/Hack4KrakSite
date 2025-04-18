@@ -1,7 +1,7 @@
 use actix_web::http::StatusCode;
 use actix_web::{HttpResponse, error};
+use hack4krak_macros::error_with_messages;
 use std::string;
-use thiserror::Error;
 use utoipa_actix_web::scope;
 
 mod assets;
@@ -24,15 +24,11 @@ pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(count::count);
 }
 
-#[derive(Debug, Error)]
+#[error_with_messages]
 pub enum TaskError {
-    #[error("Task ID may only contain a-Z, A-Z, 0-9, - and _")]
     InvalidTaskId,
-    #[error("Could not load task asset for task \"{id}\"")]
     CouldNotLoadTaskAsset { id: String },
-    #[error("Task \"{id}\" does not exists")]
     MissingTask { id: String },
-    #[error("Error while reading task description: {0}")]
     ErrorWhileReadingDescription(#[from] string::FromUtf8Error),
 }
 
