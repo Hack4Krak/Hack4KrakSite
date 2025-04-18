@@ -1,0 +1,68 @@
+# Error messages for the backend
+# This file contains error messages in Polish
+# All entries correspond to values from the Error enum
+
+Error:
+  HashPasswordFailed: "Nie udało się zaszyfrować hasła: {0}"
+  OAuth: "Niepoprawna odpowiedź od dostawcy OAuth"
+  Request: "Błąd żądania: {0}"
+  DatabaseOperation: "Operacja na bazie danych nie powiodła się"
+  ConflictInDatabase: "Konflikt w bazie danych"
+  Unauthorized: "Musisz się zalogować, aby wykonać tę akcję!"
+  Forbidden: "Nie możesz tego zrobić! Wymagana rola: {required_role:?}"
+  InvalidJsonWebToken: "Nieprawidłowy token JWT"
+  Io: "Błąd I/O"
+  UserNotFound: "Użytkownik nie znaleziony"
+  MissingExtension: "Brakuje rozszerzenia {name} w żądaniu"
+  PlaceholdersRequired: "Wymagane są elementy zastępcze w tym szablonie e-mail"
+  FailedToSendEmail: "Nie udało się wysłać e-maila: {0}"
+  FailedToBuildEmail: "Nie udało się zbudować e-maila: {0}"
+  InvalidJson: "Nie udało się zserializować JSON: {0}"
+  RouteNotFound: "Nie znaleziono ścieżki"
+  InvalidEmailSender: "Nieprawidłowy adres e-mail nadawcy {0}"
+  InvalidEmailRecipients: "Nieprawidłowi odbiorcy e-mail {0}"
+  UserMustHaveHigherRoleThanAffectedUser: "Użytkownik musi mieć wyższą rolę niż dotknięty użytkownik"
+  UserMustBeOwnerToUpdateRoles: "Użytkownik musi być właścicielem, aby zaktualizować role"
+  UserWithEmailOrUsernameAlreadyExists: "Użytkownik z takim e-mailem lub nazwą użytkownika już istnieje"
+  AccessBeforeEventStart: "Nie możesz uzyskać dostępu do tego punktu przed rozpoczęciem wydarzenia"
+  AccessAfterEventEnd: "Nie możesz uzyskać dostępu do tego punktu po zakończeniu wydarzenia"
+  RecipientNotFound: "Nie ma użytkownika o nazwie: {username}"
+  AccessDuringEvent: "Nie możesz uzyskać dostępu do tego punktu w trakcie wydarzenia"
+  FailedToParseUrl: "Nie udało się sparsować URL {0}"
+  ServerEventSendingError: "Błąd wysyłania zdarzenia serwera {0}"
+
+AuthError:
+  UserAlreadyExists: "Użytkownik już istnieje"
+  InvalidCredentials: "Nieprawidłowa nazwa użytkownika i/lub hasło"
+  InvalidEmailAddress: "Nieprawidłowy adres e-mail"
+  PasswordAuthNotAvailable: "Uwierzytelnianie hasłem i e-mailem jest niedostępne dla tego konta"
+  InvalidConfirmationCode: "Nieprawidłowy kod potwierdzenia"
+  ConfirmationCodeExpired: "Kod potwierdzenia wygasł, spróbuj wysłać e-mail ponownie"
+
+FlagError:
+  InvalidFlagFormat: "Flaga musi być w określonym formacie: hack4KrakCTF{{...}}"
+  InvalidFlag: "Ta flaga jest niepoprawna! Spróbuj ponownie..."
+  AlreadySubmittedFlag: "Ta drużyna już wysłała tę flagę"
+  TeamNotConfirmed: "Ten punkt końcowy jest dostępny tylko dla potwierdzonych drużyn"
+
+TeamError:
+  AlreadyExists: "Zespół o tej samej nazwie już istnieje"
+  UserAlreadyBelongsToTeam: "Użytkownik już należy do zespołu: {team_name}"
+  TeamNotFound: "Zespół nie został znaleziony"
+  UserDoesntBelongToAnyTeam: "Użytkownik {username} nie należy do żadnego zespołu"
+  UserDoesntHaveAnyInvitations: "Użytkownik nie ma żadnych zaproszeń"
+  UserDoesntBelongToYourTeam: "Użytkownik nie należy do twojego zespołu"
+  UserIsNotTeamLeader: "Użytkownik nie jest liderem zespołu"
+  UserCantRemoveYourself: "Nie możesz usunąć siebie z zespołu"
+  UserCantRemoveTeamLeader: "Nie możesz usunąć lidera zespołu"
+  UserDoesntHaveInvitationsFromTeam: "Użytkownik nie ma zaproszeń od zespołu {team_name}"
+  UserAlreadyInvited: "Użytkownik już ma zaproszenie do tego zespołu"
+  TeamIsFull: "Zespół jest pełny. Maksymalna liczba członków to {max_size}"
+  TeamLeaderNotFound: "Lider zespołu nie został znaleziony"
+  InvalidConfirmationCode: "Nieprawidłowy kod potwierdzający"
+
+TaskError:
+  InvalidTaskId: "Identyfikator zadania może zawierać tylko znaki a-Z, A-Z, 0-9, - oraz _"
+  CouldNotLoadTaskAsset: "Nie udało się załadować zasobu zadania \"{id}\""
+  MissingTask: "Zadanie \"{id}\" nie istnieje"
+  ErrorWhileReadingDescription: "Błąd podczas odczytu opisu zadania: {0}"

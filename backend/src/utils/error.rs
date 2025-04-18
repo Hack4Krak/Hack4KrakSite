@@ -5,9 +5,9 @@ use crate::routes::task::TaskError;
 use crate::routes::teams::TeamError;
 use actix_web::http::StatusCode;
 use actix_web::{HttpResponse, error};
+use hack4krak_macros::error_with_messages;
 use sea_orm::RuntimeErr::SqlxError;
 use serde_json::json;
-use thiserror::Error;
 use tokio::sync::broadcast;
 
 pub struct ErrorHttpResponseExtension {
@@ -37,65 +37,42 @@ pub fn error_response_builder<T: error::ResponseError>(err: &T) -> HttpResponse 
     response
 }
 
-#[derive(Debug, Error)]
+#[error_with_messages]
 pub enum Error {
-    #[error("Failed to hash password: {0}")]
     HashPasswordFailed(argon2::password_hash::Error),
-    #[error("Failed to parse response from OAuth provider")]
     OAuth,
-    #[error("Request error: {0}")]
     Request(#[from] reqwest::Error),
-
-    #[error("Database operation failed")]
     DatabaseOperation(sea_orm::DbErr),
-
-    #[error("Conflict in database")]
     ConflictInDatabase,
-
-    #[error("Unauthorized")]
     Unauthorized,
-    #[error("Thou shall not pass, required role: {required_role:?}")]
-    Forbidden { required_role: UserRoles },
-    #[error("Invalid Json Web Token")]
+    Forbidden {
+        required_role: UserRoles,
+    },
     InvalidJsonWebToken,
-    #[error("IO Error")]
     Io(#[from] std::io::Error),
-    #[error("User not found")]
     UserNotFound,
-    #[error("Missing {name} extension in request")]
-    MissingExtension { name: String },
-    #[error("Placeholder elements are required for this email template")]
+    MissingExtension {
+        name: String,
+    },
     PlaceholdersRequired,
-    #[error("Failed to send email: {0}")]
     FailedToSendEmail(#[from] lettre::transport::smtp::Error),
-    #[error("Failed to build email: {0}")]
     FailedToBuildEmail(#[from] lettre::error::Error),
-    #[error("Could not serialize json: {0}")]
     InvalidJson(#[from] serde_json::Error),
-    #[error("Route not found")]
     RouteNotFound,
-    #[error("Invalid sender's email {0}")]
     InvalidEmailSender(String),
-    #[error("Invalid recipients' email {0}")]
     InvalidEmailRecipients(String),
-    #[error("User must have higher role than the affected user")]
     UserMustHaveHigherRoleThanAffectedUser,
-    #[error("User must be owner to update roles")]
     UserMustBeOwnerToUpdateRoles,
-    #[error("User with such email or username already exists")]
     UserWithEmailOrUsernameAlreadyExists,
-    #[error("You cannot access this endpoint before our event has started")]
     AccessBeforeEventStart,
-    #[error("You cannot access this endpoint after our event has finished")]
     AccessAfterEventEnd,
-    #[error("There is no user with username: {username}")]
-    RecipientNotFound { username: String },
-    #[error("You cannot access this endpoint after during event")]
+    RecipientNotFound {
+        username: String,
+    },
     AccessDuringEvent,
-    #[error("Failed to parse URL {0}")]
     FailedToParseUrl(#[from] url::ParseError),
-    #[error("Failed to send server event {0}")]
     ServerEventSendingError(#[from] broadcast::error::SendError<String>),
+
     #[error(transparent)]
     Auth(#[from] AuthError),
     #[error(transparent)]

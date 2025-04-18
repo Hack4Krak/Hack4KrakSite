@@ -9,3 +9,5 @@ proc-macro = true
 [dependencies]
 syn = { version = "^2.0.100", features = ["full"] }
 quote = "^1.0.40"
+
+serde_yml.workspace = true

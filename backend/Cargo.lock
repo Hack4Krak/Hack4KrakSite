@@ -1503,6 +1503,7 @@ name = "hack4krak-macros"
 version = "1.0.0"
 dependencies = [
  "quote",
+ "serde_yml",
  "syn 2.0.100",
 ]
 

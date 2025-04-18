@@ -1,7 +1,7 @@
 use crate::middlewares::auth::AuthMiddleware;
 use actix_web::http::StatusCode;
 use actix_web::{HttpResponse, error};
-use thiserror::Error;
+use hack4krak_macros::error_with_messages;
 use utoipa_actix_web::scope;
 
 mod confirm;
@@ -30,35 +30,21 @@ pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     );
 }
 
-#[derive(Debug, Error)]
+#[error_with_messages]
 pub enum TeamError {
-    #[error("Team with same name already exists")]
     AlreadyExists,
-    #[error("User already belongs to team: {team_name}")]
     UserAlreadyBelongsToTeam { team_name: String },
-    #[error("Team not found")]
     TeamNotFound,
-    #[error("User {username} doesn't belong to any team")]
     UserDoesntBelongToAnyTeam { username: String },
-    #[error("User doesn't have any invitations")]
     UserDoesntHaveAnyInvitations,
-    #[error("User doesn't belong to your team")]
     UserDoesntBelongToYourTeam,
-    #[error("User is not team leader")]
     UserIsNotTeamLeader,
-    #[error("You can't remove yourself from the team")]
     UserCantRemoveYourself,
-    #[error("You can't remove the team leader")]
     UserCantRemoveTeamLeader,
-    #[error("User doesn't have invitations from {team_name}")]
     UserDoesntHaveInvitationsFromTeam { team_name: String },
-    #[error("User already has an invitation to this team")]
     UserAlreadyInvited,
-    #[error("Team is full. Max team size is {max_size}")]
     TeamIsFull { max_size: u16 },
-    #[error("Team leader not found")]
     TeamLeaderNotFound,
-    #[error("Invalid confirmation code")]
     InvalidConfirmationCode,
 }
 
