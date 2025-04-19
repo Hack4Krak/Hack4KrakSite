@@ -9,4 +9,5 @@ pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(index::only_admins);
     cfg.service(delete::delete);
     cfg.service(update::update);
+    cfg.service(update::change_password);
 }
