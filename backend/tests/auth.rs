@@ -1,5 +1,6 @@
 use crate::utils::setup_test_app;
 
+use actix_web::test::read_body_json;
 use actix_web::web::Data;
 use actix_web::{App, test};
 use hack4krak_backend::entities::{email_confirmation, users};
@@ -92,8 +93,9 @@ async fn register_invalid_email() {
         .to_request();
 
     let response = test::call_service(&app, request).await;
-
     assert!(response.status().is_client_error());
+    // Verify if the body is proper JSON
+    let _: serde_json::Value = read_body_json(response).await;
 }
 
 #[cfg(feature = "full-test-suite")]

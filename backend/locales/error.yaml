@@ -30,6 +30,7 @@ Error:
   AccessDuringEvent: "Nie możesz uzyskać dostępu do tego punktu w trakcie wydarzenia"
   FailedToParseUrl: "Nie udało się sparsować URL {0}"
   ServerEventSendingError: "Błąd wysyłania zdarzenia serwera {0}"
+  Validator: "Niepoprawne pola w zapytaniu"
 
 AuthError:
   UserAlreadyExists: "Użytkownik już istnieje"
