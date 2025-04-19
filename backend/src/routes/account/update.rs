@@ -13,12 +13,10 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use validator::Validate;
 
-#[derive(Serialize, Deserialize, ToSchema, Validate, Clone, Debug, Default)]
-pub struct UpdateUserModel {
+#[derive(Serialize, Deserialize, ToSchema, Validate, Debug, Default)]
+struct UpdateUserModel {
     #[validate(length(min = 3, max = 32))]
-    pub username: Option<String>,
-    pub old_password: Password,
-    pub new_password: Option<Password>,
+    pub username: String,
 }
 
 #[utoipa::path(
@@ -40,16 +38,51 @@ pub async fn update(
 ) -> Result<HttpResponse, Error> {
     let model = model.into_inner();
 
-    AuthService::assert_password_is_valid(&user, &model.old_password)?;
-
-    let mut updatable_model = UpdatableModel {
-        username: model.username,
+    let updatable_model = UpdatableModel {
+        username: Some(model.username),
         ..Default::default()
     };
 
-    if let Some(password) = model.new_password {
-        updatable_model.password = Some(Some(AuthService::hash_password(password)?));
-    }
+    users::Model::update(&app_state.database, user, updatable_model).await?;
+
+    Ok(SuccessResponse::default().http_response())
+}
+
+#[derive(Serialize, Deserialize, ToSchema, Validate, Clone, Debug, Default)]
+struct ChangePasswordModel {
+    #[validate(length(min = 8, max = 32))]
+    pub old_password: Password,
+    #[validate(length(min = 8, max = 32))]
+    pub new_password: Password,
+}
+
+#[utoipa::path(
+    request_body = ChangePasswordModel,
+    responses(
+        (status = 200, description = "Account updated successfully"),
+        (status = 500, description = "Internal server error"),
+    ),
+    security(
+        ("access_token" = [])
+    ),
+    tag = "account"
+)]
+#[patch("/update/password", wrap = "AuthMiddleware::with_user()")]
+pub async fn change_password(
+    app_state: Data<app_state::AppState>,
+    user: users::Model,
+    Validated(model): Validated<Json<ChangePasswordModel>>,
+) -> Result<HttpResponse, Error> {
+    let model = model.into_inner();
+
+    AuthService::assert_password_is_valid(&user, &model.old_password)?;
+
+    let hashed_password = AuthService::hash_password(model.new_password.clone())?;
+
+    let updatable_model = UpdatableModel {
+        password: Some(Some(hashed_password)),
+        ..Default::default()
+    };
 
     users::Model::update(&app_state.database, user, updatable_model).await?;
 

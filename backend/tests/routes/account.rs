@@ -43,8 +43,6 @@ async fn account_update() {
         .insert_header(TestAuthHeader::new(user.clone()))
         .set_json(serde_json::json!({
             "username": "Salieri",
-            "old_password": "Dziengiel",
-            "new_password": "Dziengiel2"
         }))
         .to_request();
     let response = test::call_service(&app, request).await;
@@ -59,6 +57,19 @@ async fn account_update() {
         response,
         r#"{"username":"Salieri","email":"example@gmail.com"}"#
     );
+
+    let request = test::TestRequest::patch()
+        .uri("/account/update/password")
+        .insert_header(TestAuthHeader::new(user.clone()))
+        .set_json(serde_json::json!({
+            "old_password": "Dziengiel",
+            "new_password": "Dziengiel2"
+        }))
+        .to_request();
+
+    let response = test::call_service(&app, request).await;
+
+    assert!(response.status().is_success());
 
     let request = test::TestRequest::post()
         .uri("/auth/login")
