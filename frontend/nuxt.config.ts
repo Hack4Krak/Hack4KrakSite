@@ -116,6 +116,9 @@ export default defineNuxtConfig({
   schemaOrg: {
     enabled: false,
   },
+  linkChecker: {
+    runOnBuild: false,
+  },
   // https://nuxtseo.com/docs/site-config/guides/setting-site-config
   site: {
     // Use NUXT_SITE_NAME to override
