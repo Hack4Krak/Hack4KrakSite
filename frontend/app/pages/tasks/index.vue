@@ -4,13 +4,18 @@ import Map from '@/components/Map.vue'
 
 const { data } = await useApi('/tasks/list')
 
-const { data: completedTasks } = await useAuth('/teams/membership/completed_tasks', {
+const { data: completedTasksRaw } = await useAuth('/teams/membership/completed_tasks', {
+  onResponseError: undefined,
   redirect: 'error',
 })
+
+const completedTasks = computed(() =>
+  Array.isArray(completedTasksRaw.value) ? completedTasksRaw.value : [],
+)
 
 const elements = ref<Tasks>(data.value ?? [])
 </script>
 
 <template>
-  <Map :elements="elements" :completed-tasks="completedTasks ?? []" class="mt-1" />
+  <Map :elements="elements" :completed-tasks="completedTasks" class="mt-1" />
 </template>
