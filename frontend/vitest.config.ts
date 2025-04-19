@@ -5,6 +5,6 @@ export default defineVitestConfig({
   test: {
     environment: 'nuxt',
     exclude: [...configDefaults.exclude, 'tests/e2e/**/*'],
-    passWithNoTests: true,
+    setupFiles: ['../tests/setup.ts'],
   },
 })
