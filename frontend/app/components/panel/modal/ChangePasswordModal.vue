@@ -64,12 +64,9 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
   open.value = false
 }
-
-const resetPasswordModal = ref(false)
 </script>
 
 <template>
-  <ModalResetPasswordModal v-model="resetPasswordModal" />
   <UModal v-model:open="open" title="Ustawienia konta" description="Zmień hasło" :ui="{ footer: 'justify-end' }">
     <template #body>
       <UForm ref="form" :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
@@ -79,12 +76,12 @@ const resetPasswordModal = ref(false)
         <UFormField label="Nowe hasło" name="new_password">
           <TransparentInput v-model="state.new_password" class="w-full" type="password" />
         </UFormField>
-        <UFormField label="Nowe hasło" name="new_password">
+        <UFormField label="Potwierdź Nowe hasło" name="confirm_new_password">
           <TransparentInput v-model="state.confirm_new_password" class="w-full" type="password" />
         </UFormField>
-        <span class="text-sm hover:cursor-pointer underline" @click="resetPasswordModal = true; open = false">
+        <NuxtLink class="link" to="/request_password_reset">
           Zresetuj hasło
-        </span>
+        </NuxtLink>
       </UForm>
     </template>
 

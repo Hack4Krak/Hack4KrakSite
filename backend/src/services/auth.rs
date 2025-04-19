@@ -161,12 +161,13 @@ impl AuthService {
             .await?
             .to_string();
 
-        let mut reset_password_link = EnvConfig::get().backend_url.clone();
-        reset_password_link = reset_password_link.join("/auth/reset_password")?;
+        let mut reset_password_link = EnvConfig::get().frontend_url.clone();
+        reset_password_link = reset_password_link
+            .join(format!("/reset_password?code={}", confirmation_code).as_str())?;
 
         let email_body = format!(
             include_str!("emails_assets/reset_password_body.html"),
-            confirmation_code,
+            reset_password_link.clone(),
             reset_password_link.clone(),
             reset_password_link
         );

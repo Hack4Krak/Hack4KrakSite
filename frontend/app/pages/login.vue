@@ -14,5 +14,5 @@ if (route.query.error) {
 </script>
 
 <template>
-  <Auth :is-login="true" />
+  <Auth :is-login="true" class="flex-grow" />
 </template>
