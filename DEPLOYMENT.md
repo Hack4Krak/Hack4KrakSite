@@ -17,14 +17,13 @@ We have a [Dockerfile](backend/Dockerfile) used to start a production server.
 - `DATABASE_URL` - PostgreSQL connection string
 - `JWT_SECRET` - secret used to sign JWT tokens
 
-There are also environment variables related to downloading task repository:
+There are also environment variables related to downloading the task repository:
 
-- `GIT_TOKEN` - auth token used to authenticate to private repositories
-- `GIT_USERNAME` - username used to authenticate to private repositories
-- `TASKS_REPO_URL` - URL of the task repository
+- `GIT_ACCESS_TOKEN` - auth token used to authenticate to private repositories
+- `GIT_USER` - username used to authenticate to private repositories
+- `GIT_REPO` - name of the GitHub repository containing tasks
 
-We also support support [Google](https://developers.google.com/identity/protocols/oauth2)
-and [GitHub](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps) OAuth2 providers.
+We also support [Google](https://developers.google.com/identity/protocols/oauth2) and [GitHub](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps) OAuth2 providers.
 
 - `GOOGLE_CLIENT_ID` - Google OAuth2 client ID
 - `GOOGLE_CLIENT_SECRET` - Google OAuth2 client secret
