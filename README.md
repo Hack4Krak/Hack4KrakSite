@@ -36,7 +36,7 @@ For documentation refer to specific `DEVELOPMENT.md` files:
 
 ## 🚀 Deployment
 
-The frontend is deployed on [Vercel](https://vercel.com/) and the backend is deployed on [Fly.io](https://fly.io/).
+The production website is currently fully self-deployed on a VPS with [Dokploy](https://dokploy.com/).
 To read more about deployment, env variables and other settings, refer to the [`DEPLOYMENT.md`](DEPLOYMENT.md) file.
 
 You access our frontend at [hack4krak.pl](https://hack4krak.pl/) and backend

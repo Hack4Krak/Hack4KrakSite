@@ -4,7 +4,7 @@
 
 ## 🍖 Backend
 
-We have [Dockerfile](Dockerfile) used to start a production server.
+We have a [Dockerfile](backend/Dockerfile) used to start a production server.
 
 ### Environment variables
 
@@ -32,6 +32,8 @@ and [GitHub](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/auth
 - `GITHUB_CLIENT_SECRET` - GitHub OAuth2 client secret
 
 ## 🥩 Frontend
+
+We have a [Dockerfile](frontend/Dockerfile) used to start a production server.
 
 You can refer to [Nuxt documentation](https://nuxt.com/docs/getting-started/deployment) for information on how to deploy
 the frontend app.
