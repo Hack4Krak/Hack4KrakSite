@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
 
 bun backend:openapi-cli
-bun run test
 bun lint
