@@ -1,20 +1,13 @@
 import { expect, test } from '@playwright/test'
 
-test('test', async ({ page }) => {
-  await page.goto('http://localhost:3000/login')
+test('authFormValidation', async ({ page }) => {
+  await page.goto('/login', { waitUntil: 'networkidle' })
 
   // Verify if email validation works
-  await page.getByRole('textbox', { name: 'Email' }).click()
-  await page.getByRole('textbox', { name: 'Email' }).fill('meow')
-  await page.getByRole('textbox', { name: 'Email' }).press('Tab')
-  await expect(page.getByRole('textbox', { name: 'Email' })).toHaveValue('meow')
-  await expect(page.locator('text=Niepoprawny adres e-mail')).toBeVisible()
-
-  // Verify if field validation works
-  await page.getByRole('textbox', { name: 'Email' }).click()
-  await page.getByRole('textbox', { name: 'Email' }).fill('example@gmail.com')
+  await page.getByRole('textbox', { name: 'Hasło' }).fill('1')
   await page.getByRole('button', { name: 'Zaloguj' }).click()
-  await expect(page.locator('#v-0-0-2-2-error')).toContainText('Hasło jest wymagane')
+  await expect(page.locator('text=Hasło musi mieć minimum 8 znaków')).toBeVisible()
+  await expect(page.locator('text=Adres e-mail jest wymagany')).toBeVisible()
 
   // Verify if link to register works
   await page.getByRole('link', { name: 'Załóż je' }).click()

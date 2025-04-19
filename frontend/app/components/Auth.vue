@@ -83,30 +83,37 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-  <div class="flex flex-col md:flex-row justify-center items-center bg-gray-100 dark:bg-zinc-900 rendering-pixelated bg-[url(assets/img/background.webp)] bg-cover bg-center">
-    <div class="space-y-4 w-90 bg-default p-8 rounded-2xl">
-      <h1 class="text-2xl font-medium">
-        {{ isLogin ? 'Zaloguj się' : 'Zarejestruj się' }}
-      </h1>
+  <AuthForm>
+    <h1 class="text-2xl font-medium">
+      {{ isLogin ? 'Zaloguj się' : 'Zarejestruj się' }}
+    </h1>
 
-      <UForm :schema="schema" :state="state" class="space-y-4 text-center" @submit="onSubmit">
-        <UFormField v-if="!isLogin" label="Nazwa użytkownika" name="name">
-          <TransparentInput v-model="state.name" />
-        </UFormField>
+    <UForm :schema="schema" :state="state" class="space-y-4 text-center" @submit="onSubmit">
+      <UFormField v-if="!isLogin" label="Nazwa użytkownika" name="name">
+        <TransparentInput v-model="state.name" />
+      </UFormField>
 
-        <UFormField label="Email" name="email">
-          <TransparentInput v-model="state.email" type="email" />
-        </UFormField>
+      <UFormField label="Email" name="email">
+        <TransparentInput v-model="state.email" type="email" />
+      </UFormField>
 
-        <UFormField label="Hasło" name="password">
+      <div class="flex flex-col items-start gap-1">
+        <UFormField label="Hasło" name="password" class="w-full">
           <TransparentInput v-model="state.password" type="password" />
+          <template #hint>
+            <NuxtLink v-if="isLogin" class="link-without-underline" to="/request_password_reset">
+              Zresetuj hasło
+            </NuxtLink>
+          </template>
         </UFormField>
+      </div>
 
-        <div class="space-y-2">
-          <UButton type="submit" class="w-full text-center inline rounded-3xl py-2 bg-neutral-300" :disabled="loading" :class="isButtonEnabled ? 'bg-(--ui-primary)' : ''">
-            {{ isLogin ? 'Zaloguj' : 'Zarejestruj' }}
-          </UButton>
+      <div class="space-y-2">
+        <UButton type="submit" class="w-full text-center inline rounded-3xl py-2 bg-neutral-300" :disabled="loading" :class="isButtonEnabled ? 'bg-(--ui-primary)' : ''">
+          {{ isLogin ? 'Zaloguj' : 'Zarejestruj' }}
+        </UButton>
 
+        <div class="flex flex-col gap-1">
           <span class="text-sm text-neutral-500">
             {{ isLogin ? 'Nie masz konta?' : 'Masz już konto?' }}
             <NuxtLink class="link" :to="isLogin ? '/register' : '/login'">
@@ -114,16 +121,16 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             </NuxtLink>
           </span>
         </div>
-      </UForm>
+      </div>
+    </UForm>
 
-      <div class="w-full text-center">
-        <USeparator class="my-3" label="Albo kontynuuj z" :ui="{ label: 'text-zinc-400' }" />
+    <div class="w-full text-center">
+      <USeparator class="my-3" label="Albo kontynuuj z" :ui="{ label: 'text-zinc-400' }" />
 
-        <div class="flex text-center gap-2 justify-center items-center">
-          <a :href="`${OAuthBaseUrl}/google`" aria-label="Login with Google"><UIcon name="logos:google-icon" size="45" class="cursor-pointer hover:scale-110 duration-300" mode="svg" /></a>
-          <a :href="`${OAuthBaseUrl}/github`" aria-label="Login with GitHub"><UIcon name="mdi:github" size="50" class="cursor-pointer hover:scale-110 duration-300" /></a>
-        </div>
+      <div class="flex text-center gap-2 justify-center items-center">
+        <a :href="`${OAuthBaseUrl}/google`" aria-label="Login with Google"><UIcon name="logos:google-icon" size="45" class="cursor-pointer hover:scale-110 duration-300" mode="svg" /></a>
+        <a :href="`${OAuthBaseUrl}/github`" aria-label="Login with GitHub"><UIcon name="mdi:github" size="50" class="cursor-pointer hover:scale-110 duration-300" /></a>
       </div>
     </div>
-  </div>
+  </AuthForm>
 </template>

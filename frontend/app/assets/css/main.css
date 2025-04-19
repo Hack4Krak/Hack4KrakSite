@@ -42,3 +42,12 @@
     color: var(--ui-primary);
   }
 }
+
+@utility link-without-underline {
+  color: oklch(87% 0 0);
+  cursor: pointer;
+
+  @variant hover {
+    color: var(--ui-primary);
+  }
+}
