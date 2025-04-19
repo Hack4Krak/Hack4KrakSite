@@ -114,7 +114,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         </UButton>
 
         <div class="flex flex-col gap-1">
-          <span class="text-sm text-neutral-500">
+          <span class="text-sm text-neutral-400">
             {{ isLogin ? 'Nie masz konta?' : 'Masz już konto?' }}
             <NuxtLink class="link" :to="isLogin ? '/register' : '/login'">
               {{ isLogin ? 'Załóż je' : 'Zaloguj się' }}
