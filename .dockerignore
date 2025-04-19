@@ -2,3 +2,5 @@ fly.toml
 .git/
 backend/target/
 node_modules/
+frontend/tests
+frontend/Dockerfile
