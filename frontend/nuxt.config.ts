@@ -44,9 +44,11 @@ export default defineNuxtConfig({
       ],
       charset: 'utf-8',
       viewport: 'width=device-width, initial-scale=1',
+      htmlAttrs: {
+        lang: 'pl',
+      },
       meta: [
         { name: 'theme-color', content: '#ffb900' },
-        { name: 'lang', content: 'pl' },
       ],
     },
   },
