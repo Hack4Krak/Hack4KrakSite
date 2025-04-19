@@ -11,7 +11,7 @@ use utoipa::ToSchema;
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct LoginModel {
     pub email: String,
-    pub password: String,
+    pub password: Password,
 }
 
 #[utoipa::path(
@@ -32,7 +32,7 @@ pub async fn login(
         .await?
         .ok_or(Error::Auth(InvalidCredentials))?;
 
-    AuthService::assert_password_is_valid(&user, &Password(login_json.password.clone()))?;
+    AuthService::assert_password_is_valid(&user, &login_json.password)?;
 
     AuthService::response_with_cookies(user.id, user.email)
 }

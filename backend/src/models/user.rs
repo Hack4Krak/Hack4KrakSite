@@ -18,9 +18,16 @@ use serde::{Deserialize, Serialize};
 use std::{fmt, future};
 use utoipa::ToSchema;
 use uuid::Uuid as uuid_gen;
+use validator::ValidateLength;
 
 #[derive(Serialize, Deserialize, ToSchema, Clone, Default)]
 pub struct Password(pub String);
+
+impl ValidateLength<u64> for Password {
+    fn length(&self) -> Option<u64> {
+        Some(self.0.clone().len() as u64)
+    }
+}
 
 impl fmt::Debug for Password {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

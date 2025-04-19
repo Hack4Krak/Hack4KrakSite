@@ -220,7 +220,7 @@ async fn reset_password_flow() {
         .uri("/auth/reset_password")
         .set_json(json!({
             "code": reset_code.to_string(),
-            "new_password": "meow123".to_string()
+            "new_password": "meow123123".to_string()
         }))
         .to_request();
     let response = test::call_service(&app, request).await;
