@@ -4,7 +4,7 @@ use crate::routes::flag::FlagError;
 use crate::routes::task::TaskError;
 use crate::routes::teams::TeamError;
 use actix_web::http::StatusCode;
-use actix_web::{HttpResponse, error};
+use actix_web::{HttpRequest, HttpResponse, error};
 use hack4krak_macros::error_with_messages;
 use sea_orm::RuntimeErr::SqlxError;
 use serde_json::json;
@@ -35,6 +35,13 @@ pub fn error_response_builder<T: error::ResponseError>(err: &T) -> HttpResponse 
         .insert(ErrorHttpResponseExtension::new(error_message));
 
     response
+}
+
+pub fn validation_error_handler(
+    errors: validator::ValidationErrors,
+    _: &HttpRequest,
+) -> actix_web::Error {
+    Error::Validator(errors).into()
 }
 
 #[error_with_messages]
@@ -72,6 +79,7 @@ pub enum Error {
     AccessDuringEvent,
     FailedToParseUrl(#[from] url::ParseError),
     ServerEventSendingError(#[from] broadcast::error::SendError<String>),
+    Validator(validator::ValidationErrors),
 
     #[error(transparent)]
     Auth(#[from] AuthError),
@@ -88,6 +96,7 @@ impl error::ResponseError for Error {
         match self {
             Error::PlaceholdersRequired
             | Error::InvalidEmailSender(_)
+            | Error::Validator(_)
             | Error::InvalidEmailRecipients(_) => StatusCode::BAD_REQUEST,
             Error::HashPasswordFailed(_)
             | Error::DatabaseOperation(_)

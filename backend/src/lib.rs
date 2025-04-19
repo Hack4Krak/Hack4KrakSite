@@ -3,6 +3,7 @@ use crate::middlewares::event::EventMiddleware;
 use crate::middlewares::status_code_drain_middleware::StatusCodeDrain;
 use crate::services::env::EnvConfig;
 use crate::utils::error::Error::RouteNotFound;
+use crate::utils::error::validation_error_handler;
 use crate::utils::openapi::ApiDoc;
 use actix_cors::Cors;
 use actix_governor::governor::clock::QuantaInstant;
@@ -12,6 +13,8 @@ use actix_web::body::MessageBody;
 use actix_web::dev::{ServiceFactory, ServiceRequest, ServiceResponse};
 use actix_web::middleware::Logger;
 use actix_web::{App, Error, ResponseError};
+use actix_web_validation::validator::ValidatorErrorHandlerExt;
+use std::sync::Arc;
 use utoipa_actix_web::{AppExt, UtoipaApp, scope};
 use utoipa_scalar::{Scalar, Servable};
 
@@ -56,6 +59,7 @@ pub fn setup_actix_app(
         .max_age(3600);
 
     let mut app = App::new()
+        .validator_error_handler(Arc::new(validation_error_handler))
         .wrap(StatusCodeDrain)
         .wrap(Logger::default())
         .wrap(cors_middleware)
