@@ -15,6 +15,7 @@ pub struct RegisterModel {
     pub name: String,
     #[validate(email)]
     pub email: String,
+    #[validate(length(min = 8, max = 32))]
     pub password: Password,
 }
 #[utoipa::path(

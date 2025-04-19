@@ -5,9 +5,11 @@ use crate::utils::error::Error;
 use crate::utils::success_response::SuccessResponse;
 use actix_web::web::{Data, Json};
 use actix_web::{HttpResponse, patch, post};
+use actix_web_validation::Validated;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
+use validator::Validate;
 
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct RequestResetPasswordModel {
@@ -32,9 +34,10 @@ pub async fn request_reset_password(
     Ok(SuccessResponse::default().http_response())
 }
 
-#[derive(Serialize, Deserialize, ToSchema, Debug)]
+#[derive(Serialize, Deserialize, ToSchema, Validate, Debug)]
 pub struct ResetPasswordModel {
     pub code: Uuid,
+    #[validate(length(min = 8, max = 32))]
     pub new_password: Password,
 }
 
@@ -50,7 +53,7 @@ pub struct ResetPasswordModel {
 #[patch("/reset_password")]
 pub async fn reset_password(
     app_state: Data<app_state::AppState>,
-    model: Json<ResetPasswordModel>,
+    Validated(model): Validated<Json<ResetPasswordModel>>,
 ) -> Result<HttpResponse, Error> {
     AuthService::reset_password(&app_state, model.into_inner()).await?;
 
