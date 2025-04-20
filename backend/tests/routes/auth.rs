@@ -56,6 +56,25 @@ async fn register_invalid_email() {
     let _: serde_json::Value = read_body_json(response).await;
 }
 
+#[actix_web::test]
+async fn register_invalid_username() {
+    let app = TestApp::default().build_app().await;
+
+    let request = test::TestRequest::post()
+        .uri("/auth/register")
+        .set_json(json!({
+            "email": "email@example.com",
+            "name": "test invalid user",
+            "password": "password123"
+        }))
+        .to_request();
+
+    let response = test::call_service(&app, request).await;
+    assert!(response.status().is_client_error());
+    // Verify if the body is proper JSON
+    let _: serde_json::Value = read_body_json(response).await;
+}
+
 #[cfg(feature = "full-test-suite")]
 #[actix_web::test]
 async fn auth_flow() {

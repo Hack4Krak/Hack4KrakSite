@@ -7,11 +7,11 @@ use actix_web::{HttpResponse, post, web};
 use actix_web_validation::Validated;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
-use validator::Validate;
+use validator::{Validate, ValidationError};
 
 #[derive(Serialize, Deserialize, ToSchema, Validate, Debug)]
 pub struct RegisterModel {
-    #[validate(length(min = 3, max = 32))]
+    #[validate(length(min = 3, max = 32), custom(function = "is_latin_extended"))]
     pub name: String,
     #[validate(email)]
     pub email: String,
@@ -33,4 +33,14 @@ pub async fn register(
     Validated(model): Validated<Json<RegisterModel>>,
 ) -> Result<HttpResponse, Error> {
     AuthService::register_with_password(&app_state, model.into_inner()).await
+}
+fn is_latin_extended(username: &str) -> Result<(), ValidationError> {
+    if username.chars().all(|c| {
+        c.is_ascii_alphanumeric()
+            || ('\u{00C0}'..='\u{024F}').contains(&c)
+            || c.is_ascii_punctuation()
+    }) {
+        return Ok(());
+    }
+    Err(ValidationError::new("invalid_username_chars"))
 }
