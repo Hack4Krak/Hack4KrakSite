@@ -54,12 +54,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     if (!(error instanceof FetchError)) {
       throw error
     }
-
-    if (error.data) {
-      toast.add({ title: 'Błąd logowania', description: error.data.message, color: 'error' })
-    } else {
-      toast.add({ title: 'Błąd logowania', color: 'error' })
-    }
   } finally {
     loading.value = false
   }
