@@ -271,7 +271,7 @@ impl UserRoles {
     }
 }
 
-pub fn validate_username_chars(username: &str) -> Result<(), ValidationError> {
+pub fn validate_name_chars(username: &str) -> Result<(), ValidationError> {
     if username.chars().all(|c| {
         c.is_ascii_alphanumeric()
             || ('\u{00C0}'..='\u{024F}').contains(&c) // Latin-1 + Extended-A + B

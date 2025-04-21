@@ -64,7 +64,7 @@ async fn register_invalid_username() {
         .uri("/auth/register")
         .set_json(json!({
             "email": "email@example.com",
-            "name": "test invalid user",
+            "name": "test ﷽ user",
             "password": "password123"
         }))
         .to_request();

@@ -7,14 +7,14 @@ use utoipa::ToSchema;
 use validator::Validate;
 
 use crate::entities::{teams, users};
+use crate::models::user::validate_name_chars;
 use crate::routes::teams::TeamError::{AlreadyExists, UserAlreadyBelongsToTeam};
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::success_response::SuccessResponse;
-
 #[derive(Debug, Serialize, Deserialize, ToSchema, Validate)]
 pub struct CreateTeamModel {
-    #[validate(length(min = 3, max = 32))]
+    #[validate(length(min = 3, max = 32), custom(function = "validate_name_chars"))]
     pub team_name: String,
 }
 

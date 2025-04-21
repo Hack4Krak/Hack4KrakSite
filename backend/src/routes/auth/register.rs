@@ -1,5 +1,5 @@
 use crate::models::user::Password;
-use crate::models::user::validate_username_chars;
+use crate::models::user::validate_name_chars;
 use crate::services::auth::AuthService;
 use crate::utils::app_state;
 use crate::utils::error::Error;
@@ -12,10 +12,7 @@ use validator::Validate;
 
 #[derive(Serialize, Deserialize, ToSchema, Validate, Debug)]
 pub struct RegisterModel {
-    #[validate(
-        length(min = 3, max = 32),
-        custom(function = "validate_username_chars")
-    )]
+    #[validate(length(min = 3, max = 32), custom(function = "validate_name_chars"))]
     pub name: String,
     #[validate(email)]
     pub email: String,
