@@ -1463,6 +1463,7 @@ dependencies = [
  "actix-cors",
  "actix-files",
  "actix-governor",
+ "actix-http",
  "actix-web",
  "actix-web-validation",
  "argon2",
