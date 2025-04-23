@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { NAVBAR_ITEMS } from '~/content/navbar'
+
 const isMobileMenuOpen = ref(false)
+
 function toggleMobileMenu() {
   isMobileMenuOpen.value = !isMobileMenuOpen.value
 }
@@ -9,66 +12,40 @@ const router = useRouter()
 watch(() => router.currentRoute.value, () => {
   isMobileMenuOpen.value = false
 })
-
-const items = [
-  [
-    {
-      label: 'Ranking',
-      to: '/leaderboard',
-    },
-    {
-      label: 'Regulamin',
-      to: '/rules',
-    },
-    {
-      label: 'FAQ',
-      to: '/faq',
-    },
-    {
-      label: 'Zadania',
-      to: '/tasks',
-    },
-    {
-      label: 'Discord',
-      to: 'https://discord.gg/ASPqckzEd8',
-      target: '_blank',
-    },
-  ],
-  [
-    {
-      slot: 'button',
-      to: '/login',
-    },
-  ],
-]
 </script>
 
 <template>
-  <UContainer class="top-0 z-10 sticky max-w-full border-b-1 border-neutral-600 font-pixelify bg-default">
-    <div class="mx-auto flex items-center h-(--ui-header-height)">
-      <NuxtLink to="/" class="flex items-center space-x-2 py-3">
-        <Logo class="size-10 text-black dark:text-white" />
-        <h1 class="md:hidden text-2xl font-semibold">
+  <UContainer class="sticky top-0 max-w-full font-sans bg-dark z-20">
+    <div class="hidden md:flex items-center place-content-between h-(--ui-header-height)">
+      <!-- Logo + Logotype -->
+      <NuxtLink to="/" class="flex items-center">
+        <Logo class="size-9 dark:text-white mr-4" />
+        <h1 class="font-pixelify text-xl font-semibold">
           Hack4Krak
         </h1>
       </NuxtLink>
 
       <!-- Desktop Navigation -->
       <UNavigationMenu
-        :items="items" variant="link" class="hidden md:flex w-full"
-        :ui="{ linkLabel: 'text-lg hover:underline underline-offset-5 text-(--ui-bg) dark:text-white' }"
-      >
-        <template #button>
-          <ElevatedButton message="START GRY" />
-        </template>
-      </UNavigationMenu>
+        :items="NAVBAR_ITEMS" variant="link" class="hidden md:flex"
+        :ui="{ link: 'text-md hover:underline underline-offset-5 text-dark dark:text-bright', list: 'gap-4' }"
+      />
 
-      <button class="md:hidden p-2 ml-auto cursor-pointer flex justify-center" aria-label="Toogle navbar" @click="toggleMobileMenu">
+      <ElevatedButtonLink to="/panel">
+        Zaloguj się!
+      </ElevatedButtonLink>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <div class="md:hidden flex mt-4">
+      <button
+        class="p-2 ml-auto cursor-pointer flex justify-center" aria-label="Toogle navbar"
+        @click="toggleMobileMenu"
+      >
         <Icon :name="isMobileMenuOpen ? 'mdi:close' : 'mdi:hamburger-menu'" size="28" />
       </button>
     </div>
 
-    <!-- Mobile Navigation -->
     <Transition
       enter-from-class="opacity-0 translate-x-[100%]"
       leave-to-class="opacity-0 translate-x-[100%]"
@@ -79,15 +56,17 @@ const items = [
       <div v-if="isMobileMenuOpen" class="md:hidden h-screen [&>a]:text-5xl ">
         <USeparator class="mb-2" />
         <LazyUNavigationMenu
-          :items="items"
+          :items="NAVBAR_ITEMS"
           orientation="vertical"
           variant="link"
           class="w-full text-3xl"
-          :ui="{ link: 'text-lg text-white text-black dark:text-white' }"
+          :ui="{ link: 'text-lg text-bright dark:text-bright' }"
         >
           <template #button>
             <div class="items-center justify-center text-center w-full">
-              <ElevatedButton message="START GRY" class="w-70 mt-2" />
+              <ElevatedButtonLink class="w-70 mt-2" to="/panel">
+                Start gry!
+              </ElevatedButtonLink>
             </div>
           </template>
         </LazyUNavigationMenu>

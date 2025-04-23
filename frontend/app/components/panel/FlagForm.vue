@@ -49,6 +49,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       <UInput v-model="state.flag" class="w-full" :ui="{ base: 'h-12' }" placeholder="hack4KrakCTF{...}" />
     </UFormField>
 
-    <ElevatedButton message="Wyślij" class="w-40" type="submit" />
+    <ElevatedButton class="w-40" type="submit">
+      Wyślij
+    </ElevatedButton>
   </UForm>
 </template>

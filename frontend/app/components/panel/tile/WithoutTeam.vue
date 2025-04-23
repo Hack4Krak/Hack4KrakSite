@@ -9,7 +9,11 @@ const invitationsModal = ref(false)
 
   <PanelKing />
   <div class="absolute bottom-10 w-full flex flex-col gap-5 z-1">
-    <ElevatedButton message="Utwórz zespół" class="w-70 h-15" @click="createTeamModal = true" />
-    <ElevatedButton message="Zaproszenia" class="w-70 h-15" @click="invitationsModal = true" />
+    <ElevatedButton class="w-70 h-15" @click="createTeamModal = true">
+      Utwórz zespół
+    </ElevatedButton>
+    <ElevatedButton class="w-70 h-15" @click="invitationsModal = true">
+      Zaproszenia
+    </ElevatedButton>
   </div>
 </template>
