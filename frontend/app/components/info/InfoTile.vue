@@ -29,9 +29,9 @@ const colorString = computed(() => `var(--color-${content.color})`)
              flex-col gap-4 lg:gap-12 items-center justify-center lg:p-0"
       :class="{ 'lg:translate-y-[-100%]': isFlipped }"
     >
-      <h1 class="text-lg lg:text-2xl text-center" :style="{ color: colorString }">
+      <p class="text-lg lg:text-2xl text-center" :style="{ color: colorString }">
         <MDC :value="content.front" />
-      </h1>
+      </p>
       <NuxtImg :src="content.image" height="400" class="h-12 lg:h-32 rendering-pixelated" />
     </div>
 

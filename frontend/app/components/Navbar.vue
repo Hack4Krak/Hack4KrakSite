@@ -20,9 +20,9 @@ watch(() => router.currentRoute.value, () => {
       <!-- Logo + Logotype -->
       <NuxtLink to="/" class="flex items-center">
         <Logo class="size-9 dark:text-white mr-4" />
-        <h1 class="font-pixelify text-xl font-semibold">
+        <p class="font-pixelify text-xl font-semibold">
           Hack4Krak
-        </h1>
+        </p>
       </NuxtLink>
 
       <!-- Desktop Navigation -->

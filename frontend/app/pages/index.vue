@@ -49,9 +49,9 @@ const info_data_md = [
                     lg:flex-row justify-center gap-12 items-center"
         >
           <div class="">
-            <h1 class="lg:text-2xl font-bold text-red">
+            <p class="lg:text-2xl font-bold text-red">
               Zainteresowany?
-            </h1> <br>
+            </p> <br>
             <ElevatedButtonLink to="/panel" class="lg:text-xl lg:scale-110">
               Zarejestruj swoją drużynę!
             </ElevatedButtonLink>
