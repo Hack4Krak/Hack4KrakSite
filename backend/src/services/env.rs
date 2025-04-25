@@ -10,9 +10,6 @@ pub static ENV: OnceLock<EnvConfig> = OnceLock::new();
 #[derive(Deserialize, Debug)]
 #[serde(default)]
 pub struct EnvConfig {
-    /// Configures some stuff to be a little bit less secure
-    /// But allow for example makes vercel previews work correctly
-    pub relaxed_security_mode: bool,
     pub database_url: String,
     pub backend_address: String,
     pub domain: String,
@@ -32,7 +29,6 @@ pub struct EnvConfig {
 impl Default for EnvConfig {
     fn default() -> Self {
         EnvConfig {
-            relaxed_security_mode: false,
             backend_address: "127.0.0.1:8080".to_string(),
             domain: "hack4krak.pl".to_string(),
             backend_url: Url::parse("http://localhost:8080").unwrap(),

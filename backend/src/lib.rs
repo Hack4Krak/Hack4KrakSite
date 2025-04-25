@@ -38,21 +38,6 @@ pub fn setup_actix_app(
 > {
     let cors_middleware = Cors::default()
         .allowed_origin(EnvConfig::get().frontend_url.as_str().trim_end_matches('/'))
-        .allowed_origin_fn(|origin, request| {
-            let Ok(origin) = origin.to_str() else {
-                return false;
-            };
-
-            if EnvConfig::get().relaxed_security_mode
-                && origin.starts_with("https://hack4krak")
-                && origin.ends_with("-spacemceu.vercel.app")
-                && !request.uri.path().starts_with("/admin")
-            {
-                return true;
-            }
-
-            false
-        })
         .allow_any_method()
         .allow_any_header()
         .supports_credentials()
