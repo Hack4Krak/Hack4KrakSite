@@ -1,7 +1,7 @@
 import { expect, test } from '@nuxt/test-utils/playwright'
 
 test('webpage basic content loading', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/', { waitUntil: 'networkidle' })
 
   // Check heading
   await expect(page.getByRole('heading')).toContainText('Hack4Krak')
