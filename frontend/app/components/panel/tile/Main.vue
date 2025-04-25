@@ -1,37 +1,28 @@
-<script setup>
-import dayjs from 'dayjs'
-import duration from 'dayjs/plugin/duration'
-import isBetween from 'dayjs/plugin/isBetween'
+<script setup lang="ts">
+import { dayjs, humanizeDifference } from '~/utils/duration'
 
 const { data } = await useAuth('/event/info')
 
-const { data: timeLeft } = useAsyncData('timeLeft', async () => calculateTimeLeft())
+const { data: timeLeft } = useAsyncData('timeLeft', async () => getEventState().diff)
 const eventMessage = computed(() => getEventState().message)
 
 function getEventState() {
-  // Temporary solution for https://github.com/fumeapp/dayjs/issues/62
-  dayjs.extend(duration)
-  dayjs.extend(isBetween)
   const now = dayjs()
   const eventStart = dayjs(data.value?.start_date)
   const eventEnd = dayjs(data.value?.end_date)
 
   if (now.isBetween(eventStart, eventEnd)) {
-    return { message: 'Czas do zakończenia wydarzenia', diff: dayjs.duration(eventEnd.diff()) }
+    return { message: 'Czas do zakończenia wydarzenia', diff: humanizeDifference(eventEnd.diff()) }
   } else if (now.isBefore(eventStart)) {
-    return { message: 'Czas do rozpoczęcia wydarzenia', diff: dayjs.duration(eventStart.diff(now)) }
+    return { message: 'Czas do rozpoczęcia wydarzenia', diff: humanizeDifference(eventStart.diff(now)) }
   } else {
-    return { message: 'Wydarzenie jest zakończone od', diff: dayjs.duration(now.diff(eventEnd)) }
+    return { message: 'Wydarzenie jest zakończone od', diff: humanizeDifference(now.diff(eventEnd)) }
   }
-}
-
-function calculateTimeLeft() {
-  return getEventState().diff.format('D[d] HH:mm:ss').replace(/^0*d /, '')
 }
 
 onMounted(() => {
   setInterval(() => {
-    timeLeft.value = calculateTimeLeft()
+    timeLeft.value = getEventState().diff
   }, 1000)
 })
 </script>
