@@ -24,10 +24,10 @@ onMounted(() => {
 
 <template>
   <main>
-    <NuxtLoadingIndicator color="var(--ui-primary)" :height="2" />
+    <NuxtLoadingIndicator color="var(--ui-primary)" :height="2" class="hidden" />
     <UApp>
       <Navbar />
-      <slot class="min-h-[calc(100vh-var(--ui-header-height))]" />
+      <slot />
     </UApp>
   </main>
 </template>

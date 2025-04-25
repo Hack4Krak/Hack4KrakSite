@@ -1,9 +1,10 @@
 <script setup>
 definePageMeta({
   middleware: 'guest',
+  layout: 'centered',
 })
 </script>
 
 <template>
-  <Auth :is-login="false" />
+  <AuthForm :is-login="false" />
 </template>

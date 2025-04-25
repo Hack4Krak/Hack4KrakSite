@@ -5,6 +5,7 @@ import * as z from 'zod'
 
 definePageMeta({
   middleware: 'guest',
+  layout: 'centered',
 })
 
 type Schema = z.output<typeof schema>
@@ -61,7 +62,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-  <AuthForm>
+  <div>
     <h1 class="text-2xl font-medium">
       Zresetuj hasło
     </h1>
@@ -77,5 +78,5 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         </UButton>
       </div>
     </UForm>
-  </AuthForm>
+  </div>
 </template>

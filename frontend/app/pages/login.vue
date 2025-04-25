@@ -1,6 +1,7 @@
 <script setup>
 definePageMeta({
   middleware: 'guest',
+  layout: 'centered',
 })
 
 const route = useRoute()
@@ -14,5 +15,5 @@ if (route.query.error) {
 </script>
 
 <template>
-  <Auth :is-login="true" class="flex-grow" />
+  <AuthForm :is-login="true" class="flex-grow" />
 </template>
