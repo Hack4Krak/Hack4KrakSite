@@ -5,7 +5,7 @@ useSeoMeta({
 </script>
 
 <template>
-  <div class="flex flex-col md:flex-row justify-center items-center">
+  <div class="flex flex-col md:flex-row justify-center items-center min-h-[calc(100vh-var(--ui-header-height))]">
     <Logo class="max-h-48 max-w-48 md:max-h-96 md:max-w-96 md:mr-12" />
     <USeparator orientation="vertical" class="h-88 md:block hidden" size="lg" :ui="{ border: 'border-black dark:border-white' }" />
     <div class="mt-5 md:mt-0 md:ml-10 text-center md:text-left dark:text-white">
