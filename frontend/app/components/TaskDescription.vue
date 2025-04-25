@@ -16,7 +16,7 @@ const { data: response } = await useApi(address, {
   onResponseError: undefined,
 })
 
-if (response.value && props.taskId) {
+if (!response.value && props.taskId) {
   showError({
     statusCode: 404,
     message: 'Zadanie nie zostało znalezione',
