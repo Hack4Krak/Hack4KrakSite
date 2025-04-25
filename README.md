@@ -20,7 +20,7 @@ We managed to host our first event, but website is still **in development**!
 We have to complete more features and fix some bugs before we can call it a day.
 
 - ✅ `28/02/2025` - Successfully completed CTF for [31st highschool](https://www.lo31.krakow.pl/) in Kraków
-- 🚧 `29/05/2025` - CTF for all primary schools in Kraków. In development
+- 🚧 `30/05/2025` - CTF for all primary schools in Kraków. In development
 - 🚧 `2026` - CTF for all high schools in Poland.
 
 ## 🚜 Development
