@@ -5,26 +5,26 @@ useSeoMeta({
 
 const info_data_md = [
   {
-    front: 'Jakie jest moje <br>**zadanie**?',
-    back: 'Twoim zadaniem jest stworzenie innowacyjnego projektu, który odpowiada na jedno z wyzwań zaproponowanych podczas Hack4Krak. Może to być aplikacja, prototyp, kampania społeczna – liczy się pomysłowość, zaangażowanie i współpraca z zespołem!',
+    front: 'Na czym będzie polegać moje <br>**zadanie** podczas wydarzenia??',
+    back: 'Twoim zadaniem będzie **rozwiązywanie zadań** z różnych dziedzin cyberbezpieczeństwa. Za każde poprawnie rozwiązane zadanie Twoja drużyna otrzyma punkty, które zadecydują o waszym końcowym wyniku.',
     color: 'green',
     image: '/img/knight.png',
   },
   {
     front: 'Czym jest <br>**Hack4Krak**?',
-    back: 'Hack4Krak to hackathon – intensywny maraton kreatywności, podczas którego młodzi ludzie tworzą rozwiązania dla realnych problemów Krakowa. To okazja do nauki, networkingu i dobrej zabawy!',
+    back: 'Hack4Krak to organizacja zajmująca się tworzeniem i organizacją wydarzeń typu CTF Jeopardy z zakresu cyberbezpieczeństwa, skierowanych do uczniów Krakowskich szkół publicznych.',
     color: 'yellow',
     image: '/img/princess.png',
   },
   {
-    front: '**Kto** może <br>wziąść udział?',
-    back: 'Każdy uczeń szkoły średniej z Krakowa i okolic! Niezależnie od tego, czy programujesz, projektujesz, kręcisz filmy, czy po prostu masz głowę pełną pomysłów – miejsce znajdzie się dla Ciebie!',
+    front: '**Kto** może <br>wziąć udział?',
+    back: 'W wydarzeniu mogą wziąć udział **uczniowie szkół podstawowych**. W szczególności kierujemy je do **uczniów klas 7 i 8**, którzy chcą spróbować swoich sił w świecie cyberbezpieczeństwa.',
     color: 'gold',
     image: '/img/witch_tower.png',
   },
   {
-    front: 'Jakie są <br>**nagrody**?',
-    back: 'Na zwycięzców czekają atrakcyjne nagrody – od sprzętu elektronicznego, przez vouchery i wejściówki, aż po możliwość dalszego rozwijania swojego projektu z partnerami Hack4Krak!',
+    front: 'Jakie **nagrody** można zdobyć podczas wydarzenia?',
+    back: 'Na najlepsze drużyny czekają **atrakcyjne nagrody**, które będą miłym wyróżnieniem za wysiłek, zaangażowanie i umiejętności pokazane w trakcie rywalizacji.',
     color: 'purple',
     image: '/img/king.png',
   },
