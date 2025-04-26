@@ -101,7 +101,7 @@ const members = computed<Members | null>(() => {
           >
             <div v-if="user" class="flex justify-between items-center">
               <div>
-                <UIcon v-if="user.is_leader" name="i-material-symbols-crown" class="text-yellow-400" />
+                <UIcon v-if="user.is_leader" name="mdi:crown" class="text-yellow-400" />
                 {{ user.name }}
               </div>
               <UButton v-if="is_user_leader" @click="kickUserModal = true; kickedUser = user.name">
