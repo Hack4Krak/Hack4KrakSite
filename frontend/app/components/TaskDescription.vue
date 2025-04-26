@@ -48,12 +48,12 @@ const baseAssetsPath = `${useRuntimeConfig().public.openFetch.api.baseURL}/tasks
   <DialogRoot v-model:open="open" class="border-none">
     <DialogPortal>
       <DialogOverlay class="fixed inset-0 bg-black/50" />
-      <DialogContent class="flex fixed top-[15vh] left-[15vw] w-[70vw] focus:outline-none">
+      <DialogContent class="flex fixed top-[10vh] left-[10vw] w-[80vw] focus:outline-none">
         <VisuallyHidden>
           <DialogTitle>Opis zadania</DialogTitle>
         </VisuallyHidden>
-        <div class="bg-[url(assets/img/scroll/scroll_left.png)] w-40 bg-no-repeat bg-contain h-[70vh] bg-right" />
-        <div class="bg-[url(assets/img/scroll/scroll_middle.png)] flex-grow w-full bg-repeat-x bg-contain h-[70vh]">
+        <div class="bg-[url(assets/img/scroll/scroll_left.png)] w-40 bg-no-repeat bg-contain h-[80vh] bg-right" />
+        <div class="bg-[url(assets/img/scroll/scroll_middle.png)] flex-grow w-full bg-repeat-x bg-contain h-[80vh]">
           <div class="max-h-[50vh] overflow-y-auto my-[10vh] scrollbar-scroll">
             <MarkdownContent :text="description" class="w-full h-full" />
             <h2 class="text-4xl font-bold text-black">
@@ -77,7 +77,7 @@ const baseAssetsPath = `${useRuntimeConfig().public.openFetch.api.baseURL}/tasks
             </div>
           </div>
         </div>
-        <div class="bg-[url(assets/img/scroll/scroll_right.png)] w-40 bg-no-repeat bg-contain h-[70vh]" />
+        <div class="bg-[url(assets/img/scroll/scroll_right.png)] w-40 bg-no-repeat bg-contain h-[80vh]" />
       </DialogContent>
     </DialogPortal>
   </DialogRoot>
