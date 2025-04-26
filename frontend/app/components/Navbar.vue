@@ -44,7 +44,7 @@ const items = [
 </script>
 
 <template>
-  <UContainer class="top-0 z-10 sticky max-w-full border-b-1 border-neutral-600 font-pixelify bg-(--ui-bg)">
+  <UContainer class="top-0 z-10 sticky max-w-full border-b-1 border-neutral-600 font-pixelify bg-default">
     <div class="mx-auto flex items-center h-(--ui-header-height)">
       <NuxtLink to="/" class="flex items-center space-x-2 py-3">
         <Logo class="size-10 text-black dark:text-white" />

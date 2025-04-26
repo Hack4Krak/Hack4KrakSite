@@ -21,7 +21,7 @@
   "dependencies": {
     "@formkit/auto-animate": "^0.8.2",
     "@nuxt/image": "1.10.0",
-    "@nuxt/ui": "https://pkg.pr.new/@nuxt/ui@6e03d9c",
+    "@nuxt/ui": "3.1.0",
     "@nuxtjs/mdc": "0.16.1",
     "@nuxtjs/seo": "3.0.3",
     "chart.js": "^4.4.9",
@@ -57,6 +57,6 @@
     "typescript": "~5.8.3",
     "vitest": "3.1.2",
     "vitest-fail-on-console": "0.7.1",
-    "vue-tsc": "2.2.2"
+    "vue-tsc": "3.0.0-alpha.4"
   }
 }
