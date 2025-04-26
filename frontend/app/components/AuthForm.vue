@@ -103,7 +103,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       </div>
 
       <div class="space-y-2">
-        <UButton type="submit" class="w-full text-center inline rounded-3xl py-2 bg-neutral-300" :disabled="loading" :class="isButtonEnabled ? 'bg-(--ui-primary)' : ''">
+        <UButton type="submit" class="w-full text-center inline rounded-3xl py-2 bg-neutral-300" :disabled="loading" :class="isButtonEnabled ? 'bg-primary' : ''">
           {{ isLogin ? 'Zaloguj' : 'Zarejestruj' }}
         </UButton>
 
