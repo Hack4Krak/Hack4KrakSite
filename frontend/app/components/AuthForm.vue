@@ -95,7 +95,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         <UFormField label="Hasło" name="password" class="w-full">
           <TransparentInput v-model="state.password" type="password" />
           <template #hint>
-            <NuxtLink v-if="isLogin" class="link-without-underline" to="/request_password_reset">
+            <NuxtLink v-if="isLogin" class="link-without-underline" to="/request_password_reset" tabindex="-1">
               Zresetuj hasło
             </NuxtLink>
           </template>
