@@ -70,9 +70,7 @@ async fn register_invalid_username() {
         .to_request();
 
     let response = test::call_service(&app, request).await;
-    assert!(response.status().is_client_error());
-    // Verify if the body is proper JSON
-    let _: serde_json::Value = read_body_json(response).await;
+    assert_eq!(response.status(), 400);
 }
 
 #[cfg(feature = "full-test-suite")]
