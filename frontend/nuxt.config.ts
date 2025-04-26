@@ -40,7 +40,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       link: [
-        { rel: 'icon', href: 'favicon-light.ico', sizes: '48x48' },
+        { rel: 'icon', href: '/favicon-light.ico', sizes: '48x48' },
       ],
       charset: 'utf-8',
       viewport: 'width=device-width, initial-scale=1',
