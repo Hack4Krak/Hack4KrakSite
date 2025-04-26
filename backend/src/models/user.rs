@@ -19,6 +19,7 @@ use std::{fmt, future};
 use utoipa::ToSchema;
 use uuid::Uuid as uuid_gen;
 use validator::ValidateLength;
+use validator::ValidationError;
 
 #[derive(Serialize, Deserialize, ToSchema, Clone, Default)]
 pub struct Password(pub String);
@@ -268,4 +269,15 @@ impl UserRoles {
             UserRoles::Default => 0,
         }
     }
+}
+
+pub fn validate_name_chars(username: &str) -> Result<(), ValidationError> {
+    if username.chars().all(|char| {
+        char.is_ascii_alphanumeric()
+            || ('\u{00C0}'..='\u{024F}').contains(&char) // Latin-1 + Extended-A + B
+            || char.is_ascii_punctuation() || char == ' '
+    }) {
+        return Ok(());
+    }
+    Err(ValidationError::new("invalid_username_chars"))
 }
