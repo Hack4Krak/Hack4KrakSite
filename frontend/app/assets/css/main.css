@@ -38,13 +38,13 @@
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
-    background: oklch(37.3% 0.034 259.733);
-    color: oklch(70.7% 0.022 261.325);
+    background: #364153;
+    color: #99a1af;
   }
 
   -ms-overflow-style: scrollbar; /* IE and Edge */
   scrollbar-width: thin; /* Firefox */
-  scrollbar-color: oklch(70.7% 0.022 261.325) oklch(37.3% 0.034 259.733); /* Firefox */
+  scrollbar-color: #99a1af #364153; /* Firefox */
 }
 
 @utility link {
