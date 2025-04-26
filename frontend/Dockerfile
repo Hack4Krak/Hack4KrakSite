@@ -5,7 +5,6 @@ FROM base as install
 COPY package.json bun.lock .
 COPY frontend/package.json frontend/
 COPY backend/package.json backend/
-COPY patches/ patches/
 
 RUN bun install --frozen-lockfile --filter hack4krak-frontend
 
