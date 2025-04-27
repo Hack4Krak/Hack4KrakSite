@@ -1,6 +1,6 @@
 export const INFO_TILES_CONTENT = [
   {
-    front: 'Na czym będzie polegać <br> moje **zadanie** podczas <br> wydarzenia??',
+    front: 'Na czym będzie polegać <br> moje **zadanie** podczas <br> wydarzenia?',
     back: 'Twoim zadaniem będzie **rozwiązywanie zagadek** z różnych dziedzin **cyberbezpieczeństwa**. Za każde poprawnie rozwiązane zadanie Twoja drużyna otrzyma punkty, które zadecydują o waszym końcowym wyniku.',
     color: 'green',
     image: '/img/knight.png',

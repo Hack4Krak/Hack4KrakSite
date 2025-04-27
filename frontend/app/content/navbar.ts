@@ -9,6 +9,10 @@ export const NAVBAR_ITEMS = [
       to: '/leaderboard',
     },
     {
+      label: 'Zadania',
+      to: '/tasks',
+    },
+    {
       label: 'Regulamin',
       to: '/rules',
     },
