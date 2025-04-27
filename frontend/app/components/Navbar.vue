@@ -27,7 +27,8 @@ watch(() => router.currentRoute.value, () => {
 
       <!-- Desktop Navigation -->
       <UNavigationMenu
-        :items="NAVBAR_ITEMS" variant="link" class="hidden md:flex"
+        content-orientation="vertical"
+        :items="NAVBAR_ITEMS" variant="link" class="hidden md:flex justify-center"
         :ui="{ link: 'text-md hover:underline underline-offset-5 text-dark dark:text-bright', list: 'gap-4' }"
       />
 

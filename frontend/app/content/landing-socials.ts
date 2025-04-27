@@ -20,7 +20,7 @@ export const LANDING_SOCIALS = [
   {
     label: 'Email',
     icon: 'uil:envelope',
-    to: 'hack4krak@gmail.com',
+    to: 'mailto:hack4krak@gmail.com',
     target: '_blank',
   },
 ]
