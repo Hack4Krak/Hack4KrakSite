@@ -34,7 +34,7 @@ const info_data_md = [
 <template>
   <main>
     <!-- Hero Section -->
-    <HeroSection/>
+    <HeroSection />
 
     <!-- Sections -->
     <UContainer class="w-full h-screen">
@@ -56,7 +56,7 @@ const info_data_md = [
               Zarejestruj swoją drużynę!
             </ElevatedButtonLink>
           </div>
-          <NuxtImg src="/img/dragon.png" class="rendering-pixelated w-32 lg:w-64"/>
+          <NuxtImg src="/img/dragon.png" class="rendering-pixelated w-32 lg:w-64" />
         </div>
       </section>
     </UContainer>

@@ -6,10 +6,10 @@ import { LANDING_SOCIALS } from '~/content/landing-socials'
   <div class="social-media-container">
     <div class="flex gap-8 text-3xl font-bold">
       <SocialIcon
-        v-for="({ name, icon, link }) in LANDING_SOCIALS"
-        :key="name"
+        v-for="({ label, icon, to }) in LANDING_SOCIALS"
+        :key="label"
         :icon="icon"
-        :link="link"
+        :link="to"
       />
     </div>
   </div>

@@ -1,17 +1,26 @@
 export const LANDING_SOCIALS = [
   {
-    name: 'Discord',
+    label: 'Discord',
     icon: 'ic:baseline-discord',
-    link: 'https://discord.gg/ASPqckzEd8',
+    to: 'https://discord.gg/ASPqckzEd8',
+    target: '_blank',
   },
   {
-    name: 'Github',
-    icon: 'mdi:github',
-    link: 'https://github.com/Hack4Krak/Hack4KrakSite/',
-  },
-  {
-    name: 'Instagram',
+    label: 'Instagram',
     icon: 'lineicons:instagram-original',
-    link: 'https://www.instagram.com/hack4krak/',
+    to: 'https://www.instagram.com/hack4krak/',
+    target: '_blank',
+  },
+  {
+    label: 'LinkedIn',
+    icon: 'lineicons:linkedin-original',
+    to: 'https://pl.linkedin.com/company/hack4krak',
+    target: '_blank',
+  },
+  {
+    label: 'Email',
+    icon: 'uil:envelope',
+    to: 'hack4krak@gmail.com',
+    target: '_blank',
   },
 ]

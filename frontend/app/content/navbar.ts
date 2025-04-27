@@ -1,5 +1,7 @@
 // https://ui.nuxt.com/components/navigation-menu#usage
 
+import { LANDING_SOCIALS } from '~/content/landing-socials'
+
 export const NAVBAR_ITEMS = [
   [
     {
@@ -17,32 +19,7 @@ export const NAVBAR_ITEMS = [
     {
       label: 'Kontakt',
       to: 'https://discord.gg/ASPqckzEd8',
-      children: [
-        {
-          label: 'Discord',
-          icon: 'ic:baseline-discord',
-          to: 'https://discord.gg/ASPqckzEd8',
-          target: '_blank',
-        },
-        {
-          label: 'Instagram',
-          icon: 'lineicons:instagram-original',
-          to: 'https://www.instagram.com/hack4krak/',
-          target: '_blank',
-        },
-        {
-          label: 'LinkedIn',
-          icon: 'lineicons:linkedin-original',
-          to: 'https://pl.linkedin.com/company/hack4krak',
-          target: '_blank',
-        },
-        {
-          label: 'Email',
-          icon: 'uil:envelope',
-          to: 'hack4krak@gmail.com',
-          target: '_blank',
-        },
-      ],
+      children: LANDING_SOCIALS,
     },
   ],
 ]
