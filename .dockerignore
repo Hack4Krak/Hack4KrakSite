@@ -1,6 +1,10 @@
-fly.toml
+# Ignore directories
 .git/
 backend/target/
 node_modules/
 frontend/tests
-frontend/Dockerfile
+frontend/.output
+frontend/.nuxt
+
+# Ignore environment variables
+*/.env
