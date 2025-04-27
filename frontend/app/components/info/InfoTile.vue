@@ -40,7 +40,7 @@ const colorString = computed(() => `var(--color-${content.color})`)
       :class="{ 'lg:translate-y-0': isFlipped, 'lg:translate-y-[100%]': !isFlipped }"
     >
       <div class="w-full">
-        <p class="text-sm text-left lg:px-12" :style="{ color: colorString }">
+        <p class="text-[1rem] text-pretty text-left lg:px-12" :style="{ color: colorString }">
           <MDC :value="content.back" />
         </p>
       </div>
