@@ -38,7 +38,13 @@ watch(() => router.currentRoute.value, () => {
     </div>
 
     <!-- Mobile Navigation -->
-    <div class="md:hidden flex mt-4">
+    <div class="md:hidden flex pt-4">
+      <NuxtLink to="/" class="flex items-center mb-4">
+        <Logo class="size-9 dark:text-white mr-4" />
+        <p class="font-pixelify text-xl font-semibold">
+          Hack4Krak
+        </p>
+      </NuxtLink>
       <button
         class="p-2 ml-auto cursor-pointer flex justify-center" aria-label="Toogle navbar"
         @click="toggleMobileMenu"
