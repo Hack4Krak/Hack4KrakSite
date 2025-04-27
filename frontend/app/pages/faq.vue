@@ -8,7 +8,7 @@ import file from 'assets/faq.json'
       FAQ
     </div>
     <div class="font-light mt-3 text-2xl">
-      Czyli najczęśniej zadawane pytania, które nigdy nie padły :O
+      czyli najczęściej zadawane pytania:
     </div>
     <UAccordion
       class="cursor-pointer mt-8" type="multiple" trailing-icon="i-material-symbols-keyboard-arrow-down-rounded" :ui="{
