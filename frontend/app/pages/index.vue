@@ -5,7 +5,7 @@ useSeoMeta({
 
 const info_data_md = [
   {
-    front: 'Na czym będzie polegać moje <br>**zadanie** podczas wydarzenia??',
+    front: 'Na czym będzie polegać <br> moje **zadanie** podczas <br> wydarzenia??',
     back: 'Twoim zadaniem będzie **rozwiązywanie zadań** z różnych dziedzin cyberbezpieczeństwa. Za każde poprawnie rozwiązane zadanie Twoja drużyna otrzyma punkty, które zadecydują o waszym końcowym wyniku.',
     color: 'green',
     image: '/img/knight.png',
@@ -34,7 +34,7 @@ const info_data_md = [
 <template>
   <main>
     <!-- Hero Section -->
-    <HeroSection />
+    <HeroSection/>
 
     <!-- Sections -->
     <UContainer class="w-full h-screen">
@@ -56,7 +56,7 @@ const info_data_md = [
               Zarejestruj swoją drużynę!
             </ElevatedButtonLink>
           </div>
-          <NuxtImg src="/img/dragon.png" class="rendering-pixelated w-32 lg:w-64" />
+          <NuxtImg src="/img/dragon.png" class="rendering-pixelated w-32 lg:w-64"/>
         </div>
       </section>
     </UContainer>
