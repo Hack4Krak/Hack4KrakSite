@@ -55,6 +55,7 @@
   -webkit-text-stroke-color: transparent;
   -webkit-text-stroke-width: 0.1em;
   -webkit-text-fill-color: var(--color-bright);
+  user-select: none;
 
   background-color: var(--color-dark);
   background-clip: text;
