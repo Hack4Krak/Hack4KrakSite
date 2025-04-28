@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import InfoTile from '~/components/hero/info/InfoTile.vue'
 import { INFO_TILES_CONTENT } from '~/content/info-tiles'
 
 useSeoMeta({
@@ -8,10 +9,7 @@ useSeoMeta({
 
 <template>
   <main>
-    <!-- Hero Section -->
     <HeroSection />
-
-    <!-- Sections -->
     <UContainer class="w-full h-screen">
       <section class="my-8">
         <div class="flex flex-col border-green-400 border-2 bg-green-400/10 p-6 text-center justify-center">
