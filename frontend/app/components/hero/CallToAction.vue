@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-center">
-    <ElevatedButton class="cta-button scale-125">
+    <ElevatedButton class="scale-125">
       Start Gry
     </ElevatedButton>
   </div>
