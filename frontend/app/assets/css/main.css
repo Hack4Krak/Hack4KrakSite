@@ -5,22 +5,14 @@
 
 :root {
   --default-font-family: var(--font-sans);
-  --default-text-color: var(--color-bright);
-  --ui-bg: var(--color-dark);
+  --ui-primary: #fb4d3d;
+  --ui-bg: #171717;
+  --ui-header-height: --spacing(18);
 }
 
 @theme static {
   --font-sans: 'Montserrat', sans-serif;
   --font-pixelify: Pixelify Sans;
-  --color-bright: #f0f0f0;
-  --color-dark: #171717;
-  --color-cream: #fefae0;
-  --color-red: #fb4d3d;
-  --color-green: #6eeb83;
-  --color-yellow: #fcf6bd;
-  --color-gold: #f1c453;
-  --color-purple: #e4c1f9;
-  --ui-header-height: --spacing(18);
 }
 
 @utility rendering-pixelated {
@@ -54,10 +46,10 @@
 @utility stroked-text-dark {
   -webkit-text-stroke-color: transparent;
   -webkit-text-stroke-width: 0.1em;
-  -webkit-text-fill-color: var(--color-bright);
+  -webkit-text-fill-color: var(--ui-text);
   user-select: none;
 
-  background-color: var(--color-dark);
+  background-color: var(--ui-bg);
   background-clip: text;
 }
 

@@ -15,7 +15,7 @@ watch(() => router.currentRoute.value, () => {
 </script>
 
 <template>
-  <UContainer class="sticky top-0 max-w-full font-sans bg-dark z-20">
+  <UContainer class="sticky top-0 max-w-full font-sans bg-default z-20">
     <div class="hidden md:flex items-center place-content-between h-(--ui-header-height)">
       <!-- Logo + Logotype -->
       <NuxtLink to="/" class="flex items-center">
