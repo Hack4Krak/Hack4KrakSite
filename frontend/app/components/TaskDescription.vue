@@ -55,7 +55,7 @@ const baseAssetsPath = `${useRuntimeConfig().public.openFetch.api.baseURL}/tasks
         <div class="bg-[url(assets/img/scroll/scroll_left.png)] min-w-30 bg-no-repeat bg-contain h-[80vh] bg-right  rendering-pixelated" />
         <div class="bg-[url(assets/img/scroll/scroll_middle.png)] flex-grow w-full bg-repeat-x bg-contain h-[80vh]  rendering-pixelated">
           <div class="max-h-[80vh] overflow-y-auto my-[10vh] scrollbar-scroll">
-            <MarkdownContent :text="description" class="w-full h-full" />
+            <MarkdownContent :text="description" class="w-full h-full" :light-theme="true" />
             <h2 class="text-4xl font-bold text-black">
               Załączniki
             </h2>

@@ -4,10 +4,14 @@ const props = defineProps<{
   class?: string | undefined
   lightTheme?: boolean | undefined
 }>()
+
+const containerClasses = useState('markdown-container-classes', () => {
+  return `prose ${props.lightTheme ? '' : 'prose-invert'}`
+})
 </script>
 
 <template>
-  <div class="prose {{ props.lightTheme ? '' : 'prose-invert' }}">
+  <div :class="containerClasses">
     <MDC :value="text" :class="props.class" />
   </div>
 </template>
