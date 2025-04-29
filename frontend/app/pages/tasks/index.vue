@@ -28,7 +28,7 @@ if (taskId !== undefined) {
 
 <template>
   <div>
-    <TaskDescription v-model:open="taskDescriptionPopover" :task-id="taskIdString" />
+    <LazyTaskDescription v-model:open="taskDescriptionPopover" :task-id="taskIdString" hydrate-on-idle />
     <Map :elements="elements" :completed-tasks="completedTasks" class="mt-1" />
   </div>
 </template>
