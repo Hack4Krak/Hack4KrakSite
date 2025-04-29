@@ -102,7 +102,11 @@ export default defineNuxtConfig({
       'remark-math': {},
     },
     rehypePlugins: {
-      'rehype-mathjax': {},
+      'rehype-katex': {
+        options: {
+          output: 'mathml',
+        },
+      },
     },
   },
   // https://nuxt.com/modules/dayjs
