@@ -1,5 +1,5 @@
 use crate::entities::{team_invites, teams, users};
-use crate::models::task::EventConfig;
+use crate::models::task::RegistrationConfig;
 use crate::routes::teams::TeamError::{
     UserAlreadyBelongsToTeam, UserAlreadyInvited, UserDoesntHaveAnyInvitations,
     UserDoesntHaveInvitationsFromTeam,
@@ -16,7 +16,7 @@ use uuid::Uuid;
 impl team_invites::Model {
     pub async fn invite_user(
         database: &DatabaseConnection,
-        event_config: &EventConfig,
+        registration_config: &RegistrationConfig,
         invited_user: users::Model,
         team: teams::Model,
     ) -> Result<(), Error> {
@@ -26,8 +26,12 @@ impl team_invites::Model {
             }));
         }
 
-        teams::Model::assert_correct_team_size(database, event_config.max_team_size, &team.id)
-            .await?;
+        teams::Model::assert_correct_team_size(
+            database,
+            registration_config.max_team_size,
+            &team.id,
+        )
+        .await?;
 
         Self::assert_user_doesnt_have_invites_from_this_team(
             database,
@@ -74,7 +78,7 @@ impl team_invites::Model {
 
     pub async fn accept_invitation(
         database: &DatabaseConnection,
-        event_config: &EventConfig,
+        registration_config: &RegistrationConfig,
         team: teams::Model,
         user: users::Model,
     ) -> Result<(), Error> {
@@ -96,8 +100,12 @@ impl team_invites::Model {
             }));
         }
 
-        teams::Model::assert_correct_team_size(database, event_config.max_team_size, &team.id)
-            .await?;
+        teams::Model::assert_correct_team_size(
+            database,
+            registration_config.max_team_size,
+            &team.id,
+        )
+        .await?;
 
         let transaction = database.begin().await?;
 

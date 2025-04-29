@@ -1,4 +1,4 @@
-use crate::models::task::{EventConfig, TaskConfig};
+use crate::models::task::{EventConfig, RegistrationConfig, TaskConfig};
 use crate::routes::task::TaskError;
 use crate::services::env::EnvConfig;
 use crate::utils::error::Error;
@@ -13,6 +13,7 @@ use tokio::sync::Mutex;
 #[derive(Default)]
 pub struct TaskManager {
     pub event_config: Mutex<EventConfig>,
+    pub registration_config: Mutex<RegistrationConfig>,
     pub tasks: DashMap<String, TaskConfig>,
 }
 
@@ -40,17 +41,25 @@ impl TaskManager {
         }
     }
 
+    async fn load_config<T: serde::de::DeserializeOwned>(path: &str) -> T {
+        let path = EnvConfig::get().tasks_base_path.join(path);
+
+        let file_content = fs::read_to_string(path).await.unwrap();
+        serde_yml::from_str::<T>(&file_content).unwrap()
+    }
+
     pub async fn load() -> Self {
         let tasks = DashMap::new();
 
         Self::load_tasks(&tasks).await;
 
-        let event_config_path = EnvConfig::get().tasks_base_path.join("config/event.yaml");
-        let event_config = fs::read_to_string(event_config_path).await.unwrap();
-        let event_config = serde_yml::from_str::<EventConfig>(&event_config).unwrap();
+        let event_config: EventConfig = Self::load_config("config/event.yaml").await;
+        let registration_config: RegistrationConfig =
+            Self::load_config("config/registration.yaml").await;
 
         Self {
             event_config: Mutex::new(event_config),
+            registration_config: Mutex::new(registration_config),
             tasks,
         }
     }
