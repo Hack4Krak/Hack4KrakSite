@@ -26,14 +26,14 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "husky": "^9.1.7"
+    "husky": "9.1.7"
   },
   "workspaces": [
     "frontend",
     "backend"
   ],
   "engines": {
-    "node": ">=22.5.1"
+    "node": "23.11.0"
   },
   "patchedDependencies": {
     "@nuxt/image@1.10.0": "patches/@nuxt__image.patch"
