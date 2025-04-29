@@ -11,13 +11,15 @@ useSeoMeta({
   <main>
     <HeroSection />
     <UContainer class="w-full h-screen">
-      <section class="my-8">
-        <div class="flex flex-col border-green-400 border-2 bg-green-400/10 p-6 text-center justify-center">
-          <p class="text-xl lg:text-3xl font-bold text-green-400">
-            Zapisy na zawody dla szkół podstawowych już otwarte!
-          </p>
-        </div>
-      </section>
+      <DevOnly>
+        <section class="my-8">
+          <div class="flex flex-col border-green-400 border-2 bg-green-400/10 p-6 text-center justify-center">
+            <p class="text-xl lg:text-3xl font-bold text-green-400">
+              Zapisy na zawody dla szkół podstawowych już otwarte!
+            </p>
+          </div>
+        </section>
+      </DevOnly>
       <section class="info-section flex flex-col lg:grid grid-cols-3 gap-2 w-full auto-cols-auto">
         <InfoTile
           v-for="info in INFO_TILES_CONTENT"
