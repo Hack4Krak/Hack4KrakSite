@@ -44,22 +44,16 @@
 
 @utility stroked-text-1 {
   -webkit-text-stroke-color: transparent;
-  -webkit-text-stroke-width: 0.1em;
   -webkit-text-fill-color: var(--ui-text);
   user-select: none;
-
   background-color: var(--ui-bg);
   background-clip: text;
+  -webkit-text-stroke-width: 0.1em;
 }
 
-@utility stroked-text-2 {
-  -webkit-text-stroke-color: transparent;
+@utility stroked-text-3 {
+  @apply stroked-text-1;
   -webkit-text-stroke-width: 0.3em;
-  -webkit-text-fill-color: var(--ui-text);
-  user-select: none;
-
-  background-color: var(--ui-bg);
-  background-clip: text;
 }
 
 @utility link-without-underline {
