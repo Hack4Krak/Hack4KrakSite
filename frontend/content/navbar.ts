@@ -1,7 +1,7 @@
 // https://ui.nuxt.com/components/navigation-menu#usage
 
 import type { NavigationMenuItem } from '#ui/components/NavigationMenu.vue'
-import { LANDING_SOCIALS } from '~/content/landing-socials'
+import { LANDING_SOCIALS } from '~~/content/landing-socials'
 
 export const NAVBAR_ITEMS: NavigationMenuItem[] = [
   [
@@ -22,7 +22,7 @@ export const NAVBAR_ITEMS: NavigationMenuItem[] = [
     },
     {
       label: 'Regulamin',
-      to: '/rules',
+      to: '/docs/rules',
     },
     {
       label: 'FAQ',

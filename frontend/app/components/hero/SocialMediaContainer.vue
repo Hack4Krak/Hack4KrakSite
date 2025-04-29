@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LANDING_SOCIALS } from '~/content/landing-socials'
+import { LANDING_SOCIALS } from '~~/content/landing-socials'
 </script>
 
 <template>

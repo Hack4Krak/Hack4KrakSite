@@ -16,7 +16,14 @@ import SocialMediaContainer from '~/components/hero/SocialMediaContainer.vue'
       class="flex-1 flex flex-col lg:flex-row items-center bg-transparent
              gap-y-12 lg:gap-0 place-content-between xl:w-(--ui-container)"
     >
-      <HeroContent />
+      <HeroContent>
+        <template #title>
+          <slot name="title" />
+        </template>
+        <template #content>
+          <slot name="content" />
+        </template>
+      </HeroContent>
       <SocialMediaContainer />
     </div>
     <CallToAction hydrate-on-visible class="lg:hidden" />

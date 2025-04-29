@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { INFO_TILES_CONTENT } from '~~/content/info-tiles'
 import InfoTile from '~/components/hero/info/InfoTile.vue'
-import { INFO_TILES_CONTENT } from '~/content/info-tiles'
 
 useSeoMeta({
   title: 'Strona Główna',
@@ -9,7 +9,15 @@ useSeoMeta({
 
 <template>
   <main>
-    <HeroSection />
+    <HeroSection>
+      <template #title>
+        Hack4Krak
+      </template>
+      <template #content>
+        Pierwszy małopolski CTF kierowany <br>
+        do uczniów szkół średnich!
+      </template>
+    </HeroSection>
     <UContainer class="w-full h-screen">
       <DevOnly>
         <section class="my-8">

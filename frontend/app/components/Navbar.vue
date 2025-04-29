@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NAVBAR_ITEMS } from '~/content/navbar'
+import { NAVBAR_ITEMS } from '~~/content/navbar'
 
 const [DefineNavbarTemplate, ReuseNavbarTemplate] = createReusableTemplate()
 
