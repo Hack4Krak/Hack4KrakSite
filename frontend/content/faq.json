@@ -5,7 +5,7 @@
   },
   {
     "label": "Czym jest tzw. \"flaga\"?",
-    "content": "Flaga to specjalny ciąg znaków ukryty w zadaniu, który służy jako potwierdzenie jego poprawnego wykonania. Zadaniem uczestników jest odnalezienie tej flagi. Flagi zapisane są w formacie: hack4krak{flaga}."
+    "content": "Flaga to specjalny ciąg znaków ukryty w zadaniu, który służy jako potwierdzenie jego poprawnego wykonania. Zadaniem uczestników jest odnalezienie tej flagi. Flagi zapisane są w formacie: hack4krakCTF{&lt;flaga&gt;}."
   },
   {
     "label": "Kto może wziąć udział w wydarzeniu?",
@@ -13,11 +13,27 @@
   },
   {
     "label": "Czy muszę znać się na programowaniu i cyberbezpieczeństwie, żeby wziąć udział w wydarzeniu?",
-    "content": "Nie, nie musisz znać się na programowaniu ani cyberbezpieczeństwie, oczywiście podstawowa wiedza w tych tematach będzie przydatna, natomiast do każdego zadania zostanie dołączona dokumentacja, która ułatwi jego wykonanie, poprzez naprowadzenie na koncepty do tego potrzebne."
+    "content": "Nie, nie musisz znać się na programowaniu ani cyberbezpieczeństwie, oczywiście podstawowa wiedza w tych tematach będzie przydatna, natomiast do każdego zadania zostanie dołączona dokumentacja, która ułatwi jego wykonanie, poprzez naprowadzenie na koncepty do tego potrzebne. Ważna jest kreatywność, współpraca w grupie i inne umiejętności, które pozwolą na rozwiązanie zadań w nieszablonowy sposób."
   },
   {
-    "label": "Czy podczas wydarzenia mogę korzystać z wyszukiwania informacji w internecie oraz narzędzi AI??",
+    "label": "Jakie zadania będą podczas CTF'a?",
+    "content": "Zadania będą różne i dostosowane do Waszego poziomu. Będziecie musieli rozwiązywać zagadki, szukać wskazówek i wspólnie pracować nad rozwiązaniami. Każde zadanie będzie miało dokumentację, która pomoże Wam znaleźć odpowiedzi."
+  },
+  {
+    "label": "Czy podczas wydarzenia mogę korzystać z wyszukiwania informacji w internecie oraz narzędzi AI?",
     "content": "Tak, uczestnicy mogą korzystać z wyszukiwania informacji w internecie oraz narzędzi AI, aby wspierać rozwiązywanie zadań. Pamiętaj jednak, że kluczowe jest samodzielne podejście do wyzwań!"
+  },
+  {
+    "label": "W jaki sposób będą liczone punkty?",
+    "content": "Punkty zależą od liczby drużyn, które rozwiążą zadanie: jeśli zadanie rozwiąże jedna lub dwie drużyny, każda z nich otrzymuje 500 punktów. Jeśli zadanie rozwiąże trzy lub więcej drużyn, liczba punktów jest obliczana według wzoru: $500 - (n-2)\\frac{400}{m-2}$, gdzie n to liczba drużyn, które rozwiązały zadanie, a m to łączna liczba zapisanych drużyn. W ten sposób trudniejsze zadania, rozwiązywane przez mniej drużyn, są bardziej premiowane, a łatwiejsze – mniej punktowane. W przypadku, gdy drużyny uzyskają tę samą liczbę punktów, o kolejności drużyn decyduje czas rozwiązania ostatniego zadania przez daną drużynę. Jeśli drużyny uzyskają tę samą liczbę punktów i czas rozwiązania ostatniego zadania, o kolejności drużyn decyduje czas rozwiązania przedostatniego zadania."
+  },
+  {
+    "label": "Czy zapewnione będzie jedzenie i napoje podczas CTF-a?",
+    "content": "Tak, podczas wydarzenia będą dostępne przekąski oraz napoje, aby zapewnić uczestnikom komfort i energię w trakcie rywalizacji. Szczegóły dotyczące dostępnych opcji jedzenia podamy wkrótce. Prosimy o zgłoszenie ewentualnych alergii lub preferencji żywieniowych przed wydarzeniem."
+  },
+  {
+    "label": "Jakie nagrody czekają na uczestników CTF-a?",
+    "content": "Nagrody będą atrakcyjne i rzeczowe! Przygotowaliśmy dla zwycięzców ciekawe upominki, które z pewnością będą miłą niespodzianką. Szczegóły na temat nagród zostaną ujawnione w trakcie wydarzenia, ale możemy zapewnić, że będą one warte wysiłku i rywalizacji!"
   },
   {
     "label": "Co powinienem przynieść na wydarzenie?",
@@ -29,7 +45,7 @@
   },
   {
     "label": "Jak długo będzie trwało wydarzenie?",
-    "content": "Wydarzenie odbędzie się w godzinach 8:00–15:00. Rejestracja uczestników rozpocznie się o godzinie 8:00. Czas przeznaczony na rozwiązywanie zadań potrwa od 9:00 do 14:30."
+    "content": "Wydarzenie odbędzie się w godzinach 8:00–15:00. Rejestracja uczestników i oficjalne rozpoczęcie zaplanowano na 8:00–8:30. Rozwiązywanie zadań potrwa od 8:30 do 14:30, a w godzinach 14:30–15:00 odbędzie się ogłoszenie wyników i wręczenie nagród."
   },
   {
     "label": "Gdzie odbędzie się wydarzenie?",
@@ -37,7 +53,7 @@
   },
   {
     "label": "Czy na miejscu będzie opieka dla uczestników?",
-    "content": "Z każdej szkoły biorącej udział musi przyjść co najmniej jeden nauczyciel, który będzie pełnił rolę opiekuna uczniów. Dodatkowo, na miejscu obecni będą trzej nauczyciele z XXXI Liceum Ogólnokształcącego, którzy będą nadzorować wydarzenie."
+    "content": "Każdy uczestnik musi mieć opiekuna na wydarzeniu, może to być to osoba wyznaczona ze szkoły uczestnika. Dodatkowo, na miejscu obecni będą trzej nauczyciele z XXXI Liceum Ogólnokształcącego, którzy będą nadzorować wydarzenie."
   },
   {
     "label": "Kto jest organizatorem wydarzenia?",
@@ -45,14 +61,14 @@
   },
   {
     "label": "Jak mogę skontaktować się z organizatorami?",
-    "content": "W razie pytań zapraszamy do kontaktu: E-mail organizatorów: hack4krak@gmail.com, Koordynator główny: Jakub Starzyk — jakub.starzyk@lo31.krakow.pl tel. +48 571 493 707, Opiekun ze strony rady pedagogicznej: Anna Ligas-Kowaluk — aligaskowaluk@lo31.krakow.pl"
+    "content": "W razie pytań zapraszamy do kontaktu: E-mail organizatorów: kontakt@hack4krak.pl, Koordynator główny: Jakub Starzyk — jakub.starzyk@lo31.krakow.pl tel. +48 571 493 707, Opiekun ze strony rady pedagogicznej: Anna Ligas-Kowaluk — aligaskowaluk@lo31.krakow.pl"
   },
   {
     "label": "Jak mogę zarejestrować się na wydarzenie?",
-    "content": "Aby wziąć udział w konkursie, każdy uczestnik musi się zarejestrować indywidualnie. Jednakże, aby ostatecznie wziąć udział w konkursie, nauczyciel musi zarejestrować drużyny. Po zarejestrowaniu drużyn, możesz dopisać się do jednej z nich."
+    "content": "Aby wziąć udział w konkursie, Twój nauczyciel musi najpierw zarejestrować drużynę (maksymalnie 3 drużyny na szkołę). Ty zakładasz konto na stronie, a następnie dołączasz do swojej drużyny, skanując lub przepisując kod QR, który otrzymasz od nauczyciela."
   },
   {
     "label": "Jak wygląda kwestia RODO?",
-    "content": "RODO zostało uzgodnione z inspektorem RODO XXXI LO. Zgody RODO oraz zgody na uczestnictwo podpisują rodzice uczniów, a uczniowie muszą dostarczyć je organizatorom w dniu wydarzenia."
+    "content": "Administratorem danych jest XXXI Liceum Ogólnokształcące w Krakowie. Zgody RODO oraz zgody na uczestnictwo podpisują rodzice uczniów, a uczniowie muszą dostarczyć je organizatorom w dniu wydarzenia. Więcej informacji znajduje się w [Polityce prywatności](docs/privacy-policy)."
   }
 ]
