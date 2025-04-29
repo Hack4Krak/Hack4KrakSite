@@ -1,11 +1,13 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "timezone": "Europe/Warsaw",
+  "rangeStrategy": "pin",
   "extends": [
     "config:recommended",
     "group:allNonMajor",
     ":semanticCommitTypeAll(chore)",
-    "workarounds:all"
+    "workarounds:all",
+    ":preserveSemverRanges"
   ],
   "dependencyDashboard": false,
   "ignoreDeps": [
@@ -22,9 +24,7 @@
     },
     {
       "groupName": "Frontend icons",
-      "matchPackageNames": [
-        "iconify-json/*"
-      ]
+      "matchPackageNames": ["^@iconify-json/"]
     }
   ]
 }
