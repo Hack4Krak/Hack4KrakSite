@@ -15,7 +15,7 @@ withDefaults(defineProps<Props>(), {
 
 <template>
   <NuxtLink
-    class="elevated-button bg-primary block"
+    class="elevated-button bg-red-450 block"
     :to="to"
     :target="target"
     :external="external"

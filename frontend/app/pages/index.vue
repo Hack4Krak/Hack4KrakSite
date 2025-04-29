@@ -25,11 +25,11 @@ useSeoMeta({
           :content="info"
         />
         <div
-          class="col-span-2 border-primary border-2 flex flex-col px-4 py-12 text-center lg:text-left
+          class="col-span-2 border-red-450 border-2 flex flex-col px-4 py-12 text-center lg:text-left
                  lg:flex-row justify-center gap-12 items-center"
         >
           <div class="">
-            <p class="lg:text-2xl font-bold text-primary">
+            <p class="lg:text-2xl font-bold text-red-450">
               Zainteresowany?
             </p> <br>
             <ElevatedButtonLink to="/panel" class="lg:text-xl lg:scale-110">

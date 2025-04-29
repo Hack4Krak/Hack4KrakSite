@@ -5,7 +5,6 @@
 
 :root {
   --default-font-family: var(--font-sans);
-  --ui-primary: #fb4d3d;
   --ui-bg: #171717;
   --ui-header-height: --spacing(18);
 }
@@ -13,6 +12,7 @@
 @theme static {
   --font-sans: 'Montserrat', sans-serif;
   --font-pixelify: Pixelify Sans;
+  --color-red-450: #fb4d3d;
 }
 
 @utility rendering-pixelated {

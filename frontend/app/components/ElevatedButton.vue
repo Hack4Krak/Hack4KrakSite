@@ -1,6 +1,6 @@
 <template>
   <button
-    class="elevated-button bg-red"
+    class="elevated-button bg-red-450"
   >
     <span
       class="block bg-cream text-dark text-md font-bold
