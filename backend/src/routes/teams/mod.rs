@@ -35,6 +35,8 @@ pub enum TeamError {
     AlreadyExists,
     UserAlreadyBelongsToTeam { team_name: String },
     TeamNotFound,
+    InvalidRegistrationPeriod,
+    CannotRegisterInInternalMode,
     UserDoesntBelongToAnyTeam { username: String },
     UserDoesntHaveAnyInvitations,
     UserDoesntBelongToYourTeam,
@@ -51,7 +53,9 @@ pub enum TeamError {
 impl error::ResponseError for TeamError {
     fn status_code(&self) -> StatusCode {
         match self {
-            TeamError::InvalidConfirmationCode => StatusCode::BAD_REQUEST,
+            TeamError::InvalidConfirmationCode
+            | TeamError::InvalidRegistrationPeriod
+            | TeamError::CannotRegisterInInternalMode => StatusCode::BAD_REQUEST,
             TeamError::AlreadyExists
             | TeamError::UserCantRemoveYourself
             | TeamError::TeamIsFull { .. }

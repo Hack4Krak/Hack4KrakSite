@@ -1,4 +1,4 @@
-use chrono::{DateTime, FixedOffset};
+use chrono::{DateTime, Duration, FixedOffset, Utc};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
@@ -22,15 +22,17 @@ pub struct RegistrationConfig {
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "kebab-case")]
 pub enum RegistrationMode {
+    /// The users register teams themselves
     Internal,
+    /// Teams are registered externally (e.g., by a supervisor, teacher, etc.)
     External,
 }
 
 impl Default for RegistrationConfig {
     fn default() -> Self {
         RegistrationConfig {
-            start_date: DateTime::default(),
-            end_date: DateTime::default(),
+            start_date: DateTime::from(Utc::now() - Duration::minutes(10)),
+            end_date: DateTime::from(Utc::now() + Duration::minutes(10)),
             max_team_size: 5,
             registration_mode: RegistrationMode::Internal,
         }
