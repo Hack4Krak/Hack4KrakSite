@@ -29,7 +29,7 @@ watch(() => router.currentRoute.value, () => {
       <UNavigationMenu
         content-orientation="vertical"
         :items="NAVBAR_ITEMS" variant="link" class="hidden md:flex justify-center"
-        :ui="{ link: 'text-md hover:underline underline-offset-5 text-dark dark:text-bright', list: 'gap-4' }"
+        :ui="{ link: 'text-md hover:underline underline-offset-5', list: 'gap-4' }"
       />
 
       <ElevatedButtonLink to="/panel">
