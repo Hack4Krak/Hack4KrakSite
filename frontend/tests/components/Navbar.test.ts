@@ -11,7 +11,7 @@ describe('navbar', () => {
 
   it('toggles mobile menu on button click', async () => {
     const wrapper = await mountSuspended(Navbar)
-    const button = wrapper.find('button[aria-label="Toogle navbar"]')
+    const button = wrapper.find('[data-testid="mobile-menu-toggle"]')
     expect(wrapper.find('[class*="h-screen"]').exists()).toBe(false)
     await button.trigger('click')
     expect(wrapper.find('[class*="h-screen"]').exists()).toBe(true)
@@ -19,7 +19,7 @@ describe('navbar', () => {
 
   it('closes mobile menu on route change', async () => {
     const wrapper = await mountSuspended(Navbar)
-    const button = wrapper.find('button[aria-label="Toogle navbar"]')
+    const button = wrapper.find('[data-testid="mobile-menu-toggle"]')
     await button.trigger('click')
     expect(wrapper.find('[class*="h-screen"]').exists()).toBe(true)
 

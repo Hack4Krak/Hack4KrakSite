@@ -46,7 +46,9 @@ watch(() => router.currentRoute.value, () => {
         <LogoWithText />
       </NuxtLink>
       <button
-        class="p-2 ml-auto cursor-pointer flex justify-center" aria-label="Przełącz nawigacje mobilną"
+        class="p-2 ml-auto cursor-pointer flex justify-center"
+        aria-label="Przełącz nawigacje mobilną"
+        data-testid="mobile-menu-toggle"
         @click="toggleMobileMenu"
       >
         <Icon :name="isMobileMenuOpen ? 'mdi:close' : 'mdi:hamburger-menu'" size="28" />
