@@ -18,7 +18,7 @@ use actix_web::{HttpResponse, HttpResponseBuilder};
 use argon2::password_hash::SaltString;
 use argon2::password_hash::rand_core::OsRng;
 use argon2::{Argon2, PasswordHash, PasswordHasher, PasswordVerifier};
-use chrono::Duration;
+use chrono::{Duration, Utc};
 use sea_orm::{ActiveModelTrait, EntityTrait};
 use uuid::Uuid;
 use validator::ValidateEmail;
@@ -197,7 +197,7 @@ impl AuthService {
             .await?
             .ok_or(Error::Auth(InvalidConfirmationCode))?;
 
-        if password_reset.expiration_date < chrono::Local::now().naive_local() {
+        if password_reset.expiration_date < Utc::now().naive_utc() {
             let active_password_reset: password_reset::ActiveModel = password_reset.into();
             active_password_reset.delete(&app_state.database).await?;
 

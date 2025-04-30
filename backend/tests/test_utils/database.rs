@@ -1,5 +1,5 @@
 use crate::test_utils;
-use chrono::Local;
+use chrono::Utc;
 use hack4krak_backend::entities::sea_orm_active_enums::{TeamStatus, UserRoles};
 use hack4krak_backend::entities::{teams, users};
 use sea_orm::{DatabaseConnection, EntityTrait};
@@ -28,7 +28,7 @@ impl TestDatabase {
             id: uuid,
             username: "test_user".to_string(),
             email: "example@gmail.com".to_string(),
-            created_at: Local::now().naive_local(),
+            created_at: Utc::now().naive_utc(),
             team: None,
             is_leader: false,
             // Password is Dziengiel
@@ -58,7 +58,7 @@ impl TestDatabase {
         let updated = updatable_model.update(teams::Model {
             id: team_uuid,
             name: "Dziengiel".to_string(),
-            created_at: Local::now().naive_local(),
+            created_at: Utc::now().naive_utc(),
             confirmation_code: Default::default(),
             status: TeamStatus::Absent,
         });

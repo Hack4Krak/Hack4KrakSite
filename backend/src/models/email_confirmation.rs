@@ -3,6 +3,7 @@ use crate::entities::email_confirmation::ActiveModel;
 use crate::models::user::UserInformation;
 use crate::routes::auth::AuthError::{ConfirmationCodeExpired, InvalidConfirmationCode};
 use crate::utils::error::Error;
+use chrono::Utc;
 use sea_orm::ActiveValue::Set;
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter};
 
@@ -16,7 +17,7 @@ impl email_confirmation::Model {
         let email_confirmation_active_model = ActiveModel {
             code: Set(confirmation_code.clone()),
             email: Set(user_info.email.clone()),
-            expiration_date: Set(chrono::Local::now().naive_local() + chrono::Duration::days(1)),
+            expiration_date: Set(Utc::now().naive_utc() + chrono::Duration::days(1)),
             user_info: Set(serde_json::to_value(user_info)?),
         };
 
@@ -34,7 +35,7 @@ impl email_confirmation::Model {
             .await?
             .ok_or(Error::Auth(InvalidConfirmationCode))?;
 
-        if email_confirmation_data.expiration_date < chrono::Local::now().naive_local() {
+        if email_confirmation_data.expiration_date < Utc::now().naive_utc() {
             Self::remove_expired_and_confirmed(database, None).await?;
             return Err(Error::Auth(ConfirmationCodeExpired));
         }
@@ -49,9 +50,7 @@ impl email_confirmation::Model {
         confirmed_code: Option<String>,
     ) -> Result<(), Error> {
         let expired_email_confirmations = email_confirmation::Entity::find()
-            .filter(
-                email_confirmation::Column::ExpirationDate.lte(chrono::Local::now().naive_local()),
-            )
+            .filter(email_confirmation::Column::ExpirationDate.lte(Utc::now().naive_utc()))
             .all(database)
             .await?;
 

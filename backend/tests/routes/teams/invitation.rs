@@ -2,7 +2,7 @@ use crate::test_utils::TestApp;
 use crate::test_utils::database::TestDatabase;
 use crate::test_utils::header::TestAuthHeader;
 use actix_web::test;
-use chrono::Local;
+use chrono::Utc;
 use hack4krak_backend::entities::sea_orm_active_enums::{TeamStatus, UserRoles};
 use hack4krak_backend::entities::{team_invites, teams, users};
 use sea_orm::{ActiveModelTrait, DatabaseConnection, Set};
@@ -61,7 +61,7 @@ async fn init_database_with_teams(
     teams::ActiveModel {
         id: Set(team_uuid),
         name: Set("dziengiel".to_string()),
-        created_at: Set(Local::now().naive_local()),
+        created_at: Set(Utc::now().naive_utc()),
         confirmation_code: Set(Some(team_uuid)),
         status: Set(TeamStatus::Absent),
     }
@@ -86,7 +86,7 @@ async fn init_database_with_teams(
             id: Set(uuid),
             username: Set(username.to_string()),
             email: Set(email.to_string()),
-            created_at: Set(Local::now().naive_local()),
+            created_at: Set(Utc::now().naive_utc()),
             is_leader: Set(false),
             roles: Set(UserRoles::Default),
             team: Set(Some(team_uuid)),

@@ -1,5 +1,11 @@
+use crate::entities::{teams, users};
+use crate::models::task::RegistrationMode;
+use crate::models::user::validate_name_chars;
 use crate::routes::teams::AuthMiddleware;
 use crate::routes::teams::TeamError;
+use crate::utils::app_state;
+use crate::utils::error::Error;
+use crate::utils::success_response::SuccessResponse;
 use actix_web::web::Json;
 use actix_web::{HttpResponse, post, web};
 use actix_web_validation::Validated;
@@ -7,12 +13,6 @@ use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use validator::Validate;
-use crate::entities::{teams, users};
-use crate::models::task::RegistrationMode;
-use crate::models::user::validate_name_chars;
-use crate::utils::app_state;
-use crate::utils::error::Error;
-use crate::utils::success_response::SuccessResponse;
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, Validate)]
 pub struct CreateTeamModel {

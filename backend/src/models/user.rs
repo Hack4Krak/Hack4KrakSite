@@ -8,7 +8,7 @@ use crate::utils::error::Error;
 use crate::utils::handle_database_error::handle_database_error;
 use actix_web::dev::Payload;
 use actix_web::{FromRequest, HttpMessage, HttpRequest};
-use chrono::Local;
+use chrono::Utc;
 use sea_orm::ActiveValue::Set;
 use sea_orm::prelude::Uuid as SeaOrmUuid;
 use sea_orm::{ActiveModelTrait, EntityTrait};
@@ -163,7 +163,7 @@ impl users::Model {
             username: Set(user_info.name.clone()),
             email: Set(user_info.email.clone()),
             password: Set(Some(user_info.password_hash.clone())),
-            created_at: Set(Local::now().naive_local()),
+            created_at: Set(Utc::now().naive_utc()),
             is_leader: Set(false),
             roles: Set(UserRoles::Default),
             ..Default::default()
