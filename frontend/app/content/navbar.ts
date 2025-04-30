@@ -5,6 +5,12 @@ import { LANDING_SOCIALS } from '~/content/landing-socials'
 export const NAVBAR_ITEMS = [
   [
     {
+      slot: 'logo',
+      to: '/',
+    },
+  ],
+  [
+    {
       label: 'Ranking',
       to: '/leaderboard',
     },
@@ -24,6 +30,12 @@ export const NAVBAR_ITEMS = [
       label: 'Kontakt',
       to: 'https://discord.gg/ASPqckzEd8',
       children: LANDING_SOCIALS,
+    },
+  ],
+  [
+    {
+      slot: 'button',
+      to: '/login',
     },
   ],
 ]
