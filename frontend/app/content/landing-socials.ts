@@ -7,19 +7,19 @@ export const LANDING_SOCIALS = [
   },
   {
     label: 'Instagram',
-    icon: 'lineicons:instagram-original',
+    icon: 'mdi:instagram',
     to: 'https://www.instagram.com/hack4krak/',
     target: '_blank',
   },
   {
     label: 'LinkedIn',
-    icon: 'lineicons:linkedin-original',
+    icon: 'mdi:linkedin',
     to: 'https://pl.linkedin.com/company/hack4krak',
     target: '_blank',
   },
   {
     label: 'Email',
-    icon: 'uil:envelope',
+    icon: 'mdi:envelope',
     to: 'mailto:hack4krak@gmail.com',
     target: '_blank',
   },
