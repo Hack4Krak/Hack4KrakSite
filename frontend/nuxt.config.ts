@@ -33,7 +33,6 @@ export default defineNuxtConfig({
   // App configuration
 
   routeRules: {
-    '/tasks/description/**': { swr: true },
     '/faq': { prerender: true },
     '/rules': { prerender: true },
     '/': { prerender: true },
