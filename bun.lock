@@ -38,6 +38,7 @@
         "@compodium/nuxt": "0.1.0-beta.9",
         "@iconify-json/ic": "~1.2.2",
         "@iconify-json/logos": "~1.2.4",
+        "@iconify-json/lucide": "~1.2.39",
         "@iconify-json/mdi": "~1.2.3",
         "@iconify-json/octicon": "~1.2.5",
         "@nuxt/devtools": "2.4.0",
@@ -252,6 +253,8 @@
     "@iconify-json/ic": ["@iconify-json/ic@1.2.2", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-QmjwS3lYiOmVWgTCEOTFyGODaR/+689+ajep/VsrCcsUN0Gdle5PmIcibDsdmRyrOsW/E77G41UUijdbjQUofw=="],
 
     "@iconify-json/logos": ["@iconify-json/logos@1.2.4", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-XC4If5D/hbaZvUkTV8iaZuGlQCyG6CNOlaAaJaGa13V5QMYwYjgtKk3vPP8wz3wtTVNVEVk3LRx1fOJz+YnSMw=="],
+
+    "@iconify-json/lucide": ["@iconify-json/lucide@1.2.39", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-1BKCamEZRvArR7PErYCP4SZo9pAANJy6iQWpynI3GM8QKSQtWQgvw6usqGIFCQeJwFZHPOn2OcbDR4P56DyEaQ=="],
 
     "@iconify-json/mdi": ["@iconify-json/mdi@1.2.3", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-O3cLwbDOK7NNDf2ihaQOH5F9JglnulNDFV7WprU2dSoZu3h3cWH//h74uQAB87brHmvFVxIOkuBX2sZSzYhScg=="],
 
