@@ -22,8 +22,8 @@ useSeoMeta({
       </DevOnly>
       <section class="info-section flex flex-col lg:grid grid-cols-3 gap-2 w-full auto-cols-auto">
         <InfoTile
-          v-for="info in INFO_TILES_CONTENT"
-          :key="info.id"
+          v-for="(info, index) in INFO_TILES_CONTENT"
+          :key="`tile-${index}`"
           :content="info"
         />
         <div
