@@ -1,7 +1,7 @@
 use crate::entities::{flag_capture, teams};
 use crate::routes::flag::FlagError;
 use crate::utils::error::Error;
-use chrono::Local;
+use chrono::Utc;
 use sea_orm::ActiveValue::Set;
 use sea_orm::{
     ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, TryInsertResult, sea_query,
@@ -18,7 +18,7 @@ impl flag_capture::Model {
         let result = flag_capture::Entity::insert(flag_capture::ActiveModel {
             team: Set(team.id),
             task: Set(task_id),
-            submitted_at: Set(Local::now().naive_local()),
+            submitted_at: Set(Utc::now().naive_utc()),
             ..Default::default()
         })
         .on_conflict(

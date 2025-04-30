@@ -1,11 +1,9 @@
 use crate::test_utils::TestApp;
-use actix_http::header;
-use actix_web::cookie::Cookie;
 
 use crate::test_utils::database::TestDatabase;
-use crate::test_utils::mail::SmtpTestClient;
 use actix_web::test;
 use actix_web::test::read_body_json;
+use chrono::Utc;
 use hack4krak_backend::entities::email_confirmation;
 use sea_orm::{EntityTrait, Set};
 use serde_json::json;
@@ -14,6 +12,8 @@ use uuid::Uuid;
 #[cfg(feature = "full-test-suite")]
 #[actix_web::test]
 async fn register() {
+    use crate::test_utils::mail::SmtpTestClient;
+
     let test_database = TestDatabase::new().await;
     let smtp_client = SmtpTestClient::new().await;
     let app = TestApp::default()
@@ -77,6 +77,8 @@ async fn register_invalid_username() {
 #[actix_web::test]
 async fn auth_flow() {
     use crate::test_utils::mail::SmtpTestClient;
+    use actix_http::header;
+    use actix_web::cookie::Cookie;
 
     const UUID_REGEX: &str =
         r"[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}";
@@ -153,7 +155,7 @@ async fn email_confirmation_success() {
             "password_hash": "$argon2id$v=19$m=19456,t=2,p=1$nTzWdmrtGEOnwCocrg76xg$yv16FfDT5+meKwPmSiV+MF9kP8Man6bXZs+BloFTKIk".to_string(),
         }]),
         code: Set(confirmation_code.clone()),
-        expiration_date: Set(chrono::Local::now().naive_local() + chrono::Duration::minutes(30)),
+        expiration_date: Set(Utc::now().naive_utc() + chrono::Duration::minutes(30)),
     };
     email_confirmation::Entity::insert(email_confirmation)
         .exec(&test_database.database)
@@ -184,7 +186,7 @@ async fn email_confirmation_expired() {
             "password_hash": "$argon2id$v=19$m=19456,t=2,p=1$nTzWdmrtGEOnwCocrg76xg$yv16FfDT5+meKwPmSiV+MF9kP8Man6bXZs+BloFTKIk".to_string(),
         }]),
         code: Set(confirmation_code.clone()),
-        expiration_date: Set(chrono::Local::now().naive_local()),
+        expiration_date: Set(Utc::now().naive_utc()),
     };
     email_confirmation::Entity::insert(email_confirmation)
         .exec(&test_database.database)

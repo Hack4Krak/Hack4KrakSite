@@ -6,7 +6,7 @@ use crate::routes::teams::TeamError::*;
 use crate::utils::error::Error;
 use actix_web::dev::Payload;
 use actix_web::{FromRequest, HttpMessage, HttpRequest};
-use chrono::Local;
+use chrono::Utc;
 use sea_orm::ActiveValue::Set;
 use sea_orm::prelude::DateTime;
 use sea_orm::{ActiveModelTrait, ModelTrait, PaginatorTrait, QueryFilter};
@@ -69,7 +69,7 @@ impl teams::Model {
         teams::Entity::insert(teams::ActiveModel {
             id: Set(uuid),
             name: Set(team_name),
-            created_at: Set(Local::now().naive_local()),
+            created_at: Set(Utc::now().naive_utc()),
             status: Set(TeamStatus::Absent),
             ..Default::default()
         })

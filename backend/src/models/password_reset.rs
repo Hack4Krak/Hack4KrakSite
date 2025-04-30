@@ -1,5 +1,6 @@
 use crate::entities::password_reset;
 use crate::utils::error::Error;
+use chrono::Utc;
 use sea_orm::ActiveModelTrait;
 use uuid::Uuid;
 
@@ -13,7 +14,7 @@ impl password_reset::Model {
         let reset_model = password_reset::ActiveModel {
             code: sea_orm::ActiveValue::Set(reset_code),
             expiration_date: sea_orm::ActiveValue::Set(
-                chrono::Local::now().naive_local() + chrono::Duration::hours(1),
+                Utc::now().naive_utc() + chrono::Duration::hours(1),
             ),
             user: sea_orm::ActiveValue::Set(user_id),
         };
