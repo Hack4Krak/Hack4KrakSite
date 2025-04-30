@@ -19,7 +19,13 @@ watch(() => router.currentRoute.value, () => {
   <DefineNavbarTemplate>
     <UNavigationMenu
       :items="NAVBAR_ITEMS" variant="link" class="w-full" color="error"
-      :ui="{ linkLabel: ' hover:underline underline-offset-5', link: 'text-md text-default data-active:text-primary', list: 'gap-4' }"
+      :ui="{
+        linkLabel: 'hover:underline underline-offset-5',
+        viewport: 'w-(--reka-navigation-menu-viewport-width)',
+        childList: 'w-150 flex-col items-center',
+        link: 'text-md text-default data-active:text-primary',
+        list: 'gap-4',
+      }"
     >
       <template #logo>
         <div class="md:flex hidden">
@@ -36,7 +42,7 @@ watch(() => router.currentRoute.value, () => {
   </DefineNavbarTemplate>
 
   <UContainer class="sticky top-0 max-w-full font-sans bg-default z-20">
-    <div class="hidden md:flex items-center place-content-between h-(--ui-header-height)">
+    <div class="hidden md:block h-(--ui-header-height)">
       <ReuseNavbarTemplate />
     </div>
 
