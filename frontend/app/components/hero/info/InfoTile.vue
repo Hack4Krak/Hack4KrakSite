@@ -5,7 +5,6 @@ const { content } = defineProps<{
     back: string
     color: string
     image: string
-    id: string
   }
 }>()
 

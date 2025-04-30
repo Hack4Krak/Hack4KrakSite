@@ -19,7 +19,7 @@ watch(() => router.currentRoute.value, () => {
   <DefineNavbarTemplate>
     <UNavigationMenu
       :items="NAVBAR_ITEMS" variant="link" class="w-full" color="error"
-      :ui="{ link: 'text-md hover:underline underline-offset-5 text-default data-active:text-primary', list: 'gap-4' }"
+      :ui="{ linkLabel: ' hover:underline underline-offset-5', link: 'text-md text-default data-active:text-primary', list: 'gap-4' }"
     >
       <template #logo>
         <div class="md:flex hidden">
@@ -46,7 +46,7 @@ watch(() => router.currentRoute.value, () => {
         <LogoWithText />
       </NuxtLink>
       <button
-        class="p-2 ml-auto cursor-pointer flex justify-center" aria-label="Toogle navbar"
+        class="p-2 ml-auto cursor-pointer flex justify-center" aria-label="Przełącz nawigacje mobilną"
         @click="toggleMobileMenu"
       >
         <Icon :name="isMobileMenuOpen ? 'mdi:close' : 'mdi:hamburger-menu'" size="28" />

@@ -32,7 +32,7 @@ useSeoMeta({
         >
           <div class="">
             <p class="lg:text-2xl font-bold text-red-450">
-              Zainteresowany?
+              Chcesz wziąć udział?
             </p> <br>
             <ElevatedButtonLink to="/panel" class="lg:text-xl lg:scale-110">
               Zarejestruj swoją drużynę!

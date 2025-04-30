@@ -5,7 +5,6 @@
 
 :root {
   --default-font-family: var(--font-sans);
-  --ui-bg: #171717;
   --ui-header-height: --spacing(18);
 }
 
