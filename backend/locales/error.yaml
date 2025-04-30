@@ -50,6 +50,8 @@ TeamError:
   AlreadyExists: "Zespół o tej samej nazwie już istnieje"
   UserAlreadyBelongsToTeam: "Użytkownik już należy do zespołu: {team_name}"
   TeamNotFound: "Zespół nie został znaleziony"
+  InvalidRegistrationPeriod: "Rejestracja jest niedostępna poza wyznaczonym okresem"
+  CannotRegisterInInternalMode: "Nie możesz samemu stworzyć drużyny na to wydarzenie"
   UserDoesntBelongToAnyTeam: "Użytkownik {username} nie należy do żadnego zespołu"
   UserDoesntHaveAnyInvitations: "Użytkownik nie ma żadnych zaproszeń"
   UserDoesntBelongToYourTeam: "Użytkownik nie należy do twojego zespołu"

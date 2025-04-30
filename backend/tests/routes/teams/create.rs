@@ -2,8 +2,11 @@ use crate::test_utils::TestApp;
 use crate::test_utils::database::TestDatabase;
 use crate::test_utils::header::TestAuthHeader;
 use actix_web::test;
+use chrono::{DateTime, Duration, Utc};
 use hack4krak_backend::entities::users;
-use serde_json::json;
+use hack4krak_backend::models::task::RegistrationMode;
+use hack4krak_backend::services::task_manager::TaskManager;
+use serde_json::{Value, json};
 
 #[actix_web::test]
 async fn create_team_user_already_belongs_to_team() {
@@ -73,4 +76,65 @@ async fn create_team_success() {
         .to_request();
     let response = test::call_service(&app, request).await;
     assert!(response.status().is_success());
+}
+
+#[actix_web::test]
+async fn create_team_invalid_period() {
+    let test_database = TestDatabase::new().await;
+    let user = test_database.with_default_user().await;
+
+    let task_manager = TaskManager::default();
+    task_manager.registration_config.lock().await.end_date =
+        DateTime::from(Utc::now() - Duration::minutes(10));
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .with_task_manager(task_manager)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::post()
+        .uri("/teams/create")
+        .set_json(json!({
+            "team_name": "Dziengiel".to_string(),
+        }))
+        .insert_header(TestAuthHeader::new(user.clone()))
+        .to_request();
+    let response: Value = test::call_and_read_body_json(&app, request).await;
+    assert_eq!(
+        response["error"].as_str().unwrap(),
+        "Team(InvalidRegistrationPeriod)"
+    );
+}
+
+#[actix_web::test]
+async fn create_team_external_registration_mode() {
+    let test_database = TestDatabase::new().await;
+    let user = test_database.with_default_user().await;
+
+    let task_manager = TaskManager::default();
+    task_manager
+        .registration_config
+        .lock()
+        .await
+        .registration_mode = RegistrationMode::External;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .with_task_manager(task_manager)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::post()
+        .uri("/teams/create")
+        .set_json(json!({
+            "team_name": "Dziengiel".to_string(),
+        }))
+        .insert_header(TestAuthHeader::new(user.clone()))
+        .to_request();
+    let response: Value = test::call_and_read_body_json(&app, request).await;
+    assert_eq!(
+        response["error"].as_str().unwrap(),
+        "Team(CannotRegisterInInternalMode)"
+    );
 }
