@@ -34,9 +34,9 @@ watch(() => router.currentRoute.value, () => {
       </template>
 
       <template #button>
-        <ElevatedButtonLink to="/panel">
+        <ElevatedButton>
           Zaloguj się!
-        </ElevatedButtonLink>
+        </ElevatedButton>
       </template>
     </UNavigationMenu>
   </DefineNavbarTemplate>
