@@ -1,6 +1,9 @@
 FROM imbios/bun-node:latest-current-alpine AS base
 WORKDIR /app
 
+ARG BACKEND_ADDRESS
+ENV BACKEND_ADDRESS=$BACKEND_ADDRESS
+
 FROM base as prerelease
 COPY package.json bun.lock ./
 COPY frontend/package.json frontend/
