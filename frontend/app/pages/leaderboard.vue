@@ -13,11 +13,9 @@ import {
   Title,
   Tooltip,
 } from 'chart.js'
-import moment from 'moment-timezone'
 
 import { Line } from 'vue-chartjs'
-
-import 'chartjs-adapter-moment'
+import 'chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm'
 
 export type Team = ApiResponse<'teams'>[0]
 
@@ -47,7 +45,7 @@ const targetTimezone = 'Europe/Warsaw'
 
 const adjustedTimestamps = computed(() => {
   return data.value?.event_timestamps.map((timeStamp: string) =>
-    moment.utc(timeStamp).tz(targetTimezone).format(),
+    dayjs.utc(timeStamp).tz(targetTimezone).format(),
   ) ?? []
 })
 
@@ -73,7 +71,7 @@ const chartOptions = ref<ChartOptions<'line'>>({
       type: 'time',
       time: {
         unit: 'hour',
-        tooltipFormat: 'yyyy-MM-DD HH:mm',
+        tooltipFormat: 'DD.MM.YYYY HH:mm',
       },
       title: {
         display: true,
