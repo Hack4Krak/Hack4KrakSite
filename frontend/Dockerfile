@@ -1,16 +1,13 @@
-FROM imbios/bun-node:latest AS base
+FROM imbios/bun-node:latest-current-alpine AS base
 WORKDIR /app
 
-FROM base as install
-COPY package.json bun.lock .
+FROM base as prerelease
+COPY package.json bun.lock ./
 COPY frontend/package.json frontend/
 COPY backend/package.json backend/
 
 RUN bun install --frozen-lockfile --filter hack4krak-frontend
 
-FROM base as prerelease
-
-COPY --from=install /app/node_modules node_modules
 COPY frontend/ .
 
 ENV NODE_ENV=production
