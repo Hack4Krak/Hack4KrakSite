@@ -4,15 +4,14 @@
 @tailwind utilities;
 
 :root {
-  --default-font-family: 'Roboto', Arial, sans-serif;
+  --default-font-family: var(--font-sans);
+  --ui-header-height: --spacing(18);
 }
 
-@theme {
-  --font-sans: 'Public Sans', sans-serif;
+@theme static {
+  --font-sans: 'Montserrat', sans-serif;
   --font-pixelify: Pixelify Sans;
-  --color-primary-darker: #987117;
-
-  --ui-header-height: --spacing(18);
+  --color-red-450: #fb4d3d;
 }
 
 @utility rendering-pixelated {
@@ -41,6 +40,16 @@
   @variant hover {
     color: var(--ui-primary);
   }
+}
+
+@utility stroked-text-dark {
+  -webkit-text-stroke-color: transparent;
+  -webkit-text-stroke-width: 0.1em;
+  -webkit-text-fill-color: var(--ui-text);
+  user-select: none;
+
+  background-color: var(--ui-bg);
+  background-clip: text;
 }
 
 @utility link-without-underline {

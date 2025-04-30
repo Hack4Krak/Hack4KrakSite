@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     'nuxt-open-fetch-x',
     'dayjs-nuxt',
     '@compodium/nuxt',
+    '@vueuse/nuxt',
   ],
   experimental: {
     componentIslands: true,

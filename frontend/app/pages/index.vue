@@ -1,29 +1,46 @@
 <script setup lang="ts">
+import InfoTile from '~/components/hero/info/InfoTile.vue'
+import { INFO_TILES_CONTENT } from '~/content/info-tiles'
+
 useSeoMeta({
   title: 'Strona Główna',
 })
 </script>
 
 <template>
-  <div class="flex flex-col md:flex-row justify-center items-center min-h-[calc(100vh-var(--ui-header-height))]">
-    <Logo class="max-h-48 max-w-48 md:max-h-96 md:max-w-96 md:mr-12" />
-    <USeparator orientation="vertical" class="h-88 md:block hidden" size="lg" :ui="{ border: 'border-black dark:border-white' }" />
-    <div class="mt-5 md:mt-0 md:ml-10 text-center md:text-left dark:text-white">
-      <h1 class="text-5xl md:text-8xl font-semibold">
-        Hack4Krak
-      </h1>
-      <p class="mt-4 mb-10 text-base md:text-lg max-w-xs md:max-w-150">
-        Organization responsible for managing the largest Capture the Flag (CTF) competition for high school students in Kraków, Poland.
-      </p>
-      <div class="mt-10 flex justify-center md:justify-start h-10 text-2xl md:text-4xl items-center ">
-        <a class="mr-5" href="https://discord.gg/ASPqckzEd8" target="_blank" aria-label="Discord">
-          <Icon name="logos:discord" class="[&>path]:fill-black dark:[&>path]:fill-white hover:[&>path]:fill-primary" mode="svg" alt="Discord" />
-        </a>
-        <a class="group hover:text-primary" href="https://github.com/Hack4Krak/Hack4KrakSite/" target="_blank" aria-label="GitHub">
-          <Icon name="mdi:github" class="mr-2" />
-          <Icon name="octicon:logo-github-24" alt="GitHub" />
-        </a>
-      </div>
-    </div>
-  </div>
+  <main>
+    <HeroSection />
+    <UContainer class="w-full h-screen">
+      <DevOnly>
+        <section class="my-8">
+          <div class="flex flex-col border-green-400 border-2 bg-green-400/10 p-6 text-center justify-center">
+            <p class="text-xl lg:text-3xl font-bold text-green-400">
+              Zapisy na zawody dla szkół podstawowych już otwarte!
+            </p>
+          </div>
+        </section>
+      </DevOnly>
+      <section class="info-section flex flex-col lg:grid grid-cols-3 gap-2 w-full auto-cols-auto">
+        <InfoTile
+          v-for="(info, index) in INFO_TILES_CONTENT"
+          :key="`tile-${index}`"
+          :content="info"
+        />
+        <div
+          class="col-span-2 border-red-450 border-2 flex flex-col px-4 py-12 text-center lg:text-left
+                 lg:flex-row justify-center gap-12 items-center"
+        >
+          <div class="">
+            <p class="lg:text-2xl font-bold text-red-450">
+              Chcesz wziąć udział?
+            </p> <br>
+            <ElevatedButtonLink to="/panel" class="lg:text-xl lg:scale-110">
+              Zarejestruj swoją drużynę!
+            </ElevatedButtonLink>
+          </div>
+          <NuxtImg src="/img/character/dragon.png" class="rendering-pixelated w-32 lg:w-64" />
+        </div>
+      </section>
+    </UContainer>
+  </main>
 </template>

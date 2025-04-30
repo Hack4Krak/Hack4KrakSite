@@ -12,7 +12,7 @@
     </div>
     <div class="relative w-full h-full overflow-hidden">
       <img
-        src="~/assets/img/king.png"
+        src="/img/character/king.png"
         alt="Pixel King"
         class="absolute rotate-40 -left-15 w-40 rendering-pixelated"
       >
