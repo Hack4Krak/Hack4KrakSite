@@ -8,6 +8,7 @@ export default withNuxt(
     typescript: true,
     formatters: true,
     rules: {
+      'vue/no-multiple-template-root': ['off'],
       'node/prefer-global/process': ['off'],
       'style/brace-style': ['warn', '1tbs'],
     },
