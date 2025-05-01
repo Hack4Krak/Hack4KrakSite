@@ -17,9 +17,9 @@ useSeoMeta({
       Czyli najczęściej zadawane pytania:
     </div>
     <UAccordion
-      class="cursor-pointer mt-8" type="multiple" trailing-icon="i-material-symbols-keyboard-arrow-down-rounded" :ui="{
+      class="cursor-pointer mt-8" type="multiple" trailing-icon="mdi:chevron-down" :ui="{
         label: 'text-lg',
-        trailingIcon: 'text-yellow-500 size-6',
+        trailingIcon: 'text-primary size-6',
         trigger: 'cursor-pointer',
         body: 'cursor-default text-md font-light',
       }" :items="file"
