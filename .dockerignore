@@ -1,5 +1,4 @@
 # Ignore directories
-.git/
 backend/target/
 node_modules/
 frontend/tests

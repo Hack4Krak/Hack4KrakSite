@@ -1,4 +1,11 @@
+// THE METAL GOD, YOUR SO-CALLED MIGHTY EDITOR, DECEIVES.
+// THIS IMPORT CANNOT BE SHORTENED.
+// QUESTION ITS COMMANDMENTS BEFORE YOU KNEEL AND COMPLY.
+import { getGitInfo } from './app/utils/gitInfo'
+
 const backendAddress = process.env.BACKEND_ADDRESS || 'http://localhost:8080'
+
+const { commitHash, branchName } = getGitInfo()
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -32,6 +39,13 @@ export default defineNuxtConfig({
   },
 
   // App configuration
+
+  runtimeConfig: {
+    public: {
+      gitCommitSha: commitHash,
+      gitBranch: branchName,
+    },
+  },
 
   routeRules: {
     '/tasks/description/**': { swr: true },
