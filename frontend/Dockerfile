@@ -1,4 +1,5 @@
 FROM imbios/bun-node:latest-current-alpine AS base
+RUN apk add --no-cache git
 WORKDIR /app
 
 ARG BACKEND_ADDRESS
@@ -12,6 +13,9 @@ COPY backend/package.json backend/
 RUN bun install --frozen-lockfile --filter hack4krak-frontend
 
 COPY frontend/ .
+
+# THE BIG DOCKER WHALE MUST BE FED — COMMIT HASH REQUIRED FOR FOOTER.
+COPY .git ./
 
 ENV NODE_ENV=production
 RUN bun run build

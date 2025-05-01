@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FOOTER_SOCIALS } from '~~/content/footer-socials'
 
-const { commitHash, branchName } = { commitHash: 'dziegiel', branchName: 'dziegiel' }
+const { commitHash, branchName } = useGitInfo()
 </script>
 
 <template>
@@ -27,7 +27,7 @@ const { commitHash, branchName } = { commitHash: 'dziegiel', branchName: 'dziegi
           <!-- Open source link -->
           <div class="hidden lg:block">
             Jesteśmy
-            <NuxtLink to="https://github.com/hack4krak" class="underline">
+            <NuxtLink to="https://github.com/Hack4Krak" class="underline">
               <span>Open Source</span>
             </NuxtLink>!
           </div>
