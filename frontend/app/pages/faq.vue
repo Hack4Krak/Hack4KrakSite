@@ -25,5 +25,4 @@ useSeoMeta({
       }" :items="file"
     />
   </div>
-  <Footer />
 </template>

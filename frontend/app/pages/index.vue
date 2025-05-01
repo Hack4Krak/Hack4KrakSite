@@ -51,7 +51,7 @@ useSeoMeta({
           <NuxtImg src="/img/character/dragon.png" class="rendering-pixelated w-32 lg:w-64" />
         </div>
       </section>
+      <Footer class="mt-8 lg:mt-12" />
     </UContainer>
-    <Footer />
   </main>
 </template>
