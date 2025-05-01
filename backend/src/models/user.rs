@@ -36,7 +36,7 @@ impl fmt::Debug for Password {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct UserInformation {
     pub name: String,
     pub email: String,

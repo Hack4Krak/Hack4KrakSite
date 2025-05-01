@@ -1,6 +1,5 @@
-pub mod email_confirmation;
+pub mod email_verification_request;
 pub mod flag_capture;
-pub mod password_reset;
 pub mod task;
 pub mod team_invites;
 pub mod team_status;

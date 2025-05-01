@@ -289,7 +289,7 @@ impl teams::Model {
             .filter(teams::Column::ConfirmationCode.eq(confirmation_code))
             .one(database)
             .await?
-            .ok_or(Error::Team(InvalidConfirmationCode))?;
+            .ok_or(Error::InvalidEmailConfirmationCode)?;
 
         let mut active_team: ActiveModel = team.clone().into();
         active_team.status = Set(TeamStatus::Confirmed);

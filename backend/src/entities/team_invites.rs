@@ -13,6 +13,7 @@ use serde::{Deserialize, Serialize};
     Deserialize,
     hack4krak_macros :: DeriveUpdatableModel,
     utoipa :: ToSchema,
+    Default,
 )]
 #[sea_orm(table_name = "team_invites")]
 pub struct Model {
