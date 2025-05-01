@@ -35,7 +35,7 @@ watch(() => router.currentRoute.value, () => {
       </template>
 
       <template #button>
-        <ElevatedButton >
+        <ElevatedButton>
           Zaloguj się!
         </ElevatedButton>
       </template>
