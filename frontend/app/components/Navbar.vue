@@ -18,11 +18,12 @@ watch(() => router.currentRoute.value, () => {
 <template>
   <DefineNavbarTemplate>
     <UNavigationMenu
+      content-orientation="vertical"
       :items="NAVBAR_ITEMS" variant="link" class="w-full" color="error"
       :ui="{
         linkLabel: 'hover:underline underline-offset-5',
         viewport: 'w-(--reka-navigation-menu-viewport-width)',
-        childList: 'w-150 flex-col items-center',
+        childList: 'flex-col items-center',
         link: 'text-md text-default data-active:text-primary',
         list: 'gap-4',
       }"
@@ -34,7 +35,7 @@ watch(() => router.currentRoute.value, () => {
       </template>
 
       <template #button>
-        <ElevatedButton>
+        <ElevatedButton >
           Zaloguj się!
         </ElevatedButton>
       </template>
