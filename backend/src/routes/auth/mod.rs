@@ -32,8 +32,6 @@ pub enum AuthError {
     InvalidCredentials,
     InvalidEmailAddress,
     PasswordAuthNotAvailable,
-    InvalidConfirmationCode,
-    ConfirmationCodeExpired,
 }
 
 impl error::ResponseError for AuthError {
@@ -42,9 +40,7 @@ impl error::ResponseError for AuthError {
             AuthError::UserAlreadyExists => StatusCode::CONFLICT,
             AuthError::InvalidCredentials
             | AuthError::InvalidEmailAddress
-            | AuthError::PasswordAuthNotAvailable
-            | AuthError::InvalidConfirmationCode
-            | AuthError::ConfirmationCodeExpired => StatusCode::UNAUTHORIZED,
+            | AuthError::PasswordAuthNotAvailable => StatusCode::UNAUTHORIZED,
         }
     }
 

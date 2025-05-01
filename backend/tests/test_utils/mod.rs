@@ -9,7 +9,7 @@ use actix_web::web::Data;
 use actix_web::{Error, test};
 use database::TestDatabase;
 use hack4krak_backend::entities::{
-    email_confirmation, flag_capture, password_reset, team_invites, teams, users,
+    email_verification_request, flag_capture, team_invites, teams, users,
 };
 use hack4krak_backend::services::env::EnvConfig;
 use hack4krak_backend::services::task_manager::TaskManager;
@@ -37,9 +37,8 @@ pub async fn setup_database_with_schema() -> DatabaseConnection {
     setup_schema(&database, team_invites::Entity).await;
     setup_schema(&database, teams::Entity).await;
     setup_schema(&database, users::Entity).await;
-    setup_schema(&database, email_confirmation::Entity).await;
+    setup_schema(&database, email_verification_request::Entity).await;
     setup_schema(&database, flag_capture::Entity).await;
-    setup_schema(&database, password_reset::Entity).await;
 
     // We have to manually create all indexes
     database

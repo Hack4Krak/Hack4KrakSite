@@ -47,15 +47,14 @@ pub enum TeamError {
     UserAlreadyInvited,
     TeamIsFull { max_size: u16 },
     TeamLeaderNotFound,
-    InvalidConfirmationCode,
 }
 
 impl error::ResponseError for TeamError {
     fn status_code(&self) -> StatusCode {
         match self {
-            TeamError::InvalidConfirmationCode
-            | TeamError::InvalidRegistrationPeriod
-            | TeamError::CannotRegisterInInternalMode => StatusCode::BAD_REQUEST,
+            TeamError::InvalidRegistrationPeriod | TeamError::CannotRegisterInInternalMode => {
+                StatusCode::BAD_REQUEST
+            }
             TeamError::AlreadyExists
             | TeamError::UserCantRemoveYourself
             | TeamError::TeamIsFull { .. }

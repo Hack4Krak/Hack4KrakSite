@@ -1,5 +1,4 @@
 use crate::entities::teams;
-use crate::routes::teams::TeamError::InvalidConfirmationCode;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::success_response::SuccessResponse;
@@ -18,11 +17,9 @@ use uuid::Uuid;
 #[post("/confirm/{confirmation_code}")]
 pub async fn confirm(
     app_state: Data<app_state::AppState>,
-    confirmation_code: Path<String>,
+    confirmation_code: Path<Uuid>,
 ) -> Result<HttpResponse, Error> {
-    let confirmation_code =
-        Uuid::parse_str(&confirmation_code).map_err(|_| Error::Team(InvalidConfirmationCode))?;
-    teams::Model::confirm(&app_state.database, confirmation_code).await?;
+    teams::Model::confirm(&app_state.database, *confirmation_code).await?;
 
     Ok(SuccessResponse::default().http_response())
 }

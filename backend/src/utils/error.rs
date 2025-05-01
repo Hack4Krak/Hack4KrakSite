@@ -65,6 +65,8 @@ pub enum Error {
     FailedToSendEmail(#[from] lettre::transport::smtp::Error),
     FailedToBuildEmail(#[from] lettre::error::Error),
     InvalidJson(#[from] serde_json::Error),
+    InvalidEmailConfirmationCode,
+    EmailConfirmationCodeExpired,
     RouteNotFound,
     InvalidEmailSender(String),
     InvalidEmailRecipients(String),
@@ -111,7 +113,9 @@ impl error::ResponseError for Error {
             | Error::ServerEventSendingError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Unauthorized => StatusCode::UNAUTHORIZED,
             Error::InvalidJsonWebToken => StatusCode::UNAUTHORIZED,
-            Error::MissingExtension { .. } => StatusCode::BAD_REQUEST,
+            Error::MissingExtension { .. }
+            | Error::InvalidEmailConfirmationCode
+            | Error::EmailConfirmationCodeExpired => StatusCode::BAD_REQUEST,
             Error::UserNotFound | Error::RouteNotFound | Error::RecipientNotFound { .. } => {
                 StatusCode::NOT_FOUND
             }

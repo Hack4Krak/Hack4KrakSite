@@ -2,9 +2,8 @@
 
 pub mod prelude;
 
-pub mod email_confirmation;
+pub mod email_verification_request;
 pub mod flag_capture;
-pub mod password_reset;
 pub mod sea_orm_active_enums;
 pub mod team_invites;
 pub mod teams;

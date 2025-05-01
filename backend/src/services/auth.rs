@@ -1,9 +1,8 @@
-use crate::entities::users::UpdatableModel;
-use crate::entities::{email_confirmation, password_reset, users};
+use crate::entities::{email_verification_request, users};
+use crate::models::email_verification_request::EmailVerificationAction;
 use crate::models::user::{Password, UserInformation};
 use crate::routes::auth::AuthError::{
-    ConfirmationCodeExpired, InvalidConfirmationCode, InvalidCredentials, InvalidEmailAddress,
-    PasswordAuthNotAvailable,
+    InvalidCredentials, InvalidEmailAddress, PasswordAuthNotAvailable,
 };
 use crate::routes::auth::RegisterModel;
 use crate::routes::auth::reset_password::ResetPasswordModel;
@@ -18,8 +17,7 @@ use actix_web::{HttpResponse, HttpResponseBuilder};
 use argon2::password_hash::SaltString;
 use argon2::password_hash::rand_core::OsRng;
 use argon2::{Argon2, PasswordHash, PasswordHasher, PasswordVerifier};
-use chrono::{Duration, Utc};
-use sea_orm::{ActiveModelTrait, EntityTrait};
+use chrono::Duration;
 use uuid::Uuid;
 use validator::ValidateEmail;
 
@@ -35,15 +33,19 @@ impl AuthService {
         }
 
         let password_hash = Self::hash_password(credentials.password.clone())?;
-
-        let user_info =
+        let user_information =
             UserInformation::new(&app_state.database, password_hash, &credentials).await?;
 
-        let confirmation_code =
-            email_confirmation::Model::create_with_userinfo(&app_state.database, user_info).await?;
+        let confirmation_code = email_verification_request::Model::create(
+            &app_state.database,
+            EmailVerificationAction::ConfirmEmailAddress { user_information },
+            credentials.email.clone(),
+            Some(Duration::minutes(30)),
+        )
+        .await?;
 
-        let confirmation_link = Self::create_email_confirmation_link(&confirmation_code)?;
-
+        let confirmation_link =
+            Self::create_email_confirmation_link(&confirmation_code.to_string())?;
         let sender_email = format!("auth@{}", &EnvConfig::get().domain);
 
         Email {
@@ -113,21 +115,22 @@ impl AuthService {
 
     pub async fn confirm_email(
         app_state: &app_state::AppState,
-        confirmation_code: String,
+        confirmation_code: Uuid,
     ) -> Result<(), Error> {
-        let user_info = email_confirmation::Model::get_user_info(
+        let email_confirmation = email_verification_request::Model::find_and_verify(
             &app_state.database,
-            confirmation_code.clone(),
+            confirmation_code,
         )
         .await?;
+        let EmailVerificationAction::ConfirmEmailAddress { user_information } =
+            email_confirmation.get_action()?
+        else {
+            return Err(Error::InvalidEmailConfirmationCode);
+        };
 
-        users::Model::create_from_user_info(&app_state.database, user_info).await?;
+        users::Model::create_from_user_info(&app_state.database, user_information).await?;
 
-        email_confirmation::Model::remove_expired_and_confirmed(
-            &app_state.database,
-            Some(confirmation_code),
-        )
-        .await?;
+        email_confirmation.delete(&app_state.database).await?;
 
         Ok(())
     }
@@ -153,13 +156,18 @@ impl AuthService {
         app_state: &app_state::AppState,
         email: String,
     ) -> Result<(), Error> {
-        let user = users::Model::find_by_email(&app_state.database, &email)
+        users::Model::find_by_email(&app_state.database, &email)
             .await?
             .ok_or(Error::Auth(InvalidEmailAddress))?;
 
-        let confirmation_code = password_reset::Model::create(&app_state.database, user.id)
-            .await?
-            .to_string();
+        let confirmation_code = email_verification_request::Model::create(
+            &app_state.database,
+            EmailVerificationAction::ResetPassword,
+            email.clone(),
+            Some(Duration::minutes(30)),
+        )
+        .await?
+        .to_string();
 
         let mut reset_password_link = EnvConfig::get().frontend_url.clone();
         reset_password_link = reset_password_link
@@ -191,36 +199,29 @@ impl AuthService {
         app_state: &app_state::AppState,
         model: ResetPasswordModel,
     ) -> Result<(), Error> {
-        let (password_reset, user) = password_reset::Entity::find_by_id(model.code)
-            .find_also_related(users::Entity)
-            .one(&app_state.database)
+        let password_reset =
+            email_verification_request::Model::find_and_verify(&app_state.database, model.code)
+                .await?;
+        let EmailVerificationAction::ResetPassword = password_reset.get_action()? else {
+            return Err(Error::InvalidEmailConfirmationCode);
+        };
+
+        let user = users::Model::find_by_email(&app_state.database, &password_reset.email)
             .await?
-            .ok_or(Error::Auth(InvalidConfirmationCode))?;
+            .ok_or(Error::Auth(InvalidEmailAddress))?;
 
-        if password_reset.expiration_date < Utc::now().naive_utc() {
-            let active_password_reset: password_reset::ActiveModel = password_reset.into();
-            active_password_reset.delete(&app_state.database).await?;
+        users::Model::update(
+            &app_state.database,
+            user,
+            users::UpdatableModel {
+                password: Some(Some(Self::hash_password(model.new_password)?)),
+                ..Default::default()
+            },
+        )
+        .await?;
 
-            return Err(Error::Auth(ConfirmationCodeExpired));
-        }
+        password_reset.delete(&app_state.database).await?;
 
-        if let Some(user) = user {
-            users::Model::update(
-                &app_state.database,
-                user,
-                UpdatableModel {
-                    password: Some(Some(Self::hash_password(model.new_password)?)),
-                    ..Default::default()
-                },
-            )
-            .await?;
-
-            let active_password_reset: password_reset::ActiveModel = password_reset.into();
-            active_password_reset.delete(&app_state.database).await?;
-
-            return Ok(());
-        }
-
-        Err(Error::UserNotFound)
+        Ok(())
     }
 }

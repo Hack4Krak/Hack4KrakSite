@@ -5,6 +5,7 @@ use crate::utils::common_responses;
 use crate::utils::common_responses::create_temporary_redirect_response;
 use crate::utils::error::Error;
 use actix_web::{HttpResponse, get, web};
+use uuid::Uuid;
 
 #[utoipa::path(
     responses(
@@ -17,7 +18,7 @@ use actix_web::{HttpResponse, get, web};
 #[get("/confirm/{confirmation_code}")]
 pub async fn confirm_email(
     app_state: web::Data<app_state::AppState>,
-    confirmation_code: web::Path<String>,
+    confirmation_code: web::Path<Uuid>,
 ) -> Result<HttpResponse, Error> {
     match AuthService::confirm_email(&app_state, confirmation_code.into_inner()).await {
         Ok(()) => {

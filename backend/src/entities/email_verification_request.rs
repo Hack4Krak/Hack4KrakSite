@@ -13,14 +13,18 @@ use serde::{Deserialize, Serialize};
     Deserialize,
     hack4krak_macros :: DeriveUpdatableModel,
     utoipa :: ToSchema,
+    Default,
 )]
-#[sea_orm(table_name = "email_confirmation")]
+#[sea_orm(table_name = "email_verification_request")]
 pub struct Model {
-    pub email: String,
-    pub user_info: Json,
     #[sea_orm(primary_key, auto_increment = false)]
-    pub code: String,
-    pub expiration_date: DateTime,
+    pub id: Uuid,
+    pub email: String,
+    pub action_type: String,
+    pub expiration_time: Option<DateTime>,
+    #[sea_orm(column_type = "JsonBinary", nullable)]
+    pub additional_data: Option<Json>,
+    pub created_at: DateTime,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
