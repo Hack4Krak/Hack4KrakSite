@@ -1,5 +1,13 @@
 <script setup lang="ts">
 const { y } = useWindowScroll()
+
+useHead({
+  link: [{
+    rel: 'preload',
+    as: 'image',
+    href: '/img/landing_background.webp',
+  }],
+})
 </script>
 
 <template>
