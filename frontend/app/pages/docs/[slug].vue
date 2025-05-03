@@ -1,15 +1,13 @@
 <script setup lang="ts">
 const slug = useRoute('docs-slug').params.slug
 
-const { data: page } = await useAsyncData(`docs-${slug}`, () => queryCollection('content').path(`/pages/${slug}`).first())
+const { data: page } = await useAsyncData(`docs-${slug}`, () => queryCollection('content').path(`/${slug}`).first())
 
 if (!page.value) {
   showError({
     statusCode: 404,
-    message: 'Strona nie została znaleziona',
+    message: 'Zadanie nie zostało znalezione',
   })
-} else {
-  setPageLayout('static-page')
 }
 
 useSeoMeta({
@@ -18,10 +16,7 @@ useSeoMeta({
 </script>
 
 <template>
-  <h1 class="lg:-translate-y-1/3 font-bold text-center p-2 stroked-text-3 text-3xl lg:text-6xl">
-    {{ page && page.title }}
-  </h1>
-  <div class="mt-5 prose prose-invert pb-15">
-    <ContentRenderer v-if="page" :value="page" />
+  <div class="w-full mt-5 md:pl-[25svw] pl-[15svw] prose prose-invert">
+    <ContentRenderer v-if="page" :value="page" class="md:w-[50svw] w-[70svw]" />
   </div>
 </template>

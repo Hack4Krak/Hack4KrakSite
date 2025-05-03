@@ -42,19 +42,9 @@
   }
 }
 
-@utility stroked-text-1 {
+@utility stroked-text-dark {
   -webkit-text-stroke-color: transparent;
   -webkit-text-stroke-width: 0.1em;
-  -webkit-text-fill-color: var(--ui-text);
-  user-select: none;
-
-  background-color: var(--ui-bg);
-  background-clip: text;
-}
-
-@utility stroked-text-2 {
-  -webkit-text-stroke-color: transparent;
-  -webkit-text-stroke-width: 0.3em;
   -webkit-text-fill-color: var(--ui-text);
   user-select: none;
 

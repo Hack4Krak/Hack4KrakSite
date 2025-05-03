@@ -1,6 +1,4 @@
----
-title: Regulamin Hack4Krak LO31
----
+# Regulamin Hack4Krak LO31
 
 ## 1. Postanowienia ogólne
 
