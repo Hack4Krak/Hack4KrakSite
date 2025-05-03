@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { INFO_TILES_CONTENT } from '~~/content/info-tiles'
-import LANDING_CONTENT from '~~/content/landing-page.json'
 import InfoTile from '~/components/hero/info/InfoTile.vue'
 
 useSeoMeta({
@@ -12,18 +11,19 @@ useSeoMeta({
   <main>
     <HeroSection>
       <template #title>
-        {{ LANDING_CONTENT.title }}
+        Hack4Krak
       </template>
       <template #content>
-        {{ LANDING_CONTENT.subTitle }}
+        Pierwszy małopolski CTF kierowany <br>
+        do uczniów szkół średnich!
       </template>
     </HeroSection>
-    <UContainer class="w-full h-screen mb-24">
+    <UContainer class="w-full h-screen">
       <DevOnly>
         <section class="my-8">
           <div class="flex flex-col border-green-400 border-2 bg-green-400/10 p-6 text-center justify-center">
             <p class="text-xl lg:text-3xl font-bold text-green-400">
-              {{ LANDING_CONTENT.infoBox }}
+              Zapisy na zawody dla szkół podstawowych już otwarte!
             </p>
           </div>
         </section>
@@ -52,6 +52,5 @@ useSeoMeta({
         </div>
       </section>
     </UContainer>
-    <Footer />
   </main>
 </template>
