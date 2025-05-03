@@ -1,10 +1,3 @@
-<script setup lang="ts">
-defineSlots<{
-  title: () => VNode | VNode[]
-  content: () => VNode | VNode[]
-}>()
-</script>
-
 <template>
   <div class="relative lg:-top-20">
     <h1 class="font-bold pr-4 stroked-text-1 text-3xl lg:text-9xl">

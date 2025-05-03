@@ -10,8 +10,11 @@
              gap-y-12 lg:gap-0 place-content-between xl:w-(--ui-container)"
     >
       <HeroContent>
-        <template v-for="(_, name) in $slots" #[name]="data">
-          <slot :name="name" v-bind="data" />
+        <template #title>
+          <slot name="title" />
+        </template>
+        <template #content>
+          <slot name="content" />
         </template>
       </HeroContent>
       <HeroSocialMediaContainer />
