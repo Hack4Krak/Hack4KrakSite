@@ -42,7 +42,6 @@ database/
 frontend/.unlighthouse
 .unlighthouse
 .vercel
-.junie
 
 # Tests
 frontend/playwright-report

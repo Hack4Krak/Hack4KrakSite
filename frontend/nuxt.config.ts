@@ -8,7 +8,6 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxt/eslint',
     '@nuxt/image',
-    '@nuxt/content',
     '@nuxt/test-utils/module',
     '@nuxtjs/seo',
     '@nuxtjs/mdc',
@@ -37,7 +36,6 @@ export default defineNuxtConfig({
     '/tasks/description/**': { swr: true },
     '/faq': { prerender: true },
     '/rules': { prerender: true },
-    '/docs/**': { prerender: true },
     '/': { prerender: true },
   },
   app: {

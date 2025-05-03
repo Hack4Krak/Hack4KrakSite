@@ -1,12 +1,9 @@
 <script setup lang="ts">
-// Fallback
-definePageMeta({
-  middleware: () => {
-    return navigateTo('/docs/rules')
-  },
-})
+import file from '~/content/docs/School_Edition_Guidelines.md?raw'
 </script>
 
 <template>
-  <!-- Content will be rendered by the dynamic route -->
+  <div class="w-full mt-5 md:pl-[25svw] pl-[15svw]">
+    <MarkdownContent :text="file" class="md:w-[50svw] w-[70svw]" prose="dark" />
+  </div>
 </template>
