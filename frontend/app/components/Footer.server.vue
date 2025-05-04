@@ -12,12 +12,7 @@ const { commitHash, branchName } = useGitInfo()
         <!-- Left section -->
         <div class="flex flex-col items-center lg:items-baseline justify-between gap-2 mb-5 lg:mb-0">
           <!-- Logo section -->
-          <NuxtLink to="/" class="flex items-center">
-            <Logo class="mr-4 size-6 dark:text-white" />
-            <p class="text-lg font-semibold font-pixelify">
-              Hack4Krak
-            </p>
-          </NuxtLink>
+          <LogoWithText size="sm" />
 
           <!-- Copyright -->
           <p class="text-center lg:text-left">
