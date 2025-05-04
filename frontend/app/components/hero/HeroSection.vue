@@ -1,7 +1,7 @@
 <template>
   <section
     class="lg:h-[calc(100vh-var(--ui-header-height))] flex flex-col items-center
-           w-full mb-12 gap-y-12 lg:gap-0"
+           w-full gap-y-12 lg:gap-0"
   >
     <HeroDesktopHeroBackground hydrate-on-visible class="h-3/4" />
     <HeroMobileLogoSection hydrate-on-visible />
