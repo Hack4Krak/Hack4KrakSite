@@ -8,7 +8,7 @@ import { LANDING_SOCIALS } from '~~/content/landing-socials'
       v-for="({ label, icon, to }) in LANDING_SOCIALS"
       :key="label"
       :icon="icon"
-      :link="to"
+      :to="to"
     />
   </div>
 </template>
