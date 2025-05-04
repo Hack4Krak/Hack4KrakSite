@@ -1,0 +1,31 @@
+{
+  "tab_items": [
+    {
+      "label": "Dla ucznia",
+      "icon": "i-lucide-user",
+      "slot": "student",
+      "description": [
+        "Załóż konto na stronie [hack4krak.pl/register](/register).",
+        "Zgłoś nauczycielowi odpowiedzialnemu za konkurs w **Twojej szkole** listę uczniów w drużynie oraz nazwę teamu.",
+        "Poczekaj, aż nauczyciel wybierze finalną listę drużyn i zarejestruje ją w systemie.",
+        "Zaloguj się na swoje konto i dołącz do drużyny za pomocą otrzymanego kodu.",
+        "Na wydarzenie **30 maja o 8:00** przynieś **podpisaną i wydrukowaną** zgodę rodziców lub opiekunów prawnych którą znajdziesz <a href=\"/documents/Zgoda_rodzica_lub_opiekuna_prawnego_na_uczestnictwo_w_wydarzeniu.pdf\" target=\"_blank\">tutaj</a>.",
+        "Przynieś sprzęt elektroniczny, na którym najwygodniej będzie Ci rozwiązywać zadania.",
+        "Baw się dobrze!"
+      ]
+    },
+    {
+      "label": "Dla Nauczyciela",
+      "icon": "hugeicons:teacher",
+      "slot": "teacher",
+      "description": [
+        "Jeśli nie otrzymałeś jeszcze maila, skontaktuj się z nami pod adresem **kontakt@hack4krak.pl** i zgłoś chęć udziału szkoły w CTF.",
+        "Poinformuj uczniów o wydarzeniu i poczekaj, aż zgłoszą się do Ciebie maksymalnie 3 pięcioosobowe drużyny.",
+        "Zarejestruj **nazwy drużyn oraz liczbę uczestników** w systemie, korzystając z linku przesłanego na szkolny adres e-mail.",
+        "Każdy uczeń otrzyma unikalny kod dołączenia do swojej drużyny — przekaż go zainteresowanym osobom.",
+        "Pamiętaj, że z każdej szkoły biorącej udział w wydarzeniu 30 maja musi być obecny co najmniej jeden nauczyciel lub inny pracownik szkoły uprawniony do sprawowania opieki nad uczniami.",
+        "Życzymy miłej zabawy na wydarzeniu! Zaplanowano ciekawe prelekcje oraz wyżywienie dla opiekunów."
+      ]
+    }
+  ]
+}
