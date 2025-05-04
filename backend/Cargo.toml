@@ -68,4 +68,4 @@ actix-http = "3.10.0"
 
 [dev-dependencies]
 quoted_printable = "0.5.1"
-testcontainers = "0.23.3"
+testcontainers = "0.24.0"
