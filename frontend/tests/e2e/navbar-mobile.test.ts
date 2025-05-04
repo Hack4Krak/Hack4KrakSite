@@ -1,18 +1,6 @@
 import { expect, test } from '@nuxt/test-utils/playwright'
 import { devices } from '@playwright/test'
 
-/**
- * Regression test to verify that the navbar remains visible in the viewport
- * when the page is scrolled to the bottom on mobile devices.
- *
- * This test:
- * 1. Sets up a mobile viewport (iPhone 12)
- * 2. Navigates to the homepage
- * 3. Verifies we're in mobile view
- * 4. Scrolls to the bottom of the page
- * 5. Verifies the navbar and mobile menu toggle are still visible
- * 6. Checks that the navbar is within the viewport boundaries
- */
 test('navbar visibility on mobile when scrolled to bottom', async ({ page }) => {
   // Use iPhone 12 viewport
   await page.setViewportSize(devices['iPhone 12'].viewport)
@@ -35,8 +23,14 @@ test('navbar visibility on mobile when scrolled to bottom', async ({ page }) => 
     window.scrollTo(0, document.body.scrollHeight)
   })
 
-  // Wait for any animations to complete
-  await page.waitForTimeout(500)
+  // Wait for any animations to complete by ensuring the navbar is in its final position
+  await page.waitForFunction(() => {
+    const navbar = document.querySelector('.sticky.top-0')
+    if (!navbar)
+      return false
+    const rect = navbar.getBoundingClientRect()
+    return rect.top >= 0 && rect.bottom <= window.innerHeight
+  })
 
   // Verify navbar is still visible after scrolling
   await expect(navbar).toBeVisible()
