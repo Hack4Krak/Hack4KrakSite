@@ -98,5 +98,3 @@ Informujemy, że:
 8. Dane osobowe zbierane są również na podstawie wyrażonej zgody, zgodnie z art. 6 ust.1 lit a ogólnego rozporządzenia o ochronie danych (RODO) na potrzeby promocji organizacji konkursu.
 9. Administrator nie przetwarza danych osobowych w sposób zautomatyzowany.
 10. Dane kontaktowe Inspektora Ochrony Danych: adres e-mail: inspektor5@mjo.krakow.pl
-
-### Regulamin ostatni raz aktualizowany: 4-05-2025
