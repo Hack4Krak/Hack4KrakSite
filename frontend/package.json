@@ -29,7 +29,7 @@
     "chart.js": "^4.4.9",
     "chartjs-adapter-dayjs-4": "~1.0.4",
     "dayjs-nuxt": "2.1.11",
-    "nuxt": "3.17.1",
+    "nuxt": "3.17.2",
     "nuxt-open-fetch-x": "0.10.2",
     "party-js": "2.2.0",
     "rehype-katex": "7.0.1",
