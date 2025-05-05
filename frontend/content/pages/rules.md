@@ -20,7 +20,7 @@ title: Regulamin Hack4Krak - edycja dla Szkół Podstawowych
 4. Organizator, na prośbę dyrektora danej szkoły, przekazuje mu kod dostępu wymagany do zarejestrowania drużyn na stronie CTF-a.
 5. Rejestracji należy dokonać poprzez stworzenie drużyny lub drużyn, za pomocą kodów dostępu otrzymanych od Organizatora.
 6. Uczniowie danej szkoły chcący wziąć udział w wydarzeniu, po stworzeniu przez szkołę drużyny, tworzą konta osobiste na stronie CTF-a, a następnie dołączają do drużyny, używając kodów dostępu wygenerowanych przez osobę odpowiedzialną za rejestrację drużyn w ich szkole.
-7. Warunkiem uczestnictwa drużyny w CTF jest posiadanie przez wszystkich jej członków w dniu wydarzenia zgody rodzica lub opiekuna prawnego na udział w wydarzeniu i zgody rodzica lub opiekuna prawnego na przetwarzanie danych osobowych oraz akceptacja regulaminu CTF. Wzór zgody rodzica lub opiekuna prawnego na przetwarzanie danych osobowych znajduje się w [dokumencie](docs/Zgoda_rodzica_lub_opiekuna_prawnego_na_przetwarzanie_danych_osobowych_uczestnika_Hack4Krak_edycja_dla_szkół_podstawowych.pdf), wzór zgody rodzica lub opiekuna prawnego na udział w CTF znajduje się w [dokumencie](docs/Zgoda_rodzica_lub_opiekuna_prawnego_na_uczestnictwo_w_Hack4Krak_edycja_dla_szkół_podstawowych.pdf).
+7. Warunkiem uczestnictwa drużyny w CTF jest, aby wszyscy jej członkowie, w dniu wydarzenia, posiadali zgodę rodzica lub opiekuna prawnego na udział w wydarzeniu, wyrażoną poprzez akceptację regulaminu. Wzór zgody znajduje się w <a href="/documents/Zgoda_rodzica_lub_opiekuna_prawnego_na_uczestnictwo_w_wydarzeniu.pdf" target="_blank">dokumencie</a>.
 8. Maksymalna liczba zarejestrowanych drużyn wynosi 25.
 9. Rejestracja trwa do 26.05.2025 włącznie.
 
@@ -51,7 +51,7 @@ title: Regulamin Hack4Krak - edycja dla Szkół Podstawowych
 1. Organizator ma prawo do odwołania CTF w przypadku wystąpienia nieprzewidzianych okoliczności, które uniemożliwiają jego przeprowadzenie.
 2. Organizator zapewnia przestrzeń oraz infrastrukturę techniczną niezbędną do przeprowadzenia CTF.
 3. Organizator nie ponosi odpowiedzialności za zachowanie uczestników oraz ewentualne szkody wyrządzone przez nich w trakcie CTF.
-4. Organizator ma prawo rejestrować przebieg CTF (zdjęcia, nagrania wideo) i wykorzystywać te materiały w celach promocyjnych, zgodnie z polityką prywatności [załącznik nr 3](#załącznik-nr-3) i na podstawie zgody na przetwarzanie danych osobowych wyrażonej przez rodziców uczestników.
+4. Organizator ma prawo rejestrować przebieg CTF (zdjęcia, nagrania wideo) i wykorzystywać te materiały w celach promocyjnych, zgodnie z [polityką prywatności](/docs/privacy-policy) i na podstawie zgody na przetwarzanie danych osobowych wyrażonej przez rodziców uczestników.
 5. Organizator ma prawo w każdym momencie trwania CTF-a wykluczyć drużynę z udziału w CTF, jeżeli stwierdzi on działanie sprzeczne z regulaminem co najmniej jednego członka danej drużyny.
 6. Organizator ma prawo do ujawnienia błędów bezpieczeństwa w oprogramowaniu stron trzecich, które zostały zgłoszone do organizatora przez uczestników CTF-a. Uczestnik może zgłosić błąd bezpieczeństwa w oprogramowaniu stron trzecich do organizatora, aby uzgodnić z nim jego ujawnienie.
 
@@ -68,7 +68,7 @@ title: Regulamin Hack4Krak - edycja dla Szkół Podstawowych
 
 4. Dane kontaktowe organizatorów:
 
-- email organizatorów: hack4krak@gmail.com,
+- email organizatorów: kontakt@hack4krak.pl,
 - Koordynator Główny ze strony Samorządu Uczniowskiego: email: jakub.starzyk@lo31.krakow.pl, tel.: 571 493 707,
 - email opiekuna ze strony Rady Pedagogicznej: aligaskowaluk@lo31.krakow.pl,
 - administrator danych osobowych: email: zso13@mjo.krakow.pl, tel.: 12 413 35 54.
