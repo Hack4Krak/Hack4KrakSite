@@ -4,14 +4,12 @@ export const FOOTER_SOCIALS = [
   ...LANDING_SOCIALS,
   {
     label: 'Polityka Prywatności',
-    to: '#',
+    to: '/docs/privacy-policy',
     icon: null,
-    target: '_blank',
   },
   {
-    label: 'Administrator Danych',
-    to: '#',
+    label: 'Regulamin',
+    to: '/docs/rules',
     icon: null,
-    target: '_blank',
   },
 ]
