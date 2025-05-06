@@ -12,7 +12,6 @@ const { commitHash, branchName } = getGitInfo()
 export default defineNuxtConfig({
   // Nuxt-specific configuration
 
-  // nuxt-seo must be configured before nuxt-content
   modules: [
     '@nuxt/ui',
     '@nuxt/eslint',
