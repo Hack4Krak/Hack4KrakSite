@@ -53,6 +53,8 @@ export default defineNuxtConfig({
     '/tasks/description/**': { swr: true },
     '/docs/**': { prerender: true },
     '/': { prerender: true },
+    '/faq': { redirect: '/docs/faq' },
+    '/rules': { redirect: '/docs/rules' },
   },
 
   hooks: {
