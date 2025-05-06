@@ -7,7 +7,7 @@ use sea_orm::EntityTrait;
 
 #[utoipa::path(
     responses(
-        (status = 200, description = "User list successfully retrieved."),
+        (status = 200, description = "User list successfully retrieved.", body=Vec<users::Model>),
         (status = 500, description = "Internal server error.")
     ),
     operation_id = "admin_users_list",
