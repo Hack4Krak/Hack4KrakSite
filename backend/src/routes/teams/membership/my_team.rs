@@ -12,7 +12,7 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, ToSchema)]
-pub struct TeamWithMembers {
+pub struct MyTeamWithMembers {
     pub team_name: String,
     pub created_at: DateTime,
     pub members: Vec<TeamMember>,
@@ -27,7 +27,7 @@ pub struct TeamMember {
 
 #[utoipa::path(
     responses(
-        (status = 200, description = "Team successfully retrieved.", body = TeamWithMembers),
+        (status = 200, description = "Team successfully retrieved.", body = MyTeamWithMembers),
         (status = 403, description = "User doesn't belong to any team."),
         (status = 404, description = "Team not found."),
         (status = 500, description = "Internal server error.")
@@ -55,7 +55,7 @@ pub async fn my_team(
         })
         .collect();
 
-    let team_response = TeamWithMembers {
+    let team_response = MyTeamWithMembers {
         team_name: team.name,
         created_at: team.created_at,
         members,

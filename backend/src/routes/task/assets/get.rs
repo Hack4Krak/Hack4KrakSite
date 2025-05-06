@@ -4,7 +4,7 @@ use actix_web::{HttpRequest, HttpResponse, get, web};
 
 #[utoipa::path(
     responses(
-        (status = 200, description = "List of task assets."),
+        (status = 200, description = "List of task assets.", body = String),
         (status = 404, description = "Asset does not exist."),
         (status = 500, description = "Internal server error.")
     ),

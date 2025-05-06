@@ -1,9 +1,9 @@
-mod email_confirmation;
-mod flag_capture;
+pub mod email_confirmation;
+pub mod flag_capture;
 pub mod password_reset;
 pub mod task;
-mod team_invites;
-mod team_status;
-mod teams;
+pub mod team_invites;
+pub mod team_status;
+pub mod teams;
 pub mod user;
-mod user_roles;
+pub mod user_roles;

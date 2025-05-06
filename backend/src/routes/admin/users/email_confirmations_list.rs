@@ -7,7 +7,7 @@ use sea_orm::EntityTrait;
 
 #[utoipa::path(
     responses(
-        (status = 200, description = "Email confirmations successfully fetched."),
+        (status = 200, description = "Email confirmations successfully fetched.", body=Vec<email_confirmation::Model>),
         (status = 500, description = "Internal server error.")
     ),
     tag = "admin/users"
