@@ -14,6 +14,7 @@ use utoipa::ToSchema;
 pub struct UserInformationResponse {
     pub username: String,
     pub email: String,
+    pub has_personal_information: bool,
 }
 
 #[utoipa::path(
@@ -40,6 +41,7 @@ pub async fn index(
     Ok(HttpResponse::Ok().json(UserInformationResponse {
         email: user_model.email,
         username: user_model.username,
+        has_personal_information: user_model.personal_info.is_some(),
     }))
 }
 

@@ -34,6 +34,10 @@ Error:
   InvalidEmailConfirmationCode: "Nieprawidłowy kod z e-mail"
   EmailConfirmationCodeExpired: "Kod z tego e-mail wygasł. Spróbuj ponownie!"
 
+AccountError:
+  BirthYearNotInRange: "Rok urodzenia musi być pomiędzy {min} a {max}"
+  InvalidReferralSource: "Nieprawidłowe źródło polecenia"
+
 AuthError:
   UserAlreadyExists: "Użytkownik już istnieje"
   InvalidCredentials: "Nieprawidłowa nazwa użytkownika i/lub hasło"

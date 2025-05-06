@@ -55,7 +55,7 @@ async fn account_update() {
     let response = test::call_and_read_body(&app, request).await;
     assert_eq!(
         response,
-        r#"{"username":"Salieri","email":"example@gmail.com"}"#
+        r#"{"username":"Salieri","email":"example@gmail.com","has_personal_information":false}"#
     );
 
     let request = test::TestRequest::patch()

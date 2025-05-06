@@ -15,31 +15,30 @@ use serde::{Deserialize, Serialize};
     utoipa :: ToSchema,
     Default,
 )]
-#[sea_orm(table_name = "external_team_invitation")]
+#[sea_orm(table_name = "user_personal_info")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
-    pub team: Uuid,
-    pub administration_code: Uuid,
-    #[sea_orm(unique)]
-    pub access_code: String,
+    pub first_name: String,
+    pub birth_year: i32,
+    pub location: String,
+    pub organization: String,
+    pub is_vegetarian: bool,
+    pub marketing_consent: bool,
+    pub marketing_consent_accepted_at: DateTime,
+    pub marketing_consent_updated_at: DateTime,
+    pub referral_source: Option<Json>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(
-        belongs_to = "super::teams::Entity",
-        from = "Column::Team",
-        to = "super::teams::Column::Id",
-        on_update = "NoAction",
-        on_delete = "Cascade"
-    )]
-    Teams,
+    #[sea_orm(has_many = "super::users::Entity")]
+    Users,
 }
 
-impl Related<super::teams::Entity> for Entity {
+impl Related<super::users::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::Teams.def()
+        Relation::Users.def()
     }
 }
 
