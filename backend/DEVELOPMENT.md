@@ -106,7 +106,7 @@ and more.
 - Generate entities from the database
   ```sh
   # You should run this command from `backend/` directory
-  sea-orm-cli generate entity --with-serde both -o src/entities/ --model-extra-derives hack4krak_macros::DeriveUpdatableModel
+  sea-orm-cli generate entity --with-serde both -o src/entities/ --model-extra-derives "hack4krak_macros::DeriveUpdatableModel, utoipa::ToSchema"
   ```
 
 > [!NOTE]  
