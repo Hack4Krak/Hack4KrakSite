@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { INFO_TILES_CONTENT } from '~~/content/info-tiles'
 import LANDING_CONTENT from '~~/content/landing-page.json'
-import InfoTile from '~/components/hero/info/InfoTile.vue'
 
 useSeoMeta({
   title: 'Strona Główna',
@@ -28,7 +27,7 @@ useSeoMeta({
       </section>
       <section class="my-8">
         <div class="flex flex-col lg:grid grid-cols-3 gap-2 w-full auto-cols-auto">
-          <InfoTile
+          <HeroInfoTile
             v-for="(info, index) in INFO_TILES_CONTENT"
             :key="`tile-${index}`"
             :content="info"

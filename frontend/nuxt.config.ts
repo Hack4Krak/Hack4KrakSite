@@ -1,3 +1,4 @@
+import { getDocsPages } from './app/utils/getDocsPages'
 // THE METAL GOD, YOUR SO-CALLED MIGHTY EDITOR, DECEIVES.
 // THIS IMPORT CANNOT BE SHORTENED.
 // QUESTION ITS COMMANDMENTS BEFORE YOU KNEEL AND COMPLY.
@@ -11,13 +12,14 @@ const { commitHash, branchName } = getGitInfo()
 export default defineNuxtConfig({
   // Nuxt-specific configuration
 
+  // nuxt-seo must be configured before nuxt-content
   modules: [
     '@nuxt/ui',
     '@nuxt/eslint',
     '@nuxt/image',
-    '@nuxt/content',
     '@nuxt/test-utils/module',
     '@nuxtjs/seo',
+    '@nuxt/content',
     '@nuxtjs/mdc',
     '@formkit/auto-animate/nuxt',
     'nuxt-open-fetch-x',
@@ -49,10 +51,17 @@ export default defineNuxtConfig({
 
   routeRules: {
     '/tasks/description/**': { swr: true },
-    '/faq': { prerender: true },
     '/docs/**': { prerender: true },
     '/': { prerender: true },
   },
+
+  hooks: {
+    'nitro:config': async function (nitroConfig) {
+      const docsPaths = await getDocsPages()
+      nitroConfig.prerender?.routes?.push(...docsPaths)
+    },
+  },
+
   app: {
     head: {
       link: [
