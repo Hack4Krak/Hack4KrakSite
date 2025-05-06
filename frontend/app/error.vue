@@ -1,8 +1,15 @@
 <script setup lang="ts">
 import type { NuxtError } from '#app'
+import { setFavicon } from '~/utils/setFavicon'
 
 const props = defineProps({
   error: Object as () => NuxtError,
+})
+
+useOgImage()
+
+onMounted(() => {
+  setFavicon()
 })
 
 const errorMessage = computed(() => {
