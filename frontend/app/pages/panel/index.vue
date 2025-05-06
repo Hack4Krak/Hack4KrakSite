@@ -63,6 +63,7 @@ async function logout() {
             Ustawienia konta
           </h1>
           <div class="flex flex-col gap-3 mt-3 justify-center">
+            <GhostButtonWithIcon icon="mdi:account" description="Zmień lub zobacz dane o końcie" @click="navigateTo('/account/submit_personal_info')" />
             <GhostButtonWithIcon icon="mdi:account-cog" description="Zmień ustawienia konta" @click="updateAccountModal = true" />
             <GhostButtonWithIcon icon="mdi:account-key" description="Zmień hasło" @click="changePasswordModal = true" />
             <GhostButtonWithIcon icon="mdi:account-remove" description="Usuń konto" @click="deleteAccountModal = true" />

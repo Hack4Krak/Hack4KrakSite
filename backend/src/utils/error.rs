@@ -1,4 +1,5 @@
 use crate::entities::sea_orm_active_enums::UserRoles;
+use crate::routes::account::AccountError;
 use crate::routes::auth::AuthError;
 use crate::routes::flag::FlagError;
 use crate::routes::task::TaskError;
@@ -84,6 +85,8 @@ pub enum Error {
     Validator(validator::ValidationErrors),
 
     #[error(transparent)]
+    Account(#[from] AccountError),
+    #[error(transparent)]
     Auth(#[from] AuthError),
     #[error(transparent)]
     Team(#[from] TeamError),
@@ -126,6 +129,7 @@ impl error::ResponseError for Error {
             | Error::AccessBeforeEventStart => StatusCode::FORBIDDEN,
             Error::UserWithEmailOrUsernameAlreadyExists => StatusCode::CONFLICT,
             Error::AccessAfterEventEnd => StatusCode::GONE,
+            Error::Account(account_err) => account_err.status_code(),
             Error::Team(team_err) => team_err.status_code(),
             Error::Auth(auth_err) => auth_err.status_code(),
             Error::Task(error) => error.status_code(),
