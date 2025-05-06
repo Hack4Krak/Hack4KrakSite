@@ -1,3 +1,4 @@
+use crate::entities::sea_orm_active_enums::TeamStatus;
 use crate::entities::teams;
 use crate::utils::app_state;
 use crate::utils::error::Error;
@@ -11,7 +12,7 @@ use uuid::Uuid;
 pub struct UpdateTeamModel {
     pub team_name: Option<String>,
     pub leader: Option<Uuid>,
-    pub status: Option<teams::TeamStatus>,
+    pub status: Option<TeamStatus>,
 }
 
 #[utoipa::path(
