@@ -41,6 +41,8 @@ pub enum Relation {
         on_delete = "SetNull"
     )]
     Teams,
+    #[sea_orm(has_one = "super::user_personal_info::Entity")]
+    UserPersonalInfo,
 }
 
 impl Related<super::team_invites::Entity> for Entity {
@@ -52,6 +54,12 @@ impl Related<super::team_invites::Entity> for Entity {
 impl Related<super::teams::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Teams.def()
+    }
+}
+
+impl Related<super::user_personal_info::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::UserPersonalInfo.def()
     }
 }
 

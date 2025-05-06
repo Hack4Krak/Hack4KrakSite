@@ -7,4 +7,5 @@ pub mod flag_capture;
 pub mod sea_orm_active_enums;
 pub mod team_invites;
 pub mod teams;
+pub mod user_personal_info;
 pub mod users;
