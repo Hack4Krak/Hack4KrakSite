@@ -21,8 +21,12 @@ useSeoMeta({
         label: 'text-lg',
         trailingIcon: 'text-primary size-6',
         trigger: 'cursor-pointer',
-        body: 'cursor-default text-md font-light',
+        body: 'cursor-text text-md font-light',
       }" :items="file"
-    />
+    >
+      <template #body="{ item }">
+        <LazyMarkdownContent :text="item.content" hydrate-never />
+      </template>
+    </UAccordion>
   </div>
 </template>
