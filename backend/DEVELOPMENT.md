@@ -100,28 +100,28 @@ bun openapi-cli -- write
 
 ## 👣 Managing database
 
-We use [SeaORM](https://www.sea-ql.org/SeaORM) as our ORM. You can use it's CLI to generate entities, manage migrations
+We use [SeaORM](https://www.sea-ql.org/SeaORM) as our ORM. You can use its CLI to generate entities, manage migrations, 
 and more.
 
-- Generate entities from the database
+- Generate entities from the database\
+  To run this command you have to install SeaORM CLI (`cargo install sea-orm-cli`)
   ```sh
   # You should run this command from `backend/` directory
-  sea-orm-cli generate entity --with-serde both -o src/entities/ --model-extra-derives "hack4krak_macros::DeriveUpdatableModel, utoipa::ToSchema"
+  bun generate:entities
   ```
-
-> [!NOTE]  
-> All the following commands should be run from the `backend/migration/` directory
-> You have to set the `DATABASE_URL` environment variable before.
-
 - Generate a new migration file
   ```sh
-  cargo run -- generate MIGRATION_NAME
+  bun db:migration <migration_name>
   ```
 - Rollback last applied migration
   ```sh
-  cargo run -- down
+  bun db:rollbkack
   ```
 - Drop all tables from the database, then reapply all migrations
   ```sh
-  cargo run -- fresh
+  bun db:fresh
+  ```
+- Run the migration CLI directly
+  ```sh
+  bun db:cli
   ```
