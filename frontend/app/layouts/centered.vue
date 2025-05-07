@@ -1,7 +1,3 @@
-<script setup lang="ts">
-useOgImage()
-</script>
-
 <template>
   <NuxtLayout name="default">
     <div class="min-h-[calc(100vh-var(--ui-header-height))]">
