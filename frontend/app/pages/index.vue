@@ -18,7 +18,7 @@ useSeoMeta({
         {{ LANDING_CONTENT.subTitle }}
       </template>
     </HeroSection>
-    <UContainer class="w-full h-screen mb-24">
+    <UContainer class="w-full mb-24">
       <section class="my-8">
         <div class="flex flex-col gap-8 border-green-400 border-2 bg-green-400/10 p-6 text-center justify-center">
           <p class="text-xl lg:text-3xl font-bold text-green-400">
