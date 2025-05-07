@@ -1,8 +1,8 @@
 <script setup lang="ts">
 const props = defineProps<{
   text: string
-  class?: string
   prose?: 'light' | 'dark'
+  inline?: boolean
 }>()
 
 const proseClass = computed(() => {
@@ -12,10 +12,14 @@ const proseClass = computed(() => {
     default: return ''
   }
 })
+
+const inlineClass = computed(() => {
+  return props.inline ? 'inline [&>p]:inline' : ''
+})
 </script>
 
 <template>
-  <div :class="proseClass">
-    <MDC :value="text" :class="props.class" />
-  </div>
+  <span :class="proseClass">
+    <MDC :value="text" :class="inlineClass" />
+  </span>
 </template>
