@@ -42,7 +42,7 @@ useSeoMeta({
                 Chcesz wziąć udział?
               </p> <br>
               <NuxtLink to="/panel">
-                <ElevatedButton class="lg:text-xl lg:scale-110">
+                <ElevatedButton class="lg:text-xl lg:scale-110 bg-red-450">
                   Zarejestruj swoją drużynę!
                 </ElevatedButton>
               </NuxtLink>
