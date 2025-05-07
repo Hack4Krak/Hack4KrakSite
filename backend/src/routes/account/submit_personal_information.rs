@@ -5,7 +5,7 @@ use crate::utils::error::Error;
 use crate::utils::success_response::SuccessResponse;
 use actix_web::web::{Data, Json};
 use actix_web::{HttpResponse, post};
-use sea_orm::{ActiveModelTrait, Set};
+use sea_orm::{ActiveModelTrait, JsonValue, Set};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
@@ -17,7 +17,7 @@ struct UserPersonalInformationSubmissionRequest {
     pub organization: String,
     pub is_vegetarian: bool,
     pub marketing_consent: bool,
-    pub referral_source: Option<Vec<String>>,
+    pub referral_source: Option<JsonValue>,
 }
 
 #[utoipa::path(

@@ -55,7 +55,7 @@ async fn account_update() {
     let response = test::call_and_read_body(&app, request).await;
     assert_eq!(
         response,
-        r#"{"username":"Salieri","email":"example@gmail.com"}"#
+        r#"{"username":"Salieri","email":"example@gmail.com","has_personal_information":false}"#
     );
 
     let request = test::TestRequest::patch()
@@ -78,6 +78,53 @@ async fn account_update() {
             "password": "Dziengiel2"
         }))
         .to_request();
+    let response = test::call_service(&app, request).await;
+    assert!(response.status().is_success());
+}
+
+#[actix_web::test]
+async fn submit_personal_info() {
+    let test_database = TestDatabase::new().await;
+    let user = test_database.with_default_user().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::post()
+        .uri("/account/submit_personal_information")
+        .insert_header(TestAuthHeader::new(user.clone()))
+        .set_json(serde_json::json!({
+          "birth_year": 1750,
+          "first_name": "Antonio",
+          "is_vegetarian": true,
+          "location": "Włochy",
+          "marketing_consent": true,
+          "organization": "Hack4Krak",
+          "referral_source": ["Linkedin"]
+        }))
+        .to_request();
+
+    let response = test::call_service(&app, request).await;
+    assert!(response.status().is_success());
+
+    let request = test::TestRequest::get()
+        .uri("/account/")
+        .insert_header(TestAuthHeader::new(user.clone()))
+        .to_request();
+
+    let response = test::call_and_read_body(&app, request).await;
+    assert_eq!(
+        response,
+        r#"{"username":"test_user","email":"example@gmail.com","has_personal_information":true}"#
+    );
+
+    let request = test::TestRequest::get()
+        .uri("/account/get_personal_information")
+        .insert_header(TestAuthHeader::new(user.clone()))
+        .to_request();
+
     let response = test::call_service(&app, request).await;
     assert!(response.status().is_success());
 }

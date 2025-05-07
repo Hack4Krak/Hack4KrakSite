@@ -1,7 +1,7 @@
 use utoipa_actix_web::service_config::ServiceConfig;
 
 mod delete;
-mod get_personal_info;
+mod get_personal_information;
 pub mod index;
 mod submit_personal_information;
 pub mod update;
@@ -13,5 +13,5 @@ pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(update::update);
     cfg.service(update::change_password);
     cfg.service(submit_personal_information::submit_personal_information);
-    cfg.service(get_personal_info::get_personal_information);
+    cfg.service(get_personal_information::get_personal_information);
 }

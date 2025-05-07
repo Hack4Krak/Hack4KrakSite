@@ -21,10 +21,7 @@ impl MigrationTrait for Migration {
                     .col(boolean(UserPersonalInfo::IsVegetarian).default(false))
                     .col(boolean(UserPersonalInfo::MarketingConsent).default(false))
                     .col(timestamp(UserPersonalInfo::MarketingConsentAcceptedAt))
-                    .col(
-                        ColumnDef::new(UserPersonalInfo::ReferralSource)
-                            .array(ColumnType::String(StringLen::None)),
-                    )
+                    .col(ColumnDef::new(UserPersonalInfo::ReferralSource).json())
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-user_personal_info-user_id")

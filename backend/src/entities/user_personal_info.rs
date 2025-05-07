@@ -29,7 +29,7 @@ pub struct Model {
     pub is_vegetarian: bool,
     pub marketing_consent: bool,
     pub marketing_consent_accepted_at: DateTime,
-    pub referral_source: Option<Vec<String>>,
+    pub referral_source: Option<Json>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
