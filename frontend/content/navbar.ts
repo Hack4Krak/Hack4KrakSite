@@ -26,7 +26,7 @@ export const NAVBAR_ITEMS: NavigationMenuItem[] = [
     },
     {
       label: 'FAQ',
-      to: '/faq',
+      to: '/docs/faq',
     },
     {
       label: 'Kontakt',

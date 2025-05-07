@@ -1,3 +1,4 @@
+import { getDocsPages } from './app/utils/getDocsPages'
 // THE METAL GOD, YOUR SO-CALLED MIGHTY EDITOR, DECEIVES.
 // THIS IMPORT CANNOT BE SHORTENED.
 // QUESTION ITS COMMANDMENTS BEFORE YOU KNEEL AND COMPLY.
@@ -49,10 +50,19 @@ export default defineNuxtConfig({
 
   routeRules: {
     '/tasks/description/**': { swr: true },
-    '/faq': { prerender: true },
     '/docs/**': { prerender: true },
     '/': { prerender: true },
+    '/faq': { redirect: '/docs/faq' },
+    '/rules': { redirect: '/docs/rules' },
   },
+
+  hooks: {
+    'nitro:config': async function (nitroConfig) {
+      const docsPaths = await getDocsPages()
+      nitroConfig.prerender?.routes?.push(...docsPaths)
+    },
+  },
+
   app: {
     head: {
       link: [

@@ -1,15 +1,16 @@
 <script setup lang="ts">
 const slug = useRoute('docs-slug').params.slug
-
 const { data: page } = await useAsyncData(`docs-${slug}`, () => queryCollection('content').path(`/pages/${slug}`).first())
 
-if (!page.value) {
+definePageMeta({
+  layout: 'static-page',
+})
+
+if (!page.value?.title) {
   showError({
     statusCode: 404,
-    message: 'Strona nie została znaleziona',
+    message: 'Strona nie została znalezione',
   })
-} else {
-  setPageLayout('static-page')
 }
 
 useSeoMeta({

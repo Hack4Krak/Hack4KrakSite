@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import file from '~~/content/faq.json'
 
-setPageLayout('static-page')
+definePageMeta({
+  layout: 'static-page',
+})
 
 useSeoMeta({
   title: 'FAQ',

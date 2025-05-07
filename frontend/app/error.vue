@@ -1,8 +1,15 @@
 <script setup lang="ts">
 import type { NuxtError } from '#app'
+import { setFavicon } from '~/utils/setFavicon'
 
 const props = defineProps({
   error: Object as () => NuxtError,
+})
+
+useOgImage()
+
+onMounted(() => {
+  setFavicon()
 })
 
 const errorMessage = computed(() => {
@@ -18,7 +25,7 @@ const errorMessage = computed(() => {
 </script>
 
 <template>
-  <NuxtLayout>
+  <NuxtLayout name="default">
     <main class="content-center items-center justify-center min-h-[calc(100vh-var(--ui-header-height))]">
       <div class="flex content-center items-center justify-center flex-col-reverse md:flex-row">
         <div class="flex flex-col md:mr-10 max-w-3/4 md:max-w-2/5">

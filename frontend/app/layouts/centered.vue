@@ -1,6 +1,3 @@
-<script setup lang="ts">
-</script>
-
 <template>
   <NuxtLayout name="default">
     <div class="min-h-[calc(100vh-var(--ui-header-height))]">
