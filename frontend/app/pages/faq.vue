@@ -22,7 +22,7 @@ useSeoMeta({
         trailingIcon: 'text-primary size-6',
         trigger: 'cursor-pointer',
         body: 'cursor-text text-md font-light',
-      }" :items="file"
+      }" :items="file" :unmount-on-hide="false"
     >
       <template #body="{ item }">
         <LazyMarkdownContent :text="item.content" hydrate-never />

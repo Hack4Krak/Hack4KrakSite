@@ -13,7 +13,7 @@ const filteredItems = computed(() => items.filter(item => item.slot))
     <p class="text-xl lg:text-2xl font-bold mt-6 mb-2">
       Jak zapisać się na wydarzenie?
     </p>
-    <UTabs :items="items" variant="link" class="gap-4 w-full" color="neutral" :ui="{ trigger: 'flex-1' }">
+    <UTabs :items="items" variant="link" class="gap-4 w-full" color="neutral" :ui="{ trigger: 'flex-1' }" :unmount-on-hide="false">
       <template v-for="item in filteredItems" :key="item.slot" #[item.slot!]>
         <OrderedList :items="item.description" />
       </template>
