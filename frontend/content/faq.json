@@ -1,58 +1,78 @@
 [
   {
-    "label": "Co to jest CTF?",
-    "content": "CTF, czyli \"Capture The Flag\", to konkurs, w którym drużyny rywalizują, rozwiązując zadania z różnych dziedzin cyberbezpieczeństwa. Ich celem jest odnalezienie tzw. \"flag\" — specjalnych ciągów znaków, które potwierdzają poprawność rozwiązania. Każda zdobyta flaga przyznaje punkty, a ostatecznym celem drużyn jest zgromadzenie jak największej liczby punktów i zdobycie jak najwyższego miejsca w rankingu na koniec wydarzenia."
+    "label": "Czym jest CTF?",
+    "content": "CTF, czyli **Capture The Flag**, to ekscytujący konkurs, w którym drużyny stają do rywalizacji, rozwiązując różnorodne zadania z obszaru cyberbezpieczeństwa. Waszym celem będzie odnalezienie ukrytych **flag** – specjalnych ciągów znaków potwierdzających poprawne rozwiązanie. Za każdą zdobytą flagę drużyna otrzymuje punkty, a zwycięzcą zostaje ta, która zgromadzi ich najwięcej!"
   },
   {
-    "label": "Czym jest tzw. \"flaga\"?",
-    "content": "Flaga to specjalny ciąg znaków ukryty w zadaniu, który służy jako potwierdzenie jego poprawnego wykonania. Zadaniem uczestników jest odnalezienie tej flagi. Flagi zapisane są w formacie: hack4krak{flaga}."
+    "label": "Co to jest \"flaga\"?",
+    "content": "Flaga to unikalny ciąg znaków, niczym skarb ukryty w zadaniu. Jej odnalezienie jest dowodem na poprawne rozwiązanie problemu. Flagi mają standardowy format: `hack4krakCTF{<tutaj_znajduje_się_flaga>}`."
   },
   {
-    "label": "Kto może wziąć udział w wydarzeniu?",
-    "content": "Uczniowie klas 7 i 8 szkół podstawowych, w maksymalnie 5-osobowych grupach. Na każdą szkołę przypadają maksymalnie 3 drużyny."
+    "label": "Jak mogę się zarejestrować?",
+    "content": "Abyś mógł wziąć udział w Hack4Krak CTF, Twój nauczyciel musi najpierw zarejestrować drużynę (maksymalnie 3 drużyny po 5 osób na szkołę). Gdy to zrobi, będziesz mógł założyć indywidualne konto na naszej stronie, a następnie dołączyć do swojej drużyny, skanując lub przepisując kod QR, który otrzymasz od nauczyciela."
   },
   {
     "label": "Czy muszę znać się na programowaniu i cyberbezpieczeństwie, żeby wziąć udział w wydarzeniu?",
-    "content": "Nie, nie musisz znać się na programowaniu ani cyberbezpieczeństwie, oczywiście podstawowa wiedza w tych tematach będzie przydatna, natomiast do każdego zadania zostanie dołączona dokumentacja, która ułatwi jego wykonanie, poprzez naprowadzenie na koncepty do tego potrzebne."
+    "content": "Absolutnie nie! Choć podstawowa wiedza z tych dziedzin może być pomocna, nie jest wymagana. Do każdego zadania otrzymacie wyczerpującą dokumentację, która wprowadzi Was w niezbędne zagadnienia i ułatwi rozwiązanie zadania. Liczy się przede wszystkim Wasza kreatywność, umiejętność pracy zespołowej i nieszablonowe myślenie!"
   },
   {
-    "label": "Czy podczas wydarzenia mogę korzystać z wyszukiwania informacji w internecie oraz narzędzi AI??",
-    "content": "Tak, uczestnicy mogą korzystać z wyszukiwania informacji w internecie oraz narzędzi AI, aby wspierać rozwiązywanie zadań. Pamiętaj jednak, że kluczowe jest samodzielne podejście do wyzwań!"
+    "label": "Jakie typy zadań czekają na nas podczas CTF?",
+    "content": "Przygotujcie się na różnorodne i ciekawe wyzwania, idealnie dopasowane do Waszego poziomu! Będziecie rozwiązywać zagadki, szukać ukrytych wskazówek i wspólnie pracować nad znalezieniem odpowiedzi. Każde zadanie będzie zawierało pomocną dokumentację, która poprowadzi Was krok po kroku. Nie martwcie się, zaawansowana wiedza informatyczna nie jest konieczna!"
   },
   {
-    "label": "Co powinienem przynieść na wydarzenie?",
-    "content": "Zachęcamy uczestników do przyniesienia własnych laptopów. Organizatorzy zapewnią również sprzęt na miejscu, jednak liczba dostępnych urządzeń jest ograniczona i może nie wystarczyć dla wszystkich uczestników. Najważniejsze jednak, aby uczniowie przynieśli ze sobą dobrą energię, zaangażowanie oraz chęć do rozwiązywania zadań."
+    "label": "Gdzie mogę dowiedzieć się więcej o CTF?",
+    "content": "Jeśli chcecie się lepiej przygotować, polecamy Wam [film LiveOverflowa](https://www.youtube.com/watch?v=8ev9ZX9J45A) oraz platformy z trudniejszymi zadaniami, takie jak [tryhackme.com](https://tryhackme.com/) i [rehayilmazlar.com](https://rehayilmazlar.com/). Dodatkowo w Internecie znajdziecie mnóstwo innych materiałów i filmów na ten temat. Pamiętajcie jednak, że zadania na naszym wydarzeniu będą dostosowane do uczniów szkół podstawowych :3"
   },
   {
-    "label": "Kiedy odbędzie się wydarzenie?",
-    "content": "Zapisy na wydarzenie są otwarte od 1 maja do 23 maja włącznie, a samo wydarzenie odbędzie się 30 maja."
+    "label": "Czy można korzystać z Internetu i narzędzi AI podczas rozwiązywania zadań?",
+    "content": "Tak, uczestnicy mogą korzystać z wyszukiwania informacji w internecie oraz narzędzi AI, tak samo jak w prawdziwym życiu. Pamiętaj jednak, że kluczowe jest samodzielne podejście do wyzwań!"
   },
   {
-    "label": "Jak długo będzie trwało wydarzenie?",
-    "content": "Wydarzenie odbędzie się w godzinach 8:00–15:00. Rejestracja uczestników rozpocznie się o godzinie 8:00. Czas przeznaczony na rozwiązywanie zadań potrwa od 9:00 do 14:30."
+    "label": "Jak będą przyznawane punkty?",
+    "content": "System punktacji uwzględnia trudność zadań. Jeśli dane zadanie rozwiąże tylko jedna lub dwie drużyny, każda z nich otrzyma 500 punktów. W przypadku, gdy rozwiążą je trzy lub więcej drużyn, punkty są obliczane według wzoru: $$500 - (n-2)\\frac{400}{m-2}$$, gdzie (n) to liczba drużyn, które poprawnie rozwiązały zadanie, a (m) to całkowita liczba zarejestrowanych drużyn. Dzięki temu trudniejsze zadania są bardziej premiowane. W przypadku remisu punktowego decyduje czas rozwiązania ostatniego zadania. Jeśli i ten czas jest identyczny, pod uwagę brany jest czas rozwiązania przedostatniego zadania."
+  },
+  {
+    "label": "Czy podczas CTF-a będzie zapewnione jedzenie i picie?",
+    "content": "Tak, dbamy o Wasz komfort i energię! Podczas wydarzenia zapewnimy Wam przekąski i napoje. Szczegółowe informacje o dostępnych opcjach podamy bliżej terminu wydarzenia. Prosimy o wcześniejsze zgłoszenie wszelkich alergii lub preferencji żywieniowych."
+  },
+  {
+    "label": "Jakie nagrody czekają na zwycięzców?",
+    "content": "Przygotowaliśmy dla Was atrakcyjne i wartościowe nagrody rzeczowe! Zwycięzcy mogą liczyć na ciekawe upominki, które z pewnością będą miłą niespodzianką i nagrodą za Wasz wysiłek i zaangażowanie! Szczegóły dotyczące nagród ujawnimy bliżej wydarzenia."
+  },
+  {
+    "label": "Co powinienem zabrać ze sobą na wydarzenie?",
+    "content": "Koniecznie, zabierzcie ze sobą własne **laptopy** lub inne urządzenia elektroniczne, które będą potrzebne do rozwiązywania zadań. Jeśli nie masz takich urządzeń, organizatorzy mogą zapewnić również sprzęt na miejscu, ale jego ilość jest ograniczona. **Obowiązkowo** musicie przynieść podpisaną przez rodzica lub opiekuna prawnego <a href=\"/documents/Zgoda_rodzica_lub_opiekuna_prawnego_na_uczestnictwo_w_wydarzeniu.pdf\" target=\"_blank\">zgodę</a>! Najważniejsze jednak, abyście zabrali ze sobą pozytywne nastawienie, chęć do współpracy i mnóstwo energii do rozwiązywania zadań!"
+  },
+  {
+    "label": "Kiedy odbędzie się Hack4Krak CTF?",
+    "content": "Zapisy na nasze wydarzenie trwają od 6 maja do 28 maja włącznie. Samo wydarzenie odbędzie się 30 maja."
+  },
+  {
+    "label": "Jak długo potrwa wydarzenie?",
+    "content": "Wydarzenie zaplanowane jest w godzinach od 8:00 do 15:00. Szczegółowy harmonogram wygląda następująco: <br/> **8:00–8:30** - Rejestracja uczestników i uroczyste otwarcie. <br/> **8:30-14:30** - Czas na rozwiązywanie zadań. <br/> **14:30–15:00** - Ogłoszenie wyników i wręczenie nagród."
   },
   {
     "label": "Gdzie odbędzie się wydarzenie?",
-    "content": "Wydarzenie odbędzie się w budynku XXXI Liceum Ogólnokształcącego w Krakowie, które znajduje się przy ulicy Kazimierza Odnowiciela 2."
+    "content": "Spotkamy się w budynku XXXI Liceum Ogólnokształcącego w Krakowie, przy ulicy Kazimierza Odnowiciela 2."
   },
   {
-    "label": "Czy na miejscu będzie opieka dla uczestników?",
-    "content": "Z każdej szkoły biorącej udział musi przyjść co najmniej jeden nauczyciel, który będzie pełnił rolę opiekuna uczniów. Dodatkowo, na miejscu obecni będą trzej nauczyciele z XXXI Liceum Ogólnokształcącego, którzy będą nadzorować wydarzenie."
+    "label": "Czy na miejscu będzie zapewniona opieka?",
+    "content": "Każdy uczestnik musi mieć zapewnionego opiekuna na czas trwania wydarzenia. Może to być wyznaczona osoba ze szkoły podstawowej uczestników. Dodatkowo, na miejscu będą obecni trzej nauczyciele z XXXI Liceum Ogólnokształcącego, którzy będą czuwać nad przebiegiem wydarzenia."
   },
   {
-    "label": "Kto jest organizatorem wydarzenia?",
-    "content": "Organizatorem wydarzenia jest Samorząd Uczniowski XXXI LO, przy wsparciu członków Rady Pedagogicznej."
+    "label": "Kto może wziąć udział w Hack4Krak CTF?",
+    "content": "W tej edycji Hack4Krak zapraszamy uczniów klas 7 i 8 szkół podstawowych z Krakowa do udziału w maksymalnie 5-osobowych drużynach. Każda szkoła może zgłosić maksymalnie 3 drużyny."
   },
   {
-    "label": "Jak mogę skontaktować się z organizatorami?",
-    "content": "W razie pytań zapraszamy do kontaktu: E-mail organizatorów: hack4krak@gmail.com, Koordynator główny: Jakub Starzyk — jakub.starzyk@lo31.krakow.pl tel. +48 571 493 707, Opiekun ze strony rady pedagogicznej: Anna Ligas-Kowaluk — aligaskowaluk@lo31.krakow.pl"
+    "label": "Kto organizuje to wydarzenie?",
+    "content": "Organizatorem Hack4Krak CTF jest XXXI Liceum Ogólnokształcące w Krakowie, przy wsparciu Samorządu Uczniowskiego oraz zaangażowanego zespołu organizacyjnego Hack4Krak."
   },
   {
-    "label": "Jak mogę zarejestrować się na wydarzenie?",
-    "content": "Aby wziąć udział w konkursie, każdy uczestnik musi się zarejestrować indywidualnie. Jednakże, aby ostatecznie wziąć udział w konkursie, nauczyciel musi zarejestrować drużyny. Po zarejestrowaniu drużyn, możesz dopisać się do jednej z nich."
+    "label": "Jak mogę się skontaktować z organizatorami, jeżeli mam jakieś pytania?",
+    "content": "Jeśli macie jakiekolwiek pytania, śmiało piszcie do nas na adres e-mail: kontakt@hack4krak.pl. Możecie również skontaktować się z naszymi koordynatorami: Jakub Starzyk (jakub.starzyk@lo31.krakow.pl, tel. +48 571 493 707) oraz Anna Ligas-Kowaluk (aligaskowaluk@lo31.krakow.pl)."
   },
   {
-    "label": "Jak wygląda kwestia RODO?",
-    "content": "RODO zostało uzgodnione z inspektorem RODO XXXI LO. Zgody RODO oraz zgody na uczestnictwo podpisują rodzice uczniów, a uczniowie muszą dostarczyć je organizatorom w dniu wydarzenia."
+    "label": "Jak wygląda kwestia ochrony danych osobowych (RODO)?",
+    "content": "Administratorem Waszych danych jest XXXI Liceum Ogólnokształcące w Krakowie. Zgody RODO oraz zgody na uczestnictwo są podpisywane przez Waszych rodziców lub opiekunów prawnych i muszą zostać dostarczone organizatorom w dniu wydarzenia. Więcej informacji na ten temat znajdziecie w naszej [Polityce prywatności](/docs/privacy-policy)."
   }
 ]
