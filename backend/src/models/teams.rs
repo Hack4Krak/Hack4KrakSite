@@ -1,6 +1,6 @@
 use crate::entities::sea_orm_active_enums::TeamStatus;
 use crate::entities::teams::ActiveModel;
-use crate::entities::{flag_capture, teams, users};
+use crate::entities::{external_team_invitation, flag_capture, teams, users};
 use crate::routes::admin::UpdateTeamModel;
 use crate::routes::teams::TeamError::*;
 use crate::utils::error::Error;
@@ -84,6 +84,41 @@ impl teams::Model {
         transaction.commit().await?;
 
         Ok(())
+    }
+
+    pub async fn create_with_external(
+        database: &DatabaseConnection,
+        team_name: String,
+        number_of_members: u8,
+        administration_code: Uuid,
+    ) -> Result<Vec<String>, Error> {
+        let transaction = database.begin().await?;
+
+        let team_id = Uuid::new_v4();
+
+        teams::Entity::insert(teams::ActiveModel {
+            id: Set(team_id),
+            name: Set(team_name),
+            created_at: Set(Utc::now().naive_utc()),
+            status: Set(TeamStatus::Absent),
+            confirmation_code: Set(Some(Uuid::new_v4())),
+        })
+        .exec(&transaction)
+        .await?;
+
+        let mut invitations = vec![];
+
+        for _ in 0..number_of_members {
+            let invitation_code =
+                external_team_invitation::Model::create(&transaction, team_id, administration_code)
+                    .await?;
+
+            invitations.push(invitation_code);
+        }
+
+        transaction.commit().await?;
+
+        Ok(invitations)
     }
 
     pub async fn kick_user(

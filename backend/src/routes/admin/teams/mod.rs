@@ -2,6 +2,7 @@ mod clear_confirmation_code;
 mod delete;
 mod generate_confirmation_code;
 mod list;
+mod register_external_team;
 mod update;
 
 pub use update::UpdateTeamModel;
@@ -12,4 +13,5 @@ pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(delete::delete);
     config.service(generate_confirmation_code::generate_confirmation_code);
     config.service(clear_confirmation_code::clear_confirmation_code);
+    config.service(register_external_team::register_external_team);
 }

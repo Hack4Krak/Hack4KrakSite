@@ -39,6 +39,7 @@ AuthError:
   InvalidCredentials: "Nieprawidłowa nazwa użytkownika i/lub hasło"
   InvalidEmailAddress: "Nieprawidłowy adres e-mail"
   PasswordAuthNotAvailable: "Uwierzytelnianie hasłem i e-mailem jest niedostępne dla tego konta"
+  ConfirmationCodeExpired: "Kod potwierdzenia wygasł, spróbuj wysłać e-mail ponownie"
 
 FlagError:
   InvalidFlagFormat: "Flaga musi być w określonym formacie: hack4KrakCTF{{...}}"
@@ -62,6 +63,7 @@ TeamError:
   UserAlreadyInvited: "Użytkownik już ma zaproszenie do tego zespołu"
   TeamIsFull: "Zespół jest pełny. Maksymalna liczba członków to {max_size}"
   TeamLeaderNotFound: "Lider zespołu nie został znaleziony"
+  InvalidNumberOfTeams: "Nieprawidłowa liczba zespołów. Maksymalna liczba zespołów to {max_teams}"
 
 TaskError:
   InvalidTaskId: "Identyfikator zadania może zawierać tylko znaki a-Z, A-Z, 0-9, - oraz _"

@@ -19,6 +19,7 @@ pub struct RegisterModel {
     #[validate(length(min = 8, max = 32))]
     pub password: Password,
 }
+
 #[utoipa::path(
     request_body = RegisterModel,
     responses(
