@@ -7,7 +7,7 @@
     <HeroMobileLogoSection hydrate-on-visible />
     <div
       class="flex-1 flex flex-col lg:flex-row items-center bg-transparent
-             gap-y-12 lg:gap-0 place-content-between xl:w-(--ui-container)"
+             gap-y-12 lg:gap-0 place-content-between xl:w-(--ui-container) px-6"
     >
       <HeroContent>
         <template v-for="(_, name) in $slots" #[name]="data">
