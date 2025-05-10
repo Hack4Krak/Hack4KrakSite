@@ -9,11 +9,58 @@ definePageMeta({
 
 type Schema = z.output<typeof schema>
 
+const current_year = new Date().getFullYear()
+
+enum Age {
+  '10-13' = 10,
+  '14-16' = 14,
+  '16-18' = 16,
+  '19-22' = 19,
+  '23+' = 23,
+}
+
+function matchAge(age: Age) {
+  return current_year - age
+}
+
+function getAge(birth_year: number) {
+  const age = current_year - birth_year
+
+  if (age >= 10 && age <= 13) {
+    return '10-13'
+  }
+  if (age >= 14 && age <= 16) {
+    return '14-16'
+  }
+  if (age >= 16 && age <= 18) {
+    return '16-18'
+  }
+  if (age >= 19 && age <= 22) {
+    return '19-22'
+  }
+  if (age >= 23) {
+    return '23+'
+  }
+
+  return undefined
+}
+
+const ages = Object.keys(Age).filter(key => Number.isNaN(Number(key)))
+
+const referralSources = [
+  'Linkedin',
+  'Facebook',
+  'Instagram',
+  'Znajomy',
+  'Internet',
+  'Inne',
+]
+
 const schema = z.object({
   first_name: z.string({ error: 'Imię jest wymagane' }),
 
   age: z.enum(
-    ['10-13', '14-16', '16-18', '19-22', '23+'],
+    ages,
     { message: 'Wiek jest wymagany' },
   ),
 
@@ -23,17 +70,10 @@ const schema = z.object({
 
   is_vegetarian: z.boolean({ error: 'Wybór jest wymagany' }),
 
-  marketing_consent: z.boolean({ error: 'Wybór jest wymagany' }),
+  marketing_consent: z.boolean().optional(),
 
   referral_source: z
-    .array(z.enum([
-      'Linkedin',
-      'Facebook',
-      'Instagram',
-      'Znajomy',
-      'Internet',
-      'Inne',
-    ]))
+    .array(z.enum(referralSources))
     .min(1, 'Proszę wybrać co najmniej jedno źródło polecenia.'),
 })
 
@@ -49,31 +89,13 @@ const state = reactive<Partial<Schema>>({
   referral_source: [],
 })
 
-const { data } = await useAuth('/account/get_personal_information')
-
-const current_year = new Date().getFullYear()
+const { data } = await useAuth('/account/get_personal_information', {
+  onResponseError: undefined,
+})
 
 if (data.value) {
   state.first_name = data.value.first_name
-
-  switch (data.value.birth_year) {
-    case current_year - 10:
-      state.age = '10-13'
-      break
-    case current_year - 14:
-      state.age = '14-16'
-      break
-    case current_year - 16:
-      state.age = '16-18'
-      break
-    case current_year - 19:
-      state.age = '19-22'
-      break
-    case current_year - 23:
-      state.age = '23+'
-      break
-  }
-
+  state.age = getAge(data.value.birth_year)
   state.location = data.value.location
   state.organization = data.value.organization
   state.is_vegetarian = data.value.is_vegetarian
@@ -93,25 +115,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
   loading.value = true
 
-  let birth_year
-
-  switch (event.data.age) {
-    case '10-13':
-      birth_year = current_year - 10
-      break
-    case '14-16':
-      birth_year = current_year - 14
-      break
-    case '16-18':
-      birth_year = current_year - 16
-      break
-    case '19-22':
-      birth_year = current_year - 19
-      break
-    case '23+':
-      birth_year = current_year - 23
-      break
-  }
+  const birth_year = matchAge(Age[event.data.age as keyof typeof Age])
 
   try {
     await useNuxtApp().$auth('/account/submit_personal_information', {
@@ -163,7 +167,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       </UFormField>
       <UFormField label="Wiek" name="age">
         <USelect
-          v-model="state.age" :items="['10-13', '14-16', '16-18', '19-22', '23+']"
+          v-model="state.age" :items="ages"
           class="w-full"
         />
       </UFormField>
@@ -193,7 +197,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       </UFormField>
       <UFormField label="Skąd się o nas dowiedziałeś? (wielokrotny wybór)" name="referral_source" class="flex-col items-center">
         <USelect
-          v-model="state.referral_source" :items="['Linkedin', 'Facebook', 'Instagram', 'Znajomy', 'Internet', 'Inne']"
+          v-model="state.referral_source" :items="referralSources"
           multiple
           class="w-full"
         />
