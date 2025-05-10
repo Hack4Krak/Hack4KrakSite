@@ -46,7 +46,7 @@ useSeoMeta({
                 </ElevatedButton>
               </NuxtLink>
             </div>
-            <NuxtImg src="/img/character/dragon.png" class="rendering-pixelated w-32 lg:w-64" />
+            <NuxtImg src="/img/character/dragon.png" alt="czerwony smok" class="rendering-pixelated w-32 lg:w-64" />
           </div>
         </div>
       </section>

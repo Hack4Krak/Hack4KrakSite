@@ -63,6 +63,10 @@ export default defineNuxtConfig({
     },
   },
 
+  nitro: {
+    compressPublicAssets: true,
+  },
+
   app: {
     head: {
       link: [
