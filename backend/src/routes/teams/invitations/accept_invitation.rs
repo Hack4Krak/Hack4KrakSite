@@ -1,4 +1,3 @@
-use crate::AuthMiddleware;
 use crate::entities::{team_invites, teams, users};
 use crate::routes::teams::TeamError::TeamNotFound;
 use crate::utils::app_state;
@@ -19,7 +18,7 @@ use std::ops::Deref;
     ),
     tag = "teams/invitations"
 )]
-#[post("/accept_invitation/{team_name}", wrap = "AuthMiddleware::with_user()")]
+#[post("/accept_invitation/{team_name}")]
 pub async fn accept_invitation(
     app_state: web::Data<app_state::AppState>,
     user: users::Model,

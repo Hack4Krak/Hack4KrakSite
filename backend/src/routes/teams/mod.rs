@@ -15,7 +15,11 @@ pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(create::create);
     config.service(confirm::confirm);
     config.service(scope("/external_invitations").configure(external_invitations::config));
-    config.service(scope("/invitations").configure(invitations::config));
+    config.service(
+        scope("/invitations")
+            .wrap(AuthMiddleware::with_user())
+            .configure(invitations::config),
+    );
     config.service(
         scope("/membership")
             .wrap(AuthMiddleware::with_team_as_member())

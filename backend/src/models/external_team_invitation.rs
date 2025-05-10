@@ -78,10 +78,10 @@ impl external_team_invitation::Model {
 
     pub async fn list(
         database: &DatabaseConnection,
-        access_code: Uuid,
+        administration_code: Uuid,
     ) -> Result<Vec<(String, String)>, DbErr> {
         external_team_invitation::Entity::find()
-            .filter(external_team_invitation::Column::AdministrationCode.eq(access_code))
+            .filter(external_team_invitation::Column::AdministrationCode.eq(administration_code))
             .join(
                 JoinType::InnerJoin,
                 external_team_invitation::Relation::Teams.def(),
@@ -96,9 +96,9 @@ impl external_team_invitation::Model {
 
     pub async fn grouped_codes(
         database: &DatabaseConnection,
-        access_code: Uuid,
+        administration_code: Uuid,
     ) -> Result<Vec<TeamCodes>, DbErr> {
-        let results = external_team_invitation::Model::list(database, access_code).await?;
+        let results = external_team_invitation::Model::list(database, administration_code).await?;
 
         let mut map: HashMap<String, Vec<String>> = HashMap::new();
         for (access_code, team_name) in results {

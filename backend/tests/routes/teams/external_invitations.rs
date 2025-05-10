@@ -46,7 +46,7 @@ async fn external_invitations_flow() {
             confirmation_code
         ))
         .set_json(json!({
-            "teams": [["Kotki", 3], ["Pieski", 1]]
+            "teams": [["Kotki", 3], ["Kraby", 1]]
         }))
         .insert_header(TestAuthHeader::new(admin.clone()))
         .to_request();

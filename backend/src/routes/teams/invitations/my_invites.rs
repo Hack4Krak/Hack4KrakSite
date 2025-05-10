@@ -1,4 +1,3 @@
-use crate::AuthMiddleware;
 use crate::entities::{team_invites, users};
 use crate::routes::teams::TeamError::TeamNotFound;
 use crate::utils::app_state;
@@ -16,7 +15,7 @@ use actix_web::{HttpResponse, get, web};
     ),
     tag = "teams/invitations"
 )]
-#[get("/", wrap = "AuthMiddleware::with_user()")]
+#[get("/")]
 pub async fn get_invitations(
     app_state: web::Data<app_state::AppState>,
     user: users::Model,
