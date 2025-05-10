@@ -65,6 +65,7 @@ sha2 = "0.10.8"
 url = "2.5.4"
 async-stream = "0.3.6"
 actix-http = "3.10.0"
+rand = "0.9.1"
 
 [dev-dependencies]
 quoted_printable = "0.5.1"

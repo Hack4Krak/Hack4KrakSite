@@ -57,13 +57,6 @@ pub async fn create(
         .into());
     }
 
-    if teams::Model::find_by_name(&app_state.database, &create_team_model.team_name)
-        .await?
-        .is_some()
-    {
-        return Err(TeamError::AlreadyExists.into());
-    }
-
     teams::Model::create(
         &app_state.database,
         create_team_model.team_name.clone(),

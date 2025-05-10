@@ -13,6 +13,7 @@ use uuid::Uuid;
 pub enum EmailVerificationAction {
     ConfirmEmailAddress { user_information: UserInformation },
     ResetPassword,
+    RegisterTeam { organization: String },
 }
 
 impl EmailVerificationAction {

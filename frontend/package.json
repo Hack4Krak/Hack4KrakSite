@@ -31,6 +31,7 @@
     "dayjs-nuxt": "2.1.11",
     "nuxt": "3.17.2",
     "nuxt-open-fetch-x": "0.10.2",
+    "nuxt-qrcode": "0.4.1",
     "party-js": "2.2.0",
     "rehype-katex": "7.0.1",
     "remark-math": "6.0.0",

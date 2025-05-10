@@ -3,6 +3,7 @@
 pub mod prelude;
 
 pub mod email_verification_request;
+pub mod external_team_invitation;
 pub mod flag_capture;
 pub mod sea_orm_active_enums;
 pub mod team_invites;

@@ -18,6 +18,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20250225_160500_create_password_reset_table::Migration),
             Box::new(m20250225_171450_add_confirmation_code_and_status_fields_to_team::Migration),
             Box::new(m20250430_183841_unified_email_verification::Migration),
+            Box::new(m20250503_182326_create_external_team_invitation::Migration),
         ]
     }
 }
@@ -33,3 +34,4 @@ mod m20250221_165419_add_flag_capture;
 mod m20250225_160500_create_password_reset_table;
 mod m20250225_171450_add_confirmation_code_and_status_fields_to_team;
 mod m20250430_183841_unified_email_verification;
+mod m20250503_182326_create_external_team_invitation;

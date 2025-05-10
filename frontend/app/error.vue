@@ -19,7 +19,7 @@ const errorMessage = computed(() => {
     case 500:
       return 'Rycerz napotkał przeszkodę\n na swojej drodze.\n Spróbuj ponownie za chwilę.'
     default:
-      return props.error?.statusMessage
+      return props.error?.message
   }
 })
 </script>
