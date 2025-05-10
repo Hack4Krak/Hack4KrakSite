@@ -17,7 +17,9 @@ impl MigratorTrait for Migrator {
             Box::new(m20250221_165419_add_flag_capture::Migration),
             Box::new(m20250225_160500_create_password_reset_table::Migration),
             Box::new(m20250225_171450_add_confirmation_code_and_status_fields_to_team::Migration),
+            Box::new(m20250429_123733_user_personal_info::Migration),
             Box::new(m20250430_183841_unified_email_verification::Migration),
+            Box::new(m20250509_132339_remove_id_from_personal_info_add_personal_info_column_to_user::Migration),
         ]
     }
 }
@@ -32,4 +34,6 @@ mod m20250204_175306_add_email_confirmation_table;
 mod m20250221_165419_add_flag_capture;
 mod m20250225_160500_create_password_reset_table;
 mod m20250225_171450_add_confirmation_code_and_status_fields_to_team;
+mod m20250429_123733_user_personal_info;
 mod m20250430_183841_unified_email_verification;
+mod m20250509_132339_remove_id_from_personal_info_add_personal_info_column_to_user;
