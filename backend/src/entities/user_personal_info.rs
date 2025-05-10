@@ -2,7 +2,6 @@
 
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
-use utoipa::ToSchema;
 
 #[derive(
     Clone,
@@ -13,15 +12,12 @@ use utoipa::ToSchema;
     Serialize,
     Deserialize,
     hack4krak_macros :: DeriveUpdatableModel,
-    // it will be automatically derived when #541 is merged
-    ToSchema,
+    utoipa :: ToSchema,
 )]
 #[sea_orm(table_name = "user_personal_info")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
-    #[sea_orm(unique)]
-    pub user_id: Uuid,
     pub first_name: String,
     pub birth_year: i32,
     pub location: String,
@@ -34,13 +30,7 @@ pub struct Model {
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(
-        belongs_to = "super::users::Entity",
-        from = "Column::UserId",
-        to = "super::users::Column::Id",
-        on_update = "NoAction",
-        on_delete = "Cascade"
-    )]
+    #[sea_orm(has_many = "super::users::Entity")]
     Users,
 }
 

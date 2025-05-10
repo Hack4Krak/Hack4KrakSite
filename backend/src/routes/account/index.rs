@@ -1,4 +1,4 @@
-use crate::entities::{user_personal_info, users};
+use crate::entities::users;
 use crate::middlewares::auth::AuthMiddleware;
 use crate::utils::app_state;
 use crate::utils::error::Error;
@@ -38,17 +38,10 @@ pub async fn index(
         .await?
         .ok_or(Error::Unauthorized)?;
 
-    let has_personal_information = user_personal_info::Model::get_user_personal_information(
-        user_model.id,
-        &app_state.database,
-    )
-    .await?
-    .is_some();
-
     Ok(HttpResponse::Ok().json(UserInformationResponse {
         email: user_model.email,
         username: user_model.username,
-        has_personal_information,
+        has_personal_information: user_model.personal_info.is_some(),
     }))
 }
 

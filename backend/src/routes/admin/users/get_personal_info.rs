@@ -1,4 +1,5 @@
 use crate::entities::{user_personal_info, users};
+use crate::routes::account::AccountError;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use actix_web::web::{Data, Path};
@@ -27,11 +28,13 @@ pub async fn get_personal_information(
         .await?
         .ok_or(Error::Unauthorized)?;
 
-    let personal_info = user_personal_info::Model::get_user_personal_information(
-        user_model.id,
-        &app_state.database,
-    )
-    .await?;
+    if let Some(personal_info_id) = user_model.personal_info {
+        let personal_info = user_personal_info::Entity::find_by_id(personal_info_id)
+            .one(&app_state.database)
+            .await?
+            .ok_or(Error::Unauthorized)?;
+        return Ok(HttpResponse::Ok().json(personal_info));
+    }
 
-    Ok(HttpResponse::Ok().json(personal_info))
+    Err(Error::Account(AccountError::UserDoesNotHavePersonalInfo))
 }

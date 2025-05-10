@@ -96,7 +96,7 @@ async fn submit_personal_info() {
         .uri("/account/submit_personal_information")
         .insert_header(TestAuthHeader::new(user.clone()))
         .set_json(serde_json::json!({
-          "birth_year": 1750,
+          "birth_year": 2000,
           "first_name": "Antonio",
           "is_vegetarian": true,
           "location": "Włochy",
@@ -127,4 +127,60 @@ async fn submit_personal_info() {
 
     let response = test::call_service(&app, request).await;
     assert!(response.status().is_success());
+}
+
+#[actix_web::test]
+async fn submit_personal_info_invalid_referral_source() {
+    let test_database = TestDatabase::new().await;
+    let user = test_database.with_default_user().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::post()
+        .uri("/account/submit_personal_information")
+        .insert_header(TestAuthHeader::new(user.clone()))
+        .set_json(serde_json::json!({
+          "birth_year": 2000,
+          "first_name": "Antonio",
+          "is_vegetarian": true,
+          "location": "Włochy",
+          "marketing_consent": true,
+          "organization": "Hack4Krak",
+          "referral_source": ["Linkedin", "Invalid"]
+        }))
+        .to_request();
+
+    let response = test::call_service(&app, request).await;
+    assert!(response.status().is_client_error());
+}
+
+#[actix_web::test]
+async fn submit_personal_info_invalid_birth_year() {
+    let test_database = TestDatabase::new().await;
+    let user = test_database.with_default_user().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::post()
+        .uri("/account/submit_personal_information")
+        .insert_header(TestAuthHeader::new(user.clone()))
+        .set_json(serde_json::json!({
+          "birth_year": 3000,
+          "first_name": "Antonio",
+          "is_vegetarian": true,
+          "location": "Włochy",
+          "marketing_consent": true,
+          "organization": "Hack4Krak",
+          "referral_source": ["Linkedin"]
+        }))
+        .to_request();
+
+    let response = test::call_service(&app, request).await;
+    assert!(response.status().is_client_error());
 }
