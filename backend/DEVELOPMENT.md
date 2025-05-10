@@ -107,7 +107,7 @@ and more.
   To run this command you have to install SeaORM CLI (`cargo install sea-orm-cli`)
   ```sh
   # You should run this command from `backend/` directory
-  bun generate:entities
+  bun db:generate-entities
   ```
 - Generate a new migration file
   ```sh
