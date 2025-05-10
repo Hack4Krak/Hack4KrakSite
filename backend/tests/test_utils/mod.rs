@@ -9,8 +9,7 @@ use actix_web::web::Data;
 use actix_web::{Error, test};
 use database::TestDatabase;
 use hack4krak_backend::entities::{
-    email_verification_request, flag_capture, team_invites, teams, user_personal_info,
-    users,
+    email_verification_request, flag_capture, team_invites, teams, user_personal_info, users,
 };
 use hack4krak_backend::services::env::EnvConfig;
 use hack4krak_backend::services::task_manager::TaskManager;

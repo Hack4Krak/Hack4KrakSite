@@ -39,7 +39,7 @@ impl MigrationTrait for Migration {
                     .name("fk-user_personal_info-user_personal_info_id")
                     .from(Users::Table, Users::PersonalInfo)
                     .to(UserPersonalInfo::Table, UserPersonalInfo::Id)
-                    .on_delete(ForeignKeyAction::Cascade)
+                    .on_delete(ForeignKeyAction::SetNull)
                     .to_owned(),
             )
             .await?;

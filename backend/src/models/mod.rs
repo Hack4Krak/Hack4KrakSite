@@ -5,5 +5,5 @@ pub mod team_invites;
 pub mod team_status;
 pub mod teams;
 pub mod user;
-pub mod user_roles;
 pub mod user_personal_info;
+pub mod user_roles;
