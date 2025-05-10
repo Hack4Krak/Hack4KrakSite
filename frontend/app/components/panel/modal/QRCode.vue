@@ -8,6 +8,17 @@ const open = defineModel<boolean>()
 function onDetect(detectedCodes: DetectedBarcode[]) {
   emit('codeScanned', detectedCodes[0]!.rawValue)
 }
+
+function onError(error: Error) {
+  console.error(error)
+  open.value = false
+
+  useToast().add({
+    title: `Nie udało się zeskanować kodu QR`,
+    description: error.message ?? 'Nieznany błąd',
+    color: 'error',
+  })
+}
 </script>
 
 <template>
@@ -15,6 +26,7 @@ function onDetect(detectedCodes: DetectedBarcode[]) {
     <template #body>
       <QrcodeStream
         @detect="onDetect"
+        @error="onError"
       />
     </template>
   </UModal>

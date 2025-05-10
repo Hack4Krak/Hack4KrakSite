@@ -1,6 +1,7 @@
 use crate::entities::email_verification_request;
 use crate::models::email_verification_request::EmailVerificationAction;
 use crate::services::emails::{Email, EmailTemplate};
+use crate::services::env::EnvConfig;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::success_response::SuccessResponse;
@@ -10,13 +11,13 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, ToSchema)]
-pub struct RegisterExternalTeamModel {
-    pub school: String,
+pub struct ExternalRegistrationFormModel {
+    pub organization: String,
     pub email_address: String,
 }
 
 #[utoipa::path(
-    request_body = RegisterExternalTeamModel,
+    request_body = ExternalRegistrationFormModel,
     responses(
         (status = 200, description = "Confirmation code successfully generated."),
         (status = 500, description = "Internal server error.")
@@ -26,26 +27,26 @@ pub struct RegisterExternalTeamModel {
     ),
     tag = "admin/teams"
 )]
-#[post("/register_external_team")]
-pub async fn register_external_team(
+#[post("/send_external_registration_form")]
+pub async fn send_external_registration_form(
     app_state: Data<app_state::AppState>,
-    payload: Json<RegisterExternalTeamModel>,
+    payload: Json<ExternalRegistrationFormModel>,
 ) -> Result<HttpResponse, Error> {
     let confirmation_code = email_verification_request::Model::create(
         &app_state.database,
         EmailVerificationAction::RegisterTeam {
-            organization: payload.school.clone(),
+            organization: payload.organization.clone(),
         },
         payload.email_address.clone(),
         None,
     )
     .await?;
 
-    // todo: link to frontend with code as parameter
-    let confirmation_link = format!(
-        "https://hack4krak.pl/admin/register_external_team?code={}",
-        confirmation_code
-    );
+    let mut url = EnvConfig::get().frontend_url.clone();
+    url.set_path("admin/register_external_team");
+    url.query_pairs_mut()
+        .append_pair("code", &confirmation_code.to_string());
+
     Email {
         sender: (
             Some("Kontakt Hack4Krak".to_string()),
@@ -53,10 +54,10 @@ pub async fn register_external_team(
         ),
         recipients: vec![payload.email_address.to_string()],
         subject: "Rejestracja szkoły w CTF".to_string(),
-        template: EmailTemplate::RegisterExternalTeam,
+        template: EmailTemplate::ExternalRegistrationForm,
         placeholders: Some(vec![
-            ("school".to_string(), payload.school.clone()),
-            ("link".to_string(), confirmation_link.to_string()),
+            ("organization".to_string(), payload.organization.clone()),
+            ("link".to_string(), url.to_string()),
         ]),
     }
     .send(&app_state)

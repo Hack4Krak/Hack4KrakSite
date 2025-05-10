@@ -7,7 +7,16 @@ use rand::distr::Alphanumeric;
 use sea_orm::{ActiveModelTrait, DatabaseConnection, EntityTrait, Set};
 use sea_orm::{ColumnTrait, IntoActiveModel, TransactionTrait};
 use sea_orm::{DbErr, QueryFilter, QuerySelect, RelationTrait};
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use utoipa::ToSchema;
 use uuid::Uuid;
+
+#[derive(Serialize, Deserialize, ToSchema)]
+pub struct TeamCodes {
+    team_name: String,
+    codes: Vec<String>,
+}
 
 impl external_team_invitation::Model {
     pub async fn create(
@@ -47,7 +56,6 @@ impl external_team_invitation::Model {
             .await?
             .ok_or(Error::InvalidEmailConfirmationCode)?;
 
-        // team_invites::Model::accept_invitation(database, registration_config, team, user).await?;
         teams::Model::assert_correct_team_size(
             database,
             registration_config.max_team_size,
@@ -84,5 +92,24 @@ impl external_team_invitation::Model {
             .into_tuple::<(String, String)>()
             .all(database)
             .await
+    }
+
+    pub async fn grouped_codes(
+        database: &DatabaseConnection,
+        access_code: Uuid,
+    ) -> Result<Vec<TeamCodes>, DbErr> {
+        let results = external_team_invitation::Model::list(database, access_code).await?;
+
+        let mut map: HashMap<String, Vec<String>> = HashMap::new();
+        for (access_code, team_name) in results {
+            map.entry(team_name).or_default().push(access_code);
+        }
+
+        let grouped: Vec<TeamCodes> = map
+            .into_iter()
+            .map(|(team_name, codes)| TeamCodes { team_name, codes })
+            .collect();
+
+        Ok(grouped)
     }
 }

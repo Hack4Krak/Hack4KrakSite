@@ -30,7 +30,7 @@ pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
 
 #[error_with_messages]
 pub enum TeamError {
-    AlreadyExists,
+    AlreadyExists { team_name: String },
     UserAlreadyBelongsToTeam { team_name: String },
     TeamNotFound,
     InvalidRegistrationPeriod,
@@ -54,7 +54,7 @@ impl error::ResponseError for TeamError {
             TeamError::InvalidRegistrationPeriod
             | TeamError::CannotRegisterInInternalMode
             | TeamError::InvalidNumberOfTeams { .. } => StatusCode::BAD_REQUEST,
-            TeamError::AlreadyExists
+            TeamError::AlreadyExists { .. }
             | TeamError::UserCantRemoveYourself
             | TeamError::TeamIsFull { .. }
             | TeamError::UserAlreadyInvited => StatusCode::CONFLICT,

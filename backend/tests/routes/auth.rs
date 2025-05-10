@@ -80,10 +80,6 @@ async fn auth_flow() {
     use actix_http::header;
     use actix_web::cookie::Cookie;
 
-    const UUID_REGEX: &str =
-        r"[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}";
-    let regex = regex::Regex::new(UUID_REGEX).unwrap();
-
     let test_database = TestDatabase::new().await;
     let smtp_client = SmtpTestClient::new().await;
     let app = TestApp::default()
@@ -103,10 +99,7 @@ async fn auth_flow() {
     let response = test::call_service(&app, request).await;
     assert!(response.status().is_success());
 
-    let emails = smtp_client.get_emails().await;
-    let email_body = &emails.items[0].content.body;
-
-    let confirmation_code = regex.find(email_body).unwrap().as_str();
+    let confirmation_code = smtp_client.find_uuid_in_first_email().await;
     let request = test::TestRequest::get()
         .uri(&format!("/auth/confirm/{}", confirmation_code))
         .to_request();

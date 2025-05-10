@@ -39,7 +39,6 @@ AuthError:
   InvalidCredentials: "Nieprawidłowa nazwa użytkownika i/lub hasło"
   InvalidEmailAddress: "Nieprawidłowy adres e-mail"
   PasswordAuthNotAvailable: "Uwierzytelnianie hasłem i e-mailem jest niedostępne dla tego konta"
-  ConfirmationCodeExpired: "Kod potwierdzenia wygasł, spróbuj wysłać e-mail ponownie"
 
 FlagError:
   InvalidFlagFormat: "Flaga musi być w określonym formacie: hack4KrakCTF{{...}}"
@@ -48,7 +47,7 @@ FlagError:
   TeamNotConfirmed: "Ten punkt końcowy jest dostępny tylko dla potwierdzonych drużyn"
 
 TeamError:
-  AlreadyExists: "Zespół o tej samej nazwie już istnieje"
+  AlreadyExists: "Zespół o nazwie \"{team_name}\" już istnieje"
   UserAlreadyBelongsToTeam: "Użytkownik już należy do zespołu: {team_name}"
   TeamNotFound: "Zespół nie został znaleziony"
   InvalidRegistrationPeriod: "Rejestracja jest niedostępna poza wyznaczonym okresem"
