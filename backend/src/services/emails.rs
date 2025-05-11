@@ -15,6 +15,7 @@ pub enum EmailTemplate {
     HelloWorld,
     EmailConfirmation,
     Generic,
+    ExternalRegistrationForm,
 }
 
 impl EmailTemplate {
@@ -23,6 +24,9 @@ impl EmailTemplate {
             EmailTemplate::HelloWorld => None,
             EmailTemplate::EmailConfirmation => Some(vec!["user".to_string(), "link".to_string()]),
             EmailTemplate::Generic => Some(vec!["body".to_string()]),
+            EmailTemplate::ExternalRegistrationForm => {
+                Some(vec!["organization".to_string(), "link".to_string()])
+            }
         }
     }
 
@@ -33,6 +37,9 @@ impl EmailTemplate {
                 include_str!("emails_assets/email_confirmation.html")
             }
             EmailTemplate::Generic => include_str!("emails_assets/generic.html"),
+            &EmailTemplate::ExternalRegistrationForm => {
+                include_str!("emails_assets/external_registration_form.html")
+            }
         }
     }
 
@@ -41,11 +48,17 @@ impl EmailTemplate {
             EmailTemplate::HelloWorld => false,
             EmailTemplate::EmailConfirmation => true,
             EmailTemplate::Generic => true,
+            EmailTemplate::ExternalRegistrationForm => true,
         }
     }
 
     pub fn list() -> Vec<Self> {
-        vec![Self::HelloWorld, Self::EmailConfirmation, Self::Generic]
+        vec![
+            Self::HelloWorld,
+            Self::EmailConfirmation,
+            Self::Generic,
+            Self::ExternalRegistrationForm,
+        ]
     }
 }
 

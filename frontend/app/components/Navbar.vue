@@ -42,7 +42,7 @@ watch(() => router.currentRoute.value, () => {
     </UNavigationMenu>
   </DefineNavbarTemplate>
 
-  <UContainer class="sticky top-0 max-w-full font-sans bg-default z-20">
+  <UContainer class="sticky top-0 max-w-full font-sans bg-default z-20 print:hidden">
     <div class="hidden md:block h-(--ui-header-height)">
       <ReuseNavbarTemplate />
     </div>

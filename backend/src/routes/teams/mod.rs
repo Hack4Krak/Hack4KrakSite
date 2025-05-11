@@ -6,6 +6,7 @@ use utoipa_actix_web::scope;
 
 mod confirm;
 mod create;
+mod external_invitations;
 mod invitations;
 mod management;
 mod membership;
@@ -13,6 +14,7 @@ mod membership;
 pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(create::create);
     config.service(confirm::confirm);
+    config.service(scope("/external_invitations").configure(external_invitations::config));
     config.service(
         scope("/invitations")
             .wrap(AuthMiddleware::with_user())
@@ -32,7 +34,7 @@ pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
 
 #[error_with_messages]
 pub enum TeamError {
-    AlreadyExists,
+    AlreadyExists { team_name: String },
     UserAlreadyBelongsToTeam { team_name: String },
     TeamNotFound,
     InvalidRegistrationPeriod,
@@ -47,15 +49,16 @@ pub enum TeamError {
     UserAlreadyInvited,
     TeamIsFull { max_size: u16 },
     TeamLeaderNotFound,
+    InvalidNumberOfTeams { max_teams: usize },
 }
 
 impl error::ResponseError for TeamError {
     fn status_code(&self) -> StatusCode {
         match self {
-            TeamError::InvalidRegistrationPeriod | TeamError::CannotRegisterInInternalMode => {
-                StatusCode::BAD_REQUEST
-            }
-            TeamError::AlreadyExists
+            TeamError::InvalidRegistrationPeriod
+            | TeamError::CannotRegisterInInternalMode
+            | TeamError::InvalidNumberOfTeams { .. } => StatusCode::BAD_REQUEST,
+            TeamError::AlreadyExists { .. }
             | TeamError::UserCantRemoveYourself
             | TeamError::TeamIsFull { .. }
             | TeamError::UserAlreadyInvited => StatusCode::CONFLICT,

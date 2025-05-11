@@ -2,7 +2,6 @@ use lettre::SmtpTransport;
 use lettre::transport::smtp::client::Tls;
 use quoted_printable::decode;
 use serde::{Deserialize, Deserializer, Serialize};
-use serde_json::{Value, to_string_pretty};
 use testcontainers::core::{IntoContainerPort, WaitFor};
 use testcontainers::runners::AsyncRunner;
 use testcontainers::{ContainerAsync, GenericImage};
@@ -45,14 +44,6 @@ impl SmtpTestClient {
 
     pub async fn get_emails(&self) -> MailhogResponse {
         let api_url = format!("http://{}:{}/api/v2/messages", self.host, self.http_port);
-        let a = reqwest::get(&api_url)
-            .await
-            .expect("Failed to call MailHog API")
-            .json::<Value>()
-            .await;
-        println!("{}", to_string_pretty(&a.unwrap()).unwrap());
-
-        let api_url = format!("http://{}:{}/api/v2/messages", self.host, self.http_port);
         reqwest::get(&api_url)
             .await
             .expect("Failed to call MailHog API")
@@ -60,12 +51,27 @@ impl SmtpTestClient {
             .await
             .expect("Failed to parse API response")
     }
+
+    pub async fn find_uuid_in_first_email(&self) -> String {
+        self.get_emails().await.items[0].find_uuid()
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct MailhogResponse {
     pub count: usize,
     pub items: Vec<MailhogItem>,
+}
+
+impl MailhogItem {
+    pub fn find_uuid(&self) -> String {
+        const UUID_REGEX: &str =
+            r"[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}";
+        let regex = regex::Regex::new(UUID_REGEX).unwrap();
+
+        let email_body = &self.content.body;
+        regex.find(email_body).unwrap().as_str().to_owned()
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]

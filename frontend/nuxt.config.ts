@@ -22,6 +22,7 @@ export default defineNuxtConfig({
     '@nuxtjs/mdc',
     '@formkit/auto-animate/nuxt',
     'nuxt-open-fetch-x',
+    'nuxt-qrcode',
     'dayjs-nuxt',
     '@compodium/nuxt',
     '@vueuse/nuxt',
@@ -54,6 +55,7 @@ export default defineNuxtConfig({
     '/': { prerender: true },
     '/faq': { redirect: '/docs/faq' },
     '/rules': { redirect: '/docs/rules' },
+    '/admin/**': { robots: false },
   },
 
   hooks: {

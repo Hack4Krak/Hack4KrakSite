@@ -1,7 +1,9 @@
 use crate::entities::sea_orm_active_enums::TeamStatus;
 use crate::entities::teams::ActiveModel;
-use crate::entities::{flag_capture, teams, users};
+use crate::entities::{external_team_invitation, flag_capture, teams, users};
+use crate::models::task::RegistrationConfig;
 use crate::routes::admin::UpdateTeamModel;
+use crate::routes::teams::TeamError;
 use crate::routes::teams::TeamError::*;
 use crate::utils::error::Error;
 use actix_web::dev::Payload;
@@ -9,7 +11,7 @@ use actix_web::{FromRequest, HttpMessage, HttpRequest};
 use chrono::Utc;
 use sea_orm::ActiveValue::Set;
 use sea_orm::prelude::DateTime;
-use sea_orm::{ActiveModelTrait, ModelTrait, PaginatorTrait, QueryFilter};
+use sea_orm::{ActiveModelTrait, ConnectionTrait, ModelTrait, PaginatorTrait, QueryFilter};
 use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, TransactionTrait};
 use serde::{Deserialize, Serialize};
 use std::future;
@@ -28,7 +30,7 @@ pub struct TeamWithMembers {
 
 impl teams::Model {
     pub async fn find_by_name(
-        database: &DatabaseConnection,
+        database: &impl ConnectionTrait,
         name: &str,
     ) -> Result<Option<Self>, Error> {
         let team = teams::Entity::find()
@@ -58,12 +60,16 @@ impl teams::Model {
         Ok(())
     }
 
-    pub async fn create(
-        database: &DatabaseConnection,
+    pub async fn try_create(
+        transaction: &impl ConnectionTrait,
         team_name: String,
-        user: users::Model,
-    ) -> Result<(), Error> {
-        let transaction = database.begin().await?;
+    ) -> Result<Uuid, Error> {
+        if teams::Model::find_by_name(transaction, &team_name)
+            .await?
+            .is_some()
+        {
+            return Err(AlreadyExists { team_name }.into());
+        }
 
         let uuid = Uuid::new_v4();
         teams::Entity::insert(teams::ActiveModel {
@@ -73,8 +79,20 @@ impl teams::Model {
             status: Set(TeamStatus::Absent),
             ..Default::default()
         })
-        .exec(&transaction)
+        .exec(transaction)
         .await?;
+
+        Ok(uuid)
+    }
+
+    pub async fn create(
+        database: &DatabaseConnection,
+        team_name: String,
+        user: users::Model,
+    ) -> Result<(), Error> {
+        let transaction = database.begin().await?;
+
+        let uuid = Self::try_create(&transaction, team_name).await?;
 
         let mut active_user: users::ActiveModel = user.into();
         active_user.team = Set(Some(uuid));
@@ -84,6 +102,36 @@ impl teams::Model {
         transaction.commit().await?;
 
         Ok(())
+    }
+
+    pub async fn create_as_external(
+        database: &DatabaseConnection,
+        registration_config: &RegistrationConfig,
+        team_name: String,
+        number_of_members: u16,
+        administration_code: Uuid,
+    ) -> Result<Vec<String>, Error> {
+        if number_of_members >= registration_config.max_team_size {
+            return Err(Error::Team(TeamIsFull {
+                max_size: registration_config.max_team_size,
+            }));
+        }
+
+        let transaction = database.begin().await?;
+        let team_id = Self::try_create(&transaction, team_name).await?;
+
+        let mut invitations = Vec::new();
+        for _ in 0..number_of_members {
+            let invitation_code =
+                external_team_invitation::Model::create(&transaction, team_id, administration_code)
+                    .await?;
+
+            invitations.push(invitation_code);
+        }
+
+        transaction.commit().await?;
+
+        Ok(invitations)
     }
 
     pub async fn kick_user(
@@ -230,7 +278,10 @@ impl teams::Model {
                 .await?
                 .is_some()
             {
-                return Err(Error::Team(AlreadyExists));
+                return Err(TeamError::AlreadyExists {
+                    team_name: team.name,
+                }
+                .into());
             }
             let mut active_team: ActiveModel = team.clone().into();
             active_team.name = Set(team_name);
