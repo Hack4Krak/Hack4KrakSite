@@ -1,4 +1,3 @@
-use crate::services::emails::{Email, EmailTemplate};
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use actix_web::web::{Data, Json};
@@ -12,7 +11,7 @@ pub struct EmailSendingModel {
     /// If recipients is None, the email will be sent to all users.
     pub recipients: Option<Vec<String>>,
     pub subject: String,
-    pub template: EmailTemplate,
+    // pub template: EmailTemplate,
     pub placeholders: Option<Vec<(String, String)>>,
 }
 
@@ -32,10 +31,10 @@ pub async fn send(
     app_state: Data<app_state::AppState>,
     model: Json<EmailSendingModel>,
 ) -> Result<HttpResponse, Error> {
-    Email::from_admin_sending_model(&app_state.database, model.into_inner())
-        .await?
-        .send(&app_state)
-        .await?;
+    // Email::from_admin_sending_model(&app_state.database, model.into_inner())
+    //     .await?
+    //     .send(&app_state)
+    //     .await?;
 
     Ok(HttpResponse::Ok().finish())
 }
