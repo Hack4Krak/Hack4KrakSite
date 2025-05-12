@@ -27,12 +27,12 @@ const { commitHash, branchName } = useGitInfo()
             </NuxtLink>!
           </div>
           <div class="hidden lg:block">
-            <span aria-hidden class="text-xs text-dimmed">{{ branchName }}@{{ commitHash }}</span>
+            <span aria-hidden="true" class="text-xs text-dimmed">{{ branchName }}@{{ commitHash }}</span>
           </div>
         </div>
 
         <!-- Right section - Social links grid -->
-        <div class="text-center text-[16px] lg:w-1/2 lg:grid grid-rows-2 grid-flow-col-dense place-content-between">
+        <div class="text-center lg:w-1/2 lg:grid grid-rows-2 grid-flow-col-dense place-content-between">
           <NuxtLink
             v-for="{ label, icon, to } in FOOTER_SOCIALS"
             :key="label"
@@ -45,7 +45,7 @@ const { commitHash, branchName } = useGitInfo()
               :name="icon"
               size="15"
             />
-            <span class="lg:font-normal p-1 py-2 leading-5">
+            <span class="lg:font-normal p-3 leading-6">
               {{ label }}
             </span>
             <span class="font-thin group-[&:last-child]:hidden lg:hidden"> | </span>
