@@ -65,6 +65,7 @@ pub enum Error {
     FailedToSendEmail(#[from] lettre::transport::smtp::Error),
     FailedToBuildEmail(#[from] lettre::error::Error),
     InvalidJson(#[from] serde_json::Error),
+    InvalidYaml(#[from] serde_yml::Error),
     InvalidEmailConfirmationCode,
     EmailConfirmationCodeExpired,
     RouteNotFound,
@@ -82,6 +83,8 @@ pub enum Error {
     FailedToParseUrl(#[from] url::ParseError),
     ServerEventSendingError(#[from] broadcast::error::SendError<String>),
     Validator(validator::ValidationErrors),
+    #[error(transparent)]
+    FailedToRenderTemplate(#[from] askama::Error),
 
     #[error(transparent)]
     Auth(#[from] AuthError),
@@ -107,9 +110,11 @@ impl error::ResponseError for Error {
             | Error::Request(_)
             | Error::FailedToSendEmail(_)
             | Error::InvalidJson(_)
+            | Error::InvalidYaml(_)
             | Error::FailedToBuildEmail(_)
             | Error::FailedToParseUrl(_)
             | Error::ConflictInDatabase
+            | Error::FailedToRenderTemplate(_)
             | Error::ServerEventSendingError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Unauthorized => StatusCode::UNAUTHORIZED,
             Error::InvalidJsonWebToken => StatusCode::UNAUTHORIZED,
