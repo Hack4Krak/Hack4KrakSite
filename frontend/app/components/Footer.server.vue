@@ -27,7 +27,7 @@ const { commitHash, branchName } = useGitInfo()
             </NuxtLink>!
           </div>
           <div class="hidden lg:block">
-            <span class="text-xs text-dimmed">{{ branchName }}@{{ commitHash }}</span>
+            <span aria-hidden class="text-xs text-dimmed">{{ branchName }}@{{ commitHash }}</span>
           </div>
         </div>
 
