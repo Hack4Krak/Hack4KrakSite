@@ -17,6 +17,10 @@ import {
 import { Line } from 'vue-chartjs'
 import 'chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm'
 
+useSeoMeta({
+  title: 'Ranking',
+})
+
 export type Team = ApiResponse<'teams'>[0]
 
 ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, TimeScale)

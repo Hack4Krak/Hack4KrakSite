@@ -8,6 +8,10 @@ definePageMeta({
   layout: 'centered',
 })
 
+useSeoMeta({
+  title: 'Resetowanie hasła',
+})
+
 type Schema = z.output<typeof schema>
 
 const schema = z.object({

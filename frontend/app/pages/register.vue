@@ -3,6 +3,10 @@ definePageMeta({
   middleware: 'guest',
   layout: 'centered',
 })
+
+useSeoMeta({
+  title: 'Rejestracja',
+})
 </script>
 
 <template>

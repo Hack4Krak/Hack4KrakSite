@@ -4,6 +4,10 @@ definePageMeta({
   layout: 'centered',
 })
 
+useSeoMeta({
+  title: 'Logowanie',
+})
+
 const route = useRoute()
 
 if (route.query.error) {

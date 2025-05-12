@@ -3,6 +3,10 @@ definePageMeta({
   layout: 'centered',
 })
 
+useSeoMeta({
+  title: 'Rejestracja drużyn',
+})
+
 const route = useRoute()
 const confirmationCode = String(route.query.code)
 

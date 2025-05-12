@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import type { ApiResponse } from '#open-fetch'
 
+useSeoMeta({
+  title: 'Panel drużyny',
+})
+
 const { data: team } = await useAuth('/teams/membership/my_team')
 
 const { data: invitedUsers } = await useAuth('/teams/management/invited_users', {

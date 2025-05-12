@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { FetchError } from 'ofetch'
 
+useSeoMeta({
+  title: 'Fabuła zadania',
+})
+
 const route = useRoute('tasks-description-id')
 const taskId = String(route.params.id)
 

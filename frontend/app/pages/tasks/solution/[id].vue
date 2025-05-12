@@ -1,4 +1,8 @@
 <script setup lang="ts">
+useSeoMeta({
+  title: 'Rozwiązanie zadania',
+})
+
 const route = useRoute('tasks-description-id')
 const taskId = route.params.id
 

@@ -2,6 +2,10 @@
 import type { Tasks } from '~/components/Map.vue'
 import Map from '@/components/Map.vue'
 
+useSeoMeta({
+  title: 'Zadania',
+})
+
 const { data } = await useApi('/tasks/list')
 
 const { data: completedTasksRaw } = await useAuth('/teams/membership/completed_tasks', {

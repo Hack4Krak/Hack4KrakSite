@@ -1,4 +1,8 @@
 <script setup lang="ts">
+useSeoMeta({
+  title: 'Panel użytkownika',
+})
+
 const { $api } = useNuxtApp()
 
 const { data } = await useAuth('/account/')
