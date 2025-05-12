@@ -4,6 +4,14 @@ import { NAVBAR_ITEMS } from '~~/content/navbar'
 const [DefineNavbarTemplate, ReuseNavbarTemplate] = createReusableTemplate()
 
 const isMobileMenuOpen = ref(false)
+
+const { data: isLoggedIn } = useAuth('/account/', {
+  transform: (data) => {
+    return data !== undefined
+  },
+  onResponseError: undefined,
+})
+
 function toggleMobileMenu() {
   isMobileMenuOpen.value = !isMobileMenuOpen.value
 }
@@ -36,7 +44,7 @@ watch(() => router.currentRoute.value, () => {
 
       <template #button>
         <ElevatedButton>
-          Zaloguj się!
+          {{ isLoggedIn ? "Otwórz panel" : "Zaloguj się!" }}
         </ElevatedButton>
       </template>
     </UNavigationMenu>
