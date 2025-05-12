@@ -1,4 +1,3 @@
-use crate::AuthMiddleware;
 use crate::entities::{user_personal_info, users};
 use crate::utils::app_state;
 use crate::utils::error::Error;
@@ -17,7 +16,7 @@ use sea_orm::EntityTrait;
     operation_id = "user_get_personal_information",
     tag = "account"
 )]
-#[get("/get_personal_information", wrap = "AuthMiddleware::with_user()")]
+#[get("/get_personal_information")]
 pub async fn get_personal_information(
     app_state: Data<app_state::AppState>,
     user: users::Model,

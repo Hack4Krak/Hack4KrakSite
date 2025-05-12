@@ -14,7 +14,6 @@ pub use submit_personal_information::UserPersonalInformationSubmissionRequest;
 
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(index::index);
-    cfg.service(index::only_admins);
     cfg.service(delete::delete);
     cfg.service(update::update);
     cfg.service(update::change_password);

@@ -1,4 +1,3 @@
-use crate::AuthMiddleware;
 use crate::entities::{user_personal_info, users};
 use crate::models::user_personal_info::{ALLOWED_REFERRAL_SOURCES, MAX_AGE};
 use crate::routes::account::AccountError::{BirthYearNotInRange, InvalidReferralSource};
@@ -33,7 +32,7 @@ pub struct UserPersonalInformationSubmissionRequest {
     ),
     tag = "account"
 )]
-#[post("/submit_personal_information", wrap = "AuthMiddleware::with_user()")]
+#[post("/submit_personal_information")]
 pub async fn submit_personal_information(
     app_state: Data<app_state::AppState>,
     user: users::Model,
