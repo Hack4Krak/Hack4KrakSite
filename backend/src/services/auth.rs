@@ -6,7 +6,8 @@ use crate::routes::auth::AuthError::{
 };
 use crate::routes::auth::RegisterModel;
 use crate::routes::auth::reset_password::ResetPasswordModel;
-use crate::services::emails::{Email, EmailTemplate};
+use crate::services::emails;
+use crate::services::emails::{Email, EmailConfirmation};
 use crate::services::env::EnvConfig;
 use crate::utils::app_state;
 use crate::utils::cookies::{
@@ -15,6 +16,7 @@ use crate::utils::cookies::{
 use crate::utils::error::Error;
 use crate::utils::error::Error::HashPasswordFailed;
 use crate::utils::jwt::encode_jwt;
+use crate::utils::success_response::SuccessResponse;
 use actix_web::{HttpResponse, HttpResponseBuilder};
 use argon2::password_hash::SaltString;
 use argon2::password_hash::rand_core::OsRng;
@@ -46,24 +48,20 @@ impl AuthService {
         )
         .await?;
 
-        let confirmation_link =
-            Self::create_email_confirmation_link(&confirmation_code.to_string())?;
-        let sender_email = format!("auth@{}", &EnvConfig::get().domain);
+        let link = Self::create_email_confirmation_link(&confirmation_code.to_string())?;
 
-        Email {
-            sender: (Some("Autoryzacja Hack4Krak".to_string()), sender_email),
-            recipients: vec![credentials.email],
-            subject: "Potwierdzenie rejestracji".to_string(),
-            template: EmailTemplate::EmailConfirmation,
-            placeholders: Some(vec![
-                ("user".to_string(), credentials.name),
-                ("link".to_string(), confirmation_link.to_string()),
-            ]),
-        }
-        .send(app_state)
+        Email::new(
+            "auth",
+            vec![credentials.email],
+            Box::new(EmailConfirmation {
+                link,
+                user: credentials.name,
+            }),
+        )
+        .send(&app_state.smtp_client)
         .await?;
 
-        Ok(HttpResponse::Ok().body("User successfully registered."))
+        Ok(SuccessResponse::default().http_response())
     }
 
     pub fn assert_password_is_valid(
@@ -175,23 +173,14 @@ impl AuthService {
         reset_password_link = reset_password_link
             .join(format!("/reset_password?code={confirmation_code}").as_str())?;
 
-        let email_body = format!(
-            include_str!("emails_assets/reset_password_body.html"),
-            reset_password_link.clone(),
-            reset_password_link.clone(),
-            reset_password_link
-        );
-
-        let sender_email = format!("auth@{}", &EnvConfig::get().domain);
-
-        Email {
-            sender: (Some("Autoryzacja Hack4Krak".to_string()), sender_email),
-            recipients: vec![email],
-            subject: "Resetowanie hasła".to_string(),
-            template: EmailTemplate::Generic,
-            placeholders: Some(vec![("body".to_string(), email_body)]),
-        }
-        .send(app_state)
+        Email::new(
+            "auth",
+            vec![email],
+            Box::new(emails::ResetPassword {
+                link: reset_password_link.to_string(),
+            }),
+        )
+        .send(&app_state.smtp_client)
         .await?;
 
         Ok(())
