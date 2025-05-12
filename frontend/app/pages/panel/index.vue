@@ -1,4 +1,9 @@
 <script setup lang="ts">
+useSeoMeta({
+  title: 'Panel użytkownika',
+  description: 'Zarządzaj swoim kontem i drużyną w naszym CTF-ie! Sprawdź swoje zadania i postępy!',
+})
+
 const { $api } = useNuxtApp()
 
 const { data } = await useAuth('/account/')
