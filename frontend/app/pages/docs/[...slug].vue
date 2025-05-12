@@ -15,6 +15,7 @@ if (!page.value?.title) {
 
 useSeoMeta({
   title: page.value?.title,
+  description: page.value?.description,
 })
 </script>
 

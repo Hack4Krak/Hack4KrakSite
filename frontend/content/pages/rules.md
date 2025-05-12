@@ -1,5 +1,6 @@
 ---
 title: Regulamin Hack4Krak - edycja dla Szkół Podstawowych
+description: Regulamin Hack4Krak - edycja dla Szkół Podstawowych
 ---
 
 ## 1. Postanowienia ogólne

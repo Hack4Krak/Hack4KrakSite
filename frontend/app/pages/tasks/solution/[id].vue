@@ -2,6 +2,11 @@
 const route = useRoute('tasks-description-id')
 const taskId = route.params.id
 
+useSeoMeta({
+  title: `Rozwiązanie zadania ${taskId}`,
+  description: 'Zobacz rozwiązanie zadania z naszego ostatniego CTF-u!',
+})
+
 const { data } = await useAuth('/tasks/solution/{task_id}', {
   path: {
     task_id: taskId?.toString() ?? '',
