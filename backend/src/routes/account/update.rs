@@ -1,6 +1,5 @@
 use crate::entities::users;
 use crate::entities::users::UpdatableModel;
-use crate::middlewares::auth::AuthMiddleware;
 use crate::models::user::Password;
 use crate::models::user::validate_name_chars;
 use crate::services::auth::AuthService;
@@ -31,7 +30,7 @@ struct UpdateUserModel {
     ),
     tag = "account"
 )]
-#[patch("/update", wrap = "AuthMiddleware::with_user()")]
+#[patch("/update")]
 pub async fn update(
     app_state: Data<app_state::AppState>,
     user: users::Model,
@@ -68,7 +67,7 @@ struct ChangePasswordModel {
     ),
     tag = "account"
 )]
-#[patch("/update/password", wrap = "AuthMiddleware::with_user()")]
+#[patch("/update/password")]
 pub async fn change_password(
     app_state: Data<app_state::AppState>,
     user: users::Model,
