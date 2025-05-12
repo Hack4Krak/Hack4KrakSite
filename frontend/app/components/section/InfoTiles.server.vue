@@ -11,7 +11,7 @@ import { INFO_TILES_CONTENT } from '~~/content/info-tiles'
     />
     <div
       class="col-span-2 border-red-450 border-2 flex flex-col px-4 py-12 text-center lg:text-left
-                 lg:flex-row justify-center gap-12 items-center"
+             lg:flex-row justify-center gap-12 items-center"
     >
       <div class="">
         <p class="lg:text-2xl font-bold text-red-450">
