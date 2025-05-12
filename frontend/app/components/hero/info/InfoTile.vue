@@ -30,7 +30,7 @@ const colorString = computed(() => `var(--color-${content.color})`)
       <div class="text-lg lg:text-2xl text-center" :style="{ color: colorString }">
         <MarkdownContent :text="content.front" />
       </div>
-      <NuxtImg :src="content.image" :alt="content.image.split('/').at(-1)" height="400" class="h-12 lg:h-32 rendering-pixelated" />
+      <NuxtImg :src="content.image" alt="" height="400" class="h-12 lg:h-32 rendering-pixelated" />
     </div>
 
     <div
