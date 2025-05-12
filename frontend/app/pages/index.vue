@@ -18,15 +18,15 @@ useSeoMeta({
     </HeroSection>
     <UContainer class="w-full mb-24">
       <section class="my-8">
-        <LazySectionInfoBox />
+        <SectionInfoBox />
       </section>
       <section class="my-8">
-        <LazySectionInfoTiles />
+        <SectionInfoTiles />
       </section>
       <section id="section-how-to-participate" class="my-8">
-        <LazySectionHowToParticipate hydrate-on-idle />
+        <LazySectionHowToParticipate hydrate-on-interaction />
       </section>
-      <LazyFooter hydrate-on-idle class="mt-8 lg:mt-12" />
+      <Footer hydrate-on-idle class="mt-8 lg:mt-12" />
     </UContainer>
   </main>
 </template>
