@@ -22,7 +22,7 @@
     "@formkit/auto-animate": "^0.8.2",
     "@nuxt/content": "3.5.1",
     "@nuxt/image": "1.10.0",
-    "@nuxt/ui": "https://pkg.pr.new/@nuxt/ui@09b4699",
+    "@nuxt/ui": "https://pkg.pr.new/@nuxt/ui@276268d",
     "@nuxtjs/mdc": "0.17.0",
     "@nuxtjs/seo": "3.0.3",
     "@vueuse/nuxt": "13.1.0",

@@ -113,12 +113,6 @@ export default defineNuxtConfig({
       },
     },
   },
-  // https://ui.nuxt.com/getting-started/fonts
-  fonts: {
-    experimental: {
-      processCSSVariables: true,
-    },
-  },
   // https://ui.nuxt.com/getting-started/color-mode/nuxt
   colorMode: {
     preference: 'dark',
