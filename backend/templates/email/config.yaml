@@ -1,0 +1,15 @@
+EmailConfirmation:
+  subject: Potwierdzenie rejestracji
+  sender_name: Autoryzacja Hack4Krak
+
+ExternalRegistrationForm:
+  subject: Rejestracja szkoły w CTF
+  sender: Kontakt Hack4Krak
+
+ResetPassword:
+  subject: Zresetuj hasło
+  sender: Autoryzacja Hack4Krak
+
+Informational:
+  subject: Informacje o Hack4Krak
+  sender: Kontakt Hack4Krak

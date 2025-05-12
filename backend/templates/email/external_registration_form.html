@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Zarejestruj szkołę{% endblock %}
+
+{% block content %}
+<p style="margin: 0 0 24px; font-size: 16px; line-height: 24px; color: #475569">
+    <strong>Dzień dobry!</strong><br/>
+    Dziękujemy za zgłoszenie szkoły <strong>{{ organization }}</strong> do konkursu informatycznego <strong>Hack4Krak CTF</strong>!<br/><br/>
+    Poniższy przycisk umożliwia rejestrację maksymalnie trzech pięcioosobowych drużyn.<br/>
+    Po wysłaniu formularza nie będzie możliwa edycja zgłoszonych drużyn.
+    <strong>Prosimy NIE PRZEKAZYWAĆ tego linku uczniom</strong> – jest on przeznaczony wyłącznie dla nauczycieli oraz dyrekcji.<br/><br/>
+    W formularzu należy podać liczbę drużyn oraz ich nazwy. Po jego wypełnieniu zostaną wygenerowane unikalne kody dostępu. Każdy kod należy przekazać uczniom w odpowiedniej drużynie – uczniowie, po zarejestrowaniu się na stronie <a href="https://hack4krak.pl">hack4krak.pl</a>, mogą go użyć, aby dołączyć do przypisanej drużyny.<br/><br/>
+    W razie wątpliwości zachęcamy do zapoznania się z
+    <a href="https://hack4krak.pl/docs/rules">Regulaminem wydarzenia</a>,
+    <a href="https://hack4krak.pl/docs/privacy-policy">Polityką Prywatności</a>,
+    <a href="https://hack4krak.pl/">naszą stroną internetową</a> oraz
+    <a href="https://hack4krak.pl#section-how-to-participate">informacjami o zapisach dla uczniów i nauczycieli</a>.<br/><br/>
+    Bylibyśmy też wdzięczni, za <strong>poinformowanie uczniów o wydarzeniu za pomocą m.in. dziennika elektronicznego</strong>
+    W razie pytań prosimy o kontakt z organizatorami <a href="mailto:kontakt@hack4krak.pl">kontakt@hack4krak.pl</a> lub opiekunem ze strony Rady Pedagogicznej <a href="mailto:aligaskowaluk@lo31.krakow.pl">aligaskowaluk@lo31.krakow.pl</a>.<br/><br/>
+    Wydarzenie jest współorganizowane przez
+    <a href="https://www.lo31.krakow.pl/">XXXI Liceum Ogólnokształcące w Krakowie</a>.
+</p>
+<div>
+    <a href="{{ link }}" style="display: inline-block; text-decoration: none; padding: 16px 24px; font-size: 16px; line-height: 1; border-radius: 4px; color: #fffffe; background-color: #020617" class="hover-bg-slate-800">
+        <!--[if mso]><i style="mso-font-width: 150%; mso-text-raise: 31px" hidden>&emsp;</i><![endif]-->
+        <span style="mso-text-raise: 16px">Zarejestruj drużyny!</span>
+        <!--[if mso]><i hidden style="mso-font-width: 150%">&emsp;&#8203;</i><![endif]-->
+    </a>
+</div>
+<div role="separator" style="height: 1px; line-height: 1px; background-color: #cbd5e1; margin-top: 24px; margin-bottom: 24px">&zwj;</div>
+<p class="mso-break-all" style="margin: 0; font-size: 12px; line-height: 20px; color: #475569">
+    Jeśli masz problem z kliknięciem przycisku, skopiuj i wklej poniższy link do przeglądarki:
+    <a href="%link%" style="color: #1e293b; text-decoration: underline">%link%</a>
+</p>
+{% endblock %}

@@ -80,6 +80,8 @@ pub enum Error {
     FailedToBuildEmail(#[from] lettre::error::Error),
     #[serde(skip)]
     InvalidJson(#[from] serde_json::Error),
+    #[serde(skip)]
+    InvalidYaml(#[from] serde_yml::Error),
     InvalidEmailConfirmationCode,
     InvalidColorFormat,
     EmailConfirmationCodeExpired,
@@ -106,6 +108,9 @@ pub enum Error {
     #[serde(skip)]
     Os(#[from] OsError),
     Validator(validator::ValidationErrors),
+    #[serde(skip)]
+    #[error(transparent)]
+    FailedToRenderTemplate(#[from] askama::Error),
 
     #[error(transparent)]
     Account(#[from] AccountError),
@@ -133,11 +138,13 @@ impl error::ResponseError for Error {
             | Error::Request(_)
             | Error::FailedToSendEmail(_)
             | Error::InvalidJson(_)
+            | Error::InvalidYaml(_)
             | Error::FailedToBuildEmail(_)
             | Error::FailedToParseUrl(_)
             | Error::ConflictInDatabase
             | Error::Metrics(_)
             | Error::Os(_)
+            | Error::FailedToRenderTemplate(_)
             | Error::ServerEventSendingError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Unauthorized => StatusCode::UNAUTHORIZED,
             Error::InvalidJsonWebToken => StatusCode::UNAUTHORIZED,

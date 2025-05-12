@@ -1,95 +1,97 @@
-use crate::entities::users;
-use crate::routes::admin::EmailSendingModel;
-use crate::utils::app_state::AppState;
+use crate::services::env::EnvConfig;
 use crate::utils::error::Error;
-use actix_web::HttpResponse;
-use lettre::message::{Attachment, Mailbox, Mailboxes, MultiPart, SinglePart, header};
-use lettre::{Message, Transport};
-use sea_orm::{DatabaseConnection, EntityTrait};
+use askama::{DynTemplate, Template};
+use lettre::message::{Mailbox, Mailboxes, SinglePart, header};
+use lettre::{Message, SmtpTransport, Transport};
 use serde::{Deserialize, Serialize};
+use std::any::type_name;
+use std::collections::HashMap;
 use std::option::Option;
 use utoipa::ToSchema;
 
-#[derive(Serialize, Deserialize, ToSchema)]
-pub enum EmailTemplate {
-    HelloWorld,
-    EmailConfirmation,
-    Generic,
-    ExternalRegistrationForm,
+#[derive(Template, Serialize, Deserialize, ToSchema)]
+#[template(path = "email/email_confirmation.html")]
+pub struct EmailConfirmation {
+    pub link: String,
+    pub user: String,
 }
 
-impl EmailTemplate {
-    pub fn get_placeholder_elements(&self) -> Option<Vec<String>> {
-        match self {
-            EmailTemplate::HelloWorld => None,
-            EmailTemplate::EmailConfirmation => Some(vec!["user".to_string(), "link".to_string()]),
-            EmailTemplate::Generic => Some(vec!["body".to_string()]),
-            EmailTemplate::ExternalRegistrationForm => {
-                Some(vec!["organization".to_string(), "link".to_string()])
-            }
-        }
-    }
-
-    pub fn get_template(&self) -> &'static str {
-        match self {
-            EmailTemplate::HelloWorld => include_str!("emails_assets/hello_world.html"),
-            EmailTemplate::EmailConfirmation => {
-                include_str!("emails_assets/email_confirmation.html")
-            }
-            EmailTemplate::Generic => include_str!("emails_assets/generic.html"),
-            &EmailTemplate::ExternalRegistrationForm => {
-                include_str!("emails_assets/external_registration_form.html")
-            }
-        }
-    }
-
-    pub fn is_logo_attached(&self) -> bool {
-        match self {
-            EmailTemplate::HelloWorld => false,
-            EmailTemplate::EmailConfirmation => true,
-            EmailTemplate::Generic => true,
-            EmailTemplate::ExternalRegistrationForm => false,
-        }
-    }
-
-    pub fn list() -> Vec<Self> {
-        vec![
-            Self::HelloWorld,
-            Self::EmailConfirmation,
-            Self::Generic,
-            Self::ExternalRegistrationForm,
-        ]
-    }
+#[derive(Template, Serialize, Deserialize, ToSchema)]
+#[template(path = "email/reset_password.html")]
+pub struct ResetPassword {
+    pub link: String,
 }
 
-#[derive(Serialize, Deserialize, ToSchema)]
-pub struct Email {
-    pub sender: (Option<String>, String),
-    pub recipients: Vec<String>,
+#[derive(Template, Serialize, Deserialize, ToSchema)]
+#[template(path = "email/informational.html")]
+pub struct Informational {
+    pub title: String,
+    pub content: String,
+}
+
+#[derive(Template, Serialize, Deserialize, ToSchema)]
+#[template(path = "email/external_registration_form.html")]
+pub struct ExternalRegistrationForm {
+    pub organization: String,
+    pub link: String,
+}
+
+#[derive(Serialize, Deserialize, ToSchema, Clone, Debug)]
+pub struct EmailMeta {
     pub subject: String,
-    pub template: EmailTemplate,
-    pub placeholders: Option<Vec<(String, String)>>,
+    pub sender_name: Option<String>,
+}
+
+impl Default for EmailMeta {
+    fn default() -> Self {
+        EmailMeta {
+            subject: "Hack4Krak".to_string(),
+            sender_name: Some("Kontakt Hack4Krak".to_string()),
+        }
+    }
+}
+
+impl<T: DynTemplate> EmailTemplate for T {}
+
+pub trait EmailTemplate: DynTemplate {
+    fn id(&self) -> &str {
+        type_name::<Self>().rsplit("::").next().unwrap()
+    }
+}
+
+pub struct Email {
+    /// By default, the meta is loaded from `email/config.yaml`.
+    /// When this field is not None, it overrides original behaviour
+    pub meta: Option<EmailMeta>,
+    pub email: String,
+    pub recipients: Vec<String>,
+    pub template: Box<dyn EmailTemplate>,
 }
 
 impl Email {
-    pub async fn send(&self, app_state: &AppState) -> Result<HttpResponse, Error> {
-        let smtp_client = &app_state.smtp_client;
+    pub fn new(email: String, recipients: Vec<String>, template: Box<dyn EmailTemplate>) -> Self {
+        Self::new_with_meta(email, recipients, template, None)
+    }
 
-        let html = self.parse_placeholders()?;
+    pub fn new_with_meta(
+        email: String,
+        recipients: Vec<String>,
+        template: Box<dyn EmailTemplate>,
+        meta: Option<EmailMeta>,
+    ) -> Self {
+        let full_email = format!("{email}@{}", &EnvConfig::get().domain);
 
-        let mut email_body = MultiPart::mixed().singlepart(
-            SinglePart::builder()
-                .header(header::ContentType::TEXT_HTML)
-                .body(html),
-        );
-
-        if self.template.is_logo_attached() {
-            let logo_attachment = Attachment::new_inline("hack4krak_logo".to_string()).body(
-                include_bytes!("emails_assets/images/hack4krak_logo_black.webp").to_vec(),
-                header::ContentType::parse("image/webp").unwrap(),
-            );
-            email_body = email_body.singlepart(logo_attachment);
+        Email {
+            meta,
+            email: full_email,
+            recipients,
+            template,
         }
+    }
+
+    pub async fn send(&self, smtp_client: &SmtpTransport) -> Result<(), Error> {
+        let meta = self.meta();
+        let rendered_email = self.template.dyn_render()?;
 
         let mailboxes: Mailboxes = self
             .recipients
@@ -98,69 +100,39 @@ impl Email {
             .collect::<Result<Mailboxes, _>>()
             .map_err(|_| Error::InvalidEmailRecipients(self.recipients.join(", ")))?;
 
-        let to_header: header::To = mailboxes.into();
-
-        let (sender_name, sender_email) = self.sender.clone();
-
         let sender = Mailbox::new(
-            sender_name,
-            sender_email
+            meta.sender_name,
+            self.email
                 .parse()
-                .map_err(|_| Error::InvalidEmailSender(sender_email))?,
+                .map_err(|_| Error::InvalidEmailSender(self.email.clone()))?,
         );
+
+        let html_part = SinglePart::builder()
+            .header(header::ContentType::TEXT_HTML)
+            .body(rendered_email);
 
         let email = Message::builder()
             .from(sender)
-            .mailbox(to_header)
-            .subject(&self.subject)
-            .multipart(email_body)
+            .mailbox(header::To::from(mailboxes))
+            .subject(&meta.subject)
+            .singlepart(html_part)
             .map_err(Error::FailedToBuildEmail)?;
 
-        let _email = smtp_client.send(&email).map_err(Error::FailedToSendEmail)?;
+        smtp_client.send(&email).map_err(Error::FailedToSendEmail)?;
 
-        Ok(HttpResponse::Ok().json("Email successfully sent"))
+        Ok(())
     }
 
-    pub async fn from_admin_sending_model(
-        database: &DatabaseConnection,
-        model: EmailSendingModel,
-    ) -> Result<Self, Error> {
-        let mut recipients_emails = Vec::new();
-        if let Some(recipients) = model.recipients {
-            for recipient in recipients {
-                let user = users::Model::find_by_username(database, &recipient).await?;
-                recipients_emails.push(
-                    user.ok_or(Error::RecipientNotFound {
-                        username: recipient,
-                    })?
-                    .email,
-                );
-            }
-        } else {
-            let users = users::Entity::find().all(database).await?;
-            recipients_emails.extend(users.into_iter().map(|user| user.email));
-        }
+    fn meta(&self) -> EmailMeta {
+        let file = include_str!("../../templates/email/config.yaml");
+        let templates: HashMap<String, EmailMeta> = serde_yml::from_str(file).unwrap();
 
-        Ok(Self {
-            sender: model.sender,
-            recipients: recipients_emails,
-            subject: model.subject,
-            template: model.template,
-            placeholders: model.placeholders,
-        })
-    }
-
-    fn parse_placeholders(&self) -> Result<String, Error> {
-        if self.template.get_placeholder_elements().is_some() && self.placeholders.is_none() {
-            return Err(Error::PlaceholdersRequired);
+        match &self.meta {
+            Some(meta) => meta.clone(),
+            None => templates
+                .get(self.template.id())
+                .cloned()
+                .unwrap_or_default(),
         }
-
-        let mut html = self.template.get_template().to_string();
-        if let Some(elements) = self.placeholders.clone() {
-            for (key, value) in elements {
-                html = html.replace(&format!("%{key}%"), &value);
-            }
-        }
-        Ok(html)
     }
 }
