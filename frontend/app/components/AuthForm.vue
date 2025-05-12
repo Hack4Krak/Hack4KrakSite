@@ -30,7 +30,7 @@ const OAuthBaseUrl = `${useRuntimeConfig().public.openFetch.api.baseURL}/auth/oa
 
 const route = useRoute()
 
-if (route.query.redirect_from_confirmation === 'true') {
+if (route.query.redirect_from_confirmation === 'true' && import.meta.client) {
   toast.add({
     title: 'Sukces',
     description: 'Pomyślnie aktywowano konto! Możesz się teraz zalogować',
