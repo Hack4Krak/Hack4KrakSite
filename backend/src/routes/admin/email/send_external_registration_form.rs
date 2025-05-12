@@ -25,7 +25,7 @@ pub struct ExternalRegistrationFormModel {
     security(
         ("access_token" = [])
     ),
-    tag = "admin/teams"
+    tag = "admin/email"
 )]
 #[post("/send_external_registration_form")]
 pub async fn send_external_registration_form(
