@@ -62,7 +62,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-  <div class="w-90">
+  <div class="sm:w-90 w-60">
     <h1 class="text-2xl font-medium">
       Zresetuj hasło
     </h1>
