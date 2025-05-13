@@ -155,7 +155,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       </UFormField>
       <UFormField label="Lokalizacja" name="location">
         <template #description>
-          <p class="text-neutral-500 dark:text-neutral-400 text-left">
+          <p class="text-dimmed text-left">
             Miasto, w którym mieszkasz
           </p>
         </template>
@@ -163,7 +163,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       </UFormField>
       <UFormField label="Organizacja" name="organization">
         <template #description>
-          <p class="text-neutral-500 dark:text-neutral-400 text-left">
+          <p class="text-dimmed text-left">
             Twoja szkoła, uczelnia lub firma
           </p>
         </template>
