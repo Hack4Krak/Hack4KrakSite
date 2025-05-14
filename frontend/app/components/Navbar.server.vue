@@ -5,12 +5,11 @@ const [DefineNavbarTemplate, ReuseNavbarTemplate] = createReusableTemplate()
 
 const isMobileMenuOpen = ref(false)
 
-const { data } = useAuth('/account/', {
+const { data: isLoggedIn } = useAuth('/account/', {
+  transform: (data) => {
+    return data !== undefined
+  },
   onResponseError: undefined,
-})
-
-const isLoggedIn = computed(() => {
-  return data.value !== undefined
 })
 
 function toggleMobileMenu() {

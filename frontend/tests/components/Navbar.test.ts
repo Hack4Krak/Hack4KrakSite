@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 
 import { describe, expect, it } from 'vitest'
-import Navbar from '~/components/Navbar.vue'
+import Navbar from '~/components/Navbar.server.vue'
 
 describe('navbar', () => {
   it('renders correctly', async () => {
