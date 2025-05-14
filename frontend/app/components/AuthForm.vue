@@ -77,7 +77,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-  <div class="sm:w-90 w-60">
+  <div>
     <h1 class="text-2xl font-medium">
       {{ isLogin ? 'Zaloguj się' : 'Zarejestruj się' }}
     </h1>
