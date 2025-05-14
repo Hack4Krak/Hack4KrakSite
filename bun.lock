@@ -12,7 +12,7 @@
     },
     "frontend": {
       "name": "hack4krak-frontend",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "dependencies": {
         "@formkit/auto-animate": "^0.8.2",
         "@nuxt/content": "3.5.1",
