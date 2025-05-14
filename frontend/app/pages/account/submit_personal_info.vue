@@ -129,7 +129,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-  <div class="w-170">
+  <div class="md:w-170 sm:w-90 w-60">
     <h1 class="text-2xl font-medium mb-2">
       Podaj dodatkowe informacje
     </h1>
@@ -154,9 +154,19 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         />
       </UFormField>
       <UFormField label="Lokalizacja" name="location">
+        <template #description>
+          <p class="text-dimmed text-left">
+            Miasto, w którym mieszkasz
+          </p>
+        </template>
         <TransparentInput v-model="state.location" />
       </UFormField>
       <UFormField label="Organizacja" name="organization">
+        <template #description>
+          <p class="text-dimmed text-left">
+            Twoja szkoła, uczelnia lub firma
+          </p>
+        </template>
         <TransparentInput v-model="state.organization" />
       </UFormField>
       <UFormField label="Preferencje żywieniowe" name="is_vegetarian">
