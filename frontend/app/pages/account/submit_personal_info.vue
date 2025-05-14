@@ -116,6 +116,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
     useToast().add({ title: 'Sukces', description: 'Pomyślnie uzupełniono dane', color: 'success' })
 
+    await refreshNuxtData()
     navigateTo('/panel')
   } catch (error) {
     console.error(error)
