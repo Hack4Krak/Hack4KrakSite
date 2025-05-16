@@ -1,5 +1,5 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  if (to.path.startsWith('/tasks')) {
+  if (to.path.startsWith('/tasks') || to.path.startsWith('/leaderboard')) {
     const toast = useToast()
     let description = 'Nieznany błąd'
 
@@ -13,13 +13,12 @@ export default defineNuxtRouteMiddleware(async (to) => {
         switch (response.code) {
           case 403:
             description = 'Nie możesz otworzyć tej strony przed rozpocząciem wydarzenia'
-            break
+            return '/timer'
           case 410:
             description = 'Nie możesz otworzyć tej strony po zakończeniu wydarzenia'
+            toast.add({ title: `Błąd ${response.code}`, description: `${description}`, color: 'error' })
+            return '/'
         }
-
-        toast.add({ title: `Błąd ${response.code}`, description: `${description}`, color: 'error' })
-        return '/'
       }
     } catch {
       toast.add({ title: 'Błąd', description: `${description}`, color: 'error' })
