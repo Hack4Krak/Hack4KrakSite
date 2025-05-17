@@ -13,7 +13,7 @@ export const INFO_TILES_CONTENT = [
   },
   {
     front: 'Jakie **nagrody** można zdobyć podczas wydarzenia?',
-    back: 'Pula nagród edycji dla szkół podstawowych wynosi **1000 złotych**. Każdy uczestnik może liczyć również na pamiątkowe upominki. Pula nagród ciągle rośnie, a najlepsze drużyny mogą liczyć na wyjątkowe wyróżnienia za swoje zaangażowanie i umiejętności!',
+    back: 'Pula nagród edycji dla szkół podstawowych obecnie wynosi **1000 złotych** i wciąż rośnie! Każdy uczestnik może liczyć również na pamiątkowe upominki. Najlepsze drużyny mogą liczyć na wyjątkowe wyróżnienia za swoje zaangażowanie i umiejętności!',
     color: 'purple-300',
     image: '/img/character/king.png',
   },
