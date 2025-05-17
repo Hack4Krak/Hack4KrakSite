@@ -8,6 +8,11 @@ definePageMeta({
   layout: 'centered',
 })
 
+useSeoMeta({
+  title: 'Resetowanie hasła',
+  description: 'Zresetuj hasło do swojego konta, aby móc brać udział w wydarzeniu!',
+})
+
 type Schema = z.output<typeof schema>
 
 const schema = z.object({

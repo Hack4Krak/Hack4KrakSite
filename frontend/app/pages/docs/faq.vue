@@ -7,6 +7,7 @@ definePageMeta({
 
 useSeoMeta({
   title: 'FAQ',
+  description: 'Najczęściej zadawane pytania dotyczące naszego wydarzenia!',
 })
 </script>
 

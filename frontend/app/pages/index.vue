@@ -3,6 +3,7 @@ import LANDING_CONTENT from '~~/content/landing-page.json'
 
 useSeoMeta({
   title: 'Strona Główna',
+  description: 'Krakowski CTF dla wszystkich uczniów szkół średnich! przetestuj się i zawalcz o ciekawe nagrody biorąc udział w wydarzeniu! Nie zwlekaj i zgłoś swoją drużynę już dziś!',
 })
 </script>
 
