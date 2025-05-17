@@ -1,6 +1,7 @@
 <script setup lang="ts">
 useSeoMeta({
   title: 'Panel użytkownika',
+  description: 'Zarządzaj swoim kontem i drużyną w naszym CTF! Sprawdź swoje zadania i postępy!',
 })
 
 const { $api } = useNuxtApp()

@@ -19,6 +19,7 @@ import 'chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm'
 
 useSeoMeta({
   title: 'Ranking',
+  description: 'Zobacz aktualny ranking drużyn i ich punkty w czasie rzeczywistym!',
 })
 
 export type Team = ApiResponse<'teams'>[0]

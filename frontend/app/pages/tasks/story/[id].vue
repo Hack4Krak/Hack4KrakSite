@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { FetchError } from 'ofetch'
 
-useSeoMeta({
-  title: 'Fabuła zadania',
-})
-
 const route = useRoute('tasks-description-id')
 const taskId = String(route.params.id)
+
+useSeoMeta({
+  title: `Fabuła zadania ${taskId}`,
+  description: 'Zobacz fabułę zadania, która wprowadzi Cię do niego!',
+})
 
 const story = ref<{ title: string, message: string }[]>([])
 const backgroundImage = `${useRuntimeConfig().public.openFetch.api.baseURL}/tasks/background/${taskId}`

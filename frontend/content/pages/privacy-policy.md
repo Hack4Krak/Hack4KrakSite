@@ -1,5 +1,6 @@
 ---
 title: Polityka Prywatności
+description: Polityka prywatności i plików cookies
 ---
 
 **Informacja administratora o przetwarzaniu danych osobowych**

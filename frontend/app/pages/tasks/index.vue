@@ -4,6 +4,7 @@ import Map from '@/components/Map.vue'
 
 useSeoMeta({
   title: 'Zadania',
+  description: 'Zobacz listę zadań na naszym CTF!',
 })
 
 const { data } = await useApi('/tasks/list')

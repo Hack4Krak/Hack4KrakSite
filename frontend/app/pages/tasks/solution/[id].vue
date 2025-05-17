@@ -1,10 +1,11 @@
 <script setup lang="ts">
-useSeoMeta({
-  title: 'Rozwiązanie zadania',
-})
-
 const route = useRoute('tasks-description-id')
 const taskId = route.params.id
+
+useSeoMeta({
+  title: `Rozwiązanie zadania ${taskId}`,
+  description: 'Zobacz rozwiązanie zadania z naszego ostatniego CTF-a!',
+})
 
 const { data } = await useAuth('/tasks/solution/{task_id}', {
   path: {

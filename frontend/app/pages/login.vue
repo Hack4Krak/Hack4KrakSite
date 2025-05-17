@@ -6,6 +6,7 @@ definePageMeta({
 
 useSeoMeta({
   title: 'Logowanie',
+  description: 'Zaloguj się do swojego konta, aby móc brać udział w wydarzeniu!',
 })
 
 const route = useRoute()
