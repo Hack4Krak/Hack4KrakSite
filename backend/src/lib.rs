@@ -51,6 +51,7 @@ pub fn setup_actix_app(
         .into_utoipa_app()
         .openapi(ApiDoc::with_server())
         .service(routes::index::index)
+        .service(routes::metrics::metrics)
         .service(scope("/auth").configure(routes::auth::config))
         .service(scope("/teams").configure(routes::teams::config))
         .service(

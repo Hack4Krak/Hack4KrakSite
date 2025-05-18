@@ -82,6 +82,7 @@ pub enum Error {
     AccessDuringEvent,
     FailedToParseUrl(#[from] url::ParseError),
     ServerEventSendingError(#[from] broadcast::error::SendError<String>),
+    Metrics(#[from] prometheus::Error),
     Validator(validator::ValidationErrors),
 
     #[error(transparent)]
@@ -113,6 +114,7 @@ impl error::ResponseError for Error {
             | Error::FailedToBuildEmail(_)
             | Error::FailedToParseUrl(_)
             | Error::ConflictInDatabase
+            | Error::Metrics(_)
             | Error::ServerEventSendingError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Unauthorized => StatusCode::UNAUTHORIZED,
             Error::InvalidJsonWebToken => StatusCode::UNAUTHORIZED,
