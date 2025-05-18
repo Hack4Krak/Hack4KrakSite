@@ -5,5 +5,6 @@ pub mod event;
 pub mod flag;
 pub mod index;
 pub mod leaderboard;
+pub mod metrics;
 pub mod task;
 pub mod teams;

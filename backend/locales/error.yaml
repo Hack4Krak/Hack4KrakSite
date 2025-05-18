@@ -31,6 +31,7 @@ Error:
   FailedToParseUrl: "Nie udało się sparsować URL {0}"
   ServerEventSendingError: "Błąd wysyłania zdarzenia serwera {0}"
   Validator: "Niepoprawne pola w zapytaniu"
+  Metrics: "Nie udało się zebrać danych statystycznych"
   InvalidEmailConfirmationCode: "Nieprawidłowy kod z e-mail"
   EmailConfirmationCodeExpired: "Kod z tego e-mail wygasł. Spróbuj ponownie!"
 

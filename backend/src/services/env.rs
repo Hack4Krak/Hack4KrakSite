@@ -24,6 +24,7 @@ pub struct EnvConfig {
     pub google_oauth_client_id: String,
     pub google_oauth_client_secret: String,
     pub resend_api_key: String,
+    pub metrics_access_token: String,
 }
 
 impl Default for EnvConfig {
@@ -43,6 +44,7 @@ impl Default for EnvConfig {
             google_oauth_client_secret: Default::default(),
             jwt_secret: Default::default(),
             resend_api_key: Default::default(),
+            metrics_access_token: Default::default(),
         }
     }
 }
