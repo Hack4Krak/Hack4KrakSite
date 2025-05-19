@@ -1,76 +1,93 @@
 <script setup lang="ts">
-const { $api } = useNuxtApp()
-
-const { data } = await useAuth('/account/')
-
-const updateAccountModal = ref(false)
-const deleteAccountModal = ref(false)
-const changePasswordModal = ref(false)
-
-const { data: team, error } = await useAuth('/teams/membership/my_team', {
+const { data: team } = await useAuth('/teams/membership/my_team', {
   onResponseError: () => {
     throw new Error('Response error')
   },
 })
 
-async function logout() {
-  await $api('/auth/logout', {
-    method: 'POST',
-    credentials: 'include',
-  })
+const { data: now, refresh: updateDate } = useAsyncData('formattedNow', async () => {
+  const now = useNow()
+  const formatted = useDateFormat(now, 'HH:mm:ss')
+  return formatted.value
+})
 
-  await navigateTo('/login')
-}
+useRafFn(() => updateDate())
 </script>
 
 <template>
-  <div class="flex flex-col p-12 pb-12 items-center gap-12">
-    <PanelModalUpdateAccountModal v-model="updateAccountModal" />
-    <PanelModalChangePasswordModal v-model="changePasswordModal" />
-    <PanelModalConfirmDeleteModal
-      v-model="deleteAccountModal"
-      url="/account/delete"
-      modal-title="Usuwanie konta"
-      modal-description="Czy na pewno chcesz usunąć konto? Ta operacja jest nieodwracalna."
-      toast-success-message="Pomyślnie usunięto konto"
-      :request-body="undefined"
-      redirect-to="/"
-    />
+  <div class="grid grid-rows-[auto_auto_1fr_auto] grid-cols-[300px_1fr] h-155  divide-x my-5 mx-15 outline">
+    <!-- Top full-width bar -->
+    <div class="col-span-2 border-b h-15 flex items-center divide-x">
+      <span class="w-15 h-full flex items-center justify-center font-bold">
+        X
+      </span>
+      <span v-if="team?.team_name" class="px-5 h-full flex items-center">
+        {{ team?.team_name }}
+      </span>
+      <span class="px-5 h-full flex items-center">
+        Hack4Krak CTF - Edycja dla szkół podstawowych
+      </span>
+      <span class="px-5 h-full flex items-center justify-end flex-1">
+        {{ now }}
+      </span>
+    </div>
 
-    <div class="flex flex-col flex-grow items-center justify-center max-h-[15em]">
-      <div class="text-center">
-        <h1 class="text-5xl font-bold">
-          Witaj {{ data?.username }}!
-        </h1>
-        <h2 class="text-4xl font-light mt-2">
-          Życzymy powodzenia na wydarzeniu!
-        </h2>
+    <PanelTileEventProgressBar class="border-b" />
+
+    <!-- Sidebar -->
+    <div class="row-span-3 p-4 flex flex-col justify-center">
+      <span class="font-bold">Moja drużyna</span>
+      <USeparator :ui="{ border: 'border-neutral' }" />
+      <div v-if="(team?.members ?? []).length">
+        <div v-for="member in team?.members" :key="member.name">
+          {{ member.name }}
+        </div>
+      </div>
+      <div v-else>
+        Ezz nie masz team matów :3
       </div>
     </div>
 
-    <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-15 gap-y-5">
-      <PanelTile class="row-span-2 min-h-100 min-w-70">
-        <PanelTileWithTeam v-if="!error" :team-name="team!.team_name" />
-        <PanelTileWithoutTeam v-else />
-      </PanelTile>
-      <PanelTile class="row-span-2">
-        <PanelTileMain />
-      </PanelTile>
-      <PanelTile class="min-h-25 overflow-hidden" />
-      <PanelTile>
-        <div class="p-5">
-          <h1 class="font-bold text-2xl">
-            Ustawienia konta
-          </h1>
-          <div class="flex flex-col gap-3 mt-3 justify-center">
-            <GhostButtonWithIcon icon="mdi:account" description="Zmień lub zobacz dane o końcie" @click="navigateTo('/account/submit_personal_info')" />
-            <GhostButtonWithIcon icon="mdi:account-cog" description="Zmień ustawienia konta" @click="updateAccountModal = true" />
-            <GhostButtonWithIcon icon="mdi:account-key" description="Zmień hasło" @click="changePasswordModal = true" />
-            <GhostButtonWithIcon icon="mdi:account-remove" description="Usuń konto" @click="deleteAccountModal = true" />
-            <GhostButtonWithIcon icon="mdi:logout" description="Wyloguj się" @click="logout" />
-          </div>
+    <!-- Top two boxes -->
+    <div class="flex divide-x border-b font-pixelify">
+      <div class="flex-1  shadow items-center justify-center flex-col flex">
+        Podaj Flagę
+        <PanelFlagForm />
+      </div>
+      <div class="w-2/5  p-4 shadow ">
+        <Placeholder class="h-full">
+          // TODO: Link mapa<br>
+          // TODO: Link ranking
+        </Placeholder>
+      </div>
+    </div>
+
+    <!-- Bottom 3 boxes -->
+    <div class="col-span-1 flex divide-x font-pixelify text-center">
+      <div class="flex-1 p-4">
+        <div class="text-sm">
+          Miejsce drużyny
         </div>
-      </PanelTile>
+        <div class="text-xl font-bold">
+          1/24
+        </div>
+      </div>
+      <div class="flex-1 p-4">
+        <div class="text-sm">
+          Zdobyte flagi
+        </div>
+        <div class="text-xl text-green-400 font-bold">
+          6
+        </div>
+      </div>
+      <div class="flex-1 p-4">
+        <div class="text-sm">
+          Pozostałe flagi
+        </div>
+        <div class="text-xl text-yellow-400 font-bold">
+          16
+        </div>
+      </div>
     </div>
   </div>
 </template>

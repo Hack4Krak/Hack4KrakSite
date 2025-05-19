@@ -8,7 +8,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
         return '/login'
       }
       if (to.path.startsWith('/panel')) {
-        if (!data.value.has_personal_information) {
+        if (data.value.has_personal_information === false) {
           return '/account/submit_personal_info'
         }
       }

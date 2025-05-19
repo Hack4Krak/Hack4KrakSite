@@ -3,7 +3,7 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 import * as z from 'zod'
 
 const schema = z.object({
-  code: z.string({ error: 'Nazwa drużyny jest wymagana' }).length(6, 'Nazwa drużyny musi mieć min 6 znaków'),
+  code: z.string({ error: 'Kod jest wymagany' }).length(6, 'Nazwa drużyny musi mieć min 6 znaków'),
 })
 
 type Schema = z.output<typeof schema>
