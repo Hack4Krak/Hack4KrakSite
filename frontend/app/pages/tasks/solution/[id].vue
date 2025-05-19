@@ -2,8 +2,14 @@
 const route = useRoute('tasks-description-id')
 const taskId = route.params.id
 
+const { data: taskName } = useApi('/tasks/name/{task_id}', {
+  path: {
+    task_id: taskId,
+  },
+})
+
 useSeoMeta({
-  title: `Rozwiązanie zadania ${taskId}`,
+  title: `Rozwiązanie zadania ${taskName.value}`,
   description: 'Zobacz rozwiązanie zadania z naszego ostatniego CTF-u!',
 })
 
