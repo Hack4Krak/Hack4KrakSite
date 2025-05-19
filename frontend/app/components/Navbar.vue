@@ -9,6 +9,8 @@ const { data: isLoggedIn } = useAuth('/account/', {
   transform: (data) => {
     return data !== undefined
   },
+  key: 'isLoggedIn',
+  redirect: 'error',
   onResponseError: undefined,
 })
 
