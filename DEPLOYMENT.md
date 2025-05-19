@@ -40,6 +40,7 @@ scrape_configs:
   - job_name: 'hack4krak-backend'
     scrape_interval: 1m
     scheme: https
+    fallback_scrape_protocol: PrometheusText1.0.0
     static_configs:
       - targets: ['<your server url>']
     authorization:
