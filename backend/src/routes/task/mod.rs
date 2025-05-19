@@ -10,6 +10,7 @@ mod count;
 mod description;
 mod icon;
 mod list;
+mod name;
 mod solution;
 mod story;
 
@@ -22,6 +23,7 @@ pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(solution::solution);
     config.service(scope("/assets").configure(assets::config));
     config.service(count::count);
+    config.service(name::name);
 }
 
 #[error_with_messages]
