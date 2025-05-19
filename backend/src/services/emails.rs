@@ -48,7 +48,7 @@ impl EmailTemplate {
             EmailTemplate::HelloWorld => false,
             EmailTemplate::EmailConfirmation => true,
             EmailTemplate::Generic => true,
-            EmailTemplate::ExternalRegistrationForm => true,
+            EmailTemplate::ExternalRegistrationForm => false,
         }
     }
 
