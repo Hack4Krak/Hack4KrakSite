@@ -44,12 +44,15 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4 flex flex-col" @submit="onSubmit">
+  <UForm :schema="schema" :state="state" class="space-y-3 flex flex-col text-center items-center justify-center" @submit="onSubmit">
+    <h3 class="font-bold text-xl">
+      Podaj Flagę
+    </h3>
     <UFormField name="flag">
-      <UInput v-model="state.flag" class="w-full" :ui="{ base: 'h-12' }" placeholder="hack4KrakCTF{...}" />
+      <UInput v-model="state.flag" class="w-80" :ui="{ base: 'h-12 rounded-none' }" placeholder="hack4KrakCTF{...}" />
     </UFormField>
 
-    <ElevatedButton class="w-40" type="submit">
+    <ElevatedButton class="w-40 mt-3" type="submit">
       Wyślij
     </ElevatedButton>
   </UForm>
