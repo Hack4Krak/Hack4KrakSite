@@ -46,12 +46,13 @@ async fn external_invitations_flow() {
             confirmation_code
         ))
         .set_json(json!({
-            "teams": [["Kotki", 3], ["Kraby", 1]]
+            // Testing maximum, average, and minimum team sizes
+            "teams": [["Duże Kotki", 5], ["Kotki", 5], ["Kraby", 1]]
         }))
         .insert_header(TestAuthHeader::new(admin.clone()))
         .to_request();
     let response: Vec<Vec<String>> = test::call_and_read_body_json(&app, request).await;
-    assert_eq!(response.len(), 2);
+    assert_eq!(response.len(), 3);
 
     // Normal user joins
     let request = test::TestRequest::post()

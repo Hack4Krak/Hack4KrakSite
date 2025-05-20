@@ -41,9 +41,9 @@ impl teams::Model {
         Ok(team)
     }
 
-    pub async fn assert_correct_team_size(
+    pub async fn assert_team_size_before_adding_user(
         database: &DatabaseConnection,
-        max_team_size: u16,
+        registration_config: &RegistrationConfig,
         id: &Uuid,
     ) -> Result<(), Error> {
         let members_count = users::Entity::find()
@@ -51,13 +51,7 @@ impl teams::Model {
             .count(database)
             .await?;
 
-        if members_count >= max_team_size as u64 {
-            return Err(Error::Team(TeamIsFull {
-                max_size: max_team_size,
-            }));
-        }
-
-        Ok(())
+        registration_config.assert_team_size(members_count as u16 + 1)
     }
 
     pub async fn try_create(
@@ -111,11 +105,7 @@ impl teams::Model {
         number_of_members: u16,
         administration_code: Uuid,
     ) -> Result<Vec<String>, Error> {
-        if number_of_members >= registration_config.max_team_size {
-            return Err(Error::Team(TeamIsFull {
-                max_size: registration_config.max_team_size,
-            }));
-        }
+        registration_config.assert_team_size(number_of_members)?;
 
         let transaction = database.begin().await?;
         let team_id = Self::try_create(&transaction, team_name).await?;
