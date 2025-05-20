@@ -3,7 +3,7 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 import * as z from 'zod'
 
 const schema = z.object({
-  code: z.string({ error: 'Nazwa drużyny jest wymagana' }).length(6, 'Nazwa drużyny musi mieć min 6 znaków'),
+  code: z.array(z.string({ error: 'Kod do rejestracji jest wymagany' })).length(6, 'Kod do rejestracji musi mieć 6 znaków'),
 })
 
 type Schema = z.output<typeof schema>
@@ -11,6 +11,8 @@ type Schema = z.output<typeof schema>
 const state = reactive<Partial<Schema>>({
   code: undefined,
 })
+
+const qrCodeModal = ref(false)
 
 const toast = useToast()
 const open = defineModel<boolean>()
@@ -22,7 +24,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   const response = await $auth('/teams/external_invitations/join', {
     method: 'POST',
     body: {
-      code: event.data.code,
+      code: event.data.code.join(''),
     },
   })
 
@@ -43,10 +45,9 @@ function codeScanned(code: string) {
     })
   }
 
-  state.code = code
+  state.code = code.split('')
+  qrCodeModal.value = false
 }
-
-const qrCodeModal = ref(false)
 </script>
 
 <template>
@@ -57,8 +58,8 @@ const qrCodeModal = ref(false)
       <UForm ref="form" :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
         <UFormField label="Kod rejestracji" name="code">
           <div class="flex items-center space-x-2">
-            <UPinInput class="mr-5" :length="6" @update:model-value="(value) => state.code = value.join('')" />
-            <UButton icon="mdi:qrcode-scan" @click="qrCodeModal = true" />
+            <UPinInput v-model="state.code" class="mr-5" :length="6" />
+            <UButton icon="lucide:qr-code" @click="qrCodeModal = true" />
           </div>
         </UFormField>
       </UForm>
