@@ -5,11 +5,7 @@ const [DefineNavbarTemplate, ReuseNavbarTemplate] = createReusableTemplate()
 
 const isMobileMenuOpen = ref(false)
 
-const { data: isLoggedIn } = useAuth('/account/', {
-  transform: (data) => {
-    return data !== undefined
-  },
-  key: 'isLoggedIn',
+const { data: isLoggedIn } = useAuth('/auth/status', {
   redirect: 'error',
   onResponseError: undefined,
 })
