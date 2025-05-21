@@ -5,6 +5,7 @@ mod oauth;
 mod refresh;
 mod register;
 pub mod reset_password;
+mod status;
 
 use crate::utils::error::error_response_builder;
 use actix_web::error;
@@ -24,6 +25,7 @@ pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(confirm::confirm_email);
     config.service(reset_password::request_reset_password);
     config.service(reset_password::reset_password);
+    config.service(status::status);
 }
 
 #[error_with_messages]
