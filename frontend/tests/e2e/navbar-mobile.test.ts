@@ -30,7 +30,7 @@ test('navbar visibility on mobile when scrolled to bottom', async ({ page }) => 
       return false
     const rect = navbar.getBoundingClientRect()
     return rect.top >= 0 && rect.bottom <= window.innerHeight
-  }, { timeout: 10000 })
+  }, {}, { timeout: 1000 })
 
   // Verify navbar is still visible after scrolling
   await expect(navbar).toBeVisible()

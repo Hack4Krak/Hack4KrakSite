@@ -18,8 +18,12 @@
   image-rendering: pixelated;
 }
 
-@utility bg-default {
-  background: var(--ui-bg);
+@utility h-screen-without-header {
+  height: calc(100vh - var(--ui-header-height));
+}
+
+@utility min-h-screen-without-header {
+  min-height: calc(100vh - var(--ui-header-height));
 }
 
 @utility scrollbar-hide {
