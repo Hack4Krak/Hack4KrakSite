@@ -1,5 +1,23 @@
 {
   "title": "Hack4Krak",
   "subTitle": "Pierwszy małopolski CTF skierowany \n do uczniów szkół publicznych w Krakowie!",
-  "infoBox": "Zapisy na zawody dla szkół podstawowych już otwarte!"
+  "infoBox": "Zapisy na zawody dla szkół podstawowych już otwarte!",
+  "sponsors": [
+    {
+      "name": "Młodzież Działa Lokalnie",
+      "logo": "/img/sponsors/mdl.webp"
+    },
+    {
+      "name": "Młody Kraków",
+      "logo": "/img/sponsors/mlody_krakow.webp"
+    },
+    {
+      "name": "Teach for Poland",
+      "logo": "/img/sponsors/teach_for_poland.webp"
+    },
+    {
+      "name": "Europe4Youth",
+      "logo": "/img/sponsors/europe4youth.webp"
+    }
+  ]
 }

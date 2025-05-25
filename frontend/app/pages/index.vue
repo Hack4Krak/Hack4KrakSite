@@ -26,6 +26,9 @@ useSeoMeta({
       <section id="section-how-to-participate" class="my-8">
         <LazySectionHowToParticipate hydrate-on-interaction />
       </section>
+      <section id="sponsors" class="my-8">
+        <LazySectionSponsors hydrate-never />
+      </section>
       <Footer hydrate-on-idle class="mt-8 lg:mt-12" />
     </UContainer>
   </main>
