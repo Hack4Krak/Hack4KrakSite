@@ -10,6 +10,6 @@ onMounted(() => {
 
 <template>
   <NuxtLayout>
-    <NuxtPage />
+    <NuxtPage class="flex-grow" />
   </NuxtLayout>
 </template>
