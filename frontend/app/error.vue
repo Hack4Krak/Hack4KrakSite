@@ -26,48 +26,36 @@ const errorMessage = computed(() => {
 
 <template>
   <NuxtLayout name="default">
-    <main class="content-center items-center justify-center min-h-[calc(100vh-var(--ui-header-height))]">
-      <div class="flex content-center items-center justify-center flex-col-reverse md:flex-row">
-        <div class="flex flex-col md:mr-10 max-w-3/4 md:max-w-2/5">
-          <h1 class="text-balance text-8xl text-yellow-500 font-bold mb-3">
-            {{ error?.statusCode }}
-          </h1>
-          <h2 class="whitespace-pre-line text-3xl text-white">
-            {{ errorMessage }}
-          </h2>
-          <UModal title="Więcej informacji o błędzie:">
-            <UButton label="Więcej informacji..." color="neutral" variant="subtle" class="w-fit mt-4 hover:bg-black/25 hover:text-yellow-700" />
+    <div class="w-full mx-10 flex content-center items-center justify-center flex-col-reverse md:flex-row">
+      <div class="flex flex-col md:mr-10 max-w-3/4 md:max-w-3/5 space-y-5">
+        <h1 class="text-balance text-8xl text-primary font-bold">
+          {{ error?.statusCode }}
+        </h1>
+        <h2 class="whitespace-pre-line text-2xl text-white">
+          {{ errorMessage }}
+        </h2>
+        <LazyUModal title="Więcej informacji o błędzie:" hydrate-on-visible>
+          <UButton label="Więcej informacji..." variant="outline" class="w-fit mt-4" />
 
-            <template #body>
-              <div class="border border-white border-b-white rounded-md m-2 overflow-auto bg-black/25">
-                <div class="flex flex-col text-lg mb-6 ml-6">
-                  <div class="text-xl font-bold text-yellow-600 my-5">
-                    Kod:
-                  </div>
-                  <div class="ml-4 font-stretch-ultra-expanded font-light font-mono">
-                    {{ error?.statusCode }}
-                  </div>
-                  <div class="text-xl font-bold text-yellow-600 my-5">
-                    Wiadomość:
-                  </div>
-                  <div class="ml-4 font-stretch-ultra-expanded font-light font-mono">
-                    {{ error?.message }}
-                  </div>
-                  <div class="text-xl font-bold text-yellow-600 my-5">
-                    Dane:
-                  </div>
-                  <div class="ml-4 font-stretch-ultra-expanded font-light font-mono">
-                    {{ error?.data }}
-                  </div>
-                </div>
+          <template #body>
+            <section class="flex flex-col text-lg space-y-5">
+              <div
+                v-for="(element, i) in [['Kod', error?.statusCode], ['Wiadomość', error?.message], ['Dane', error?.data]]"
+                :key="i"
+              >
+                <h2 class="text-xl font-bold text-primary">
+                  {{ element[0] }}:
+                </h2>
+                <pre class="font-light font-mono">{{ element[1] }}</pre>
               </div>
-            </template>
-          </UModal>
-        </div>
-        <div class="w-3/4 mb-10 md:w-150 md:mb-0 md:ml-10">
-          <img class="w-full rendering-pixelated" src="assets/img/error_dragon.webp" alt="Dragon of (t)error">
-        </div>
+            </section>
+          </template>
+        </LazyUModal>
       </div>
-    </main>
+
+      <div class="w-3/4 mb-10 md:w-150 md:mb-0 md:ml-10">
+        <img class="w-full rendering-pixelated" src="assets/img/error_dragon.webp" alt="Dragon of (t)error">
+      </div>
+    </div>
   </NuxtLayout>
 </template>
