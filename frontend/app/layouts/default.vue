@@ -3,7 +3,7 @@
     <NuxtLoadingIndicator color="var(--ui-primary)" :height="2" />
     <UApp>
       <Navbar />
-      <div class="flex min-h-[calc(100vh-var(--ui-header-height))]">
+      <div class="flex min-h-screen-without-header">
         <slot />
       </div>
     </UApp>
