@@ -18,7 +18,8 @@
     {
       "groupName": "Backend dependencies",
       "matchPaths": ["backend/**"],
-      "rangeStrategy": "bump"
+      "rangeStrategy": "bump",
+      "extends": ["schedule:weekly"]
     },
     {
       "groupName": "Frontend icons",
