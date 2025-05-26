@@ -35,7 +35,7 @@ pub async fn invite_user(
         .await?
         .ok_or(Error::UserNotFound)?;
 
-    let registration_config = app_state.task_manager.registration_config.lock().await;
+    let registration_config = app_state.task_manager.registration_config.read().await;
     team_invites::Model::invite_user(
         &app_state.database,
         registration_config.deref(),

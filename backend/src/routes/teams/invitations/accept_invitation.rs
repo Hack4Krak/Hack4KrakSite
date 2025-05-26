@@ -28,7 +28,7 @@ pub async fn accept_invitation(
         .await?
         .ok_or(Error::Team(TeamNotFound))?;
 
-    let registration_config = app_state.task_manager.registration_config.lock().await;
+    let registration_config = app_state.task_manager.registration_config.read().await;
     team_invites::Model::accept_invitation(
         &app_state.database,
         registration_config.deref(),

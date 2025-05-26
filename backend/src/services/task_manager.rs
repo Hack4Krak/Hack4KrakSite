@@ -8,12 +8,12 @@ use dashmap::mapref::multiple::RefMulti;
 use dashmap::mapref::one::Ref;
 use sha2::{Digest, Sha256};
 use tokio::fs;
-use tokio::sync::Mutex;
+use tokio::sync::RwLock;
 
 #[derive(Default)]
 pub struct TaskManager {
-    pub event_config: Mutex<EventConfig>,
-    pub registration_config: Mutex<RegistrationConfig>,
+    pub event_config: RwLock<EventConfig>,
+    pub registration_config: RwLock<RegistrationConfig>,
     pub tasks: DashMap<String, TaskConfig>,
 }
 
@@ -58,8 +58,8 @@ impl TaskManager {
             Self::load_config("config/registration.yaml").await;
 
         Self {
-            event_config: Mutex::new(event_config),
-            registration_config: Mutex::new(registration_config),
+            event_config: RwLock::new(event_config),
+            registration_config: RwLock::new(registration_config),
             tasks,
         }
     }
