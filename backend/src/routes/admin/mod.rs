@@ -1,8 +1,10 @@
 use utoipa_actix_web::scope;
 
 mod email;
+mod flag_captures;
 mod index;
 mod tasks;
+mod team_invites;
 mod teams;
 mod users;
 
@@ -11,5 +13,7 @@ pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(scope("/teams").configure(teams::config));
     config.service(scope("/tasks").configure(tasks::config));
     config.service(scope("/email").configure(email::config));
+    config.service(scope("/team_invites").configure(team_invites::config));
+    config.service(scope("/flag_captures").configure(flag_captures::config));
     config.service(index::index);
 }

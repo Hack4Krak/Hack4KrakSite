@@ -37,6 +37,7 @@ Error:
   Os: "Błąd systemu operacyjnego!"
   InvalidEmailConfirmationCode: "Nieprawidłowy kod z e-mail"
   EmailConfirmationCodeExpired: "Kod z tego e-mail wygasł. Spróbuj ponownie!"
+  TeamInviteNotFound: "Zaproszenie do zespołu nie zostało znalezione"
 
 AccountError:
   BirthYearNotInRange: "Rok urodzenia musi być pomiędzy {min} a {max}"
