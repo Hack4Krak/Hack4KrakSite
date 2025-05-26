@@ -23,10 +23,12 @@ pub async fn metrics(
         .filter(users::Column::Team.is_not_null())
         .count(&app_state.database)
         .await?;
+    let tasks = app_state.task_manager.tasks.len();
 
     let metric_families = [
         add_simple_metric::<users::Entity>("app_count_users", &app_state).await?,
         add_metric("app_count_users_in_teams", *users_in_teams).await?,
+        add_metric("app_count_tasks", tasks as u64).await?,
         add_simple_metric::<teams::Entity>("app_count_teams", &app_state).await?,
         add_simple_metric::<user_personal_info::Entity>("app_count_personal_info", &app_state)
             .await?,
