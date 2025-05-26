@@ -39,7 +39,7 @@ pub async fn create(
     Validated(create_team_model): Validated<Json<CreateTeamModel>>,
     user: users::Model,
 ) -> Result<HttpResponse, Error> {
-    let registration_config = app_state.task_manager.registration_config.lock().await;
+    let registration_config = app_state.task_manager.registration_config.read().await;
 
     let now = Utc::now();
     if now < registration_config.start_date || now > registration_config.end_date {

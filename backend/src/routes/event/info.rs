@@ -13,6 +13,6 @@ use std::ops::Deref;
 )]
 #[get("/info")]
 pub async fn info(app_state: Data<AppState>) -> Result<HttpResponse, Error> {
-    let event_config = app_state.task_manager.event_config.lock().await;
+    let event_config = app_state.task_manager.event_config.read().await;
     Ok(HttpResponse::Ok().json(event_config.deref()))
 }

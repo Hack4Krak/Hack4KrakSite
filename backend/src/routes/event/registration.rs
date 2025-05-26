@@ -13,6 +13,6 @@ use std::ops::Deref;
 )]
 #[get("/registration")]
 pub async fn registration(app_state: Data<AppState>) -> Result<HttpResponse, Error> {
-    let registration_config = app_state.task_manager.registration_config.lock().await;
+    let registration_config = app_state.task_manager.registration_config.read().await;
     Ok(HttpResponse::Ok().json(registration_config.deref()))
 }

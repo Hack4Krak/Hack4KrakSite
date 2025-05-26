@@ -114,7 +114,7 @@ impl<S> EventMiddlewareService<S> {
             .ok_or(Error::Unauthorized)?
             .task_manager;
 
-        let event_config = task_manager.event_config.lock().await;
+        let event_config = task_manager.event_config.read().await;
 
         let now = Utc::now();
         if !config.allow_before_event && now < event_config.start_date {
