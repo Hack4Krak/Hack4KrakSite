@@ -62,6 +62,7 @@ impl TestDatabase {
             created_at: Utc::now().naive_utc(),
             confirmation_code: Default::default(),
             status: TeamStatus::Absent,
+            organization: Some("Hack4Krak".to_string()),
         });
 
         teams::Entity::insert(updated)

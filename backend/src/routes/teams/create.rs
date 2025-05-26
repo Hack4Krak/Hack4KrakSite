@@ -18,6 +18,8 @@ use validator::Validate;
 pub struct CreateTeamModel {
     #[validate(length(min = 3, max = 32), custom(function = "validate_name_chars"))]
     pub team_name: String,
+    #[validate(length(min = 3, max = 128), custom(function = "validate_name_chars"))]
+    pub organization: Option<String>,
 }
 
 #[utoipa::path(
@@ -60,6 +62,7 @@ pub async fn create(
     teams::Model::create(
         &app_state.database,
         create_team_model.team_name.clone(),
+        create_team_model.organization.clone(),
         user,
     )
     .await?;
