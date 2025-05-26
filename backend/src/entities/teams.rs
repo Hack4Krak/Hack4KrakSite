@@ -25,6 +25,7 @@ pub struct Model {
     pub id: Uuid,
     pub confirmation_code: Option<Uuid>,
     pub status: TeamStatus,
+    pub color: String,
     pub organization: Option<String>,
 }
 

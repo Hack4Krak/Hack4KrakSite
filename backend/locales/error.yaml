@@ -21,6 +21,7 @@ Error:
   RouteNotFound: "Nie znaleziono ścieżki"
   InvalidEmailSender: "Nieprawidłowy adres e-mail nadawcy {0}"
   InvalidEmailRecipients: "Nieprawidłowi odbiorcy e-mail {0}"
+  InvalidColorFormat: "Nieprawidłowy format koloru. Użyj formatu hex."
   UserMustHaveHigherRoleThanAffectedUser: "Użytkownik musi mieć wyższą rolę niż dotknięty użytkownik"
   UserMustBeOwnerToUpdateRoles: "Użytkownik musi być właścicielem, aby zaktualizować role"
   UserWithEmailOrUsernameAlreadyExists: "Użytkownik z takim e-mailem lub nazwą użytkownika już istnieje"

@@ -25,24 +25,6 @@ export type Team = ApiResponse<'teams'>[0]
 
 ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, TimeScale)
 
-const colors = [
-  '#E6194B',
-  '#3CB44B',
-  '#FFE119',
-  '#4363D8',
-  '#F58231',
-  '#911EB4',
-  '#46F0F0',
-  '#F032E6',
-  '#BCF60C',
-  '#FABEBE',
-  '#008080',
-  '#E6BEFF',
-  '#9A6324',
-  '#FFFAC8',
-  '#800000',
-]
-
 const { data, refresh: refreshChart } = await useApi('/leaderboard/chart')
 
 const targetTimezone = 'Europe/Warsaw'
@@ -53,10 +35,10 @@ const adjustedTimestamps = computed(() => {
   ) ?? []
 })
 
-const datasets = computed(() => (data.value?.team_points_over_time || []).map((item, index) => ({
+const datasets = computed(() => (data.value?.team_points_over_time || []).map(item => ({
   label: item.label,
   data: item.points,
-  borderColor: colors[index % colors.length],
+  borderColor: item.color,
   lineTension: 0.2,
 })))
 
@@ -190,7 +172,7 @@ onMounted(() => {
           <Icon name="mdi:alpha-x" class="text-5xl font-bold" />
         </div>
       </div>
-      <ElevatedText v-for="(team, index) in teamsTableData" :key="team.team_name" class="w-[70%]" :color-hex="colors[index % colors.length] ?? '#E6194B'" height="default">
+      <ElevatedText v-for="(team, index) in teamsTableData" :key="team.team_name" class="w-[70%]" :color-hex="team.color" height="default">
         <div class="flex justify-between text-xl p-2">
           <div>{{ index + 1 }}. {{ team.team_name.toUpperCase() }}</div>
           <div>{{ team.current_points }}PKT</div>

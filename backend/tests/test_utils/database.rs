@@ -62,6 +62,7 @@ impl TestDatabase {
             created_at: Utc::now().naive_utc(),
             confirmation_code: Default::default(),
             status: TeamStatus::Absent,
+            color: "#000000".to_string(),
             organization: Some("Hack4Krak".to_string()),
         });
 
