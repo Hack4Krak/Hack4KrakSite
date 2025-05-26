@@ -26,6 +26,7 @@ pub struct TeamWithMembers {
     pub members: Vec<(Uuid, String)>,
     pub confirmation_code: Option<Uuid>,
     pub status: TeamStatus,
+    pub organization: Option<String>,
 }
 
 impl teams::Model {
@@ -57,6 +58,7 @@ impl teams::Model {
     pub async fn try_create(
         transaction: &impl ConnectionTrait,
         team_name: String,
+        organization: Option<String>,
     ) -> Result<Uuid, Error> {
         if teams::Model::find_by_name(transaction, &team_name)
             .await?
@@ -71,6 +73,7 @@ impl teams::Model {
             name: Set(team_name),
             created_at: Set(Utc::now().naive_utc()),
             status: Set(TeamStatus::Absent),
+            organization: Set(organization),
             ..Default::default()
         })
         .exec(transaction)
@@ -82,11 +85,12 @@ impl teams::Model {
     pub async fn create(
         database: &DatabaseConnection,
         team_name: String,
+        organization: Option<String>,
         user: users::Model,
     ) -> Result<(), Error> {
         let transaction = database.begin().await?;
 
-        let uuid = Self::try_create(&transaction, team_name).await?;
+        let uuid = Self::try_create(&transaction, team_name, organization).await?;
 
         let mut active_user: users::ActiveModel = user.into();
         active_user.team = Set(Some(uuid));
@@ -104,11 +108,12 @@ impl teams::Model {
         team_name: String,
         number_of_members: u16,
         administration_code: Uuid,
+        organization: String,
     ) -> Result<Vec<String>, Error> {
         registration_config.assert_team_size(number_of_members)?;
 
         let transaction = database.begin().await?;
-        let team_id = Self::try_create(&transaction, team_name).await?;
+        let team_id = Self::try_create(&transaction, team_name, Some(organization)).await?;
 
         let mut invitations = Vec::new();
         for _ in 0..number_of_members {
@@ -246,6 +251,7 @@ impl teams::Model {
                     members,
                     confirmation_code: team.confirmation_code,
                     status: team.status,
+                    organization: team.organization,
                 }
             })
             .collect::<Vec<TeamWithMembers>>();

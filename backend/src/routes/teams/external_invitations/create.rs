@@ -44,7 +44,7 @@ pub async fn create(
     let email_verification_request =
         email_verification_request::Model::find_and_verify(&app_state.database, confirmation_code)
             .await?;
-    let EmailVerificationAction::RegisterTeam { organization: _ } =
+    let EmailVerificationAction::RegisterTeam { organization } =
         email_verification_request.get_action()?
     else {
         return Err(Error::InvalidEmailConfirmationCode);
@@ -58,6 +58,7 @@ pub async fn create(
             team_name.clone(),
             members_count,
             confirmation_code,
+            organization.clone(),
         )
         .await?;
         team_invitation_codes.push(invitation_codes);
