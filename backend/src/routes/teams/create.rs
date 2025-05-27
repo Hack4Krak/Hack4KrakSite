@@ -18,7 +18,7 @@ use validator::Validate;
 pub struct CreateTeamModel {
     #[validate(length(min = 3, max = 32), custom(function = "validate_name_chars"))]
     pub team_name: String,
-    #[validate(length(min = 3, max = 64), custom(function = "validate_name_chars"))]
+    #[validate(length(min = 3, max = 128), custom(function = "validate_name_chars"))]
     pub organization: Option<String>,
 }
 

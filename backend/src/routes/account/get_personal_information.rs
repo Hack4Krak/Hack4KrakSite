@@ -1,3 +1,4 @@
+use crate::entities::user_personal_info::Model as UserPersonalInfoModel;
 use crate::entities::{user_personal_info, users};
 use crate::utils::app_state;
 use crate::utils::error::Error;
@@ -7,7 +8,7 @@ use sea_orm::EntityTrait;
 
 #[utoipa::path(
     responses(
-        (status = 200, description = "User personal information received.", body = Option<user_personal_info::Model>),
+        (status = 200, description = "User personal information received.", body = Option<UserPersonalInfoModel>),
         (status = 500, description = "Internal server error.")
     ),
     security(
