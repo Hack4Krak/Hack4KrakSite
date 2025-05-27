@@ -24,11 +24,18 @@ pub struct TeamWithMembers {
     pub id: Uuid,
     pub team_name: String,
     pub created_at: DateTime,
-    pub members: Vec<(Uuid, String, bool)>,
+    pub members: Vec<TeamMember>,
     pub confirmation_code: Option<Uuid>,
     pub status: TeamStatus,
     pub organization: Option<String>,
     pub size: u8,
+}
+
+#[derive(Serialize, Deserialize, ToSchema)]
+pub struct TeamMember {
+    pub id: Uuid,
+    pub username: String,
+    pub is_leader: bool,
 }
 
 impl teams::Model {
@@ -265,12 +272,16 @@ impl teams::Model {
             .all(database)
             .await?;
 
-        let mut teams_with_members = vec![];
+        let mut teams_with_members = Vec::new();
 
         for (team, users) in teams {
-            let members: Vec<(Uuid, String, bool)> = users
+            let members: Vec<TeamMember> = users
                 .into_iter()
-                .map(|user| (user.id, user.username, user.is_leader))
+                .map(|user| TeamMember {
+                    id: user.id,
+                    username: user.username,
+                    is_leader: user.is_leader,
+                })
                 .collect();
             teams_with_members.push(TeamWithMembers {
                 id: team.id,
