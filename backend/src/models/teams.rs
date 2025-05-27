@@ -1,6 +1,6 @@
 use crate::entities::sea_orm_active_enums::TeamStatus;
 use crate::entities::teams::ActiveModel;
-use crate::entities::{external_team_invitation, flag_capture, teams, users};
+use crate::entities::{external_team_invitation, flag_capture, team_invites, teams, users};
 use crate::models::task::RegistrationConfig;
 use crate::routes::admin::UpdateTeamModel;
 use crate::routes::teams::TeamError;
@@ -23,9 +23,18 @@ pub struct TeamWithMembers {
     pub id: Uuid,
     pub team_name: String,
     pub created_at: DateTime,
-    pub members: Vec<(Uuid, String)>,
+    pub members: Vec<TeamMember>,
     pub confirmation_code: Option<Uuid>,
     pub status: TeamStatus,
+    pub organization: Option<String>,
+    pub size: u8,
+}
+
+#[derive(Serialize, Deserialize, ToSchema)]
+pub struct TeamMember {
+    pub id: Uuid,
+    pub username: String,
+    pub is_leader: bool,
 }
 
 impl teams::Model {
@@ -57,6 +66,7 @@ impl teams::Model {
     pub async fn try_create(
         transaction: &impl ConnectionTrait,
         team_name: String,
+        organization: Option<String>,
     ) -> Result<Uuid, Error> {
         if teams::Model::find_by_name(transaction, &team_name)
             .await?
@@ -71,6 +81,7 @@ impl teams::Model {
             name: Set(team_name),
             created_at: Set(Utc::now().naive_utc()),
             status: Set(TeamStatus::Absent),
+            organization: Set(organization),
             ..Default::default()
         })
         .exec(transaction)
@@ -82,11 +93,12 @@ impl teams::Model {
     pub async fn create(
         database: &DatabaseConnection,
         team_name: String,
+        organization: Option<String>,
         user: users::Model,
     ) -> Result<(), Error> {
         let transaction = database.begin().await?;
 
-        let uuid = Self::try_create(&transaction, team_name).await?;
+        let uuid = Self::try_create(&transaction, team_name, organization).await?;
 
         let mut active_user: users::ActiveModel = user.into();
         active_user.team = Set(Some(uuid));
@@ -104,11 +116,12 @@ impl teams::Model {
         team_name: String,
         number_of_members: u16,
         administration_code: Uuid,
+        organization: String,
     ) -> Result<Vec<String>, Error> {
         registration_config.assert_team_size(number_of_members)?;
 
         let transaction = database.begin().await?;
-        let team_id = Self::try_create(&transaction, team_name).await?;
+        let team_id = Self::try_create(&transaction, team_name, Some(organization)).await?;
 
         let mut invitations = Vec::new();
         for _ in 0..number_of_members {
@@ -226,29 +239,53 @@ impl teams::Model {
         Ok(leader)
     }
 
+    pub async fn size(database: &DatabaseConnection, team_id: Uuid) -> Result<u8, Error> {
+        let mut size = users::Entity::find()
+            .filter(users::Column::Team.eq(team_id))
+            .count(database)
+            .await?;
+
+        size += team_invites::Entity::find()
+            .filter(team_invites::Column::Team.eq(team_id))
+            .count(database)
+            .await?;
+
+        size += external_team_invitation::Entity::find()
+            .filter(external_team_invitation::Column::Team.eq(team_id))
+            .count(database)
+            .await?;
+
+        Ok(size as u8)
+    }
+
     pub async fn list(database: &DatabaseConnection) -> Result<Vec<TeamWithMembers>, Error> {
         let teams = teams::Entity::find()
             .find_with_related(users::Entity)
             .all(database)
             .await?;
 
-        let teams_with_members = teams
-            .into_iter()
-            .map(|(team, users)| {
-                let members: Vec<(Uuid, String)> = users
-                    .into_iter()
-                    .map(|user| (user.id, user.username))
-                    .collect();
-                TeamWithMembers {
-                    id: team.id,
-                    team_name: team.name,
-                    created_at: team.created_at,
-                    members,
-                    confirmation_code: team.confirmation_code,
-                    status: team.status,
-                }
-            })
-            .collect::<Vec<TeamWithMembers>>();
+        let mut teams_with_members = Vec::new();
+
+        for (team, users) in teams {
+            let members: Vec<TeamMember> = users
+                .into_iter()
+                .map(|user| TeamMember {
+                    id: user.id,
+                    username: user.username,
+                    is_leader: user.is_leader,
+                })
+                .collect();
+            teams_with_members.push(TeamWithMembers {
+                id: team.id,
+                team_name: team.name,
+                created_at: team.created_at,
+                members,
+                confirmation_code: team.confirmation_code,
+                status: team.status,
+                organization: team.organization,
+                size: Self::size(database, team.id).await?,
+            });
+        }
 
         Ok(teams_with_members)
     }
