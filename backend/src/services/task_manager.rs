@@ -39,7 +39,7 @@ impl TaskManager {
             if let Ok(task) = serde_yml::from_str::<TaskConfig>(&file_content) {
                 tasks.insert(task.description.id.clone(), task);
             } else {
-              error!("Failed to parse task config at {:?}", path);
+                error!("Failed to parse task config at {:?}", path);
             }
         }
     }
