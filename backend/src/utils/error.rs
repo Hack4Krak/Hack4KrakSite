@@ -67,6 +67,7 @@ pub enum Error {
     FailedToBuildEmail(#[from] lettre::error::Error),
     InvalidJson(#[from] serde_json::Error),
     InvalidEmailConfirmationCode,
+    InvalidColorFormat,
     EmailConfirmationCodeExpired,
     RouteNotFound,
     InvalidEmailSender(String),
@@ -120,7 +121,8 @@ impl error::ResponseError for Error {
             Error::InvalidJsonWebToken => StatusCode::UNAUTHORIZED,
             Error::MissingExtension { .. }
             | Error::InvalidEmailConfirmationCode
-            | Error::EmailConfirmationCodeExpired => StatusCode::BAD_REQUEST,
+            | Error::EmailConfirmationCodeExpired
+            | Error::InvalidColorFormat => StatusCode::BAD_REQUEST,
             Error::UserNotFound | Error::RouteNotFound | Error::RecipientNotFound { .. } => {
                 StatusCode::NOT_FOUND
             }

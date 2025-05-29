@@ -11,6 +11,7 @@ use uuid::Uuid;
 #[derive(Serialize, Deserialize, ToSchema, Default, Debug, PartialEq)]
 pub struct TeamPoints {
     pub label: String,
+    pub color: String,
     pub points: Vec<usize>,
 }
 
@@ -19,12 +20,14 @@ pub struct TeamCurrentPoints {
     pub team_name: String,
     pub current_points: usize,
     pub captured_flags: usize,
+    pub color: String,
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Debug, Default)]
-pub struct TeamPointsAndFlagsOverTime {
+pub struct TeamPointsAndFlagsOverTimeAndTeamColor {
     pub points: Vec<usize>,
     pub flags: Vec<usize>,
+    pub color: String,
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Default, Debug, PartialEq)]
@@ -36,7 +39,7 @@ pub struct Chart {
 #[derive(Default)]
 pub struct PointsCounter {
     event_timestamps: Vec<NaiveDateTime>,
-    team_points_and_flags_over_time: HashMap<String, TeamPointsAndFlagsOverTime>,
+    team_points_and_flags_over_time: HashMap<String, TeamPointsAndFlagsOverTimeAndTeamColor>,
 }
 
 impl PointsCounter {
@@ -92,6 +95,12 @@ impl PointsCounter {
                     .or_default()
                     .flags
                     .push(solves.unwrap_or(&Vec::new()).len());
+
+                output
+                    .team_points_and_flags_over_time
+                    .entry(team.name.clone())
+                    .or_default()
+                    .color = team.color.clone();
             }
 
             output.event_timestamps.push(capture.submitted_at);
@@ -104,13 +113,14 @@ impl PointsCounter {
         let mut points = self
             .team_points_and_flags_over_time
             .iter()
-            .map(|(team_name, points_and_flags)| {
-                let final_points = *points_and_flags.points.last().unwrap_or(&0);
-                let final_flags = *points_and_flags.flags.last().unwrap_or(&0);
+            .map(|(team_name, points_and_flags_and_color)| {
+                let final_points = *points_and_flags_and_color.points.last().unwrap_or(&0);
+                let final_flags = *points_and_flags_and_color.flags.last().unwrap_or(&0);
                 TeamCurrentPoints {
                     team_name: team_name.clone(),
                     current_points: final_points,
                     captured_flags: final_flags,
+                    color: points_and_flags_and_color.color.clone(),
                 }
             })
             .collect::<Vec<TeamCurrentPoints>>();
@@ -127,6 +137,7 @@ impl PointsCounter {
             .into_iter()
             .map(|(team_id, time_points_and_flags)| TeamPoints {
                 label: team_id,
+                color: time_points_and_flags.color,
                 points: time_points_and_flags.points,
             })
             .collect::<Vec<TeamPoints>>();

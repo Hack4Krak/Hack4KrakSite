@@ -3,9 +3,6 @@ mod delete;
 mod generate_confirmation_code;
 mod list;
 mod update;
-
-pub use update::UpdateTeamModel;
-
 pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(list::list);
     config.service(update::update);

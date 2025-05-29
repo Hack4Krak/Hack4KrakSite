@@ -20,6 +20,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20250429_123733_user_personal_info::Migration),
             Box::new(m20250430_183841_unified_email_verification::Migration),
             Box::new(m20250503_182326_create_external_team_invitation::Migration),
+            Box::new(m20250526_105526_add_team_color_field::Migration),
             Box::new(m20250526_172108_add_organization_column_to_team::Migration),
         ]
     }
@@ -38,4 +39,5 @@ mod m20250225_171450_add_confirmation_code_and_status_fields_to_team;
 mod m20250429_123733_user_personal_info;
 mod m20250430_183841_unified_email_verification;
 mod m20250503_182326_create_external_team_invitation;
+mod m20250526_105526_add_team_color_field;
 mod m20250526_172108_add_organization_column_to_team;
