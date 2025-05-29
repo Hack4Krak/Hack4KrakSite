@@ -26,7 +26,7 @@ export type Team = ApiResponse<'teams'>[0]
 
 ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, TimeScale)
 
-const { data } = await useApi('/leaderboard/chart')
+const { data, refresh: refreshChart } = await useApi('/leaderboard/chart')
 
 const targetTimezone = 'Europe/Warsaw'
 
@@ -76,21 +76,40 @@ const chartOptions = ref<ChartOptions<'line'>>({
   },
 })
 
-const { data: teams } = await useApi('/leaderboard/teams')
+const { data: teams, refresh: refreshTeams } = await useApi('/leaderboard/teams')
 
 const columns: TableColumn<Team>[] = [
   {
     accessorKey: 'team_name',
+    header: 'Nazwa drużyny',
   },
   {
     accessorKey: 'current_points',
+    header: 'Ilosć punktów',
   },
   {
     accessorKey: 'captured_flags',
+    header: 'Zdobyte flagi',
   },
 ]
 
 const teamsTableData = computed(() => teams.value ?? [])
+
+const toast = useToast()
+
+if (import.meta.client) {
+  const sseBackendAddress = `${useRuntimeConfig().public.openFetch.api.baseURL}/leaderboard/updates`
+
+  const eventSource = new EventSource(sseBackendAddress)
+  eventSource.onmessage = async () => {
+    await refreshChart()
+    await refreshTeams()
+  }
+
+  eventSource.onerror = () => {
+    toast.add({ title: 'Błąd połączenia', description: 'Nie można połączyć się z serwerem', color: 'error' })
+  }
+}
 </script>
 
 <template>

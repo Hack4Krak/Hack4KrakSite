@@ -186,13 +186,12 @@ onMounted(() => {
       <div class="border-gray-300 border-1 h-[75%] w-full">
         <div class="border-b-1 border-gray-300 h-15 flex items-center justify-between pl-5 w-full">
           <p class="font-pixelify text-xl font-bold">
-            Hack4Krak - Historia Rankingu
+            Hack4Krak - Wykres Punktów
           </p>
           <div class="h-full border-l-1 border-gray-300 flex content-center items-center">
             <Icon name="mdi:alpha-x" class="text-5xl font-bold" />
           </div>
         </div>
-        <!--        <div class="bg-blue-500 h-[calc(100%-3.75rem)] w-full" /> -->
         <Line :data="chartData" :options="chartOptions" class="m-5 max-h-[calc(100%-5.75rem)] w-full" />
       </div>
     </div>
