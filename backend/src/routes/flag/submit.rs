@@ -58,7 +58,7 @@ pub async fn submit(
         .sse_event_sender
         .send(SseEvent::LeaderboardUpdate {
             task_id: task.key().to_string(),
-            task_name: task.value().description.name.to_string(),
+            task_name: task.value().meta.name.to_string(),
             is_first_flag_submission: is_first_submission,
             team_name: team.name,
             username: user.username,

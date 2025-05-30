@@ -24,7 +24,7 @@ function checkImage() {
   img.onerror = () => {
     showError({
       statusCode: 404,
-      message: 'Zdjecie nie zostalo znalezione',
+      message: 'Zdjęcie nie zostało znalezione',
     })
   }
 }

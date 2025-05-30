@@ -66,7 +66,7 @@ impl Default for EventConfig {
 #[derive(Serialize, Deserialize, ToSchema, Debug, Default)]
 pub struct TaskConfig {
     #[serde(flatten)]
-    pub description: TaskDescription,
+    pub meta: TaskMeta,
     #[serde(skip_serializing)]
     pub flag_hash: String,
     #[serde(default)]
@@ -76,9 +76,11 @@ pub struct TaskConfig {
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Debug, Clone, Default)]
-pub struct TaskDescription {
+pub struct TaskMeta {
     pub id: String,
     pub name: String,
+    pub labels: Vec<String>,
+    pub difficulty_estimate: String,
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Debug)]

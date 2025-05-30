@@ -55,7 +55,7 @@ const baseAssetsPath = `${useRuntimeConfig().public.openFetch.api.baseURL}/tasks
 <template>
   <div class="flex flex-col mx-[10vw] w-[80vw] pt-5 gap-5">
     <MarkdownContent :text="description" />
-    <h2 class="text-4xl font-bold">
+    <h2 v-if="assets?.length !== 0" class="text-4xl font-bold">
       Załączniki
     </h2>
     <ul class="flex flex-col list-disc pl-5">

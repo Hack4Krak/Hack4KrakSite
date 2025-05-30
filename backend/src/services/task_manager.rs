@@ -37,7 +37,7 @@ impl TaskManager {
             let file_content = fs::read_to_string(path.join("config.yaml")).await.unwrap();
 
             if let Ok(task) = serde_yml::from_str::<TaskConfig>(&file_content) {
-                tasks.insert(task.description.id.clone(), task);
+                tasks.insert(task.meta.id.clone(), task);
             } else {
                 error!("Failed to parse task config at {:?}", path);
             }

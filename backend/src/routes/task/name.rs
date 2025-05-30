@@ -13,12 +13,7 @@ use actix_web::{HttpResponse, get};
 )]
 #[get("/name/{task_id}")]
 pub async fn name(app_state: Data<AppState>, task_id: Path<String>) -> Result<HttpResponse, Error> {
-    let content = app_state
-        .task_manager
-        .get_task(&task_id)?
-        .description
-        .name
-        .clone();
+    let content = app_state.task_manager.get_task(&task_id)?.meta.name.clone();
 
     Ok(HttpResponse::Ok().body(content))
 }
