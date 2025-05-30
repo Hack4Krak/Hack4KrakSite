@@ -1,4 +1,4 @@
-use crate::models::task::{EventConfig, RegistrationConfig, TaskConfig};
+use crate::models::task::{EventConfig, LabelsConfig, RegistrationConfig, TaskConfig};
 use crate::routes::task::TaskError;
 use crate::services::env::EnvConfig;
 use crate::utils::error::Error;
@@ -15,11 +15,32 @@ use tracing::error;
 pub struct TaskManager {
     pub event_config: RwLock<EventConfig>,
     pub registration_config: RwLock<RegistrationConfig>,
+    pub labels_config: RwLock<LabelsConfig>,
     pub tasks: DashMap<String, TaskConfig>,
+}
+
+impl LabelsConfig {
+    pub async fn load_label(&self, id: &str) -> Result<NamedFile, Error> {
+        // todo: check if id is in self labels
+
+        let asset_path = EnvConfig::get()
+            .tasks_base_path
+            .join("config/assets/labels")
+            .join(format!("{id}.png"));
+
+        if !asset_path.exists() || !asset_path.is_file() {
+            return Err(TaskError::CouldNotLoadTaskAsset { id: id.to_string() }.into());
+        }
+
+        let named_file = NamedFile::open(asset_path)?;
+
+        Ok(named_file)
+    }
 }
 
 impl TaskManager {
     pub async fn refresh(&self) {
+        // todo: refreshconfigs
         self.tasks.clear();
         Self::load_tasks(&self.tasks).await;
     }
@@ -60,8 +81,11 @@ impl TaskManager {
         let registration_config: RegistrationConfig =
             Self::load_config("config/registration.yaml").await;
 
+        let labels_config: LabelsConfig = Self::load_config("config/labels.yaml").await;
+
         Self {
             event_config: RwLock::new(event_config),
+            labels_config: RwLock::new(labels_config),
             registration_config: RwLock::new(registration_config),
             tasks,
         }

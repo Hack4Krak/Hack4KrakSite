@@ -21,6 +21,20 @@ pub struct RegistrationConfig {
     pub registration_mode: RegistrationMode,
 }
 
+#[derive(Serialize, Deserialize, ToSchema, Default, Debug)]
+#[serde(rename_all(deserialize = "kebab-case"))]
+pub struct LabelsConfig {
+    pub labels: Vec<Label>,
+}
+
+#[derive(Serialize, Deserialize, ToSchema, Default, Debug)]
+#[serde(rename_all(deserialize = "kebab-case"))]
+pub struct Label {
+    pub id: String,
+    pub name: String,
+    pub description: String,
+}
+
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "kebab-case")]
 pub enum RegistrationMode {
