@@ -36,7 +36,7 @@ pub struct Chart {
     pub team_points_over_time: Vec<TeamPoints>,
 }
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct PointsCounter {
     event_timestamps: Vec<NaiveDateTime>,
     team_points_and_flags_over_time: HashMap<String, TeamPointsAndFlagsOverTimeAndTeamColor>,
@@ -52,6 +52,16 @@ impl PointsCounter {
         let mut team_to_tasks: HashMap<Uuid, Vec<String>> = HashMap::new();
 
         let mut task_points: HashMap<String, usize> = HashMap::new();
+
+        // TODO: Improve this
+        for team in &teams {
+            output
+                .team_points_and_flags_over_time
+                .entry(team.name.clone())
+                .or_default()
+                .points
+                .push(0);
+        }
 
         for capture in captures {
             let task_name = capture.task.clone();
