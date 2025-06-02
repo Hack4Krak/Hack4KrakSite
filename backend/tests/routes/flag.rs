@@ -3,6 +3,7 @@ use crate::test_utils::database::TestDatabase;
 use crate::test_utils::header::TestAuthHeader;
 use actix_web::test;
 use actix_web::test::TestRequest;
+use chrono::{DateTime, Duration, FixedOffset, Utc};
 use hack4krak_backend::entities::sea_orm_active_enums::TeamStatus;
 use hack4krak_backend::entities::{teams, users};
 use hack4krak_backend::models::task::TaskConfig;
@@ -16,8 +17,10 @@ async fn submit_flag(user: users::Model, flag: &str) -> TestRequest {
         .set_json(json!({ "flag": flag }))
 }
 
-#[actix_web::test]
-async fn try_submitting_flags() {
+async fn setup_app_with_task_manager(
+    event_start_date: DateTime<FixedOffset>,
+    event_end_date: DateTime<FixedOffset>,
+) -> (users::Model, users::Model, TestDatabase, TaskManager) {
     let test_database = TestDatabase::new().await;
     let confirmed_team = test_database
         .with_team(teams::UpdatableModel {
@@ -50,6 +53,20 @@ async fn try_submitting_flags() {
         },
     );
 
+    task_manager.event_config.write().await.start_date = event_start_date;
+    task_manager.event_config.write().await.end_date = event_end_date;
+
+    (absent_user, present_user, test_database, task_manager)
+}
+
+#[actix_web::test]
+async fn try_submitting_flags() {
+    let (absent_user, present_user, test_database, task_manager) = setup_app_with_task_manager(
+        DateTime::from(Utc::now()),
+        DateTime::from(Utc::now() + Duration::days(1)),
+    )
+    .await;
+
     let app = TestApp::default()
         .with_database(test_database)
         .with_task_manager(task_manager)
@@ -80,4 +97,38 @@ async fn try_submitting_flags() {
     let request = submit_flag(present_user.clone(), "hack4KrakCTF{skibidi}").await;
     let response = test::call_service(&app, request.to_request()).await;
     assert_eq!(response.status(), 409);
+}
+
+#[actix_web::test]
+async fn submit_flag_after_event() {
+    let (_, present_user, database, task_manager) = setup_app_with_task_manager(
+        DateTime::from(Utc::now() - Duration::days(1)),
+        DateTime::from(Utc::now() - Duration::days(1)),
+    )
+    .await;
+
+    let app = TestApp::default()
+        .with_database(database)
+        .with_task_manager(task_manager)
+        .build_app()
+        .await;
+
+    let request = submit_flag(present_user.clone(), "hack4KrakCTF{skibidi}").await;
+    let response = test::call_service(&app, request.to_request()).await;
+    assert_eq!(response.status(), 200);
+    let (_, present_user, database, task_manager) = setup_app_with_task_manager(
+        DateTime::from(Utc::now() - Duration::days(1)),
+        DateTime::from(Utc::now() - Duration::days(1)),
+    )
+    .await;
+
+    let app = TestApp::default()
+        .with_database(database)
+        .with_task_manager(task_manager)
+        .build_app()
+        .await;
+
+    let request = submit_flag(present_user.clone(), "hack4KrakCTF{skibidi}").await;
+    let response = test::call_service(&app, request.to_request()).await;
+    assert_eq!(response.status(), 200);
 }
