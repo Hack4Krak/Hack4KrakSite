@@ -12,13 +12,13 @@ use utoipa::ToSchema;
 use validator::Validate;
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, Validate)]
-pub struct SubmitModel {
+struct SubmitModel {
     #[validate(length(max = 1024))]
     pub flag: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, Validate)]
-pub struct SubmitResponse {
+struct SubmitResponse {
     pub task_id: String,
 }
 
