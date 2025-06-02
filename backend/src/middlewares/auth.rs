@@ -1,6 +1,5 @@
-use crate::entities::sea_orm_active_enums::{TeamStatus, UserRoles};
+use crate::entities::sea_orm_active_enums::UserRoles;
 use crate::entities::{teams, users};
-use crate::routes::flag::FlagError::TeamNotConfirmed;
 use crate::routes::teams::TeamError;
 use crate::utils::app_state::AppState;
 use crate::utils::cookies::ACCESS_TOKEN_COOKIE;
@@ -181,8 +180,8 @@ impl<S> AuthMiddlewareService<S> {
                     .one(database)
                     .await?
                     .ok_or(Error::Team(TeamError::TeamNotFound))?;
-                if team.status != TeamStatus::Confirmed && config.require_confirmed_team {
-                    return Err(Error::Flag(TeamNotConfirmed));
+                if config.require_confirmed_team {
+                    team.assert_is_confirmed()?;
                 }
                 if config.insert_team_extension {
                     request.extensions_mut().insert(team);

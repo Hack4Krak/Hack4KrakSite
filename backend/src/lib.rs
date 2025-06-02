@@ -70,7 +70,12 @@ pub fn setup_actix_app(
                 .configure(routes::admin::config),
         )
         .service(scope("/event").configure(routes::event::config))
-        .service(scope("/flag").configure(routes::flag::config))
+        .service(
+            scope("/flag")
+                .wrap(AuthMiddleware::with_user())
+                .wrap(EventMiddleware::disallow_before_event())
+                .configure(routes::flag::config),
+        )
         .service(scope("/leaderboard").configure(routes::leaderboard::config))
         .default_service(actix_web::web::route().to(|| async { RouteNotFound.error_response() }))
         .openapi_service(|api| Scalar::with_url("/docs", api));
