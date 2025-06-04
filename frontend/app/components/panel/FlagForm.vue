@@ -38,7 +38,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     })
   }
 
-  toast.add({ title: 'Brawo! To była poprawna flaga', description: getRandomJoke(), color: 'success', duration: 5000 })
+  toast.add({ title: 'Brawo! To była poprawna flaga', description: getRandomJoke(), color: 'success', duration: 12500 })
   state.flag = undefined
 }
 </script>
