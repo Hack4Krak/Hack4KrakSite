@@ -55,7 +55,6 @@ export default defineNuxtConfig({
     '/': { prerender: true },
     '/faq': { redirect: '/docs/faq' },
     '/rules': { redirect: '/docs/rules' },
-    '/admin/**': { robots: false },
   },
 
   hooks: {
@@ -144,6 +143,9 @@ export default defineNuxtConfig({
   },
   linkChecker: {
     runOnBuild: false,
+  },
+  robots: {
+    disallow: ['/admin'],
   },
   // https://nuxtseo.com/docs/site-config/guides/setting-site-config
   site: {
