@@ -144,7 +144,7 @@ impl AuthService {
     }
 
     pub fn hash_password(password: Password) -> Result<String, Error> {
-        let salt = SaltString::generate(&mut OsRng);
+        let salt = SaltString::try_from_rng(&mut OsRng)?;
 
         Ok(Argon2::default()
             .hash_password(password.0.as_bytes(), &salt)
