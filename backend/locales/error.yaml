@@ -33,6 +33,7 @@ Error:
   ServerEventSendingError: "Błąd wysyłania zdarzenia serwera {0}"
   Validator: "Niepoprawne pola w zapytaniu"
   Metrics: "Nie udało się zebrać danych statystycznych"
+  Os: "Błąd systemu operacyjnego!"
   InvalidEmailConfirmationCode: "Nieprawidłowy kod z e-mail"
   EmailConfirmationCodeExpired: "Kod z tego e-mail wygasł. Spróbuj ponownie!"
 

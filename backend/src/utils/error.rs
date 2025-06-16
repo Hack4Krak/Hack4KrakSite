@@ -7,6 +7,7 @@ use crate::routes::teams::TeamError;
 use actix_web::http::StatusCode;
 use actix_web::{HttpRequest, HttpResponse, error};
 use hack4krak_macros::error_with_messages;
+use rand::rand_core::OsError;
 use sea_orm::RuntimeErr::SqlxError;
 use serde_json::json;
 use tokio::sync::broadcast;
@@ -84,6 +85,7 @@ pub enum Error {
     FailedToParseUrl(#[from] url::ParseError),
     ServerEventSendingError(#[from] broadcast::error::SendError<String>),
     Metrics(#[from] prometheus::Error),
+    Os(#[from] OsError),
     Validator(validator::ValidationErrors),
 
     #[error(transparent)]
@@ -116,6 +118,7 @@ impl error::ResponseError for Error {
             | Error::FailedToParseUrl(_)
             | Error::ConflictInDatabase
             | Error::Metrics(_)
+            | Error::Os(_)
             | Error::ServerEventSendingError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Unauthorized => StatusCode::UNAUTHORIZED,
             Error::InvalidJsonWebToken => StatusCode::UNAUTHORIZED,
