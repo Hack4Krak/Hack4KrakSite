@@ -21,7 +21,7 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     '@nuxtjs/mdc',
     '@formkit/auto-animate/nuxt',
-    'nuxt-open-fetch-x',
+    'nuxt-open-fetch',
     'nuxt-qrcode',
     'dayjs-nuxt',
     '@compodium/nuxt',
@@ -105,11 +105,11 @@ export default defineNuxtConfig({
     clients: {
       api: {
         baseURL: backendAddress,
-        schema: '../openapi/api/openapi.json',
+        schema: 'openapi/api/openapi.json',
       },
       auth: {
         baseURL: backendAddress,
-        schema: '../openapi/api/openapi.json',
+        schema: 'openapi/api/openapi.json',
       },
     },
   },
