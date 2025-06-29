@@ -14,13 +14,13 @@ version = "1.2.0"
 edition = "2024"
 
 [workspace.dependencies]
-sea-orm = { version = "1.1.12", features = [ "sqlx-postgres", "sqlx-sqlite", "runtime-tokio-rustls", "macros", "mock" ] }
+sea-orm = { version = "1.1.13", features = [ "sqlx-postgres", "sqlx-sqlite", "runtime-tokio-rustls", "macros", "mock" ] }
 tokio = { version = "1.45.1", features = ["macros", "rt", "rt-multi-thread", "fs"] }
 serde_yml = "0.0.12"
 
 [dependencies]
 # Generating OpenAPI
-utoipa = { version = "5.3.1", features = ["actix_extras", "macros", "chrono", "uuid"] }
+utoipa = { version = "5.4.0", features = ["actix_extras", "macros", "chrono", "uuid"] }
 utoipa-actix-web = "0.1.2"
 utoipa-scalar = { version = "0.3.0", features = ["actix-web"] }
 
