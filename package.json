@@ -37,5 +37,8 @@
   },
   "resolutions": {
     "@nuxt/fonts": "0.11.4"
+  },
+  "dependencies": {
+    "@nuxt/fonts": "0.11.4"
   }
 }
