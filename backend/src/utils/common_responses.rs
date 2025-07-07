@@ -4,7 +4,7 @@ use url::Url;
 
 pub fn create_redirect_response(location: Url) -> Result<HttpResponseBuilder, Error> {
     let mut response = HttpResponse::Ok();
-    response.append_header(("Refresh", format!("0; {}", location)));
+    response.append_header(("Refresh", format!("0; {location}")));
     Ok(response)
 }
 

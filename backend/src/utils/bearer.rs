@@ -9,7 +9,7 @@ pub fn verify_bearer_token(req: &HttpRequest, expected_token: &str) -> Result<()
         .and_then(|hv| hv.to_str().ok());
 
     match header_value {
-        Some(header) if header == format!("Bearer {}", expected_token) => Ok(()),
+        Some(header) if header == format!("Bearer {expected_token}") => Ok(()),
         _ => Err(Error::Unauthorized),
     }
 }

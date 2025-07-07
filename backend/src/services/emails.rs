@@ -158,7 +158,7 @@ impl Email {
         let mut html = self.template.get_template().to_string();
         if let Some(elements) = self.placeholders.clone() {
             for (key, value) in elements {
-                html = html.replace(&format!("%{}%", key), &value);
+                html = html.replace(&format!("%{key}%"), &value);
             }
         }
         Ok(html)
