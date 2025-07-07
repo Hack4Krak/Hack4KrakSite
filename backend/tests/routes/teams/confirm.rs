@@ -22,7 +22,7 @@ async fn confirm_team_success() {
         .await;
 
     let request = test::TestRequest::get()
-        .uri(format!("/teams/confirm/{}", confirmation_code).as_str())
+        .uri(format!("/teams/confirm/{confirmation_code}").as_str())
         .method(actix_web::http::Method::POST)
         .to_request();
     let response = test::call_service(&app, request).await;

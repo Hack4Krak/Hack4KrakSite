@@ -6,7 +6,7 @@ pub fn derive_updatable_model_impl(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
 
     let name = input.ident;
-    let new_struct_name = syn::Ident::new(&format!("Updatable{}", name), name.span());
+    let new_struct_name = syn::Ident::new(&format!("Updatable{name}"), name.span());
 
     let fields = match input.data {
         Data::Struct(data_struct) => match data_struct.fields {

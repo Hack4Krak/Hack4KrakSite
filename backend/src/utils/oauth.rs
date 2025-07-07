@@ -81,7 +81,7 @@ impl OAuthProvider {
         let url = EnvConfig::get().frontend_url.join("/panel")?;
 
         let mut response = actix_web::HttpResponse::Ok();
-        response.append_header(("Refresh", format!("0; {}", url)));
+        response.append_header(("Refresh", format!("0; {url}")));
         AuthService::append_tokens_as_cookies(user.id, user.email, &mut response)?;
         Ok(response.body("Redirecting..."))
     }

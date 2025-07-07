@@ -42,8 +42,7 @@ async fn external_invitations_flow() {
 
     let request = test::TestRequest::post()
         .uri(&format!(
-            "/teams/external_invitations/create/{}",
-            confirmation_code
+            "/teams/external_invitations/create/{confirmation_code}"
         ))
         .set_json(json!({
             // Testing maximum, average, and minimum team sizes
@@ -68,8 +67,7 @@ async fn external_invitations_flow() {
     // Admin displays status
     let request = test::TestRequest::get()
         .uri(&format!(
-            "/teams/external_invitations/info/{}",
-            confirmation_code
+            "/teams/external_invitations/info/{confirmation_code}"
         ))
         .insert_header(TestAuthHeader::new(admin.clone()))
         .to_request();

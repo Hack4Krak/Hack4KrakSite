@@ -27,7 +27,7 @@ mod tests {
     #[test]
     fn test_team_colors() {
         for color in TEAM_COLORS.iter() {
-            assert!(is_valid_hex(color), "Invalid hex color: {}", color);
+            assert!(is_valid_hex(color), "Invalid hex color: {color}");
         }
     }
 }
