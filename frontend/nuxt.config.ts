@@ -18,7 +18,6 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/content',
     '@nuxt/test-utils/module',
-    '@nuxt/fonts',
     '@nuxtjs/seo',
     '@nuxtjs/mdc',
     '@formkit/auto-animate/nuxt',
