@@ -12,7 +12,7 @@ pub fn localized_error_impl(input: TokenStream) -> TokenStream {
 
     let enum_messages = messages
         .get(enum_name.to_string())
-        .unwrap_or_else(|| panic!("Missing messages for enum `{}`", enum_name));
+        .unwrap_or_else(|| panic!("Missing messages for enum `{enum_name}`"));
 
     let syn::Data::Enum(data_enum) = &input.data else {
         panic!("ErrorWithMessages can only be applied to enums");
@@ -32,7 +32,7 @@ pub fn localized_error_impl(input: TokenStream) -> TokenStream {
         } else {
             let msg = enum_messages
                 .get(&var_name)
-                .unwrap_or_else(|| panic!("Missing message for variant `{}`", var_name))
+                .unwrap_or_else(|| panic!("Missing message for variant `{var_name}`"))
                 .as_str()
                 .expect("Message must be a string");
 
