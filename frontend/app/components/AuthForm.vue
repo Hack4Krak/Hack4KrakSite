@@ -95,7 +95,7 @@ const show = ref(false)
 
       <div class="flex flex-col items-start gap-1">
         <UFormField label="Hasło" name="password" class="w-full">
-          <UInput v-model="state.password" class="w-full" :type="show ? 'text' : 'password'" :ui="{ trailing: '' }">
+          <UInput v-model="state.password" class="w-full" :type="show ? 'text' : 'password'">
             <template #trailing>
               <UButton
                 color="neutral"
