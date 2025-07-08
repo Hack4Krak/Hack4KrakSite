@@ -1,5 +1,3 @@
 <template>
-  <UInput :ui="{ root: 'w-full', base: 'bg-transparent' }">
-    <slot />
-  </UInput>
+  <UInput :ui="{ root: 'w-full', base: 'bg-transparent' }" />
 </template>

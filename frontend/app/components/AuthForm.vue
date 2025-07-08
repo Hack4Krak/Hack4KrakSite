@@ -95,14 +95,14 @@ const show = ref(false)
 
       <div class="flex flex-col items-start gap-1">
         <UFormField label="Hasło" name="password" class="w-full">
-          <UInput v-model="state.password" class="w-full" :type="show ? 'text' : 'password'" :ui="{ trailing: 'pe-1' }">
+          <UInput v-model="state.password" class="w-full" :type="show ? 'text' : 'password'" :ui="{ trailing: '' }">
             <template #trailing>
               <UButton
                 color="neutral"
                 variant="link"
                 size="sm"
                 :icon="show ? 'i-lucide-eye-off' : 'i-lucide-eye'"
-                :aria-label="show ? 'Hide password' : 'Show password'"
+                :aria-label="show ? 'Ukryj hasło' : 'Pokaż hasło'"
                 :aria-pressed="show"
                 aria-controls="password"
                 @click="show = !show"
