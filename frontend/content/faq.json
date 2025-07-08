@@ -8,10 +8,6 @@
     "content": "Flaga to unikalny ciąg znaków, niczym skarb ukryty w zadaniu. Jej odnalezienie jest dowodem na poprawne rozwiązanie problemu. Flagi mają standardowy format: `hack4krakCTF{<tutaj_znajduje_się_flaga>}`."
   },
   {
-    "label": "Jak mogę się zarejestrować?",
-    "content": "Abyś mógł wziąć udział w Hack4Krak CTF, Twój nauczyciel musi najpierw zarejestrować drużynę (maksymalnie 3 drużyny po 5 osób na szkołę). Gdy to zrobi, będziesz mógł założyć indywidualne konto na naszej stronie, a następnie dołączyć do swojej drużyny, skanując lub przepisując kod QR, który otrzymasz od nauczyciela."
-  },
-  {
     "label": "Czy muszę znać się na programowaniu i cyberbezpieczeństwie, żeby wziąć udział w wydarzeniu?",
     "content": "Absolutnie nie! Choć podstawowa wiedza z tych dziedzin może być pomocna, nie jest wymagana. Do każdego zadania otrzymacie wyczerpującą dokumentację, która wprowadzi Was w niezbędne zagadnienia i ułatwi rozwiązanie zadania. Liczy się przede wszystkim Wasza kreatywność, umiejętność pracy zespołowej i nieszablonowe myślenie!"
   },
@@ -40,28 +36,12 @@
     "content": "Przygotowaliśmy dla Was atrakcyjne i wartościowe nagrody rzeczowe! Zwycięzcy mogą liczyć na ciekawe upominki, które z pewnością będą miłą niespodzianką i nagrodą za Wasz wysiłek i zaangażowanie! Szczegóły dotyczące nagród ujawnimy bliżej wydarzenia."
   },
   {
-    "label": "Co powinienem zabrać ze sobą na wydarzenie?",
-    "content": "Koniecznie, zabierzcie ze sobą własne **laptopy** lub inne urządzenia elektroniczne, które będą potrzebne do rozwiązywania zadań. Jeśli nie masz takich urządzeń, organizatorzy mogą zapewnić również sprzęt na miejscu, ale jego ilość jest ograniczona. **Obowiązkowo** musicie przynieść podpisaną przez rodzica lub opiekuna prawnego <a href=\"/documents/Zgoda_rodzica_lub_opiekuna_prawnego_na_uczestnictwo_w_wydarzeniu.pdf\" target=\"_blank\">zgodę</a>! Najważniejsze jednak, abyście zabrali ze sobą pozytywne nastawienie, chęć do współpracy i mnóstwo energii do rozwiązywania zadań!"
-  },
-  {
     "label": "Kiedy odbędzie się Hack4Krak CTF?",
-    "content": "Zapisy na nasze wydarzenie trwają od 6 maja do 28 maja włącznie. Samo wydarzenie odbędzie się 30 maja."
-  },
-  {
-    "label": "Jak długo potrwa wydarzenie?",
-    "content": "Wydarzenie zaplanowane jest w godzinach od 8:00 do 15:00. Szczegółowy harmonogram wygląda następująco: <br/> **8:00–8:30** - Rejestracja uczestników i uroczyste otwarcie. <br/> **8:30-14:30** - Czas na rozwiązywanie zadań. <br/> **14:30–15:00** - Ogłoszenie wyników i wręczenie nagród."
-  },
-  {
-    "label": "Gdzie odbędzie się wydarzenie?",
-    "content": "Spotkamy się w budynku XXXI Liceum Ogólnokształcącego w Krakowie, przy ulicy Kazimierza Odnowiciela 2."
-  },
-  {
-    "label": "Czy na miejscu będzie zapewniona opieka?",
-    "content": "Każdy uczestnik musi mieć zapewnionego opiekuna na czas trwania wydarzenia. Może to być wyznaczona osoba ze szkoły podstawowej uczestników. Dodatkowo, na miejscu będą obecni trzej nauczyciele z XXXI Liceum Ogólnokształcącego, którzy będą czuwać nad przebiegiem wydarzenia."
+    "content": "Na ten moment na ma dokładnej daty. Planowany termin odbycia się wydarzenia to 2025/26 rok. "
   },
   {
     "label": "Kto może wziąć udział w Hack4Krak CTF?",
-    "content": "W tej edycji Hack4Krak zapraszamy uczniów klas 7 i 8 szkół podstawowych z Krakowa do udziału w maksymalnie 5-osobowych drużynach. Każda szkoła może zgłosić maksymalnie 3 drużyny."
+    "content": "W następnej edycji Hack4Krak zapraszamy uczniów publicznych szkół średnich w całej Polsce."
   },
   {
     "label": "Kto organizuje to wydarzenie?",
