@@ -74,6 +74,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     loading.value = false
   }
 }
+
+const showPassword = ref(false)
 </script>
 
 <template>
@@ -93,7 +95,20 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
       <div class="flex flex-col items-start gap-1">
         <UFormField label="Hasło" name="password" class="w-full">
-          <TransparentInput v-model="state.password" type="password" />
+          <UInput v-model="state.password" class="w-full" :type="showPassword ? 'text' : 'password'">
+            <template #trailing>
+              <UButton
+                color="neutral"
+                variant="link"
+                size="sm"
+                :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
+                :aria-label="showPassword ? 'Ukryj hasło' : 'Pokaż hasło'"
+                :aria-pressed="showPassword"
+                aria-controls="password"
+                @click="showPassword = !showPassword"
+              />
+            </template>
+          </UInput>
           <template #hint>
             <NuxtLink v-if="isLogin" class="link-without-underline" to="/request_password_reset" tabindex="-1">
               Zresetuj hasło
