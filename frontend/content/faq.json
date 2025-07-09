@@ -1,5 +1,9 @@
 [
   {
+    "label": "Kiedy odbędzie się **kolejna** edycja Hack4Krak CTF?",
+    "content": "Na ten moment nie ma dokładnej daty. Planowany termin odbycia się wydarzenia to **2025/26 rok**."
+  },
+  {
     "label": "Czym jest CTF?",
     "content": "CTF, czyli **Capture The Flag**, to ekscytujący konkurs, w którym drużyny stają do rywalizacji, rozwiązując różnorodne zadania z obszaru cyberbezpieczeństwa. Waszym celem będzie odnalezienie ukrytych **flag** – specjalnych ciągów znaków potwierdzających poprawne rozwiązanie. Za każdą zdobytą flagę drużyna otrzymuje punkty, a zwycięzcą zostaje ta, która zgromadzi ich najwięcej!"
   },
@@ -41,11 +45,7 @@
   },
   {
     "label": "Jakie edycje odbyły się do tej pory?",
-    "content": "Do tej pory odbyły się dwie edycje. Pierwsza była dla uczniów XXXI Liceum Ogólnokształcącego w Krakowie, a druga dla uczniów szkół podstawowych w tym samym mieście. Aby dowiedieć się więcej o poprzednich wydarzeniach sprawdź zakładkę \"O nas\" lub odwiedź nasze social media."
-  },
-  {
-    "label": "Kiedy odbędzie się **kolejna** edycja Hack4Krak CTF?",
-    "content": "Na ten moment nie ma dokładnej daty. Planowany termin odbycia się wydarzenia to **2025/26 rok**."
+    "content": "Do tej pory odbyły się dwie edycje. Pierwsza była dla uczniów XXXI Liceum Ogólnokształcącego w Krakowie, a druga dla uczniów szkół podstawowych w tym samym mieście. Aby dowiedieć się więcej o poprzednich wydarzeniach sprawdź zakładkę <a href=\"about_us\" target=\"_blank\">O nas</a> lub odwiedź nasze social media."
   },
   {
     "label": "Kto może wziąć udział w Hack4Krak CTF?",

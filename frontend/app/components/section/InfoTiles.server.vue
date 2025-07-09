@@ -17,7 +17,7 @@ import { INFO_TILES_CONTENT } from '~~/content/info-tiles'
         <p class="lg:text-2xl font-bold text-red-450">
           Chcesz zobaczyć, z jakimi zadaniami mierzyli się uczestnicy poprzednich edycji?
         </p> <br>
-        <NuxtLink to="/about_us">
+        <NuxtLink to="/tasks">
           <ElevatedButton class="lg:text-xl lg:scale-110 bg-red-450">
             Dowiedz się więcej!
           </ElevatedButton>
