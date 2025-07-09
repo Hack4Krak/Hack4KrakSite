@@ -15,11 +15,11 @@ import { INFO_TILES_CONTENT } from '~~/content/info-tiles'
     >
       <div class="">
         <p class="lg:text-2xl font-bold text-red-450">
-          Chcesz zobaczyć informacje o poprzednich wydarzeniach?
+          Chcesz zobaczyć, z jakimi zadaniami mierzyli się uczestnicy poprzednich edycji?
         </p> <br>
         <NuxtLink to="/about_us">
           <ElevatedButton class="lg:text-xl lg:scale-110 bg-red-450">
-            Kliknij tutaj!
+            Dowiedz się więcej!
           </ElevatedButton>
         </NuxtLink>
       </div>

@@ -31,17 +31,25 @@
     "label": "Czy podczas CTF-a będzie zapewnione jedzenie i picie?",
     "content": "Tak, dbamy o Wasz komfort i energię! Podczas wydarzenia zapewnimy Wam przekąski i napoje. Szczegółowe informacje o dostępnych opcjach podamy bliżej terminu wydarzenia. Prosimy o wcześniejsze zgłoszenie wszelkich alergii lub preferencji żywieniowych."
   },
+    {
+    "label": "Co powinienem zabrać ze sobą na wydarzenie?",
+    "content": "Koniecznie, zabierzcie ze sobą własne **laptopy** lub inne urządzenia elektroniczne, które będą potrzebne do rozwiązywania zadań. Jeśli nie masz takich urządzeń, organizatorzy mogą zapewnić również sprzęt na miejscu, ale jego ilość jest ograniczona. W razie bycia osobą niepełnoletnią **obowiązkowo** musicie przynieść podpisaną przez rodzica lub opiekuna prawnego <a href=\"/documents/Zgoda_rodzica_lub_opiekuna_prawnego_na_uczestnictwo_w_wydarzeniu.pdf\" target=\"_blank\">zgodę</a>! Najważniejsze jednak, abyście zabrali ze sobą pozytywne nastawienie, chęć do współpracy i mnóstwo energii do rozwiązywania zadań!"
+  },
   {
     "label": "Jakie nagrody czekają na zwycięzców?",
     "content": "Przygotowaliśmy dla Was atrakcyjne i wartościowe nagrody rzeczowe! Zwycięzcy mogą liczyć na ciekawe upominki, które z pewnością będą miłą niespodzianką i nagrodą za Wasz wysiłek i zaangażowanie! Szczegóły dotyczące nagród ujawnimy bliżej wydarzenia."
   },
   {
-    "label": "Kiedy odbędzie się Hack4Krak CTF?",
-    "content": "Na ten moment na ma dokładnej daty. Planowany termin odbycia się wydarzenia to 2025/26 rok. "
+    "label": "Jakie edycje odbyły się do tej pory?",
+    "content": "Do tej pory odbyły się dwie edycje. Pierwsza była dla uczniów XXXI Liceum Ogólnokształcącego w Krakowie, a druga dla uczniów szkół podstawowych w tym samym mieście. Aby dowiedieć się więcej o poprzednich wydarzeniach sprawdź zakładkę \"O nas\" lub odwiedź nasze social media."
+  },
+  {
+    "label": "Kiedy odbędzie się **kolejna** edycja Hack4Krak CTF?",
+    "content": "Na ten moment nie ma dokładnej daty. Planowany termin odbycia się wydarzenia to **2025/26 rok**."
   },
   {
     "label": "Kto może wziąć udział w Hack4Krak CTF?",
-    "content": "W następnej edycji Hack4Krak zapraszamy uczniów publicznych szkół średnich w całej Polsce."
+    "content": "W następnej edycji Hack4Krak zapraszamy uczniów szkół średnich z całej Polski."
   },
   {
     "label": "Kto organizuje to wydarzenie?",
