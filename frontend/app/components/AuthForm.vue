@@ -75,7 +75,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   }
 }
 
-const show_password = ref(false)
+const showPassword = ref(false)
 </script>
 
 <template>
@@ -95,17 +95,17 @@ const show_password = ref(false)
 
       <div class="flex flex-col items-start gap-1">
         <UFormField label="Hasło" name="password" class="w-full">
-          <UInput v-model="state.password" class="w-full" :type="show_password ? 'text' : 'password'">
+          <UInput v-model="state.password" class="w-full" :type="showPassword ? 'text' : 'password'">
             <template #trailing>
               <UButton
                 color="neutral"
                 variant="link"
                 size="sm"
-                :icon="show_password ? 'i-lucide-eye-off' : 'i-lucide-eye'"
-                :aria-label="show_password ? 'Ukryj hasło' : 'Pokaż hasło'"
-                :aria-pressed="show_password"
+                :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
+                :aria-label="showPassword ? 'Ukryj hasło' : 'Pokaż hasło'"
+                :aria-pressed="showPassword"
                 aria-controls="password"
-                @click="show_password = !show_password"
+                @click="showPassword = !showPassword"
               />
             </template>
           </UInput>
