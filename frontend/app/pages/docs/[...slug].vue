@@ -9,7 +9,7 @@ definePageMeta({
 if (!page.value?.title) {
   showError({
     statusCode: 404,
-    message: 'Strona nie została znalezione',
+    message: 'Strona nie została znaleziona',
   })
 }
 

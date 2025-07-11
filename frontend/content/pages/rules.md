@@ -3,6 +3,8 @@ title: Regulamin Hack4Krak - edycja dla Szkół Podstawowych
 description: Regulamin Hack4Krak - edycja dla Szkół Podstawowych
 ---
 
+# :bangbang: Ten regulamin dotyczy poprzedniej edycji wydarzenia :bangbang:
+
 ## 1. Postanowienia ogólne
 
 1. Organizatorem Hack4Krak - edycji dla Szkół Podstawowych (zwanego dalej CTF) jest XXXI Liceum Ogólnokształcące w Krakowie.
