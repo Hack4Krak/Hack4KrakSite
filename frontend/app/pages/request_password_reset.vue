@@ -13,17 +13,14 @@ useSeoMeta({
   description: 'Zresetuj hasło do swojego konta, aby móc brać udział w wydarzeniu!',
 })
 
-type Schema = z.output<typeof schema>
-
 const schema = z.object({
   email: z.email({ error: 'Adres e-mail jest wymagany' }),
 })
+type Schema = z.output<typeof schema>
+const state = reactive<Partial<Schema>>({})
 
 const loading = ref(false)
 const toast = useToast()
-const state = reactive<Partial<Schema>>({
-  email: undefined,
-})
 
 const isButtonEnabled = computed(() => {
   return schema.safeParse(state).success
