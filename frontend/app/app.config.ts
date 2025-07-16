@@ -11,5 +11,10 @@ export default defineAppConfig({
         base: 'cursor-pointer',
       },
     },
+    input: {
+      slots: {
+        root: 'w-full',
+      },
+    },
   },
 })
