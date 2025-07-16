@@ -26,7 +26,6 @@ export default defineNuxtConfig({
     'dayjs-nuxt',
     '@compodium/nuxt',
     '@vueuse/nuxt',
-    'nuxt-error',
   ],
   experimental: {
     componentIslands: true,
@@ -95,10 +94,6 @@ export default defineNuxtConfig({
     config: {
       standalone: false,
     },
-  },
-  // https://nuxterror.com
-  nuxtError: {
-    apiToken: process.env.NUXT_ERROR_API_TOKEN,
   },
   // https://nuxt-open-fetch.vercel.app/setup/configuration (we are using patched fork - nuxt-open-fetch-x)
   openFetch: {
