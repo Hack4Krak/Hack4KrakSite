@@ -18,19 +18,15 @@ const props = withDefaults(defineProps<{
   theme: '#ff595e',
 })
 
-const HexRegex = /^#(?:[0-9a-f]{3}){1,2}$/i
-
 const themeHex = computed(() => {
-  if (HexRegex.test(props.theme))
-    return props.theme
-  if (HexRegex.test(`#${props.theme}`))
-    return `#${props.theme}`
-  if (props.theme.startsWith('rgb'))
-    return rgbToHex(props.theme)
-  return '#FFFFFF'
+  return Bun.color(props.theme, 'hex')!
 })
 
-const themeRgb = computed(() => hexToRgb(themeHex.value))
+const dimmedTheme = computed(() => {
+  const color = Bun.color(props.theme, '{rgba}')!
+  color.a = 0.5
+  return Bun.color(color, 'css')
+})
 
 const colorMode = computed(() => props.colorMode || 'dark')
 
@@ -47,7 +43,7 @@ const siteName = computed(() => props.siteName || useSiteConfig().name)
       :style="{
         width: '200%',
         height: '200%',
-        backgroundImage: `radial-gradient(circle, rgba(${themeRgb}, 0.5) 0%, ${colorMode === 'dark' ? 'rgba(5, 5, 5,0.3)' : 'rgba(255, 255, 255, 0.7)'} 50%, ${colorMode === 'dark' ? 'rgba(5, 5, 5,0)' : 'rgba(255, 255, 255, 0)'} 70%)`,
+        backgroundImage: `radial-gradient(circle, ${dimmedTheme} 0%, ${colorMode === 'dark' ? 'rgba(5, 5, 5,0.3)' : 'rgba(255, 255, 255, 0.7)'} 50%, ${colorMode === 'dark' ? 'rgba(5, 5, 5,0)' : 'rgba(255, 255, 255, 0)'} 70%)`,
       }"
     />
     <div class="h-full w-full justify-between relative">

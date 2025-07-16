@@ -1,7 +1,5 @@
-import { execSync } from 'node:child_process'
-
 export function getGitInfo() {
-  const commitHash = execSync('git rev-parse --short HEAD').toString().trim()
-  const branchName = execSync('git rev-parse --abbrev-ref HEAD').toString().trim()
+  const commitHash = Bun.spawnSync(['git', 'rev-parse', '--short', 'HEAD']).stdout.toString().trim()
+  const branchName = Bun.spawnSync(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).stdout.toString().trim()
   return { commitHash, branchName }
 }

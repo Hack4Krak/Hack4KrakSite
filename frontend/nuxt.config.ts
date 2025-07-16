@@ -36,6 +36,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
   compatibilityDate: '2025-07-16',
+  nitro: {
+    preset: 'bun',
+  },
 
   // App configuration
 
