@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import * as z from 'zod'
-
 definePageMeta({
   middleware: 'guest',
   layout: 'centered',
@@ -11,13 +9,12 @@ useSeoMeta({
   description: 'Zresetuj hasło do swojego konta, aby móc brać udział w wydarzeniu!',
 })
 
-const schema = z.object({
-  email: z.email({ error: 'Niepoprawny adres e-mail' }).describe('Email'),
-})
 const toast = useToast()
+const schema = z.object({
+  email: z.email().meta({ description: 'Email' }),
+})
 
-async function onSubmit(data: z.output<typeof schema>) {
-  console.log(data)
+async function onSubmit(data: zInfer<typeof schema>) {
   toast.add({ title: 'Oczekiwanie', description: 'Wysyłanie emaila…', color: 'info' })
 
   await useNuxtApp().$api('/auth/request_reset_password', {

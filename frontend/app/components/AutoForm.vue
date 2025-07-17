@@ -4,11 +4,10 @@ import { UCheckbox, UInput, UInputNumber } from '#components'
 import * as z from 'zod'
 
 const props = defineProps<{ schema: T }>()
-
 const emit = defineEmits<{
   (e: 'submit', data: InferOutput<T>): void
 }>()
-
+defineExpose({ submit })
 type Output = InferOutput<T>
 
 const state = reactive({})
@@ -55,10 +54,17 @@ async function onSubmit(event: FormSubmitEvent<Output>) {
     loading.value = false
   }
 }
+
+const formRef = useTemplateRef('form')
+
+function submit() {
+  formRef.value?.submit()
+}
 </script>
 
 <template>
   <UForm
+    ref="form"
     :schema="schema"
     :state="state"
     class="space-y-4 text-center"
