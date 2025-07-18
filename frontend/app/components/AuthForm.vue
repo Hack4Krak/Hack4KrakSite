@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
 import { FetchError } from 'ofetch'
-import * as z from 'zod'
 
 const props = defineProps<{
   isLogin: boolean
 }>()
 
-type Schema = z.output<typeof schema>
+type Schema = zInfer<typeof schema>
 const schema = z.object({
   email: z.string({ error: 'Adres e-mail jest wymagany' }).email('Niepoprawny adres e-mail'),
   password: z.string({ error: 'Hasło jest wymagane' }).min(8, 'Hasło musi mieć minimum 8 znaków'),

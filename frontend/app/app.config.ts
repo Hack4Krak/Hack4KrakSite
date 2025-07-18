@@ -12,9 +12,10 @@ export default defineAppConfig({
       },
     },
     input: {
-      slots: {
-        root: 'w-full',
-      },
+      slots: { root: 'w-full' },
+    },
+    select: {
+      slots: { base: 'w-full' },
     },
   },
 })

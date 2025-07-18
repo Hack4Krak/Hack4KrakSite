@@ -11,7 +11,7 @@ useSeoMeta({
 
 const toast = useToast()
 const schema = z.object({
-  email: z.email().meta({ description: 'Email' }),
+  email: z.email().meta({ title: 'Email', autoForm: { floatRight: true } }),
 })
 
 async function onSubmit(data: zInfer<typeof schema>) {

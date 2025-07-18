@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui'
 import * as party from 'party-js'
-import * as z from 'zod'
 
 const flagPattern = /^hack4KrakCTF\{.*\}$/
 const schema = z.object({
@@ -9,7 +8,7 @@ const schema = z.object({
     .regex(flagPattern, { error: 'Flaga musi być w formacie "hack4KrakCTF{...}"' }),
 })
 
-type Schema = z.output<typeof schema>
+type Schema = zInfer<typeof schema>
 
 const state = reactive<Partial<Schema>>({
   flag: undefined,

@@ -1,49 +1,81 @@
 <script setup lang="ts" generic="T extends z.ZodObject<any>">
-import type { FormSubmitEvent, InferOutput } from '#ui/types'
-import { UCheckbox, UInput, UInputNumber } from '#components'
+import type { FormSubmitEvent, InferInput, InferOutput } from '#ui/types'
+import { UCheckbox, UInput, UInputNumber, USelect } from '#components'
 import * as z from 'zod'
 
-const props = defineProps<{ schema: T }>()
+const props = withDefaults(defineProps<{
+  schema: T
+  initialState?: Partial<InferInput<T>>
+}>(), {
+  initialState: () => ({}),
+})
+
 const emit = defineEmits<{
   (e: 'submit', data: InferOutput<T>): void
 }>()
+
+const state = reactive({ ...props.initialState })
+
 defineExpose({ submit })
-type Output = InferOutput<T>
 
-const state = reactive({})
-
+const formRef = useTemplateRef('form')
+const loading = ref(false)
 const shape = (props.schema as z.ZodObject<any>).shape
 
-function getComponentForZodType(key: string, zodType: any) {
-  let component = UInput as any
-  let props = {}
+const isButtonEnabled = computed(() => props.schema.safeParse(state).success)
 
-  if (zodType instanceof z.ZodEmail) {
-    props = { type: 'email' }
-  } else if (zodType instanceof z.ZodNumber) {
-    component = UInputNumber
-  } else if (zodType instanceof z.ZodBoolean) {
-    component = UCheckbox
-  } else if (zodType instanceof z.ZodDefault) {
-    (state as any)[key] = zodType.def.defaultValue
-    return getComponentForZodType(key, zodType.unwrap())
-  }
-
-  return {
-    key,
-    label: zodType.description ?? key,
-    component,
-    props,
-  }
-}
+type Output = InferOutput<T>
 
 const fields = Object.entries(shape).map(([key, zodType]) =>
   getComponentForZodType(key, zodType),
 )
 
-const isButtonEnabled = computed(() => props.schema.safeParse(state).success)
+function getComponentForZodType(key: string, zodType: any) {
+  let component = UInput as any
+  let componentProps = {}
 
-const loading = ref(false)
+  if (zodType instanceof z.ZodEmail) {
+    componentProps = { type: 'email' }
+  } else if (zodType instanceof z.ZodNumber) {
+    component = UInputNumber
+  } else if (zodType instanceof z.ZodBoolean) {
+    component = UCheckbox
+  } else if (zodType instanceof z.ZodEnum) {
+    component = USelect
+    componentProps = { items: [Object.values(zodType.def.entries)] }
+  } else if (zodType instanceof z.ZodArray) {
+    const sub_element = zodType.def.element
+    if (sub_element instanceof z.ZodEnum) {
+      const result = getComponentForZodType(key, zodType.unwrap()) as any
+      result.props.multiple = true
+
+      // todo: method for parsing meta
+      const meta = zodType.meta() || {}
+      result.formField.label = meta.title ?? key
+      return result
+    }
+  } else if (zodType instanceof z.ZodDefault) {
+    (state as any)[key] = zodType.def.defaultValue
+    return getComponentForZodType(key, zodType.unwrap())
+  } else if (zodType instanceof z.ZodString) {
+    component = UInput
+  } else {
+    console.warn('Unknown zod type', zodType.constructor.name)
+  }
+
+  const meta = zodType.meta() || {}
+  return {
+    key,
+    formField: {
+      name: key,
+      label: meta.title ?? key,
+      description: meta.description,
+      class: meta.autoForm?.floatRight ? 'flex items-center justify-between text-left' : '',
+    },
+    component,
+    props: componentProps,
+  }
+}
 
 async function onSubmit(event: FormSubmitEvent<Output>) {
   event.preventDefault()
@@ -55,8 +87,6 @@ async function onSubmit(event: FormSubmitEvent<Output>) {
   }
 }
 
-const formRef = useTemplateRef('form')
-
 function submit() {
   formRef.value?.submit()
 }
@@ -66,21 +96,23 @@ function submit() {
   <UForm
     ref="form"
     :schema="schema"
-    :state="state"
+    :state="state as any"
     class="space-y-4 text-center"
     @submit="onSubmit"
   >
     <UFormField
       v-for="field in fields"
-      :key="field.key"
-      :label="field.label"
-      :name="field.key"
+      :key="field.formField.key"
+      :ui="{ description: 'text-left' }"
+      v-bind="field.formField"
     >
-      <component
-        :is="field.component"
-        v-bind="field.props"
-        v-model="(state as Record<string, any>)[field.key]"
-      />
+      <slot :name="field.key" :field="field.key" :state="(state as Record<string, any>)">
+        <component
+          :is="field.component"
+          v-bind="field.props"
+          v-model="(state as Record<string, any>)[field.key]"
+        />
+      </slot>
     </UFormField>
 
     <div class="space-y-2">
