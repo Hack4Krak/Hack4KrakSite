@@ -26,7 +26,7 @@ const errorMessage = computed(() => {
   if (error.statusCode === 500) {
     return 'Rycerz napotkał przeszkodę\n Na swojej drodze.\n Spróbuj ponownie później.'
   }
-  return error.statusMessage
+  return error.message
 })
 </script>
 
