@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui'
-import * as z from 'zod'
 
 const schema = z.object({
   name: z.string({ error: 'Nazwa użytkownika' }).min(3, 'Nazwa użytkownika musi mieć min 3 znaki'),
 })
 
-type Schema = z.output<typeof schema>
+type Schema = zInfer<typeof schema>
 
 const state = reactive<Partial<Schema>>({
   name: undefined,

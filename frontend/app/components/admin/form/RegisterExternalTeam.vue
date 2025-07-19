@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui'
-import * as z from 'zod'
 
 const props = defineProps<{
   confirmationCode: string
@@ -18,7 +17,7 @@ const schema = z.object({
   teams: z.array(teamSchema).min(1).max(3),
 })
 
-type Schema = z.output<typeof schema>
+type Schema = zInfer<typeof schema>
 
 const state = reactive<Schema>({
   teams: [
