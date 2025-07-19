@@ -13,14 +13,20 @@ onMounted(() => {
 })
 
 const errorMessage = computed(() => {
-  switch (props.error?.statusCode) {
-    case 404:
-      return 'Uwaga rycerzu,\n ta strona zniknęła jak zamek w chmurach.\n Wróć na właściwą drogę!'
-    case 500:
-      return 'Rycerz napotkał przeszkodę\n na swojej drodze.\n Spróbuj ponownie za chwilę.'
-    default:
-      return props.error?.message
+  const error = props.error
+  if (!error) {
+    return 'Nieznany błąd'
   }
+  const message = error.message?.toString().toLowerCase() || ''
+  if (error.statusCode === 404) {
+    if (message.includes('page not found')) {
+      return 'Uwaga rycerzu,\n ta strona zniknęła jak zamek w chmurach.\n Wróć na właściwą drogę!'
+    }
+  }
+  if (error.statusCode === 500) {
+    return 'Rycerz napotkał przeszkodę\n Na swojej drodze.\n Spróbuj ponownie później.'
+  }
+  return error.statusMessage
 })
 </script>
 
@@ -40,7 +46,7 @@ const errorMessage = computed(() => {
           <template #body>
             <section class="flex flex-col text-lg space-y-5">
               <div
-                v-for="(element, i) in [['Kod', error?.statusCode], ['Wiadomość', error?.message], ['Dane', error?.data]]"
+                v-for="(element, i) in [['Kod', error?.statusCode], ['Wiadomość', error?.statusMessage], ['Dane', error?.data]]"
                 :key="i"
               >
                 <h2 class="text-xl font-bold text-primary">
