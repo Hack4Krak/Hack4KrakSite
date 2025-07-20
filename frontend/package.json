@@ -23,7 +23,7 @@
     "@nuxt/content": "3.6.3",
     "@nuxt/image": "1.10.0",
     "@nuxt/ui": "3.2.0",
-    "@nuxtjs/mdc": "0.17.0",
+    "@nuxtjs/mdc": "0.17.2",
     "@nuxtjs/seo": "3.1.0",
     "@vueuse/nuxt": "13.5.0",
     "better-sqlite3": "~12.2.0",
