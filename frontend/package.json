@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.8.2",
+    "@norbiros/nuxt-auto-form": "0.3.0",
     "@nuxt/content": "3.6.3",
     "@nuxt/image": "1.10.0",
     "@nuxt/ui": "3.2.0",
