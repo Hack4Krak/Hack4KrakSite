@@ -23,6 +23,7 @@ export default defineNuxtConfig({
     '@formkit/auto-animate/nuxt',
     'nuxt-open-fetch',
     'nuxt-qrcode',
+    '@norbiros/nuxt-auto-form',
     'dayjs-nuxt',
     '@compodium/nuxt',
     '@vueuse/nuxt',
@@ -36,6 +37,21 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
   compatibilityDate: '2025-07-16',
+  imports: {
+    presets: [
+      {
+        from: 'zod',
+        imports: [
+          { as: 'z', name: '*' },
+          {
+            name: 'infer',
+            as: 'zInfer',
+            type: true,
+          },
+        ],
+      },
+    ],
+  },
 
   // App configuration
 
