@@ -8,9 +8,9 @@ const props = defineProps<{
 
 type Schema = zInfer<typeof schema>
 const schema = z.object({
-  email: z.string({ error: 'Adres e-mail jest wymagany' }).email('Niepoprawny adres e-mail'),
-  password: z.string({ error: 'Hasło jest wymagane' }).min(8, 'Hasło musi mieć minimum 8 znaków'),
-  ...(props.isLogin ? {} : { name: z.string({ error: 'Nazwa użytkownika jest wymagana' }).min(3, 'Nazwa użytkownika musi mieć co najmniej 3 znaki') }),
+  email: z.email({ error: 'Niepoprawny adres e-mail' }),
+  password: zPassword(),
+  ...(props.isLogin ? {} : { name: zUsername() }),
 })
 
 const loading = ref(false)
@@ -85,11 +85,11 @@ const showPassword = ref(false)
 
     <UForm :schema="schema" :state="state" class="space-y-4 text-center" @submit="onSubmit">
       <UFormField v-if="!isLogin" label="Nazwa użytkownika" name="name">
-        <TransparentInput v-model="state.name" />
+        <UInput v-model="state.name as string" />
       </UFormField>
 
       <UFormField label="Email" name="email">
-        <TransparentInput v-model="state.email" type="email" />
+        <UInput v-model="state.email" type="email" />
       </UFormField>
 
       <div class="flex flex-col items-start gap-1">
