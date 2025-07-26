@@ -1,7 +1,7 @@
 use crate::entities::{flag_capture, teams};
 use crate::utils::error::Error;
 use chrono::NaiveDateTime;
-use sea_orm::{DatabaseConnection, EntityTrait};
+use sea_orm::{DatabaseConnection, EntityTrait, QueryOrder};
 use serde::ser::SerializeStruct;
 use serde::{Deserialize, Serialize, Serializer};
 use std::collections::HashMap;
@@ -44,7 +44,10 @@ pub struct PointsCounter {
 
 impl PointsCounter {
     pub async fn work(database: &DatabaseConnection) -> Result<PointsCounter, Error> {
-        let captures = flag_capture::Entity::find().all(database).await?;
+        let captures = flag_capture::Entity::find()
+            .order_by_asc(flag_capture::Column::SubmittedAt)
+            .all(database)
+            .await?;
         let teams = teams::Entity::find().all(database).await?;
 
         let mut output = Self::default();
