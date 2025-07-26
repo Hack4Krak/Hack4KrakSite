@@ -10,6 +10,12 @@ const { data: team } = await useAuth('/teams/membership/my_team', {
   },
 })
 
+const { data: team_stats } = await useAuth('/teams/membership/stats', {
+  onResponseError: () => {
+    throw new Error('Response error')
+  },
+})
+
 const { data: now, refresh: updateDate } = useAsyncData('formattedNow', async () => {
   const now = useNow()
   const formatted = useDateFormat(now, 'HH:mm:ss')
@@ -20,10 +26,13 @@ useRafFn(() => updateDate())
 </script>
 
 <template>
-  <div class="grid grid-rows-[auto_auto_1fr_auto] grid-cols-[300px_1fr] h-155 divide-x my-5 mx-15 outline">
+  <div
+    class="grid grid-rows-[auto_auto_1fr_auto] divide-x my-5 mx-15 outline"
+    :class="{ 'grid-cols-[300px_1fr]': team }"
+  >
     <!-- Top full-width bar -->
-    <div class="col-span-2 border-b h-15 flex items-center divide-x">
-      <span class="w-15 h-full flex items-center justify-center font-bold">
+    <div class="col-span-2 border-b h-15 flex items-center divide-x font-bold">
+      <span class="w-15 h-full flex items-center justify-center text-xl">
         X
       </span>
       <span v-if="team?.team_name" class="px-5 h-full flex items-center">
@@ -32,7 +41,7 @@ useRafFn(() => updateDate())
       <span class="px-5 h-full flex items-center">
         Hack4Krak CTF - Edycja dla szkół podstawowych
       </span>
-      <span class="px-5 h-full flex items-center justify-end flex-1">
+      <span class="px-5 h-full flex items-center justify-end flex-1 text-xl">
         {{ now }}
       </span>
     </div>
@@ -40,72 +49,22 @@ useRafFn(() => updateDate())
     <PanelTileEventProgressBar class="border-b" />
 
     <!-- Sidebar -->
-    <div class="row-span-3 p-4 flex flex-col justify-center">
+    <div v-if="team" class="row-span-3 p-4 flex flex-col justify-center space-y-2">
       <span class="font-bold">Moja drużyna</span>
       <USeparator :ui="{ border: 'border-neutral' }" />
-      <div v-if="(team?.members ?? []).length">
-        <div v-for="member in team?.members" :key="member.name">
-          {{ member.name }}
-        </div>
-      </div>
-      <div v-else>
-        Proszę stworzyć drużynę!
+      <div v-for="member in team?.members" :key="member.name">
+        {{ member.name }}
       </div>
     </div>
 
     <!-- Top two boxes -->
-    <div class="flex divide-x border-b font-pixelify">
-      <div class="flex-1  shadow items-center justify-center flex-col flex">
-        <PanelFlagForm />
+    <div class="flex divide-x border-b font-pixelify" :class="{ 'col-span-2': !team }">
+      <div class="flex flex-1 flex-col shadow items-center justify-center">
+        <PanelTileFlagForm />
       </div>
-      <div class="w-2/5 flex flex-col gap-5 items-center justify-center overflow-clip">
-        <h3 class="text-xl font-bold">
-          Ważne linki
-        </h3>
-        <NuxtLink to="/tasks">
-          <ElevatedButton class="w-60">
-            Zadania
-          </ElevatedButton>
-        </NuxtLink>
-        <NuxtLink to="/leaderboard">
-          <ElevatedButton class="w-60">
-            Ranking
-          </ElevatedButton>
-        </NuxtLink>
-        <NuxtLink to="/panel/profile">
-          <ElevatedButton class="w-60">
-            Moje konto
-          </ElevatedButton>
-        </NuxtLink>
-      </div>
+      <PanelTileLinks class="w-2/5" />
     </div>
 
-    <!-- Bottom 3 boxes -->
-    <!--    <div class="col-span-1 flex divide-x font-pixelify text-center"> -->
-    <!--      <div class="flex-1 p-4"> -->
-    <!--        <div class="text-sm"> -->
-    <!--          Miejsce drużyny -->
-    <!--        </div> -->
-    <!--        <div class="text-xl font-bold"> -->
-    <!--          1/24 -->
-    <!--        </div> -->
-    <!--      </div> -->
-    <!--      <div class="flex-1 p-4"> -->
-    <!--        <div class="text-sm"> -->
-    <!--          Zdobyte flagi -->
-    <!--        </div> -->
-    <!--        <div class="text-xl text-green-400 font-bold"> -->
-    <!--          6 -->
-    <!--        </div> -->
-    <!--      </div> -->
-    <!--      <div class="flex-1 p-4"> -->
-    <!--        <div class="text-sm"> -->
-    <!--          Pozostałe flagi -->
-    <!--        </div> -->
-    <!--        <div class="text-xl text-yellow-400 font-bold"> -->
-    <!--          16 -->
-    <!--        </div> -->
-    <!--      </div> -->
-    <!--    </div> -->
+    <PanelTileStats v-if="team_stats" :team-stats="team_stats" class="col-span-1" />
   </div>
 </template>
