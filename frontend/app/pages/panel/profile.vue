@@ -3,11 +3,10 @@ const { $api } = useNuxtApp()
 
 const { data: user } = await useAuth('/account/')
 
-const updateAccountModal = ref(false)
-const deleteAccountModal = ref(false)
-const changePasswordModal = ref(false)
-
 const joinExternalTeamModal = ref(false)
+const updateAccountModal = ref(false)
+const changePasswordModal = ref(false)
+const deleteAccountModal = ref(false)
 
 async function logout() {
   await $api('/auth/logout', {
@@ -20,7 +19,19 @@ async function logout() {
 </script>
 
 <template>
-  <PanelModalJoinExternalTeam v-model="joinExternalTeamModal" />
+  <LazyPanelModalJoinExternalTeam v-model="joinExternalTeamModal" hydrate-on-visible />
+  <LazyPanelModalUpdateAccountModal v-model="updateAccountModal" hydrate-on-visible />
+  <LazyPanelModalChangePasswordModal v-model="changePasswordModal" hydrate-on-visible />
+  <LazyPanelModalConfirmDeleteModal
+    v-model="deleteAccountModal"
+    url="/account/delete"
+    modal-title="Usuń konto"
+    modal-description="Czy na pewno chcesz usunąć swoje konto? Ta operacja jest nieodwracalna."
+    toast-success-message="Pomyślnie usunięto konto"
+    :request-body="undefined"
+    redirect-to="/"
+    hydrate-on-visible
+  />
 
   <div class="grid grid-cols-[400px_1fr] h-155  divide-x my-5 mx-15 border w-full">
     <div class=" h-full flex flex-col divide-y">
@@ -36,7 +47,7 @@ async function logout() {
         </h1>
         <div class="flex flex-col gap-3 mt-3 justify-center">
           <UButton icon="mdi:account" variant="ghost" color="neutral" @click="navigateTo('/account/submit_personal_info')">
-            Zmień lub zobacz dane o końcie
+            Zmień lub zobacz informacje o koncie
           </UButton>
           <UButton icon="mdi:account-cog" variant="ghost" color="neutral" @click="updateAccountModal = true">
             Zmień ustawienia konta
