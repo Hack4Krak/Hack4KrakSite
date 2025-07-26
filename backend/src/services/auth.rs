@@ -9,7 +9,9 @@ use crate::routes::auth::reset_password::ResetPasswordModel;
 use crate::services::emails::{Email, EmailTemplate};
 use crate::services::env::EnvConfig;
 use crate::utils::app_state;
-use crate::utils::cookies::{ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE, create_cookie, reset_cookie};
+use crate::utils::cookies::{
+    ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE, create_cookie, reset_cookie,
+};
 use crate::utils::error::Error;
 use crate::utils::error::Error::HashPasswordFailed;
 use crate::utils::jwt::encode_jwt;
@@ -224,7 +226,7 @@ impl AuthService {
 
         Ok(())
     }
-    
+
     pub fn reset_cookies_response() -> HttpResponse {
         HttpResponse::Ok()
             .append_header(("Set-Cookie", reset_cookie(ACCESS_TOKEN_COOKIE)))
