@@ -21,6 +21,8 @@ pub async fn refresh(request: HttpRequest) -> Result<HttpResponse, Error> {
         return Err(Error::Unauthorized);
     };
 
+    // todo: WE DO NOT CHECK IF USER EXISTS
+
     let claims = decode_jwt(refresh_token.value()).map_err(|_| Error::Unauthorized)?;
     let response = AuthService::response_with_cookies(claims.claims.id, claims.claims.email)?;
 
