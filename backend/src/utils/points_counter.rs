@@ -144,6 +144,16 @@ impl PointsCounter {
         points
     }
 
+    pub fn team_rank(&self, team_name: &str) -> Option<(usize, usize)> {
+        let team_points = self.get_final_team_points();
+        let team_rank = team_points
+            .iter()
+            .position(|team| team.team_name == team_name)?
+            + 1;
+
+        Some((team_rank, team_points.len()))
+    }
+
     pub fn to_chart(self) -> Chart {
         let points = self
             .team_points_and_flags_over_time

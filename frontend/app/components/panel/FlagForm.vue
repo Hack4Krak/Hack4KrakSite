@@ -52,7 +52,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     </UFormField>
 
     <ElevatedButton class="w-40 mt-3" type="submit">
-      Wyślij
+      Sprawdź
     </ElevatedButton>
   </UForm>
 </template>
