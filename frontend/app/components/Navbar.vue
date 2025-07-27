@@ -41,7 +41,7 @@ watch(() => router.currentRoute.value, () => {
       </template>
 
       <template #button>
-        <ElevatedButton>
+        <ElevatedButton variant="light">
           {{ isLoggedIn ? "Otwórz panel" : "Zaloguj się!" }}
         </ElevatedButton>
       </template>
