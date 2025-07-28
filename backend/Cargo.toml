@@ -15,7 +15,7 @@ edition = "2024"
 
 [workspace.dependencies]
 sea-orm = { version = "1.1.14", features = [ "sqlx-postgres", "sqlx-sqlite", "runtime-tokio-rustls", "macros", "mock" ] }
-tokio = { version = "1.46.1", features = ["macros", "rt", "rt-multi-thread", "fs"] }
+tokio = { version = "1.47.0", features = ["macros", "rt", "rt-multi-thread", "fs"] }
 serde_yml = "0.0.12"
 
 [dependencies]
@@ -70,4 +70,4 @@ prometheus = "0.14.0"
 
 [dev-dependencies]
 quoted_printable = "0.5.1"
-testcontainers = "0.24.0"
+testcontainers = "0.25.0"
