@@ -1,9 +1,7 @@
 <script setup lang="ts">
 const schema = z
   .object({
-    new_password: z
-      .string({ error: 'Hasło jest wymagane' })
-      .min(8, { message: 'Hasło musi mieć min 8 znaków' }),
+    new_password: zPassword(),
     confirm_new_password: z.string({
       error: 'Potwierdzenie hasła jest wymagane',
     }),
