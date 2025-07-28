@@ -30,7 +30,7 @@ const schema = z.object({
   age: z.enum(ageKeys, { message: 'Wiek jest wymagany' })
     .meta({ title: 'Wiek' }),
   location: z.string({ error: 'Lokalizacja jest wymagana' })
-    .meta({ title: 'Lokalizacja', description: 'Miasto, w którym mieszkasz' }),
+    .meta({ title: 'Lokalizacja', description: 'Miejscowość, w której mieszkasz' }),
   organization: z.string({ error: 'Organizacja jest wymagana' })
     .meta({ title: 'Organizacja', description: 'Twoja szkoła, uczelnia lub firma' }),
   is_vegetarian: z.boolean({ error: 'Wybór jest wymagany' })
