@@ -1540,7 +1540,7 @@ dependencies = [
 
 [[package]]
 name = "hack4krak-backend"
-version = "1.2.0"
+version = "2.0.0"
 dependencies = [
  "actix-cors",
  "actix-files",
@@ -1585,7 +1585,7 @@ dependencies = [
 
 [[package]]
 name = "hack4krak-macros"
-version = "1.2.0"
+version = "2.0.0"
 dependencies = [
  "quote",
  "serde_yml",
@@ -2334,7 +2334,7 @@ checksum = "78ca9ab1a0babb1e7d5695e3530886289c18cf2f87ec19a575a0abdce112e3a3"
 
 [[package]]
 name = "migration"
-version = "1.2.0"
+version = "2.0.0"
 dependencies = [
  "sea-orm-migration",
  "tokio",
@@ -2559,7 +2559,7 @@ checksum = "42f5e15c9953c5e4ccceeb2e7382a716482c34515315f7b03532b8b4e8393d2d"
 
 [[package]]
 name = "openapi-cli"
-version = "1.2.0"
+version = "2.0.0"
 dependencies = [
  "hack4krak-backend",
  "tokio",
