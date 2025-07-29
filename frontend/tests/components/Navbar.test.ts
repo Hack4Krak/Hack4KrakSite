@@ -25,7 +25,7 @@ describe('navbar', () => {
 
     // Simulate route change
     const router = useRouter()
-    await router.push('/leaderboard')
+    await router.push('/login')
     await nextTick()
 
     expect(wrapper.find('[class*="h-screen"]').exists()).toBe(false)
