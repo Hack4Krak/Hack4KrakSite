@@ -118,7 +118,9 @@ impl<S> EventMiddlewareService<S> {
 
         let now = Utc::now();
         if !config.allow_before_event && now < event_config.start_date {
-            return Err(Error::AccessBeforeEventStart);
+            return Err(Error::AccessBeforeEventStart {
+                event_start_date: event_config.start_date.to_rfc3339(),
+            });
         }
         if !config.allow_after_event && now > event_config.end_date {
             return Err(Error::AccessAfterEventEnd);

@@ -103,7 +103,7 @@ async fn create_team_invalid_period() {
     let response: Value = test::call_and_read_body_json(&app, request).await;
     assert_eq!(
         response["error"].as_str().unwrap(),
-        "Team(InvalidRegistrationPeriod)"
+        "Team"
     );
 }
 
@@ -135,6 +135,6 @@ async fn create_team_external_registration_mode() {
     let response: Value = test::call_and_read_body_json(&app, request).await;
     assert_eq!(
         response["error"].as_str().unwrap(),
-        "Team(CannotRegisterInInternalMode)"
+        "Team"
     );
 }

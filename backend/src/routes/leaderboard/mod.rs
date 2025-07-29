@@ -1,6 +1,6 @@
 use actix_web::http::StatusCode;
 use actix_web::{HttpResponse, ResponseError};
-use thiserror::Error;
+use hack4krak_macros::error_with_messages;
 
 mod chart;
 mod teams;
@@ -12,12 +12,12 @@ pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.route("/updates", actix_web::web::get().to(updates::sse_handler));
 }
 
-#[derive(Debug, Error)]
+#[error_with_messages]
 pub enum ScoreboardError {}
 
 impl ResponseError for ScoreboardError {
     fn status_code(&self) -> StatusCode {
-        todo!("Status codes not implemented yet")
+        unreachable!()
     }
 
     fn error_response(&self) -> HttpResponse {

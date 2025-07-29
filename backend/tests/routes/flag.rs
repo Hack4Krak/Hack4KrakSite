@@ -82,13 +82,13 @@ async fn try_submitting_flags() {
         test::call_and_read_body_json(&app, request.to_request()).await;
     assert_eq!(
         response["error"].as_str().unwrap(),
-        "Flag(InvalidFlagFormat)"
+        "Flag"
     );
 
     let request = submit_flag(present_user.clone(), "hack4KrakCTF{...asds}").await;
     let response: serde_json::Value =
         test::call_and_read_body_json(&app, request.to_request()).await;
-    assert_eq!(response["error"].as_str().unwrap(), "Flag(InvalidFlag)");
+    assert_eq!(response["error"].as_str().unwrap(), "Flag");
 
     let request = submit_flag(present_user.clone(), "hack4KrakCTF{skibidi}").await;
     let response = test::call_service(&app, request.to_request()).await;

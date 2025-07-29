@@ -12,7 +12,8 @@ pub fn localized_error_impl(input: TokenStream) -> TokenStream {
 
     let enum_messages = messages
         .get(enum_name.to_string())
-        .unwrap_or_else(|| panic!("Missing messages for enum `{enum_name}`"));
+        .cloned()
+        .unwrap_or_default();
 
     let syn::Data::Enum(data_enum) = &input.data else {
         panic!("ErrorWithMessages can only be applied to enums");
@@ -28,7 +29,7 @@ pub fn localized_error_impl(input: TokenStream) -> TokenStream {
         });
 
         let message_attr = if is_transparent {
-            quote! { #[error(transparent)] }
+            quote! {}
         } else {
             let msg = enum_messages
                 .get(&var_name)
@@ -36,18 +37,23 @@ pub fn localized_error_impl(input: TokenStream) -> TokenStream {
                 .as_str()
                 .expect("Message must be a string");
 
-            quote! { #[error(#msg)] }
+            quote! {
+                #[error(#msg)]
+            }
         };
 
         let fields = &variant.fields;
+        let other_attrs = &variant.attrs;
         quote! {
+            #(#other_attrs)*
             #message_attr
             #var_ident #fields
         }
     });
 
     let expanded = quote! {
-        #[derive(Debug, thiserror::Error)]
+        #[derive(Debug, thiserror::Error, serde::Serialize)]
+        #[serde(tag = "error", content = "details")]
         pub enum #enum_name {
             #(#variants),*
         }
