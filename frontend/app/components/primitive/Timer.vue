@@ -5,32 +5,31 @@ const props = defineProps<{
 
 const emit = defineEmits(['complete'])
 
-const timeLeft = ref({
-  days: 0,
-  hours: 0,
-  minutes: 0,
-  seconds: 0,
+const { data: currentTime, refresh } = useAsyncData('currentTimeTimer', async () => {
+  const now = new Date()
+  return Math.max(0, props.target.getTime() - now.getTime())
 })
 
-let interval: NodeJS.Timeout
+const { pause } = useIntervalFn(refresh, 1000, { immediate: true })
 
-function updateTimer() {
-  const now = new Date()
-  const diff = Math.max(0, props.target.getTime() - now.getTime())
+const timeLeft = computed(() => {
+  const diff = currentTime.value ?? 0
   if (diff === 0) {
-    clearInterval(interval)
+    pause()
     emit('complete')
   }
 
-  const seconds = Math.floor(diff / 1000) % 60
-  const minutes = Math.floor(diff / (1000 * 60)) % 60
-  const hours = Math.floor(diff / (1000 * 60 * 60)) % 24
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+  return {
+    seconds: Math.floor(diff / 1000) % 60,
+    minutes: Math.floor(diff / (1000 * 60)) % 60,
+    hours: Math.floor(diff / (1000 * 60 * 60)) % 24,
+    days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+  }
+})
 
-  timeLeft.value = { days, hours, minutes, seconds }
+function padded(number: number): string {
+  return String(number).padStart(2, '0')
 }
-
-const padded = (num: number): string => String(num).padStart(2, '0')
 
 function pluralize(n: number, forms: [string, string, string]): string {
   const last = n % 10
@@ -41,15 +40,6 @@ function pluralize(n: number, forms: [string, string, string]): string {
     return forms[1]
   return forms[2]
 }
-
-onMounted(() => {
-  updateTimer()
-  interval = setInterval(updateTimer, 1000)
-})
-
-onUnmounted(() => {
-  clearInterval(interval)
-})
 </script>
 
 <template>
