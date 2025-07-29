@@ -17,6 +17,12 @@ import {
 import { Line } from 'vue-chartjs'
 import 'chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm'
 
+definePageMeta({
+  middleware: [
+    'event-access-guard',
+  ],
+})
+
 useSeoMeta({
   title: 'Ranking',
   description: 'Zobacz aktualny ranking drużyn i ich punkty w czasie rzeczywistym!',
