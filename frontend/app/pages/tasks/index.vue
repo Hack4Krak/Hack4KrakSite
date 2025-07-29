@@ -2,6 +2,12 @@
 import type { Tasks } from '~/components/Map.vue'
 import Map from '@/components/Map.vue'
 
+definePageMeta({
+  middleware: [
+    'event-access-guard',
+  ],
+})
+
 useSeoMeta({
   title: 'Zadania',
   description: 'Zobacz listę zadań na naszym CTF-ie!',
