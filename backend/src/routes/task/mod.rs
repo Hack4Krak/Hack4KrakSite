@@ -29,8 +29,13 @@ pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
 #[error_with_messages]
 pub enum TaskError {
     InvalidTaskId,
-    CouldNotLoadTaskAsset { id: String },
-    MissingTask { id: String },
+    CouldNotLoadTaskAsset {
+        id: String,
+    },
+    MissingTask {
+        id: String,
+    },
+    #[serde(skip)]
     ErrorWhileReadingDescription(#[from] string::FromUtf8Error),
 }
 
