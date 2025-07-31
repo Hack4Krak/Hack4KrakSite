@@ -57,6 +57,9 @@ bun test:dev
 But for some more complex behavior we use [`playwright`](https://playwright.dev/) for e2e tests.
 They should be placed in [`tests/e2e`](tests/e2e) directory.
 
+> [!NOTE]
+> Before running any e2e tests navigate to the frontend directory using command `cd frontend/`.
+
 ```shell
 # Run playwright tests
 bun e2e
