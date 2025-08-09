@@ -23,33 +23,35 @@ watch(() => router.currentRoute.value, () => {
 
 <template>
   <DefineNavbarTemplate>
-    <UNavigationMenu
-      content-orientation="vertical"
-      :items="NAVBAR_ITEMS" variant="link" class="w-full" color="error"
-      :ui="{
-        linkLabel: 'hover:underline underline-offset-5',
-        viewport: 'w-(--reka-navigation-menu-viewport-width)',
-        childList: 'flex-col items-center',
-        link: 'text-md text-default data-active:text-primary',
-        list: 'gap-4',
-      }"
-    >
-      <template #logo>
-        <div class="md:flex hidden">
+    <div class="flex w-full">
+      <div class="md:flex hidden flex-1">
+        <NuxtLink to="/" class="flex items-center">
           <LogoWithText />
-        </div>
-      </template>
-
-      <template #button>
-        <ElevatedButton variant="light">
-          {{ isLoggedIn ? "Otwórz panel" : "Zaloguj się!" }}
-        </ElevatedButton>
-      </template>
-    </UNavigationMenu>
+        </NuxtLink>
+      </div>
+      <div>
+        <UNavigationMenu
+          content-orientation="vertical"
+          :items="NAVBAR_ITEMS" variant="link" class="w-full" color="error"
+          :ui="{
+            linkLabel: 'hover:underline underline-offset-5 text-md',
+            viewport: 'w-(--reka-navigation-menu-viewport-width)',
+            childList: 'flex-col items-center',
+            link: 'text-md text-default data-active:text-primary',
+            list: 'gap-8',
+          }"
+        />
+      </div>
+      <div class="md:flex hidden flex-1 justify-end items-center">
+        <NuxtLink to="/login" class="text-md font-semibold" aria-label="Przejdź panelu logowania">
+          {{ isLoggedIn ? "Otwórz panel" : "Zaloguj się" }}
+        </NuxtLink>
+      </div>
+    </div>
   </DefineNavbarTemplate>
 
   <UContainer class="sticky top-0 max-w-full font-sans bg-default z-20 print:hidden">
-    <div class="hidden md:block h-(--ui-header-height)">
+    <div class="hidden md:flex justify-center items-center h-(--ui-header-height)">
       <ReuseNavbarTemplate />
     </div>
 
