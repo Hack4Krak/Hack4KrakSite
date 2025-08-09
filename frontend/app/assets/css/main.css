@@ -5,7 +5,7 @@
 
 :root {
   --default-font-family: var(--font-sans);
-  --ui-header-height: --spacing(18);
+  --ui-header-height: --spacing(20);
 }
 
 @theme static {
