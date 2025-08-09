@@ -112,7 +112,7 @@ export default defineNuxtConfig({
       standalone: false,
     },
   },
-  // https://nuxt-open-fetch.vercel.app/setup/configuration (we are using patched fork - nuxt-open-fetch-x)
+  // https://nuxt-open-fetch.norbiros.dev/setup/configuration
   openFetch: {
     disableNuxtPlugin: true,
     clients: {
