@@ -122,7 +122,7 @@ impl TaskManager {
         Ok(named_file)
     }
 
-    pub fn find_by_flag(&self, flag: &str) -> Option<RefMulti<String, TaskConfig>> {
+    pub fn find_by_flag(&self, flag: &str) -> Option<RefMulti<'_, String, TaskConfig>> {
         let mut hasher = Sha256::new();
         hasher.update(flag);
         let hashed_flag = format!("{:x}", hasher.finalize());

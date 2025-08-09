@@ -101,10 +101,7 @@ async fn create_team_invalid_period() {
         .insert_header(TestAuthHeader::new(user.clone()))
         .to_request();
     let response: Value = test::call_and_read_body_json(&app, request).await;
-    assert_eq!(
-        response["error"].as_str().unwrap(),
-        "Team"
-    );
+    assert_eq!(response["error"].as_str().unwrap(), "Team");
 }
 
 #[actix_web::test]
@@ -133,8 +130,5 @@ async fn create_team_external_registration_mode() {
         .insert_header(TestAuthHeader::new(user.clone()))
         .to_request();
     let response: Value = test::call_and_read_body_json(&app, request).await;
-    assert_eq!(
-        response["error"].as_str().unwrap(),
-        "Team"
-    );
+    assert_eq!(response["error"].as_str().unwrap(), "Team");
 }

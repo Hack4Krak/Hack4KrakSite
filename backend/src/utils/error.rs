@@ -172,10 +172,10 @@ impl From<sea_orm::DbErr> for Error {
     fn from(value: sea_orm::DbErr) -> Self {
         match &value {
             sea_orm::DbErr::Query(SqlxError(sqlx_error)) => {
-                if let Some(pg_err) = sqlx_error.as_database_error() {
-                    if pg_err.is_unique_violation() {
-                        return Error::ConflictInDatabase;
-                    }
+                if let Some(pg_err) = sqlx_error.as_database_error()
+                    && pg_err.is_unique_violation()
+                {
+                    return Error::ConflictInDatabase;
                 }
                 Error::DatabaseOperation(value)
             }

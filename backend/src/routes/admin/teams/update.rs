@@ -32,10 +32,10 @@ pub async fn update(
 
     let updatable_team_model = update_team_json.into_inner();
 
-    if let Some(color) = &updatable_team_model.color {
-        if !is_valid_hex(&color.to_uppercase()) {
-            return Err(Error::InvalidColorFormat);
-        }
+    if let Some(color) = &updatable_team_model.color
+        && !is_valid_hex(&color.to_uppercase())
+    {
+        return Err(Error::InvalidColorFormat);
     }
 
     updatable_team_model

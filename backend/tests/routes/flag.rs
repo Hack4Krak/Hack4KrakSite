@@ -80,10 +80,7 @@ async fn try_submitting_flags() {
     let request = submit_flag(present_user.clone(), "hack4ka").await;
     let response: serde_json::Value =
         test::call_and_read_body_json(&app, request.to_request()).await;
-    assert_eq!(
-        response["error"].as_str().unwrap(),
-        "Flag"
-    );
+    assert_eq!(response["error"].as_str().unwrap(), "Flag");
 
     let request = submit_flag(present_user.clone(), "hack4KrakCTF{...asds}").await;
     let response: serde_json::Value =

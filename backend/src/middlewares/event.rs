@@ -103,10 +103,10 @@ impl<S> EventMiddlewareService<S> {
         request: &mut ServiceRequest,
         config: &EventMiddleware,
     ) -> Result<(), Error> {
-        if let Some(user) = request.extensions().get::<users::Model>() {
-            if user.roles >= UserRoles::Admin {
-                return Ok(());
-            }
+        if let Some(user) = request.extensions().get::<users::Model>()
+            && user.roles >= UserRoles::Admin
+        {
+            return Ok(());
         }
 
         let task_manager = &request

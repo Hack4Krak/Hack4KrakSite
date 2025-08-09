@@ -48,14 +48,14 @@ pub async fn submit_personal_information(
         }));
     }
 
-    if let Some(referral_source) = &request_body.referral_source {
-        if referral_source.iter().any(|source| {
+    if let Some(referral_source) = &request_body.referral_source
+        && referral_source.iter().any(|source| {
             !ALLOWED_REFERRAL_SOURCES
                 .iter()
                 .any(|allowed_source| allowed_source == source)
-        }) {
-            return Err(Error::Account(InvalidReferralSource));
-        }
+        })
+    {
+        return Err(Error::Account(InvalidReferralSource));
     }
 
     user_personal_info::Model::create(&app_state.database, user, request_body).await?;
