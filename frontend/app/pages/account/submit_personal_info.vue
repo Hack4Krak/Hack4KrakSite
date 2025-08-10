@@ -29,9 +29,11 @@ const schema = z.object({
     .meta({ title: 'Imię' }),
   age: z.enum(ageKeys, { message: 'Wiek jest wymagany' })
     .meta({ title: 'Wiek' }),
-  location: z.string({ error: 'Lokalizacja jest wymagana' })
+  location: z.string()
+    .nonempty({ error: 'Lokalizacja jest wymagana' })
     .meta({ title: 'Lokalizacja', description: 'Miejscowość, w której mieszkasz' }),
-  organization: z.string({ error: 'Organizacja jest wymagana' })
+  organization: z.string()
+    .nonempty({ error: 'Organizacja jest wymagana' })
     .meta({ title: 'Organizacja', description: 'Twoja szkoła, uczelnia lub firma' }),
   is_vegetarian: z.boolean({ error: 'Wybór jest wymagany' })
     .meta({ title: 'Preferencje żywieniowe' }),
@@ -42,7 +44,7 @@ const schema = z.object({
     }),
   referral_source: z
     .array(z.enum(REFERRAL_SOURCES))
-    .min(1, 'Proszę wybrać co najmniej jedno źródło polecenia.')
+    .nonempty('Proszę wybrać co najmniej jedno źródło polecenia.')
     .meta({ title: 'Skąd się o nas dowiedziałeś? (wielokrotny wybór)' }),
 })
 
