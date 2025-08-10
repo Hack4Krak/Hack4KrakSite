@@ -1,5 +1,5 @@
-export function zPassword() {
-  return z.string({ error: 'Hasło jest wymagane' })
+export function zPassword(errorMessage?: string) {
+  return z.string({ error: errorMessage || 'Hasło jest wymagane' })
     .min(8, 'Hasło musi mieć co najmniej 8 znaków')
 }
 
