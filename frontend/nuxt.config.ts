@@ -166,7 +166,7 @@ export default defineNuxtConfig({
     // Use NUXT_SITE_NAME to override
     url: 'https://hack4krak.pl',
     name: 'Hack4Krak CTF',
-    description: 'Krakowski CTF dla wszystkich uczniów szkół średnich. Sprawdź swoje umiejętności się i zawalcz o ciekawe nagrody biorąc udział w wydarzeniu! Nie zwlekaj i zgłoś swoją drużynę już dziś!',
+    description: 'Krakowski CTF dla wszystkich uczniów szkół średnich. Sprawdź swoje umiejętności i zawalcz o ciekawe nagrody biorąc udział w wydarzeniu! Nie zwlekaj i zgłoś swoją drużynę już dziś!',
     defaultLocale: 'pl',
   },
 })
