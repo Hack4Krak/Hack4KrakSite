@@ -23,7 +23,7 @@ impl TryIntoHeaderPair for TestAuthHeader {
             .map_err(|e| e.to_string())
             .unwrap();
 
-        let header_value = format!("access_token={}", access_token);
+        let header_value = format!("access_token={access_token}");
         Ok((
             header::COOKIE,
             HeaderValue::from_str(&header_value)

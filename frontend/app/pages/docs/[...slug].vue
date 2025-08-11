@@ -9,12 +9,13 @@ definePageMeta({
 if (!page.value?.title) {
   showError({
     statusCode: 404,
-    message: 'Strona nie została znalezione',
+    message: 'Strona nie została znaleziona',
   })
 }
 
 useSeoMeta({
   title: page.value?.title,
+  description: page.value?.description,
 })
 </script>
 

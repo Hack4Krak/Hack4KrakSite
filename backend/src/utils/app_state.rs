@@ -3,7 +3,6 @@ use crate::services::task_manager::TaskManager;
 use crate::utils::oauth::OAuthProvider;
 use crate::utils::sse_event::SseEvent;
 use lettre::SmtpTransport;
-use lettre::transport::smtp::authentication::Credentials;
 use sea_orm::DatabaseConnection;
 use tokio::sync::broadcast;
 
@@ -48,12 +47,8 @@ impl AppState {
 
         let task_manager = TaskManager::load().await;
 
-        let smtp_client = SmtpTransport::relay("smtp.resend.com")
-            .unwrap()
-            .credentials(Credentials::new(
-                "resend".to_string(),
-                config.resend_api_key.clone(),
-            ))
+        let smtp_client = SmtpTransport::from_url(&config.smtp_connection_url)
+            .expect("Invalid SMTP connection URL")
             .build();
 
         let (leaderboard_updates_transmitter, _) =

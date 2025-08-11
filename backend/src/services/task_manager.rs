@@ -1,4 +1,4 @@
-use crate::models::task::{EventConfig, RegistrationConfig, TaskConfig};
+use crate::models::task::{EventConfig, LabelsConfig, RegistrationConfig, TaskConfig};
 use crate::routes::task::TaskError;
 use crate::services::env::EnvConfig;
 use crate::utils::error::Error;
@@ -8,17 +8,39 @@ use dashmap::mapref::multiple::RefMulti;
 use dashmap::mapref::one::Ref;
 use sha2::{Digest, Sha256};
 use tokio::fs;
-use tokio::sync::Mutex;
+use tokio::sync::RwLock;
+use tracing::error;
 
 #[derive(Default)]
 pub struct TaskManager {
-    pub event_config: Mutex<EventConfig>,
-    pub registration_config: Mutex<RegistrationConfig>,
+    pub event_config: RwLock<EventConfig>,
+    pub registration_config: RwLock<RegistrationConfig>,
+    pub labels_config: RwLock<LabelsConfig>,
     pub tasks: DashMap<String, TaskConfig>,
+}
+
+impl LabelsConfig {
+    pub async fn load_label(&self, id: &str) -> Result<NamedFile, Error> {
+        // todo: check if id is in self labels
+
+        let asset_path = EnvConfig::get()
+            .tasks_base_path
+            .join("config/assets/labels")
+            .join(format!("{id}.png"));
+
+        if !asset_path.exists() || !asset_path.is_file() {
+            return Err(TaskError::CouldNotLoadTaskAsset { id: id.to_string() }.into());
+        }
+
+        let named_file = NamedFile::open(asset_path)?;
+
+        Ok(named_file)
+    }
 }
 
 impl TaskManager {
     pub async fn refresh(&self) {
+        // todo: refreshconfigs
         self.tasks.clear();
         Self::load_tasks(&self.tasks).await;
     }
@@ -36,7 +58,9 @@ impl TaskManager {
             let file_content = fs::read_to_string(path.join("config.yaml")).await.unwrap();
 
             if let Ok(task) = serde_yml::from_str::<TaskConfig>(&file_content) {
-                tasks.insert(task.description.id.clone(), task);
+                tasks.insert(task.meta.id.clone(), task);
+            } else {
+                error!("Failed to parse task config at {:?}", path);
             }
         }
     }
@@ -57,9 +81,12 @@ impl TaskManager {
         let registration_config: RegistrationConfig =
             Self::load_config("config/registration.yaml").await;
 
+        let labels_config: LabelsConfig = Self::load_config("config/labels.yaml").await;
+
         Self {
-            event_config: Mutex::new(event_config),
-            registration_config: Mutex::new(registration_config),
+            event_config: RwLock::new(event_config),
+            labels_config: RwLock::new(labels_config),
+            registration_config: RwLock::new(registration_config),
             tasks,
         }
     }
@@ -95,7 +122,7 @@ impl TaskManager {
         Ok(named_file)
     }
 
-    pub fn find_by_flag(&self, flag: &str) -> Option<RefMulti<String, TaskConfig>> {
+    pub fn find_by_flag(&self, flag: &str) -> Option<RefMulti<'_, String, TaskConfig>> {
         let mut hasher = Sha256::new();
         hasher.update(flag);
         let hashed_flag = format!("{:x}", hasher.finalize());

@@ -101,7 +101,7 @@ async fn auth_flow() {
 
     let confirmation_code = smtp_client.find_uuid_in_first_email().await;
     let request = test::TestRequest::get()
-        .uri(&format!("/auth/confirm/{}", confirmation_code))
+        .uri(&format!("/auth/confirm/{confirmation_code}"))
         .to_request();
 
     let response = test::call_service(&app, request).await;
@@ -164,7 +164,7 @@ async fn email_confirmation_success() {
         .build_app()
         .await;
 
-    let path = format!("/auth/confirm/{}", confirmation_code);
+    let path = format!("/auth/confirm/{confirmation_code}");
     let request = test::TestRequest::get().uri(&path).to_request();
     let response = test::call_service(&app, request).await;
     assert!(response.status().is_success());
@@ -198,7 +198,7 @@ async fn email_confirmation_expired() {
         .build_app()
         .await;
 
-    let path = format!("/auth/confirm/{}", confirmation_code);
+    let path = format!("/auth/confirm/{confirmation_code}");
     let request = test::TestRequest::get().uri(&path).to_request();
     let response = test::call_service(&app, request).await;
     assert_eq!(response.status(), 307);

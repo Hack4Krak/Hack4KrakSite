@@ -1,7 +1,7 @@
-import Map from '@/components/Map.vue'
-import TasksPage from '@/pages/tasks/index.vue'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi } from 'vitest'
+import Map from '@/components/Map.vue'
+import TasksPage from '@/pages/tasks/index.vue'
 
 vi.mock('@/composables/useApi', () => ({
   useApi: vi.fn().mockResolvedValue({ data: { value: [] } }),

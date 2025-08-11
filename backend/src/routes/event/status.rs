@@ -6,6 +6,7 @@ use actix_web::{HttpResponse, get};
 #[utoipa::path(
     responses(
         (status = 200, description = "Event is in progress"),
+        (status = 403, description = "You cannot access the event"),
     ),
     tag = "event"
 )]

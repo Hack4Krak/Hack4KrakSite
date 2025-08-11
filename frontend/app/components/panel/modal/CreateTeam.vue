@@ -1,47 +1,26 @@
 <script setup lang="ts">
-import type { FormSubmitEvent } from '@nuxt/ui'
-import * as z from 'zod'
-
 const schema = z.object({
-  name: z.string({ error: 'Nazwa drużyny jest wymagana' }).min(5, 'Nazwa drużyny musi mieć min 5 znaków'),
+  team_name: zTeamName().meta({ title: 'Nazwa drużyny' }),
 })
 
-type Schema = z.output<typeof schema>
-
-const state = reactive<Partial<Schema>>({
-  name: undefined,
-})
-
-const toast = useToast()
 const open = defineModel<boolean>()
 const formRef = useTemplateRef('form')
 
-const { $auth } = useNuxtApp()
-
-async function onSubmit(event: FormSubmitEvent<Schema>) {
-  const response = await $auth('/teams/create', {
+async function onSubmit(data: zInfer<typeof schema>) {
+  await useNuxtApp().$auth('/teams/create', {
     method: 'POST',
-    body: {
-      team_name: event.data.name,
-    },
+    body: data,
   })
 
-  if ((response as any).error) {
-    return
-  }
-
-  toast.add({ title: 'Sukces', description: 'Pomyślnie stworzono team', color: 'success' })
+  useToast().add({ title: 'Sukces', description: 'Pomyślnie stworzono team', color: 'success' })
+  open.value = false
 }
 </script>
 
 <template>
-  <UModal v-model:open="open" title="Stwórz team" description="Zbierz brygade swoich poteżnych team-matów do walki!" :ui="{ footer: 'justify-end' }">
+  <UModal v-model:open="open" title="Stwórz team" description="Zbierz brygadę swoich potężnych team-matów do walki!" :ui="{ footer: 'justify-end' }">
     <template #body>
-      <UForm ref="form" :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-        <UFormField label="Nazwa" name="name">
-          <UInput v-model="state.name" class="w-full" />
-        </UFormField>
-      </UForm>
+      <AutoForm ref="form" :schema="schema" @submit="onSubmit" />
     </template>
 
     <template #footer>

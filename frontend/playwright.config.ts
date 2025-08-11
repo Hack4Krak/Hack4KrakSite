@@ -53,7 +53,7 @@ export default defineConfig<ConfigOptions>({
     // },
   ],
   webServer: {
-    command: isCI ? 'bun preview' : 'bun dev',
+    command: isCI ? 'node .output/server/index.mjs' : 'bun dev',
     port: 3000,
     reuseExistingServer: !isCI,
   },

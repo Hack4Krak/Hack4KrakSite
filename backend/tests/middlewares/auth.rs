@@ -16,7 +16,7 @@ async fn middleware_user_is_not_admin() {
         .await;
 
     let request = test::TestRequest::get()
-        .uri("/account/admin")
+        .uri("/admin/")
         .insert_header(TestAuthHeader::new(user))
         .to_request();
     let response = test::call_service(&app, request).await;
@@ -39,7 +39,7 @@ async fn middleware_user_is_admin() {
         .await;
 
     let request = test::TestRequest::get()
-        .uri("/account/admin")
+        .uri("/admin/")
         .insert_header(TestAuthHeader::new(user))
         .to_request();
     let response = test::call_service(&app, request).await;

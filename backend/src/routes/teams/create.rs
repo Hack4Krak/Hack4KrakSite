@@ -18,6 +18,8 @@ use validator::Validate;
 pub struct CreateTeamModel {
     #[validate(length(min = 3, max = 32), custom(function = "validate_name_chars"))]
     pub team_name: String,
+    #[validate(length(min = 3, max = 128), custom(function = "validate_name_chars"))]
+    pub organization: Option<String>,
 }
 
 #[utoipa::path(
@@ -39,7 +41,7 @@ pub async fn create(
     Validated(create_team_model): Validated<Json<CreateTeamModel>>,
     user: users::Model,
 ) -> Result<HttpResponse, Error> {
-    let registration_config = app_state.task_manager.registration_config.lock().await;
+    let registration_config = app_state.task_manager.registration_config.read().await;
 
     let now = Utc::now();
     if now < registration_config.start_date || now > registration_config.end_date {
@@ -60,6 +62,7 @@ pub async fn create(
     teams::Model::create(
         &app_state.database,
         create_team_model.team_name.clone(),
+        create_team_model.organization.clone(),
         user,
     )
     .await?;

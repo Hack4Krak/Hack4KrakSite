@@ -10,5 +10,6 @@ pub async fn sse_handler(app_state: web::Data<app_state::AppState>) -> impl Resp
 
     HttpResponse::Ok()
         .content_type("text/event-stream")
+        .append_header(("X-Accel-Buffering", "no-response"))
         .streaming(server_events)
 }

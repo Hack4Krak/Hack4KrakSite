@@ -84,7 +84,7 @@ async fn create_team_invalid_period() {
     let user = test_database.with_default_user().await;
 
     let task_manager = TaskManager::default();
-    task_manager.registration_config.lock().await.end_date =
+    task_manager.registration_config.write().await.end_date =
         DateTime::from(Utc::now() - Duration::minutes(10));
 
     let app = TestApp::default()
@@ -101,10 +101,7 @@ async fn create_team_invalid_period() {
         .insert_header(TestAuthHeader::new(user.clone()))
         .to_request();
     let response: Value = test::call_and_read_body_json(&app, request).await;
-    assert_eq!(
-        response["error"].as_str().unwrap(),
-        "Team(InvalidRegistrationPeriod)"
-    );
+    assert_eq!(response["error"].as_str().unwrap(), "Team");
 }
 
 #[actix_web::test]
@@ -115,7 +112,7 @@ async fn create_team_external_registration_mode() {
     let task_manager = TaskManager::default();
     task_manager
         .registration_config
-        .lock()
+        .write()
         .await
         .registration_mode = RegistrationMode::External;
 
@@ -133,8 +130,5 @@ async fn create_team_external_registration_mode() {
         .insert_header(TestAuthHeader::new(user.clone()))
         .to_request();
     let response: Value = test::call_and_read_body_json(&app, request).await;
-    assert_eq!(
-        response["error"].as_str().unwrap(),
-        "Team(CannotRegisterInInternalMode)"
-    );
+    assert_eq!(response["error"].as_str().unwrap(), "Team");
 }

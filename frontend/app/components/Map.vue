@@ -82,7 +82,25 @@ onMounted(() => {
         :style="{ left: `${item.display.icon_coordinates.x}vh`, top: `${item.display.icon_coordinates.y}vh` }"
       >
         <div :style="{ transform: `scale(${scaleFactor})` }">
-          <UTooltip :text="item.name">
+          <LazyUTooltip :ui="{ content: 'h-fit' }" hydrate-on-visible>
+            <template #content>
+              <div class="p-2">
+                <h3 class="font-bold w-full text-center">
+                  {{ item.name }}
+                </h3>
+                <p>
+                  Przewidywana trudność:
+                  <UBadge size="sm">
+                    {{ item.difficulty_estimate }}
+                  </UBadge>
+                </p>
+                <ul>
+                  <li v-for="label in item.labels" :key="label">
+                    {{ label }}
+                  </li>
+                </ul>
+              </div>
+            </template>
             <NuxtLink :to="{ name: 'tasks-story-id', params: { id: item.id } }">
               <img
                 v-if="isLoaded"
@@ -95,7 +113,7 @@ onMounted(() => {
                 :alt="item.name"
               >
             </NuxtLink>
-          </UTooltip>
+          </LazyUTooltip>
         </div>
       </div>
     </div>

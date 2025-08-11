@@ -1,6 +1,9 @@
 ---
 title: Regulamin Hack4Krak - edycja dla Szkół Podstawowych
+description: Regulamin Hack4Krak - edycja dla Szkół Podstawowych
 ---
+
+# :bangbang: Ten regulamin dotyczy poprzedniej edycji wydarzenia :bangbang:
 
 ## 1. Postanowienia ogólne
 
@@ -22,7 +25,7 @@ title: Regulamin Hack4Krak - edycja dla Szkół Podstawowych
 6. Uczniowie danej szkoły chcący wziąć udział w wydarzeniu, po stworzeniu przez szkołę drużyny, tworzą konta osobiste na stronie CTF-a, a następnie dołączają do drużyny, używając kodów dostępu wygenerowanych przez osobę odpowiedzialną za rejestrację drużyn w ich szkole.
 7. Warunkiem uczestnictwa drużyny w CTF jest, aby wszyscy jej członkowie, w dniu wydarzenia, posiadali zgodę rodzica lub opiekuna prawnego na udział w wydarzeniu, wyrażoną poprzez akceptację regulaminu. Wzór zgody znajduje się w <a href="/documents/Zgoda_rodzica_lub_opiekuna_prawnego_na_uczestnictwo_w_wydarzeniu.pdf" target="_blank">dokumencie</a>.
 8. Maksymalna liczba zarejestrowanych drużyn wynosi 25.
-9. Rejestracja trwa do 26.05.2025 włącznie.
+9. Rejestracja trwa do 28.05.2025 włącznie.
 
 ## 3. Przebieg CTF
 

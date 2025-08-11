@@ -38,13 +38,13 @@ pub async fn create(
     Validated(Json(payload)): Validated<Json<CreateExternalTeamModel>>,
     confirmation_code: Path<Uuid>,
 ) -> Result<HttpResponse, Error> {
-    let registration_config = app_state.task_manager.registration_config.lock().await;
+    let registration_config = app_state.task_manager.registration_config.read().await;
     let confirmation_code = confirmation_code.into_inner();
 
     let email_verification_request =
         email_verification_request::Model::find_and_verify(&app_state.database, confirmation_code)
             .await?;
-    let EmailVerificationAction::RegisterTeam { organization: _ } =
+    let EmailVerificationAction::RegisterTeam { organization } =
         email_verification_request.get_action()?
     else {
         return Err(Error::InvalidEmailConfirmationCode);
@@ -58,6 +58,7 @@ pub async fn create(
             team_name.clone(),
             members_count,
             confirmation_code,
+            organization.clone(),
         )
         .await?;
         team_invitation_codes.push(invitation_codes);

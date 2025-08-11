@@ -1,4 +1,3 @@
-use crate::middlewares::auth::AuthMiddleware;
 use actix_web::http::StatusCode;
 use actix_web::{HttpResponse, ResponseError};
 use hack4krak_macros::error_with_messages;

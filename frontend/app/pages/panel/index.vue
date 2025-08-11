@@ -1,75 +1,70 @@
 <script setup lang="ts">
-const { $api } = useNuxtApp()
+useSeoMeta({
+  title: 'Panel użytkownika',
+  description: 'Zarządzaj swoim kontem i drużyną w naszym CTF-ie! Sprawdź swoje zadania i postępy!',
+})
 
-const { data } = await useAuth('/account/')
-
-const updateAccountModal = ref(false)
-const deleteAccountModal = ref(false)
-const changePasswordModal = ref(false)
-
-const { data: team, error } = await useAuth('/teams/membership/my_team', {
+const { data: team } = await useAuth('/teams/membership/my_team', {
   onResponseError: () => {
     throw new Error('Response error')
   },
 })
 
-async function logout() {
-  await $api('/auth/logout', {
-    method: 'POST',
-    credentials: 'include',
-  })
+const { data: team_stats } = await useAuth('/teams/membership/stats', {
+  onResponseError: () => {
+    throw new Error('Response error')
+  },
+})
 
-  await navigateTo('/login')
-}
+const { data: now, refresh: updateDate } = useAsyncData('formattedNow', async () => {
+  const now = useNow()
+  const formatted = useDateFormat(now, 'HH:mm:ss')
+  return formatted.value
+})
+
+useRafFn(() => updateDate())
 </script>
 
 <template>
-  <div class="flex flex-col p-12 pb-12 items-center gap-12">
-    <PanelModalUpdateAccountModal v-model="updateAccountModal" />
-    <PanelModalChangePasswordModal v-model="changePasswordModal" />
-    <PanelModalConfirmDeleteModal
-      v-model="deleteAccountModal"
-      url="/account/delete"
-      modal-title="Usuwanie konta"
-      modal-description="Czy na pewno chcesz usunąć konto? Ta operacja jest nieodwracalna."
-      toast-success-message="Pomyślnie usunięto konto"
-      :request-body="undefined"
-      redirect-to="/"
-    />
+  <div
+    class="grid grid-rows-[auto_auto_1fr_auto] divide-x my-5 mx-15 outline"
+    :class="{ 'grid-cols-[300px_1fr]': team }"
+  >
+    <!-- Top full-width bar -->
+    <div class="col-span-2 border-b h-15 flex items-center divide-x font-bold">
+      <span class="w-15 h-full flex items-center justify-center text-xl">
+        X
+      </span>
+      <span v-if="team?.team_name" class="px-5 h-full flex items-center">
+        {{ team?.team_name }}
+      </span>
+      <span class="px-5 h-full flex items-center">
+        Hack4Krak CTF - Edycja dla szkół podstawowych
+      </span>
+      <span class="px-5 h-full flex items-center justify-end flex-1 text-xl">
+        {{ now }}
+      </span>
+    </div>
 
-    <div class="flex flex-col flex-grow items-center justify-center max-h-[15em]">
-      <div class="text-center">
-        <h1 class="text-5xl font-bold">
-          Witaj {{ data?.username }}!
-        </h1>
-        <h2 class="text-4xl font-light mt-2">
-          Życzymy powodzenia na wydarzeniu!
-        </h2>
+    <PanelTileEventProgressBar class="border-b" />
+
+    <!-- Sidebar -->
+    <div v-if="team" class="row-span-3 p-4 flex flex-col justify-center space-y-2">
+      <span class="font-bold">Moja drużyna</span>
+      <USeparator :ui="{ border: 'border-neutral' }" />
+      <div v-for="member in team?.members" :key="member.name">
+        {{ member.name }}
       </div>
     </div>
 
-    <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-15 gap-y-5">
-      <PanelTile class="row-span-2 min-h-100 min-w-70">
-        <PanelTileWithTeam v-if="!error" :team-name="team!.team_name" />
-        <PanelTileWithoutTeam v-else />
-      </PanelTile>
-      <PanelTile class="row-span-2">
-        <PanelTileMain />
-      </PanelTile>
-      <PanelTile class="min-h-25 overflow-hidden" />
-      <PanelTile>
-        <div class="p-5">
-          <h1 class="font-bold text-2xl">
-            Ustawienia konta
-          </h1>
-          <div class="flex flex-col gap-3 mt-3 justify-center">
-            <GhostButtonWithIcon icon="mdi:account-cog" description="Zmień ustawienia konta" @click="updateAccountModal = true" />
-            <GhostButtonWithIcon icon="mdi:account-key" description="Zmień hasło" @click="changePasswordModal = true" />
-            <GhostButtonWithIcon icon="mdi:account-remove" description="Usuń konto" @click="deleteAccountModal = true" />
-            <GhostButtonWithIcon icon="mdi:logout" description="Wyloguj się" @click="logout" />
-          </div>
-        </div>
-      </PanelTile>
+    <!-- Top two boxes -->
+    <div class="flex divide-x border-b font-pixelify" :class="{ 'col-span-2': !team }">
+      <div class="flex flex-1 flex-col shadow items-center justify-center">
+        <PanelTileFlagForm />
+      </div>
+      <PanelTileLinks class="w-2/5" />
     </div>
+
+    <PanelTileStats v-if="team_stats" :team-stats="team_stats" class="col-span-1" />
   </div>
 </template>

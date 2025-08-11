@@ -2,10 +2,11 @@ use crate::entities::sea_orm_active_enums::TeamStatus;
 use crate::entities::teams::ActiveModel;
 use crate::entities::{external_team_invitation, flag_capture, teams, users};
 use crate::models::task::RegistrationConfig;
-use crate::routes::admin::UpdateTeamModel;
-use crate::routes::teams::TeamError;
+use crate::routes::flag::FlagError::TeamNotConfirmed;
 use crate::routes::teams::TeamError::*;
+use crate::utils::colors::TEAM_COLORS;
 use crate::utils::error::Error;
+use crate::utils::error::Error::Flag;
 use actix_web::dev::Payload;
 use actix_web::{FromRequest, HttpMessage, HttpRequest};
 use chrono::Utc;
@@ -26,6 +27,7 @@ pub struct TeamWithMembers {
     pub members: Vec<(Uuid, String)>,
     pub confirmation_code: Option<Uuid>,
     pub status: TeamStatus,
+    pub organization: Option<String>,
 }
 
 impl teams::Model {
@@ -41,9 +43,9 @@ impl teams::Model {
         Ok(team)
     }
 
-    pub async fn assert_correct_team_size(
+    pub async fn assert_team_size_before_adding_user(
         database: &DatabaseConnection,
-        max_team_size: u16,
+        registration_config: &RegistrationConfig,
         id: &Uuid,
     ) -> Result<(), Error> {
         let members_count = users::Entity::find()
@@ -51,18 +53,13 @@ impl teams::Model {
             .count(database)
             .await?;
 
-        if members_count >= max_team_size as u64 {
-            return Err(Error::Team(TeamIsFull {
-                max_size: max_team_size,
-            }));
-        }
-
-        Ok(())
+        registration_config.assert_team_size(members_count as u16 + 1)
     }
 
     pub async fn try_create(
         transaction: &impl ConnectionTrait,
         team_name: String,
+        organization: Option<String>,
     ) -> Result<Uuid, Error> {
         if teams::Model::find_by_name(transaction, &team_name)
             .await?
@@ -72,11 +69,19 @@ impl teams::Model {
         }
 
         let uuid = Uuid::new_v4();
+
+        let team_count = teams::Entity::find()
+            .filter(teams::Column::Name.eq(&team_name))
+            .count(transaction)
+            .await?;
+
         teams::Entity::insert(teams::ActiveModel {
             id: Set(uuid),
             name: Set(team_name),
             created_at: Set(Utc::now().naive_utc()),
             status: Set(TeamStatus::Absent),
+            organization: Set(organization),
+            color: Set(TEAM_COLORS[team_count as usize % TEAM_COLORS.len()].to_string()),
             ..Default::default()
         })
         .exec(transaction)
@@ -88,11 +93,12 @@ impl teams::Model {
     pub async fn create(
         database: &DatabaseConnection,
         team_name: String,
+        organization: Option<String>,
         user: users::Model,
     ) -> Result<(), Error> {
         let transaction = database.begin().await?;
 
-        let uuid = Self::try_create(&transaction, team_name).await?;
+        let uuid = Self::try_create(&transaction, team_name, organization).await?;
 
         let mut active_user: users::ActiveModel = user.into();
         active_user.team = Set(Some(uuid));
@@ -110,15 +116,12 @@ impl teams::Model {
         team_name: String,
         number_of_members: u16,
         administration_code: Uuid,
+        organization: String,
     ) -> Result<Vec<String>, Error> {
-        if number_of_members >= registration_config.max_team_size {
-            return Err(Error::Team(TeamIsFull {
-                max_size: registration_config.max_team_size,
-            }));
-        }
+        registration_config.assert_team_size(number_of_members)?;
 
         let transaction = database.begin().await?;
-        let team_id = Self::try_create(&transaction, team_name).await?;
+        let team_id = Self::try_create(&transaction, team_name, Some(organization)).await?;
 
         let mut invitations = Vec::new();
         for _ in 0..number_of_members {
@@ -256,56 +259,12 @@ impl teams::Model {
                     members,
                     confirmation_code: team.confirmation_code,
                     status: team.status,
+                    organization: team.organization,
                 }
             })
             .collect::<Vec<TeamWithMembers>>();
 
         Ok(teams_with_members)
-    }
-
-    pub async fn update(
-        database: &DatabaseConnection,
-        id: Uuid,
-        update_team_json: UpdateTeamModel,
-    ) -> Result<(), Error> {
-        let team = teams::Entity::find_by_id(id)
-            .one(database)
-            .await?
-            .ok_or(Error::Team(TeamNotFound))?;
-
-        if let Some(team_name) = update_team_json.team_name {
-            if teams::Model::find_by_name(database, &team_name)
-                .await?
-                .is_some()
-            {
-                return Err(TeamError::AlreadyExists {
-                    team_name: team.name,
-                }
-                .into());
-            }
-            let mut active_team: ActiveModel = team.clone().into();
-            active_team.name = Set(team_name);
-            active_team.update(database).await?;
-        }
-
-        if let Some(leader) = update_team_json.leader {
-            let new_leader = users::Entity::find_by_id(leader)
-                .one(database)
-                .await?
-                .ok_or(Error::UserNotFound)?;
-
-            let leader = Self::leader(database, id).await?;
-
-            Self::change_leader(database, new_leader, leader).await?;
-        }
-
-        if let Some(status) = update_team_json.status {
-            let mut active_team: ActiveModel = team.into();
-            active_team.status = Set(status);
-            active_team.update(database).await?;
-        }
-
-        Ok(())
     }
 
     pub async fn delete_as_admin(database: &DatabaseConnection, id: Uuid) -> Result<(), Error> {
@@ -396,6 +355,14 @@ impl teams::Model {
             .collect();
 
         Ok(tasks)
+    }
+
+    pub fn assert_is_confirmed(&self) -> Result<(), Error> {
+        if self.status != TeamStatus::Confirmed {
+            return Err(Flag(TeamNotConfirmed));
+        }
+
+        Ok(())
     }
 }
 

@@ -103,10 +103,10 @@ impl<S> EventMiddlewareService<S> {
         request: &mut ServiceRequest,
         config: &EventMiddleware,
     ) -> Result<(), Error> {
-        if let Some(user) = request.extensions().get::<users::Model>() {
-            if user.roles >= UserRoles::Admin {
-                return Ok(());
-            }
+        if let Some(user) = request.extensions().get::<users::Model>()
+            && user.roles >= UserRoles::Admin
+        {
+            return Ok(());
         }
 
         let task_manager = &request
@@ -114,11 +114,13 @@ impl<S> EventMiddlewareService<S> {
             .ok_or(Error::Unauthorized)?
             .task_manager;
 
-        let event_config = task_manager.event_config.lock().await;
+        let event_config = task_manager.event_config.read().await;
 
         let now = Utc::now();
         if !config.allow_before_event && now < event_config.start_date {
-            return Err(Error::AccessBeforeEventStart);
+            return Err(Error::AccessBeforeEventStart {
+                event_start_date: event_config.start_date.to_rfc3339(),
+            });
         }
         if !config.allow_after_event && now > event_config.end_date {
             return Err(Error::AccessAfterEventEnd);

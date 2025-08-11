@@ -36,6 +36,6 @@
     "node": ">=22.5.1"
   },
   "resolutions": {
-    "@nuxt/fonts": "0.11.2"
+    "@nuxt/fonts": "0.11.4"
   }
 }

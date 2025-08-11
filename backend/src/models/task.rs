@@ -1,3 +1,5 @@
+use crate::routes::teams::TeamError::TeamIsFull;
+use crate::utils::error::Error;
 use chrono::{DateTime, Duration, FixedOffset, Utc};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
@@ -19,6 +21,20 @@ pub struct RegistrationConfig {
     pub registration_mode: RegistrationMode,
 }
 
+#[derive(Serialize, Deserialize, ToSchema, Default, Debug)]
+#[serde(rename_all(deserialize = "kebab-case"))]
+pub struct LabelsConfig {
+    pub labels: Vec<Label>,
+}
+
+#[derive(Serialize, Deserialize, ToSchema, Default, Debug)]
+#[serde(rename_all(deserialize = "kebab-case"))]
+pub struct Label {
+    pub id: String,
+    pub name: String,
+    pub description: String,
+}
+
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "kebab-case")]
 pub enum RegistrationMode {
@@ -26,6 +42,18 @@ pub enum RegistrationMode {
     Internal,
     /// Teams are registered externally (e.g., by a supervisor, teacher, etc.)
     External,
+}
+
+impl RegistrationConfig {
+    pub fn assert_team_size(&self, team_size: u16) -> Result<(), Error> {
+        if team_size > self.max_team_size {
+            return Err(Error::Team(TeamIsFull {
+                max_size: self.max_team_size,
+            }));
+        }
+
+        Ok(())
+    }
 }
 
 impl Default for RegistrationConfig {
@@ -52,7 +80,7 @@ impl Default for EventConfig {
 #[derive(Serialize, Deserialize, ToSchema, Debug, Default)]
 pub struct TaskConfig {
     #[serde(flatten)]
-    pub description: TaskDescription,
+    pub meta: TaskMeta,
     #[serde(skip_serializing)]
     pub flag_hash: String,
     #[serde(default)]
@@ -62,9 +90,11 @@ pub struct TaskConfig {
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Debug, Clone, Default)]
-pub struct TaskDescription {
+pub struct TaskMeta {
     pub id: String,
     pub name: String,
+    pub labels: Vec<String>,
+    pub difficulty_estimate: String,
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Debug)]
@@ -88,4 +118,21 @@ pub struct Coordinates {
 pub struct TaskAsset {
     pub description: String,
     pub path: String,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_assert_team_size() {
+        let config = RegistrationConfig {
+            max_team_size: 5,
+            ..Default::default()
+        };
+
+        assert!(config.assert_team_size(1).is_ok());
+        assert!(config.assert_team_size(5).is_ok());
+        assert!(config.assert_team_size(6).is_err());
+    }
 }

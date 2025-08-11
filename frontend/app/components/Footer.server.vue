@@ -8,11 +8,11 @@ const { commitHash, branchName } = useGitInfo()
   <footer class="w-full text-muted">
     <UContainer>
       <USeparator />
-      <div class="flex flex-col-reverse gap-4 lg:flex-row justify-between w-full py-8 px-12 lg:mb-8 text-xs lg:text-sm">
+      <div class="flex flex-col-reverse gap-4 lg:flex-row justify-between w-full py-8 lg:px-12 lg:mb-8 text-xs lg:text-sm">
         <!-- Left section -->
         <div class="flex flex-col items-center lg:items-baseline justify-between gap-2 mb-5 lg:mb-0">
           <!-- Logo section -->
-          <LogoWithText size="sm" />
+          <LogoWithText class="text-sm" />
 
           <!-- Copyright -->
           <p class="text-center lg:text-left">
@@ -27,7 +27,7 @@ const { commitHash, branchName } = useGitInfo()
             </NuxtLink>!
           </div>
           <div class="hidden lg:block">
-            <span class="text-xs text-dimmed">{{ branchName }}@{{ commitHash }}</span>
+            <span aria-hidden="true" class="text-xs text-dimmed">{{ branchName }}@{{ commitHash }}</span>
           </div>
         </div>
 
@@ -45,10 +45,10 @@ const { commitHash, branchName } = useGitInfo()
               :name="icon"
               size="15"
             />
-            <span class="font-medium lg:font-normal">
+            <span class="lg:font-normal p-3 leading-6">
               {{ label }}
             </span>
-            <span class="group-[&:last-child]:hidden lg:hidden"> | </span>
+            <span class="font-thin group-[&:last-child]:hidden lg:hidden"> | </span>
           </NuxtLink>
         </div>
       </div>

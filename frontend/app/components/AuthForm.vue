@@ -1,17 +1,16 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
 import { FetchError } from 'ofetch'
-import * as z from 'zod'
 
 const props = defineProps<{
   isLogin: boolean
 }>()
 
-type Schema = z.output<typeof schema>
+type Schema = zInfer<typeof schema>
 const schema = z.object({
-  email: z.string({ error: 'Adres e-mail jest wymagany' }).email('Niepoprawny adres e-mail'),
-  password: z.string({ error: 'Hasło jest wymagane' }).min(8, 'Hasło musi mieć minimum 8 znaków'),
-  ...(props.isLogin ? {} : { name: z.string({ error: 'Nazwa użytkownika jest wymagana' }).min(3, 'Nazwa użytkownika musi mieć co najmniej 3 znaki') }),
+  email: z.email({ error: 'Niepoprawny adres e-mail' }),
+  password: zPassword(),
+  ...(props.isLogin ? {} : { name: zUsername() }),
 })
 
 const loading = ref(false)
@@ -74,26 +73,41 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     loading.value = false
   }
 }
+
+const showPassword = ref(false)
 </script>
 
 <template>
-  <div>
+  <div class="space-y-4">
     <h1 class="text-2xl font-medium">
       {{ isLogin ? 'Zaloguj się' : 'Zarejestruj się' }}
     </h1>
 
     <UForm :schema="schema" :state="state" class="space-y-4 text-center" @submit="onSubmit">
       <UFormField v-if="!isLogin" label="Nazwa użytkownika" name="name">
-        <TransparentInput v-model="state.name" />
+        <UInput v-model="state.name as string" />
       </UFormField>
 
       <UFormField label="Email" name="email">
-        <TransparentInput v-model="state.email" type="email" />
+        <UInput v-model="state.email" type="email" />
       </UFormField>
 
       <div class="flex flex-col items-start gap-1">
         <UFormField label="Hasło" name="password" class="w-full">
-          <TransparentInput v-model="state.password" type="password" />
+          <UInput v-model="state.password" class="w-full" :type="showPassword ? 'text' : 'password'">
+            <template #trailing>
+              <UButton
+                color="neutral"
+                variant="link"
+                size="sm"
+                :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
+                :aria-label="showPassword ? 'Ukryj hasło' : 'Pokaż hasło'"
+                :aria-pressed="showPassword"
+                aria-controls="password"
+                @click="showPassword = !showPassword"
+              />
+            </template>
+          </UInput>
           <template #hint>
             <NuxtLink v-if="isLogin" class="link-without-underline" to="/request_password_reset" tabindex="-1">
               Zresetuj hasło

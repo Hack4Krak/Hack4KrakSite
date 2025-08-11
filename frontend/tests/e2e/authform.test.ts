@@ -6,8 +6,8 @@ test('authFormValidation', async ({ page }) => {
   // Verify if email validation works
   await page.getByRole('textbox', { name: 'Hasło' }).fill('1')
   await page.getByRole('button', { name: 'Zaloguj', exact: true }).click()
-  await expect(page.locator('text=Hasło musi mieć minimum 8 znaków')).toBeVisible()
-  await expect(page.locator('text=Adres e-mail jest wymagany')).toBeVisible()
+  await expect(page.locator('text=Hasło musi mieć co najmniej 8 znaków')).toBeVisible()
+  await expect(page.locator('text=Niepoprawny adres e-mail')).toBeVisible()
 
   // Verify if link to register works
   await page.getByRole('link', { name: 'Załóż je' }).click()

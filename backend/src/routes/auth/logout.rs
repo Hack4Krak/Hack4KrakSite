@@ -1,7 +1,6 @@
-use actix_web::{HttpResponse, post};
-
-use crate::utils::cookies::{ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE, reset_cookie};
+use crate::services::auth::AuthService;
 use crate::utils::error::Error;
+use actix_web::{HttpResponse, post};
 
 #[utoipa::path(
     responses(
@@ -11,8 +10,5 @@ use crate::utils::error::Error;
 )]
 #[post("/logout")]
 pub async fn logout() -> Result<HttpResponse, Error> {
-    Ok(HttpResponse::Ok()
-        .append_header(("Set-Cookie", reset_cookie(ACCESS_TOKEN_COOKIE)))
-        .append_header(("Set-Cookie", reset_cookie(REFRESH_TOKEN_COOKIE)))
-        .finish())
+    Ok(AuthService::reset_cookies_response())
 }

@@ -42,16 +42,16 @@ async fn external_invitations_flow() {
 
     let request = test::TestRequest::post()
         .uri(&format!(
-            "/teams/external_invitations/create/{}",
-            confirmation_code
+            "/teams/external_invitations/create/{confirmation_code}"
         ))
         .set_json(json!({
-            "teams": [["Kotki", 3], ["Kraby", 1]]
+            // Testing maximum, average, and minimum team sizes
+            "teams": [["Duże Kotki", 5], ["Kotki", 5], ["Kraby", 1]]
         }))
         .insert_header(TestAuthHeader::new(admin.clone()))
         .to_request();
     let response: Vec<Vec<String>> = test::call_and_read_body_json(&app, request).await;
-    assert_eq!(response.len(), 2);
+    assert_eq!(response.len(), 3);
 
     // Normal user joins
     let request = test::TestRequest::post()
@@ -67,8 +67,7 @@ async fn external_invitations_flow() {
     // Admin displays status
     let request = test::TestRequest::get()
         .uri(&format!(
-            "/teams/external_invitations/info/{}",
-            confirmation_code
+            "/teams/external_invitations/info/{confirmation_code}"
         ))
         .insert_header(TestAuthHeader::new(admin.clone()))
         .to_request();

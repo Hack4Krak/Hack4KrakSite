@@ -1,4 +1,4 @@
-use crate::models::task::{TaskDescription, TaskDisplay};
+use crate::models::task::{TaskDisplay, TaskMeta};
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::web::Data;
@@ -9,7 +9,7 @@ use utoipa::ToSchema;
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct SimpleTask {
     #[serde(flatten)]
-    pub description: TaskDescription,
+    pub description: TaskMeta,
     pub display: TaskDisplay,
 }
 
@@ -28,7 +28,7 @@ pub async fn list(app_state: Data<AppState>) -> Result<HttpResponse, Error> {
     let mut tasks = Vec::new();
     for task in manager.tasks.iter() {
         tasks.push(SimpleTask {
-            description: task.description.clone(),
+            description: task.meta.clone(),
             display: task.display.clone(),
         })
     }

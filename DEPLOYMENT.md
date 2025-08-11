@@ -30,6 +30,24 @@ We also support [Google](https://developers.google.com/identity/protocols/oauth2
 - `GITHUB_CLIENT_ID` - GitHub OAuth2 client ID
 - `GITHUB_CLIENT_SECRET` - GitHub OAuth2 client secret
 
+## 🕵️ Monitoring
+
+Hack4Krak has a very basic support for gathering Prometheus metrics
+To use it configure `METRICS_ACCESS_TOKEN` environment variable and use this configuration file:
+
+```yaml
+scrape_configs:
+  - job_name: 'hack4krak-backend'
+    scrape_interval: 1m
+    scheme: https
+    fallback_scrape_protocol: PrometheusText1.0.0
+    static_configs:
+      - targets: ['<your server url>']
+    authorization:
+      type: Bearer
+      credentials: <METRICS_ACCESS_TOKEN>
+```
+
 ## 🥩 Frontend
 
 We have a [Dockerfile](frontend/Dockerfile) used to start a production server.
@@ -41,3 +59,4 @@ the frontend app.
 
 - `NUXT_SITE_URL` - Frontend website URL
 - `BACKEND_ADDRESS` - address of the backend server (accessible from the frontend server and global network)
+- `NUXT_ERROR_API_TOKEN` - token used to report errors to the nuxterror.com

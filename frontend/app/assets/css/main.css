@@ -10,7 +10,8 @@
 
 @theme static {
   --font-sans: 'Montserrat', sans-serif;
-  --font-pixelify: Pixelify Sans;
+  --font-pixelify: Pixelify Sans Hack4Krak; /* Pixelify Sans font with changed number "5" */
+  --font-roboto: 'Roboto', sans-serif;
   --color-red-450: #fb4d3d;
 }
 
@@ -18,8 +19,12 @@
   image-rendering: pixelated;
 }
 
-@utility bg-default {
-  background: var(--ui-bg);
+@utility h-screen-without-header {
+  height: calc(100vh - var(--ui-header-height));
+}
+
+@utility min-h-screen-without-header {
+  min-height: calc(100vh - var(--ui-header-height));
 }
 
 @utility scrollbar-hide {

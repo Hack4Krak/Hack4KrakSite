@@ -17,27 +17,20 @@ import {
 import { Line } from 'vue-chartjs'
 import 'chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm'
 
+definePageMeta({
+  middleware: [
+    'event-access-guard',
+  ],
+})
+
+useSeoMeta({
+  title: 'Ranking',
+  description: 'Zobacz aktualny ranking drużyn i ich punkty w czasie rzeczywistym!',
+})
+
 export type Team = ApiResponse<'teams'>[0]
 
 ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, TimeScale)
-
-const colors = [
-  '#E6194B',
-  '#3CB44B',
-  '#FFE119',
-  '#4363D8',
-  '#F58231',
-  '#911EB4',
-  '#46F0F0',
-  '#F032E6',
-  '#BCF60C',
-  '#FABEBE',
-  '#008080',
-  '#E6BEFF',
-  '#9A6324',
-  '#FFFAC8',
-  '#800000',
-]
 
 const { data, refresh: refreshChart } = await useApi('/leaderboard/chart')
 
@@ -49,10 +42,10 @@ const adjustedTimestamps = computed(() => {
   ) ?? []
 })
 
-const datasets = computed(() => (data.value?.team_points_over_time || []).map((item, index) => ({
+const datasets = computed(() => (data.value?.team_points_over_time || []).map(item => ({
   label: item.label,
   data: item.points,
-  borderColor: colors[index % colors.length],
+  borderColor: item.color,
   lineTension: 0.2,
 })))
 
@@ -94,12 +87,15 @@ const { data: teams, refresh: refreshTeams } = await useApi('/leaderboard/teams'
 const columns: TableColumn<Team>[] = [
   {
     accessorKey: 'team_name',
+    header: 'Nazwa drużyny',
   },
   {
     accessorKey: 'current_points',
+    header: 'Ilosć punktów',
   },
   {
     accessorKey: 'captured_flags',
+    header: 'Zdobyte flagi',
   },
 ]
 

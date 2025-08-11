@@ -1,5 +1,7 @@
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
+use actix_web::http::header;
+use actix_web::http::header::DispositionType;
 use actix_web::{HttpRequest, HttpResponse, get, web};
 
 #[utoipa::path(
@@ -27,5 +29,10 @@ pub async fn get(
 
     let named_file = manager.load_asset(&task_id, &asset_path).await?;
 
-    Ok(named_file.into_response(&request))
+    Ok(named_file
+        .set_content_disposition(header::ContentDisposition {
+            disposition: DispositionType::Attachment,
+            parameters: Vec::new(),
+        })
+        .into_response(&request))
 }

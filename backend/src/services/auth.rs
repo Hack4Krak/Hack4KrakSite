@@ -9,7 +9,9 @@ use crate::routes::auth::reset_password::ResetPasswordModel;
 use crate::services::emails::{Email, EmailTemplate};
 use crate::services::env::EnvConfig;
 use crate::utils::app_state;
-use crate::utils::cookies::{ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE, create_cookie};
+use crate::utils::cookies::{
+    ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE, create_cookie, reset_cookie,
+};
 use crate::utils::error::Error;
 use crate::utils::error::Error::HashPasswordFailed;
 use crate::utils::jwt::encode_jwt;
@@ -144,7 +146,7 @@ impl AuthService {
     }
 
     pub fn hash_password(password: Password) -> Result<String, Error> {
-        let salt = SaltString::generate(&mut OsRng);
+        let salt = SaltString::try_from_rng(&mut OsRng)?;
 
         Ok(Argon2::default()
             .hash_password(password.0.as_bytes(), &salt)
@@ -171,7 +173,7 @@ impl AuthService {
 
         let mut reset_password_link = EnvConfig::get().frontend_url.clone();
         reset_password_link = reset_password_link
-            .join(format!("/reset_password?code={}", confirmation_code).as_str())?;
+            .join(format!("/reset_password?code={confirmation_code}").as_str())?;
 
         let email_body = format!(
             include_str!("emails_assets/reset_password_body.html"),
@@ -223,5 +225,12 @@ impl AuthService {
         password_reset.delete(&app_state.database).await?;
 
         Ok(())
+    }
+
+    pub fn reset_cookies_response() -> HttpResponse {
+        HttpResponse::Ok()
+            .append_header(("Set-Cookie", reset_cookie(ACCESS_TOKEN_COOKIE)))
+            .append_header(("Set-Cookie", reset_cookie(REFRESH_TOKEN_COOKIE)))
+            .finish()
     }
 }

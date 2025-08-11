@@ -1,7 +1,7 @@
 use crate::entities::{flag_capture, teams};
 use crate::utils::error::Error;
 use chrono::NaiveDateTime;
-use sea_orm::{DatabaseConnection, EntityTrait};
+use sea_orm::{DatabaseConnection, EntityTrait, QueryOrder};
 use serde::ser::SerializeStruct;
 use serde::{Deserialize, Serialize, Serializer};
 use std::collections::HashMap;
@@ -11,6 +11,7 @@ use uuid::Uuid;
 #[derive(Serialize, Deserialize, ToSchema, Default, Debug, PartialEq)]
 pub struct TeamPoints {
     pub label: String,
+    pub color: String,
     pub points: Vec<usize>,
 }
 
@@ -19,12 +20,14 @@ pub struct TeamCurrentPoints {
     pub team_name: String,
     pub current_points: usize,
     pub captured_flags: usize,
+    pub color: String,
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Debug, Default)]
-pub struct TeamPointsAndFlagsOverTime {
+pub struct TeamPointsAndFlagsOverTimeAndTeamColor {
     pub points: Vec<usize>,
     pub flags: Vec<usize>,
+    pub color: String,
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Default, Debug, PartialEq)]
@@ -33,15 +36,18 @@ pub struct Chart {
     pub team_points_over_time: Vec<TeamPoints>,
 }
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct PointsCounter {
     event_timestamps: Vec<NaiveDateTime>,
-    team_points_and_flags_over_time: HashMap<String, TeamPointsAndFlagsOverTime>,
+    team_points_and_flags_over_time: HashMap<String, TeamPointsAndFlagsOverTimeAndTeamColor>,
 }
 
 impl PointsCounter {
     pub async fn work(database: &DatabaseConnection) -> Result<PointsCounter, Error> {
-        let captures = flag_capture::Entity::find().all(database).await?;
+        let captures = flag_capture::Entity::find()
+            .order_by_asc(flag_capture::Column::SubmittedAt)
+            .all(database)
+            .await?;
         let teams = teams::Entity::find().all(database).await?;
 
         let mut output = Self::default();
@@ -49,6 +55,16 @@ impl PointsCounter {
         let mut team_to_tasks: HashMap<Uuid, Vec<String>> = HashMap::new();
 
         let mut task_points: HashMap<String, usize> = HashMap::new();
+
+        // TODO: Improve this
+        for team in &teams {
+            output
+                .team_points_and_flags_over_time
+                .entry(team.name.clone())
+                .or_default()
+                .points
+                .push(0);
+        }
 
         for capture in captures {
             let task_name = capture.task.clone();
@@ -92,6 +108,12 @@ impl PointsCounter {
                     .or_default()
                     .flags
                     .push(solves.unwrap_or(&Vec::new()).len());
+
+                output
+                    .team_points_and_flags_over_time
+                    .entry(team.name.clone())
+                    .or_default()
+                    .color = team.color.clone();
             }
 
             output.event_timestamps.push(capture.submitted_at);
@@ -104,13 +126,14 @@ impl PointsCounter {
         let mut points = self
             .team_points_and_flags_over_time
             .iter()
-            .map(|(team_name, points_and_flags)| {
-                let final_points = *points_and_flags.points.last().unwrap_or(&0);
-                let final_flags = *points_and_flags.flags.last().unwrap_or(&0);
+            .map(|(team_name, points_and_flags_and_color)| {
+                let final_points = *points_and_flags_and_color.points.last().unwrap_or(&0);
+                let final_flags = *points_and_flags_and_color.flags.last().unwrap_or(&0);
                 TeamCurrentPoints {
                     team_name: team_name.clone(),
                     current_points: final_points,
                     captured_flags: final_flags,
+                    color: points_and_flags_and_color.color.clone(),
                 }
             })
             .collect::<Vec<TeamCurrentPoints>>();
@@ -121,12 +144,23 @@ impl PointsCounter {
         points
     }
 
+    pub fn team_rank(&self, team_name: &str) -> Option<(usize, usize)> {
+        let team_points = self.get_final_team_points();
+        let team_rank = team_points
+            .iter()
+            .position(|team| team.team_name == team_name)?
+            + 1;
+
+        Some((team_rank, team_points.len()))
+    }
+
     pub fn to_chart(self) -> Chart {
         let points = self
             .team_points_and_flags_over_time
             .into_iter()
             .map(|(team_id, time_points_and_flags)| TeamPoints {
                 label: team_id,
+                color: time_points_and_flags.color,
                 points: time_points_and_flags.points,
             })
             .collect::<Vec<TeamPoints>>();

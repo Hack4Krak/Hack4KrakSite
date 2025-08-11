@@ -56,9 +56,9 @@ impl external_team_invitation::Model {
             .await?
             .ok_or(Error::InvalidEmailConfirmationCode)?;
 
-        teams::Model::assert_correct_team_size(
+        teams::Model::assert_team_size_before_adding_user(
             database,
-            registration_config.max_team_size,
+            registration_config,
             &invitation.team,
         )
         .await?;

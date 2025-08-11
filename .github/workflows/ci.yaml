@@ -6,6 +6,9 @@ on:
     branches: [master]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 env:
   DATABASE_URL: postgres://backend:password@localhost:5432/hack4krak
   CARGO_TERM_COLOR: always

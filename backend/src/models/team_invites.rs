@@ -26,12 +26,8 @@ impl team_invites::Model {
             }));
         }
 
-        teams::Model::assert_correct_team_size(
-            database,
-            registration_config.max_team_size,
-            &team.id,
-        )
-        .await?;
+        teams::Model::assert_team_size_before_adding_user(database, registration_config, &team.id)
+            .await?;
 
         Self::assert_user_doesnt_have_invites_from_this_team(
             database,
@@ -100,12 +96,8 @@ impl team_invites::Model {
             }));
         }
 
-        teams::Model::assert_correct_team_size(
-            database,
-            registration_config.max_team_size,
-            &team.id,
-        )
-        .await?;
+        teams::Model::assert_team_size_before_adding_user(database, registration_config, &team.id)
+            .await?;
 
         let transaction = database.begin().await?;
 

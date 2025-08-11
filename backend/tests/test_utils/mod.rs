@@ -35,6 +35,7 @@ pub async fn setup_database_with_schema() -> DatabaseConnection {
     setup_schema(&database, team_invites::Entity).await;
     setup_schema(&database, teams::Entity).await;
     setup_schema(&database, users::Entity).await;
+    setup_schema(&database, user_personal_info::Entity).await;
     setup_schema(&database, email_verification_request::Entity).await;
     setup_schema(&database, external_team_invitation::Entity).await;
     setup_schema(&database, flag_capture::Entity).await;

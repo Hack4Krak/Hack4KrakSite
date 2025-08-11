@@ -1,9 +1,12 @@
 <script setup lang="ts">
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   text: string
-  prose?: 'light' | 'dark'
+  prose?: 'light' | 'dark' | 'none'
   inline?: boolean
-}>()
+}>(), {
+  prose: 'dark',
+  inline: false,
+})
 
 const proseClass = computed(() => {
   switch (props.prose) {

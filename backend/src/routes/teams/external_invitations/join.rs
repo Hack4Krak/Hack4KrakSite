@@ -36,7 +36,7 @@ pub async fn join(
     user: users::Model,
     Validated(team_code): Validated<Json<JoinExternalModel>>,
 ) -> Result<HttpResponse, Error> {
-    let registration_config = app_state.task_manager.registration_config.lock().await;
+    let registration_config = app_state.task_manager.registration_config.read().await;
     external_team_invitation::Model::accept_invitation(
         &app_state.database,
         registration_config.deref(),

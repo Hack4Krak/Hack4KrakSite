@@ -21,8 +21,9 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     '@nuxtjs/mdc',
     '@formkit/auto-animate/nuxt',
-    'nuxt-open-fetch-x',
+    'nuxt-open-fetch',
     'nuxt-qrcode',
+    '@norbiros/nuxt-auto-form',
     'dayjs-nuxt',
     '@compodium/nuxt',
     '@vueuse/nuxt',
@@ -35,9 +36,21 @@ export default defineNuxtConfig({
   typescript: { typeCheck: true },
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
-  compatibilityDate: '2025-04-09',
-  future: {
-    compatibilityVersion: 4,
+  compatibilityDate: '2025-07-16',
+  imports: {
+    presets: [
+      {
+        from: 'zod',
+        imports: [
+          { as: 'z', name: '*' },
+          {
+            name: 'infer',
+            as: 'zInfer',
+            type: true,
+          },
+        ],
+      },
+    ],
   },
 
   // App configuration
@@ -55,7 +68,6 @@ export default defineNuxtConfig({
     '/': { prerender: true },
     '/faq': { redirect: '/docs/faq' },
     '/rules': { redirect: '/docs/rules' },
-    '/admin/**': { robots: false },
   },
 
   hooks: {
@@ -73,6 +85,7 @@ export default defineNuxtConfig({
       charset: 'utf-8',
       viewport: 'width=device-width, initial-scale=1',
       htmlAttrs: {
+        class: 'dark',
         lang: 'pl',
       },
       meta: [
@@ -99,24 +112,18 @@ export default defineNuxtConfig({
       standalone: false,
     },
   },
-  // https://nuxt-open-fetch.vercel.app/setup/configuration (we are using patched fork - nuxt-open-fetch-x)
+  // https://nuxt-open-fetch.norbiros.dev/setup/configuration
   openFetch: {
     disableNuxtPlugin: true,
     clients: {
       api: {
         baseURL: backendAddress,
-        schema: '../openapi/api/openapi.json',
+        schema: 'openapi/api/openapi.json',
       },
       auth: {
         baseURL: backendAddress,
-        schema: '../openapi/api/openapi.json',
+        schema: 'openapi/api/openapi.json',
       },
-    },
-  },
-  // https://ui.nuxt.com/getting-started/fonts
-  fonts: {
-    experimental: {
-      processCSSVariables: true,
     },
   },
   // https://ui.nuxt.com/getting-started/color-mode/nuxt
@@ -151,12 +158,15 @@ export default defineNuxtConfig({
   linkChecker: {
     runOnBuild: false,
   },
+  robots: {
+    disallow: ['/admin'],
+  },
   // https://nuxtseo.com/docs/site-config/guides/setting-site-config
   site: {
     // Use NUXT_SITE_NAME to override
     url: 'https://hack4krak.pl',
     name: 'Hack4Krak CTF',
-    description: 'Krakowski CTF dla wszystkich uczniów szkół średnich! przetestuj się i zawalcz o ciekawe nagrody biorąc udział w wydarzeniu! Nie zwlekaj i zgłoś swoją drużynę już dziś!',
+    description: 'Krakowski CTF dla wszystkich uczniów szkół średnich. Sprawdź swoje umiejętności się i zawalcz o ciekawe nagrody biorąc udział w wydarzeniu! Nie zwlekaj i zgłoś swoją drużynę już dziś!',
     defaultLocale: 'pl',
   },
 })

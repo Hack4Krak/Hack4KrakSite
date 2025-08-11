@@ -34,6 +34,7 @@ impl TestDatabase {
             // Password is Dziengiel
             password: Some("$argon2id$v=19$m=19456,t=2,p=1$GuyDKoLJCF5tt+MDGJqRfA$8NZPkyNbR/IWuLg6tR7tn0RH/lJGahLYDODj23ajP3Y".to_string()),
             roles: UserRoles::Default,
+            personal_info: None,
         });
 
         users::Entity::insert(updated)
@@ -61,6 +62,8 @@ impl TestDatabase {
             created_at: Utc::now().naive_utc(),
             confirmation_code: Default::default(),
             status: TeamStatus::Absent,
+            color: "#000000".to_string(),
+            organization: Some("Hack4Krak".to_string()),
         });
 
         teams::Entity::insert(updated)

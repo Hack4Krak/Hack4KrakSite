@@ -3,6 +3,10 @@ definePageMeta({
   layout: 'centered',
 })
 
+useSeoMeta({
+  title: 'Rejestracja drużyn',
+})
+
 const route = useRoute()
 const confirmationCode = String(route.query.code)
 
@@ -28,7 +32,7 @@ function print() {
 </script>
 
 <template>
-  <div class="w-3xl">
+  <div class="max-w-3xl">
     <h1 class="text-2xl font-semibold text-center text-white mb-6">
       Zarejestruj drużyny
     </h1>

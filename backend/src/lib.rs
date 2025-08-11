@@ -51,6 +51,7 @@ pub fn setup_actix_app(
         .into_utoipa_app()
         .openapi(ApiDoc::with_server())
         .service(routes::index::index)
+        .service(routes::metrics::metrics)
         .service(scope("/auth").configure(routes::auth::config))
         .service(scope("/teams").configure(routes::teams::config))
         .service(
@@ -58,14 +59,23 @@ pub fn setup_actix_app(
                 .wrap(EventMiddleware::disallow_before_event())
                 .configure(routes::task::config),
         )
-        .service(scope("/account").configure(routes::account::config))
+        .service(
+            scope("/account")
+                .wrap(AuthMiddleware::with_user())
+                .configure(routes::account::config),
+        )
         .service(
             scope("/admin")
                 .wrap(AuthMiddleware::with_user_as_admin())
                 .configure(routes::admin::config),
         )
         .service(scope("/event").configure(routes::event::config))
-        .service(scope("/flag").configure(routes::flag::config))
+        .service(
+            scope("/flag")
+                .wrap(AuthMiddleware::with_user())
+                .wrap(EventMiddleware::disallow_before_event())
+                .configure(routes::flag::config),
+        )
         .service(scope("/leaderboard").configure(routes::leaderboard::config))
         .default_service(actix_web::web::route().to(|| async { RouteNotFound.error_response() }))
         .openapi_service(|api| Scalar::with_url("/docs", api));

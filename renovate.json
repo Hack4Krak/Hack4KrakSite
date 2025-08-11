@@ -10,9 +10,6 @@
     ":preserveSemverRanges"
   ],
   "dependencyDashboard": false,
-  "ignoreDeps": [
-    "vue-tsc"
-  ],
   "packageRules": [
     {
       "groupName": "Frontend dependencies",
@@ -20,7 +17,9 @@
     },
     {
       "groupName": "Backend dependencies",
-      "matchPaths": ["backend/**"]
+      "matchPaths": ["backend/**"],
+      "rangeStrategy": "bump",
+      "extends": ["schedule:weekly"]
     },
     {
       "groupName": "Frontend icons",

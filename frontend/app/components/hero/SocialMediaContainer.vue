@@ -7,6 +7,7 @@ import { LANDING_SOCIALS } from '~~/content/landing-socials'
     <SocialIcon
       v-for="({ label, icon, to }) in LANDING_SOCIALS"
       :key="label"
+      :aria-label="label"
       :icon="icon"
       :to="to"
     />

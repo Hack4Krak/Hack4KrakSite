@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui'
 import * as party from 'party-js'
-import * as z from 'zod'
 
 const flagPattern = /^hack4KrakCTF\{.*\}$/
 const schema = z.object({
@@ -9,7 +8,7 @@ const schema = z.object({
     .regex(flagPattern, { error: 'Flaga musi być w formacie "hack4KrakCTF{...}"' }),
 })
 
-type Schema = z.output<typeof schema>
+type Schema = zInfer<typeof schema>
 
 const state = reactive<Partial<Schema>>({
   flag: undefined,
@@ -38,19 +37,22 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     })
   }
 
-  toast.add({ title: 'Brawo! To była poprawna flaga', description: getRandomJoke(), color: 'success', duration: 5000 })
+  toast.add({ title: 'Brawo! To była poprawna flaga', description: getRandomJoke(), color: 'success', duration: 12500 })
   state.flag = undefined
 }
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4 flex flex-col" @submit="onSubmit">
+  <UForm :schema="schema" :state="state" class="space-y-3 flex flex-col text-center items-center justify-center" @submit="onSubmit">
+    <h3 class="font-bold text-xl">
+      Podaj Flagę
+    </h3>
     <UFormField name="flag">
-      <UInput v-model="state.flag" class="w-full" :ui="{ base: 'h-12' }" placeholder="hack4KrakCTF{...}" />
+      <UInput v-model="state.flag" class="w-80" :ui="{ base: 'h-12 rounded-none' }" placeholder="hack4KrakCTF{...}" />
     </UFormField>
 
-    <ElevatedButton class="w-40" type="submit">
-      Wyślij
+    <ElevatedButton class="w-40 mt-3" type="submit">
+      Sprawdź
     </ElevatedButton>
   </UForm>
 </template>

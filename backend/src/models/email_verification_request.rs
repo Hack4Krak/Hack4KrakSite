@@ -58,14 +58,14 @@ impl email_verification_request::Model {
             .await?
             .ok_or(Error::InvalidEmailConfirmationCode)?;
 
-        if let Some(expiration_time) = email_verification_request.expiration_time {
-            if expiration_time < Utc::now().naive_utc() {
-                let active_email_confirmation: email_verification_request::ActiveModel =
-                    email_verification_request.into();
-                active_email_confirmation.delete(database).await?;
+        if let Some(expiration_time) = email_verification_request.expiration_time
+            && expiration_time < Utc::now().naive_utc()
+        {
+            let active_email_confirmation: email_verification_request::ActiveModel =
+                email_verification_request.into();
+            active_email_confirmation.delete(database).await?;
 
-                return Err(Error::EmailConfirmationCodeExpired);
-            }
+            return Err(Error::EmailConfirmationCodeExpired);
         }
 
         Ok(email_verification_request)

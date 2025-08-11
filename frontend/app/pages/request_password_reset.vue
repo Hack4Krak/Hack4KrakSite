@@ -1,52 +1,29 @@
 <script setup lang="ts">
-import type { FormSubmitEvent } from '#ui/types'
-import { FetchError } from 'ofetch'
-import * as z from 'zod'
-
 definePageMeta({
   middleware: 'guest',
   layout: 'centered',
 })
 
-type Schema = z.output<typeof schema>
-
-const schema = z.object({
-  email: z.email({ error: 'Adres e-mail jest wymagany' }),
+useSeoMeta({
+  title: 'Resetowanie hasła',
+  description: 'Zresetuj hasło do swojego konta, aby móc brać udział w wydarzeniu!',
 })
 
-const loading = ref(false)
 const toast = useToast()
-const state = reactive<Partial<Schema>>({
-  email: undefined,
+const schema = z.object({
+  email: z.email().meta({ title: 'Email' }),
 })
 
-const isButtonEnabled = computed(() => {
-  return schema.safeParse(state).success
-})
+async function onSubmit(data: zInfer<typeof schema>) {
+  toast.add({ title: 'Oczekiwanie', description: 'Wysyłanie emaila…', color: 'info' })
 
-async function onSubmit(event: FormSubmitEvent<Schema>) {
-  event.preventDefault()
+  await useNuxtApp().$api('/auth/request_reset_password', {
+    method: 'POST',
+    credentials: 'include',
+    body: data,
+  })
 
-  loading.value = true
-
-  try {
-    toast.add({ title: 'Oczekiwanie', description: 'Wysyłanie emaila…', color: 'info' })
-
-    await useNuxtApp().$api('/auth/request_reset_password', {
-      method: 'POST',
-      credentials: 'include',
-      body: event.data,
-    })
-
-    toast.add({ title: 'Sukces', description: 'Pomyślnie wysłano link do resetowania hasła', color: 'success' })
-  } catch (error) {
-    console.error(error)
-    if (!(error instanceof FetchError)) {
-      throw error
-    }
-  } finally {
-    loading.value = false
-  }
+  toast.add({ title: 'Sukces', description: 'Pomyślnie wysłano link do resetowania hasła', color: 'success' })
 }
 </script>
 
@@ -65,16 +42,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       </p>
     </div>
 
-    <UForm :schema="schema" :state="state" class="space-y-4 text-center" @submit="onSubmit">
-      <UFormField label="Email" name="email">
-        <TransparentInput v-model="state.email" type="email" />
-      </UFormField>
-
-      <div class="space-y-2">
-        <UButton type="submit" class="w-full text-center inline rounded-3xl py-2 bg-neutral-300" :disabled="loading" :class="isButtonEnabled ? 'bg-primary' : ''">
-          Wyślij
-        </UButton>
-      </div>
-    </UForm>
+    <AutoForm :schema="schema" @submit="onSubmit" />
   </div>
 </template>
