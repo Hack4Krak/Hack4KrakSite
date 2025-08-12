@@ -37,7 +37,7 @@
 
 @theme static {
   --font-sans: 'Montserrat', sans-serif;
-  --font-pixelify: Pixelify Sans Hack4Krak; /* Pixelify Sans font with changed number "5" */
+  --font-pixelify: Pixelify Sans Hack4Krak; /* Pixelify Sans font with changed number "5" and capital letter "T"*/
   --font-roboto: 'Roboto', sans-serif;
   --color-red-450: #fb4d3d;
 }
