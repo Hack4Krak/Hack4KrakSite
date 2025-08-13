@@ -1,10 +1,12 @@
 use crate::entities::{flag_capture, teams};
+use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use chrono::NaiveDateTime;
-use sea_orm::{DatabaseConnection, EntityTrait, QueryOrder};
+use sea_orm::{EntityTrait, QueryOrder};
 use serde::ser::SerializeStruct;
 use serde::{Deserialize, Serialize, Serializer};
 use std::collections::HashMap;
+use std::sync::Arc;
 use utoipa::ToSchema;
 use uuid::Uuid;
 
@@ -43,12 +45,12 @@ pub struct PointsCounter {
 }
 
 impl PointsCounter {
-    pub async fn work(database: &DatabaseConnection) -> Result<PointsCounter, Error> {
+    pub async fn work(app_state: &Arc<AppState>) -> Result<PointsCounter, Error> {
         let captures = flag_capture::Entity::find()
             .order_by_asc(flag_capture::Column::SubmittedAt)
-            .all(database)
+            .all(&app_state.database)
             .await?;
-        let teams = teams::Entity::find().all(database).await?;
+        let teams = teams::Entity::find().all(&app_state.database).await?;
 
         let mut output = Self::default();
         let mut task_to_teams: HashMap<String, Vec<Uuid>> = HashMap::new();
@@ -57,6 +59,15 @@ impl PointsCounter {
         let mut task_points: HashMap<String, usize> = HashMap::new();
 
         // TODO: Improve this
+        output.event_timestamps.push(
+            app_state
+                .task_manager
+                .event_config
+                .read()
+                .await
+                .start_date
+                .naive_utc(),
+        );
         for team in &teams {
             output
                 .team_points_and_flags_over_time
