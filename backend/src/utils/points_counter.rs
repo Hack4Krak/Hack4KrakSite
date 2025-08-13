@@ -17,7 +17,7 @@ pub struct TeamPoints {
     pub points: Vec<usize>,
 }
 
-#[derive(Serialize, Deserialize, ToSchema, Debug)]
+#[derive(Serialize, Deserialize, ToSchema, Debug, PartialEq)]
 pub struct TeamCurrentPoints {
     pub team_name: String,
     pub current_points: usize,
@@ -137,22 +137,62 @@ impl PointsCounter {
         let mut points = self
             .team_points_and_flags_over_time
             .iter()
-            .map(|(team_name, points_and_flags_and_color)| {
-                let final_points = *points_and_flags_and_color.points.last().unwrap_or(&0);
-                let final_flags = *points_and_flags_and_color.flags.last().unwrap_or(&0);
-                TeamCurrentPoints {
-                    team_name: team_name.clone(),
-                    current_points: final_points,
-                    captured_flags: final_flags,
-                    color: points_and_flags_and_color.color.clone(),
-                }
+            .map(|(team_name, data)| {
+                let final_points = *data.points.last().unwrap_or(&0);
+                let final_flags = *data.flags.last().unwrap_or(&0);
+
+                // Collect all timestamps when team solved tasks (points increased)
+                let solve_times = {
+                    let mut times = Vec::new();
+                    let mut prev_points = 0;
+                    for (i, &p) in data.points.iter().enumerate() {
+                        if p > prev_points
+                            && let Some(&time) = self.event_timestamps.get(i)
+                        {
+                            times.push(time);
+                        }
+                        prev_points = p;
+                    }
+                    times
+                };
+
+                (
+                    TeamCurrentPoints {
+                        team_name: team_name.clone(),
+                        current_points: final_points,
+                        captured_flags: final_flags,
+                        color: data.color.clone(),
+                    },
+                    solve_times,
+                )
             })
-            .collect::<Vec<TeamCurrentPoints>>();
+            .collect::<Vec<_>>();
 
-        points.sort_by_key(|team_current_points| team_current_points.current_points);
-        points.reverse();
+        points.sort_by(|a, b| {
+            b.0.current_points.cmp(&a.0.current_points).then_with(|| {
+                // Compare solve times from last to first
+                let times_a = &a.1;
+                let times_b = &b.1;
 
-        points
+                // Iterate from the end (last solve) backwards
+                for i in (0..times_a.len().max(times_b.len())).rev() {
+                    match (times_a.get(i), times_b.get(i)) {
+                        (Some(time_a), Some(time_b)) => {
+                            let cmp = time_a.cmp(time_b);
+                            if cmp != std::cmp::Ordering::Equal {
+                                return cmp;
+                            }
+                        }
+                        (Some(_), None) => return std::cmp::Ordering::Greater,
+                        (None, Some(_)) => return std::cmp::Ordering::Less,
+                        (None, None) => {}
+                    }
+                }
+                std::cmp::Ordering::Equal
+            })
+        });
+
+        points.into_iter().map(|(tp, _)| tp).collect()
     }
 
     pub fn team_rank(&self, team_name: &str) -> Option<(usize, usize)> {
