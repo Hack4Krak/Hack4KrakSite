@@ -17,7 +17,7 @@ pub struct TeamPoints {
     pub points: Vec<usize>,
 }
 
-#[derive(Serialize, Deserialize, ToSchema, Debug)]
+#[derive(Serialize, Deserialize, ToSchema, Debug, PartialEq)]
 pub struct TeamCurrentPoints {
     pub team_name: String,
     pub current_points: usize,
@@ -137,22 +137,39 @@ impl PointsCounter {
         let mut points = self
             .team_points_and_flags_over_time
             .iter()
-            .map(|(team_name, points_and_flags_and_color)| {
-                let final_points = *points_and_flags_and_color.points.last().unwrap_or(&0);
-                let final_flags = *points_and_flags_and_color.flags.last().unwrap_or(&0);
-                TeamCurrentPoints {
-                    team_name: team_name.clone(),
-                    current_points: final_points,
-                    captured_flags: final_flags,
-                    color: points_and_flags_and_color.color.clone(),
+            .map(|(team_name, data)| {
+                let final_points = *data.points.last().unwrap_or(&0);
+                let final_flags = *data.flags.last().unwrap_or(&0);
+
+                let mut capture_times = Vec::new();
+                let mut prev_points = 0;
+                for (i, &p) in data.points.iter().enumerate() {
+                    if p > prev_points {
+                        if let Some(&time) = self.event_timestamps.get(i) {
+                            capture_times.push(time);
+                        }
+                    }
+                    prev_points = p;
                 }
+
+                (
+                    TeamCurrentPoints {
+                        team_name: team_name.clone(),
+                        current_points: final_points,
+                        captured_flags: final_flags,
+                        color: data.color.clone(),
+                    },
+                    data.points.clone(),
+                )
             })
-            .collect::<Vec<TeamCurrentPoints>>();
+            .collect::<Vec<_>>();
 
-        points.sort_by_key(|team_current_points| team_current_points.current_points);
-        points.reverse();
+        points.sort_by(|a, b| {
+            b.0.current_points.cmp(&a.0.current_points)
+                .then_with(|| a.1.cmp(&b.1))
+        });
 
-        points
+        points.into_iter().map(|(tp, _)| tp).collect()
     }
 
     pub fn team_rank(&self, team_name: &str) -> Option<(usize, usize)> {
