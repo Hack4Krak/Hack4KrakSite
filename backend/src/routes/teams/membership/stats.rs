@@ -34,7 +34,7 @@ pub async fn stats(
         .await?
         .len();
     let all_tasks = app_state.task_manager.tasks.len();
-    let points_counter = PointsCounter::work(&app_state.database).await?;
+    let points_counter = PointsCounter::work(&app_state).await?;
 
     Ok(HttpResponse::Ok().json(TeamStats {
         rank: points_counter.team_rank(&team.name),
