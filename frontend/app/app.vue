@@ -9,6 +9,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <NuxtRouteAnnouncer />
   <NuxtLayout>
     <NuxtPage class="flex-grow" />
   </NuxtLayout>
