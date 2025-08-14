@@ -22,7 +22,7 @@ watch(() => router.currentRoute.value, () => {
 </script>
 
 <template>
-  <DefineNavbarTemplate>
+  <DefineNavbarTemplate v-slot="{ orientation }">
     <div class="flex w-full">
       <div class="md:flex hidden flex-1">
         <NuxtLink to="/" class="flex items-center">
@@ -32,6 +32,7 @@ watch(() => router.currentRoute.value, () => {
       <div>
         <UNavigationMenu
           content-orientation="vertical"
+          :orientation="orientation"
           :items="NAVBAR_ITEMS" variant="link" class="w-full" color="error"
           :ui="{
             linkLabel: 'hover:underline underline-offset-5 text-md',
@@ -52,7 +53,7 @@ watch(() => router.currentRoute.value, () => {
 
   <UContainer class="sticky top-0 max-w-full font-sans bg-default z-20 print:hidden">
     <div class="hidden md:flex justify-center items-center h-(--ui-header-height)">
-      <ReuseNavbarTemplate />
+      <ReuseNavbarTemplate orientation="horizontal"/>
     </div>
 
     <!-- Mobile Navigation -->
@@ -77,7 +78,7 @@ watch(() => router.currentRoute.value, () => {
       leave-active-class="transition duration-200"
       hydrate-on-media-query="(max-width: 768px)"
     >
-      <div v-if="isMobileMenuOpen" class="-my-5 md:hidden h-screen [&>a]:text-5xl ">
+      <div v-if="isMobileMenuOpen" class="my-2 md:hidden h-screen [&>a]:text-5xl ">
         <ReuseNavbarTemplate orientation="vertical" />
       </div>
     </Transition>
