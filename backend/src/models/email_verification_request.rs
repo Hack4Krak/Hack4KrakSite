@@ -2,7 +2,7 @@ use crate::entities::email_verification_request;
 use crate::models::user::UserInformation;
 use crate::utils::error::Error;
 use chrono::{Duration, Utc};
-use sea_orm::{ActiveModelTrait, DatabaseConnection, EntityTrait, Set};
+use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::ops::Add;
@@ -90,6 +90,17 @@ impl email_verification_request::Model {
 
         let action: EmailVerificationAction = serde_json::from_value(value)?;
         Ok(action)
+    }
+
+    pub async fn delete_expired(database: &DatabaseConnection) -> Result<(), Error> {
+        let now = Utc::now().naive_utc();
+        email_verification_request::Entity::delete_many()
+            .filter(email_verification_request::Column::ExpirationTime.is_not_null())
+            .filter(email_verification_request::Column::ExpirationTime.lt(now))
+            .exec(database)
+            .await?;
+
+        Ok(())
     }
 }
 
