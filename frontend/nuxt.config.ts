@@ -35,7 +35,9 @@ export default defineNuxtConfig({
   },
   typescript: { typeCheck: true },
   devtools: { enabled: true },
-  css: ['~/assets/css/main.css'],
+  css: [
+    '~/assets/css/main.css',
+  ],
   compatibilityDate: '2025-07-16',
   imports: {
     presets: [

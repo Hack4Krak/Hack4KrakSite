@@ -1,0 +1,38 @@
+/*
+Fundaments are based on this design document:
+https://www.figma.com/design/dGliKGjgY8I6qo65T8A2BC/hack4krak?node-id=1260-8153&t=B8DTJgF25i33zkhF-1
+*/
+
+@theme static {
+  --surface-primary: #171717;
+  --surface-secondary: #262626;
+  --surface-accent: #894b00;
+  --text-primary: #fafafa;
+  --text-secondary: #737373;
+  --accent-primary: #d08700;
+  --accent-secondary: #efb100;
+
+  --radius: 0;
+}
+
+@layer components {
+  .padding-box {
+    @apply md:px-20 px-8;
+  }
+
+  .heading-h3 {
+    @apply font-semibold text-lg;
+  }
+
+  .bold-text {
+    @apply font-semibold;
+  }
+
+  .accent-text {
+    @apply font-pixelify;
+  }
+
+  .less-important-text {
+    @apply text-neutral-400;
+  }
+}

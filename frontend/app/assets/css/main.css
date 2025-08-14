@@ -1,11 +1,28 @@
 @import 'tailwindcss' theme(static);
 @import '@nuxt/ui';
+@import './fundaments.css';
+
 @plugin "@tailwindcss/typography";
 @tailwind utilities;
 
 :root {
   --default-font-family: var(--font-sans);
   --ui-header-height: --spacing(20);
+
+  --ui-bg: var(--surface-primary);
+  --ui-bg-muted: var(--surface-secondary);
+  --ui-bg-accented: var(--surface-accent);
+
+  --ui-border: var(--surface-secondary);
+  --ui-border-accented: var(--surface-secondary);
+
+  --ui-primary: var(--accent-primary);
+  --ui-secondary: var(--accent-secondary);
+
+  --ui-text: var(--text-primary);
+  --ui-text-muted: var(--text-secondary);
+
+  --ui-radius: var(--radius);
 }
 
 @theme static {

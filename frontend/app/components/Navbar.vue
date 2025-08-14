@@ -38,7 +38,7 @@ watch(() => router.currentRoute.value, () => {
             linkLabel: 'hover:underline underline-offset-5 text-md',
             viewport: 'w-(--reka-navigation-menu-viewport-width)',
             childList: 'flex-col items-center',
-            link: 'text-md text-default data-active:text-primary',
+            link: 'text-md text-default data-active:text-secondary',
             list: 'gap-8',
           }"
         />
