@@ -53,7 +53,7 @@ watch(() => router.currentRoute.value, () => {
 
   <UContainer class="sticky top-0 max-w-full font-sans bg-default z-20 print:hidden">
     <div class="hidden md:flex justify-center items-center h-(--ui-header-height)">
-      <ReuseNavbarTemplate orientation="horizontal"/>
+      <ReuseNavbarTemplate orientation="horizontal" />
     </div>
 
     <!-- Mobile Navigation -->
