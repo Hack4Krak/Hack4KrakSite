@@ -42,6 +42,31 @@ import { aboutUsTimeline } from '~~/content/about-us-timeline'
         height="300px"
       />
     </section>
+    <section id="mission" class="flex xl:flex-row flex-col-reverse mx-auto gap-12">
+      <div class="sm:w-160 flex-1 flex flex-col gap-4 px-6 sm:px-0">
+        <h3 class="heading-h3 text-lg font-semibold">
+          Nasza misja
+        </h3>
+        <p>
+          Naszą misją jest inspirowanie i wspieranie młodych ludzi w rozwijaniu pasji do cyberbezpieczeństwa. Tworzymy
+          przestrzeń opartą na:
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <Label>zaangażowaniu</Label>
+          <Label>praktycznej nauce</Label>
+          <Label>dzieleniu się wiedzą</Label>
+          <Label>rozwoju kompetencji przyszłości</Label>
+        </div>
+        <p>
+          Wierzymy, że edukacja w zakresie bezpieczeństwa cyfrowego powinna być dostępna, motywująca i prowadzona przez
+          tych, którzy najlepiej rozumieją swoje pokolenie.
+        </p>
+      </div>
+      <div class="flex-1 justify-center items-center hidden sm:flex">
+        <NuxtImg class="w-full px-6 sm:px-0" src="/img/flag_n_clouds.webp" />
+      </div>
+    </section>
+    <Footer />
   </div>
 </template>
 
