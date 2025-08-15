@@ -4,13 +4,13 @@ https://www.figma.com/design/dGliKGjgY8I6qo65T8A2BC/hack4krak?node-id=1260-8153&
 */
 
 @theme static {
-  --surface-primary: #171717;
-  --surface-secondary: #262626;
-  --surface-accent: #894b00;
-  --text-primary: #fafafa;
-  --text-secondary: #737373;
-  --accent-primary: #d08700;
-  --accent-secondary: #efb100;
+  --color-surface-primary: #171717;
+  --color-surface-secondary: #262626;
+  --color-surface-accent: #894b00;
+  --color-content-primary: #fafafa;
+  --color-content-secondary: #737373;
+  --color-accent-primary: #d08700;
+  --color-accent-secondary: #efb100;
 
   --radius: 0;
 }
@@ -32,7 +32,7 @@ https://www.figma.com/design/dGliKGjgY8I6qo65T8A2BC/hack4krak?node-id=1260-8153&
     @apply font-pixelify;
   }
 
-  .less-important-text {
-    @apply text-neutral-400;
+  .secondary-text {
+    @apply text-content-secondary;
   }
 }

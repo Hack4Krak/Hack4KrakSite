@@ -9,18 +9,18 @@
   --default-font-family: var(--font-sans);
   --ui-header-height: --spacing(20);
 
-  --ui-bg: var(--surface-primary);
-  --ui-bg-muted: var(--surface-secondary);
-  --ui-bg-accented: var(--surface-accent);
+  --ui-bg: var(--color-surface-primary);
+  --ui-bg-muted: var(--color-surface-secondary);
+  --ui-bg-accented: var(--color-surface-accent);
 
-  --ui-border: var(--surface-secondary);
-  --ui-border-accented: var(--surface-secondary);
+  --ui-border: var(--color-surface-secondary);
+  --ui-border-accented: var(--color-surface-secondary);
 
-  --ui-primary: var(--accent-primary);
-  --ui-secondary: var(--accent-secondary);
+  --ui-primary: var(--color-accent-primary);
+  --ui-secondary: var(--color-accent-secondary);
 
-  --ui-text: var(--text-primary);
-  --ui-text-muted: var(--text-secondary);
+  --ui-text: var(--color-content-primary);
+  --ui-text-muted: var(--color-content-secondary);
 
   --ui-radius: var(--radius);
 }
