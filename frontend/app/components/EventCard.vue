@@ -1,0 +1,108 @@
+<script setup lang="ts">
+import type { EventCardProps } from '~~/content/about-us-timeline'
+import { tv } from 'tailwind-variants'
+
+const props = withDefaults(defineProps<EventCardProps>(), {
+  color: false,
+})
+
+const open = ref(false)
+const { width } = useWindowSize()
+const isHoverMode = computed(() => width.value >= 1024)
+
+const card = tv({
+  slots: {
+    root: 'sm:w-90 w-80 border-2 flex flex-col bg-surface-primary',
+    imgWrapper: 'h-40 border-b-2',
+    contentWrapper: 'border-b-2 flex-1 flex flex-col justify-center p-8',
+    button: 'flex-1 flex items-center justify-center',
+    content: 'ring-2 p-8',
+    userNumber: 'w-30 flex gap-1.5 leading-none items-center justify-center',
+  },
+  variants: {
+    color: {
+      primary: {
+        root: 'border-primary',
+        imgWrapper: 'border-primary',
+        contentWrapper: 'border-primary',
+        button: 'bg-primary text-content-primary',
+        content: 'ring-accent-primary',
+      },
+      neutral: {
+        root: 'border-content-secondary',
+        imgWrapper: 'border-content-secondary',
+        contentWrapper: 'border-content-secondary',
+        button: 'bg-content-secondary text-surface-primary',
+        content: 'ring-content-secondary',
+        userNumber: 'text-content-secondary',
+      },
+    },
+  },
+})
+
+const {
+  root,
+  imgWrapper,
+  contentWrapper,
+  button,
+  content,
+  userNumber,
+} = card({ color: props.color ? 'primary' : 'neutral' })
+</script>
+
+<template>
+  <UPopover
+    v-model:open="open"
+    mode="click"
+    :content="{ sideOffset: 16 }"
+    :ui="{
+      content: content(),
+    }"
+  >
+    <div
+      :class="root()"
+      @mouseenter="isHoverMode && (open = true)"
+      @mouseleave="isHoverMode && (open = false)"
+    >
+      <div :class="imgWrapper()">
+        <NuxtImg :src="img" alt="event-img" class="rendering-pixelated w-full h-full object-cover" />
+      </div>
+      <div :class="contentWrapper()">
+        <p class="secondary-text">
+          {{ subtitle }}
+        </p>
+        <p class="heading-h3">
+          {{ title }}
+        </p>
+      </div>
+      <div class="h-8 flex">
+        <div :class="userNumber()">
+          <p>{{ participants }}</p>
+          <SizedIcon name="pixelarticons:user" format="small" />
+        </div>
+        <div :class="button()">
+          <Transition
+            enter-from-class="opacity-0 -translate-y-1"
+            leave-to-class="opacity-0 translate-y-1"
+            enter-active-class="transition-all duration-200 ease-in-out"
+            leave-active-class="transition-all duration-200 ease-in-out"
+            mode="out-in"
+          >
+            <SizedIcon v-if="!open" key="down" name="pixelarticons:chevron-down" format="large" />
+            <SizedIcon v-else key="up" name="pixelarticons:chevron-up" format="large" />
+          </transition>
+        </div>
+      </div>
+    </div>
+    <template #content>
+      <div class="md:max-w-90 max-w-75">
+        <span>
+          <LazyMarkdownContent
+            :text="description"
+            class="text-content-primary prose-p:my-0 prose-p:[&:not(:last-child)]:mb-4"
+          />
+        </span>
+      </div>
+    </template>
+  </UPopover>
+</template>
