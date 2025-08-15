@@ -8,7 +8,7 @@ const props = withDefaults(defineProps<{
   format: 'small',
 })
 
-const size = computed(() => props.format === 'large' ? '9' : '8')
+const size = computed(() => props.format === 'large' ? '7' : '4')
 </script>
 
 <template>
