@@ -10,7 +10,7 @@ const open = ref(false)
 const { width } = useWindowSize()
 const mode = computed(() => (width.value >= 1024 ? 'hover' : 'click'))
 
-const cardBase = tv({
+const card = tv({
   slots: {
     root: 'sm:w-90 w-80 border-2 flex flex-col bg-surface-primary',
     imgWrapper: 'h-40 border-b-2',
@@ -19,32 +19,35 @@ const cardBase = tv({
     content: 'ring-2 p-8',
     userNumber: 'w-30 flex gap-1.5 leading-none items-center justify-center',
   },
-})
-
-const colorCard = tv({
-  extend: cardBase,
-  slots: {
-    root: 'border-primary',
-    imgWrapper: 'border-primary',
-    contentWrapper: 'border-primary',
-    button: 'bg-primary text-content-primary',
-    content: 'ring-accent-primary',
+  variants: {
+    color: {
+      primary: {
+        root: 'border-primary',
+        imgWrapper: 'border-primary',
+        contentWrapper: 'border-primary',
+        button: 'bg-primary text-content-primary',
+        content: 'ring-accent-primary',
+      },
+      neutral: {
+        root: 'border-content-secondary',
+        imgWrapper: 'border-content-secondary',
+        contentWrapper: 'border-content-secondary',
+        button: 'bg-content-secondary text-surface-primary',
+        content: 'ring-content-secondary',
+        userNumber: 'text-content-secondary',
+      },
+    },
   },
 })
 
-const neutralCard = tv({
-  extend: cardBase,
-  slots: {
-    root: 'border-content-secondary',
-    imgWrapper: 'border-content-secondary',
-    contentWrapper: 'border-content-secondary',
-    button: 'bg-content-secondary text-surface-primary',
-    content: 'ring-content-secondary',
-    userNumber: 'text-content-secondary',
-  },
-})
-
-const { root, imgWrapper, contentWrapper, button, content, userNumber } = props.color ? colorCard() : neutralCard()
+const {
+  root,
+  imgWrapper,
+  contentWrapper,
+  button,
+  content,
+  userNumber,
+} = card({ color: props.color ? 'primary' : 'neutral' })
 </script>
 
 <template>
@@ -76,7 +79,13 @@ const { root, imgWrapper, contentWrapper, button, content, userNumber } = props.
           <SizedIcon icon="pixelarticons:user" format="small" />
         </div>
         <div :class="button()">
-          <transition name="icon-fade" mode="out-in">
+          <Transition
+            enter-from-class="opacity-0 -translate-y-1"
+            leave-to-class="opacity-0 translate-y-1"
+            enter-active-class="transition-all duration-200 ease-in-out"
+            leave-active-class="transition-all duration-200 ease-in-out"
+            mode="out-in"
+          >
             <SizedIcon v-if="!open" key="down" icon="pixelarticons:chevron-down" format="large" />
             <SizedIcon v-else key="up" icon="pixelarticons:chevron-up" format="large" />
           </transition>
@@ -92,20 +101,3 @@ const { root, imgWrapper, contentWrapper, button, content, userNumber } = props.
     </template>
   </UPopover>
 </template>
-
-<style scoped>
-.icon-fade-enter-active,
-.icon-fade-leave-active {
-  transition: all 0.2s ease;
-}
-
-.icon-fade-enter-from {
-  opacity: 0;
-  transform: translateY(-4px);
-}
-
-.icon-fade-leave-to {
-  opacity: 0;
-  transform: translateY(4px);
-}
-</style>
