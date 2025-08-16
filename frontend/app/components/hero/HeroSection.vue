@@ -2,8 +2,8 @@
   <section
     class="lg:h-screen-without-header flex flex-col items-center w-full gap-y-12 lg:gap-0"
   >
-    <HeroDesktopHeroBackground hydrate-on-visible class="h-3/4" />
-    <HeroMobileLogoSection hydrate-on-visible />
+    <LazyHeroDesktopHeroBackground hydrate-on-visible class="h-3/4" />
+    <LazyHeroMobileLogoSection hydrate-on-visible />
     <div
       class="flex-1 flex flex-col lg:flex-row items-center bg-transparent
              gap-y-12 lg:gap-0 place-content-between xl:w-(--ui-container) px-6"
@@ -15,6 +15,6 @@
       </HeroContent>
       <HeroSocialMediaContainer />
     </div>
-    <HeroCallToAction hydrate-on-visible class="lg:hidden" />
+    <LazyHeroCallToAction hydrate-on-visible class="lg:hidden" />
   </section>
 </template>
