@@ -9,7 +9,7 @@ const props = defineProps<{
 const toast = useToast()
 
 const teamSchema = z.object({
-  name: z.string().min(1, 'Proszę podać nazwę drużyny'),
+  name: z.string().nonempty({ error: 'Proszę podać nazwę drużyny' }),
   size: z.number().min(1).max(5),
 })
 
