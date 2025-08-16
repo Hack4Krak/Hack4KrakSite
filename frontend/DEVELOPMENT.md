@@ -13,6 +13,10 @@ Technical documentation for Hack4Krak frontend.
 - [`public/`](public/) - Static files served by Nuxt
 - [`tests/`](tests/) - Integration & unit tests for our frontend
 
+> [!NOTE]
+> Assets smaller in bytes than the `assetsInlineLimit` (in our case 4096 bytes) should be placed in assets directory.\
+> Assets larger than that should be placed in the `public/` directory.
+
 ## 🏗️ Running
 
 1. First, make sure all environment variables are configured properly.
