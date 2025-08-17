@@ -23,7 +23,7 @@ import { INFO_TILES_CONTENT } from '~~/content/info-tiles'
           </ElevatedButton>
         </NuxtLink>
       </div>
-      <NuxtImg src="assets/img/character/dragon.png" alt="czerwony smok" class="rendering-pixelated w-32 lg:w-64" />
+      <img src="assets/img/character/dragon.png" alt="czerwony smok" class="rendering-pixelated w-32 lg:w-64" />
     </div>
   </div>
 </template>
