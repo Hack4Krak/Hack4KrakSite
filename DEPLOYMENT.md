@@ -60,3 +60,41 @@ the frontend app.
 - `NUXT_SITE_URL` - Frontend website URL
 - `BACKEND_ADDRESS` - address of the backend server (accessible from the frontend server and global network)
 - `NUXT_ERROR_API_TOKEN` - token used to report errors to the nuxterror.com
+
+## 🐋 Docker compose
+
+We have a [docker-compose.yml](docker-compose.yml), which has implemented profiles, used to start a production servers.
+Requirements for running the production servers are:
+- Docker & Docker Compose obviously
+- Veth network interface
+
+### Profiles
+
+- `backend` - starts the backend server
+- `frontend` - starts the frontend server
+- `db` - starts the PostgreSQL database
+- `all` - starts all services
+
+To start the production servers, you can use the following command:
+
+```bash
+docker compose --profile <NAME_OF_PROFILE> up
+```
+
+To start multiple profiles, you can use the following command:
+
+```bash
+docker compose --profile <NAME_OF_PROFILE_1> --profile <NAME_OF_PROFILE_2> up
+```
+
+### Environment variables
+
+If you want to run `backend` and `db` using docker compose, you should set your `DATABASE_URL` env as:
+```
+postgres://backend:password@db:5432/hack4krak
+```
+
+If you want to run `frontend` and `backend` locally using docker compose, you should set your `BACKEND_ADDRESS` env as:
+```
+0.0.0.0:8080
+```
