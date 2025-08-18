@@ -3,6 +3,7 @@ use crate::routes::admin::EmailSendingModel;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::HttpResponse;
+use lettre::message::header::{Header, MailboxesHeader};
 use lettre::message::{Attachment, Mailbox, Mailboxes, MultiPart, SinglePart, header};
 use lettre::{Message, Transport};
 use sea_orm::{DatabaseConnection, EntityTrait};
@@ -91,14 +92,18 @@ impl Email {
             email_body = email_body.singlepart(logo_attachment);
         }
 
+        let mut has_multiple_recipients = true;
+
+        if self.recipients.len() == 1 {
+            has_multiple_recipients = false;
+        }
+
         let mailboxes: Mailboxes = self
             .recipients
             .iter()
             .map(|recipient| recipient.parse())
             .collect::<Result<Mailboxes, _>>()
             .map_err(|_| Error::InvalidEmailRecipients(self.recipients.join(", ")))?;
-
-        let to_header: header::To = mailboxes.into();
 
         let (sender_name, sender_email) = self.sender.clone();
 
@@ -109,16 +114,31 @@ impl Email {
                 .map_err(|_| Error::InvalidEmailSender(sender_email))?,
         );
 
-        let email = Message::builder()
-            .from(sender)
-            .mailbox(to_header)
-            .subject(&self.subject)
-            .multipart(email_body)
-            .map_err(Error::FailedToBuildEmail)?;
+        let email: Message = if has_multiple_recipients {
+            let recipients_header: header::Bcc = mailboxes.into();
+            Self::build_email(sender, recipients_header, &self.subject, email_body).await?
+        } else {
+            let recipients_header: header::To = mailboxes.into();
+            Self::build_email(sender, recipients_header, &self.subject, email_body).await?
+        };
 
         let _email = smtp_client.send(&email).map_err(Error::FailedToSendEmail)?;
 
         Ok(HttpResponse::Ok().json("Email successfully sent"))
+    }
+
+    async fn build_email<H: Header + MailboxesHeader>(
+        sender: Mailbox,
+        header: H,
+        subject: &str,
+        body: MultiPart,
+    ) -> Result<Message, Error> {
+        Message::builder()
+            .from(sender)
+            .mailbox(header)
+            .subject(subject)
+            .multipart(body)
+            .map_err(Error::FailedToBuildEmail)
     }
 
     pub async fn from_admin_sending_model(
