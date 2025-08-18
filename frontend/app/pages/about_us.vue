@@ -46,7 +46,7 @@ import { aboutUsTimeline } from '~~/content/about-us-timeline'
     </section>
     <section id="mission">
       <UContainer class="flex lg:flex-row flex-col-reverse mx-auto gap-12">
-        <div class="flex-1 flex flex-col gap-4 px-6 sm:px-0">
+        <div class="flex-1 flex flex-col gap-4 sm:px-0">
           <h3 class="heading-h3 text-lg font-semibold">
             Nasza misja
           </h3>
@@ -71,11 +71,40 @@ import { aboutUsTimeline } from '~~/content/about-us-timeline'
         </div>
       </UContainer>
     </section>
+    <section id="mini-gallery">
+      <UContainer class="grid lg:grid-cols-4 lg:grid-rows-[auto, auto] grid-cols-3 gap-4">
+        <NuxtImg class="gallery-small-image" src="/img/about-us/Gallery3.webp" />
+        <NuxtImg class="gallery-small-image" src="/img/about-us/Gallery2.webp" />
+        <NuxtImg class="gallery-small-image" src="/img/about-us/Gallery1.webp" />
+        <div class="lg:row-span-2 lg:col-span-1 col-span-3 flex flex-col gap-2">
+          <h3 class="heading-h3 text-lg font-semibold">
+            Inicjatywa stworzona
+            przez uczniów – dla uczniów.
+          </h3>
+          <p>
+            Jesteśmy grupą młodych entuzjastów cyberbezpieczeństwa z Krakowa, których połączyła pasja do technologii,
+            wyzwań i ciągłego rozwoju.
+          </p>
+          <p>
+            Działamy jako niezależna organizacja, której celem jest promowanie wiedzy z zakresu cyberbezpieczeństwa
+            wśród młodzieży poprzez organizację wydarzeń typu CTF (Capture The Flag) – konkursów, w których uczestnicy
+            rozwiązują zadania z obszaru bezpieczeństwa cyfrowego.
+          </p>
+        </div>
+        <NuxtImg class="col-span-3 h-full object-cover border-2 border-content-secondary" src="/img/about-us/GalleryMain.webp" />
+      </UContainer>
+    </section>
     <Footer />
   </div>
 </template>
 
 <style scoped>
+@reference "../assets/css/main.css";
+
+.gallery-small-image {
+  @apply hidden md:block w-full h-full px-6 sm:px-0 object-cover border-2 border-content-secondary;
+}
+
 .stroked-text-full-screen {
   -webkit-text-stroke-color: transparent;
   -webkit-text-fill-color: var(--ui-bg);
