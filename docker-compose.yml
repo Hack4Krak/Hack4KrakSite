@@ -29,6 +29,9 @@ services:
       - all
     env_file:
       - .env
+    environment:
+      - BACKEND_ADDRESS=${BACKEND_ADDRESS:-0.0.0.0:8080}
+      - DATABASE_URL=${DATABASE_URL:-postgresql://backend:password@db:5432/hack4krak}
 
   frontend:
     container_name: hack4krak_frontend
@@ -41,6 +44,8 @@ services:
     profiles:
       - frontend
       - all
+    env_file:
+      - .env
 
 volumes:
   database:

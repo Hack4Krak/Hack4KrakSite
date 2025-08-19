@@ -63,7 +63,7 @@ the frontend app.
 
 ## 🐋 Docker compose
 
-We have a [docker-compose.yml](docker-compose.yml), which has implemented profiles, used to start a production servers.
+This project uses [Docker Compose](docker-compose.yml) with **profiles** to start different parts of the stack.
 Requirements for running the production servers are:
 - Docker & Docker Compose obviously
 - Veth network interface
