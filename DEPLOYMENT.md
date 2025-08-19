@@ -75,7 +75,7 @@ Requirements for running the production servers are:
 - `db` - starts the PostgreSQL database
 - `all` - starts all services
 
-To start the production servers, you can use the following command:
+To start the production services, you can use the following command:
 
 ```bash
 docker compose --profile <NAME_OF_PROFILE> up
