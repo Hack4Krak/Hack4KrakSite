@@ -27,6 +27,7 @@ export default defineNuxtConfig({
     'dayjs-nuxt',
     '@compodium/nuxt',
     '@vueuse/nuxt',
+    'nuxt-charts',
   ],
   experimental: {
     componentIslands: true,
