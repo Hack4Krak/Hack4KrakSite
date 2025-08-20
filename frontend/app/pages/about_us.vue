@@ -1,14 +1,9 @@
 <script setup lang="ts">
+import { aboutUsContent } from '~~/content/about-us-content'
 import { aboutUsTimeline } from '~~/content/about-us-timeline'
 
-const smallGalleryImageList = [
-  '/img/about-us/Gallery1.webp',
-  '/img/about-us/Gallery2.webp',
-  '/img/about-us/Gallery3.webp',
-]
-
 useHead({
-  title: 'O nas',
+  title: aboutUsContent.meta.title,
 })
 </script>
 
@@ -21,19 +16,17 @@ useHead({
     >
       <UContainer class="flex flex-col justify-center items-center">
         <h1 class="heading-h3 font-semibold text-lg w-auto">
-          Hack4Krak
+          {{ aboutUsContent.hero.title }}
         </h1>
         <p class="max-w-104">
-          to inicjatywa młodych liderów cyberbezpieczeństwa, których połączyła pasja do technologii, wyzwań i ciągłego
-          rozwoju. Tworzymy wydarzenia, które uczą, inspirują i integrują młodzież zainteresowaną światem IT i
-          bezpieczeństwa cyfrowego.
+          {{ aboutUsContent.hero.description }}
         </p>
       </UContainer>
       <p
         class="lg:text-80 md:text-[300px] text-[180px] font-semibold absolute -z-10 text-primary
                stroked-text-full-screen w-screen md:w-auto text-wrap"
       >
-        HACK4KRAK
+        {{ aboutUsContent.hero.backgroundText }}
       </p>
     </section>
     <section
@@ -58,22 +51,16 @@ useHead({
       <UContainer class="flex lg:flex-row flex-col-reverse mx-auto gap-12">
         <div class="flex-1 flex flex-col gap-4 sm:px-0">
           <h3 class="heading-h3 text-lg font-semibold">
-            Nasza misja
+            {{ aboutUsContent.mission.title }}
           </h3>
           <p>
-            Naszą misją jest inspirowanie i wspieranie młodych ludzi w rozwijaniu pasji do cyberbezpieczeństwa. Tworzymy
-            przestrzeń opartą na:
+            {{ aboutUsContent.mission.description }}
           </p>
           <div class="flex flex-wrap gap-4">
-            <Label>zaangażowaniu</Label>
-            <Label>praktycznej nauce</Label>
-            <Label>dzieleniu się wiedzą</Label>
-            <Label>rozwoju kompetencji przyszłości</Label>
+            <Label v-for="label in aboutUsContent.mission.labels" :key="label">{{ label }}</Label>
           </div>
           <p>
-            Wierzymy, że edukacja w zakresie bezpieczeństwa cyfrowego powinna być dostępna, motywująca i prowadzona
-            przez
-            tych, którzy najlepiej rozumieją swoje pokolenie.
+            {{ aboutUsContent.mission.additionalText }}
           </p>
         </div>
         <div class="flex-1 justify-center items-center hidden sm:flex">
@@ -84,29 +71,22 @@ useHead({
     <section id="mini-gallery">
       <UContainer class="grid lg:grid-cols-4 lg:grid-rows-[auto, auto] grid-cols-3 gap-4">
         <NuxtImg
-          v-for="image in smallGalleryImageList"
+          v-for="image in aboutUsContent.gallery.smallGalleryImages"
           :key="image.split('/').pop()" class="hidden md:block w-full h-full px-6 sm:px-0 object-cover border-2 border-content-secondary
           [&:nth-child(3)]:!border-accent-primary"
           :src="image"
         />
         <div class="lg:row-span-2 lg:col-span-1 col-span-3 flex flex-col gap-2">
           <h3 class="heading-h3 text-lg font-semibold">
-            Inicjatywa stworzona
-            przez uczniów – dla uczniów.
+            {{ aboutUsContent.gallery.title }}
           </h3>
-          <p>
-            Jesteśmy grupą młodych entuzjastów cyberbezpieczeństwa z Krakowa, których połączyła pasja do technologii,
-            wyzwań i ciągłego rozwoju.
-          </p>
-          <p>
-            Działamy jako niezależna organizacja, której celem jest promowanie wiedzy z zakresu cyberbezpieczeństwa
-            wśród młodzieży poprzez organizację wydarzeń typu CTF (Capture The Flag) – konkursów, w których uczestnicy
-            rozwiązują zadania z obszaru bezpieczeństwa cyfrowego.
+          <p v-for="paragraph in aboutUsContent.gallery.description" :key="paragraph">
+            {{ paragraph }}
           </p>
         </div>
         <NuxtImg
           class="col-span-3 h-full object-cover border-2 border-content-secondary"
-          src="/img/about-us/GalleryMain.webp"
+          :src="aboutUsContent.gallery.mainGalleryImage"
         />
       </UContainer>
     </section>
