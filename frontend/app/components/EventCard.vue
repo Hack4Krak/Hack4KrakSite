@@ -3,7 +3,7 @@ import type { EventCardProps } from '~~/content/about-us-timeline'
 import { tv } from 'tailwind-variants'
 
 const props = withDefaults(defineProps<EventCardProps>(), {
-  color: false,
+  addColorAccent: false,
 })
 
 const open = ref(false)
@@ -47,7 +47,7 @@ const {
   button,
   content,
   userNumber,
-} = card({ color: props.color ? 'primary' : 'neutral' })
+} = card({ color: props.addColorAccent ? 'primary' : 'neutral' })
 </script>
 
 <template>
