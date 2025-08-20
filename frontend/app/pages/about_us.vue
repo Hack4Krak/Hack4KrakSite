@@ -12,21 +12,21 @@ const smallGalleryImageList = [
   <div class="flex flex-col md:gap-20 gap-14 pt-12">
     <section
       id="hero"
-      class="lg:h-[320px] md:h-[180px] relative flex flex-col justify-center items-center w-full overflow-hidden
-             sm:text-center sm:items-center sm:px-0 text-left"
+      class="lg:h-80 md:h-45 relative flex flex-col justify-center items-center w-full overflow-hidden
+             text-center sm:items-center sm:px-0"
     >
       <UContainer class="flex flex-col justify-center items-center">
-        <h1 class="heading-h3 font-semibold text-lg">
+        <h1 class="heading-h3 font-semibold text-lg w-auto">
           Hack4Krak
         </h1>
-        <p class="max-w-[420px]">
+        <p class="max-w-104">
           to inicjatywa młodych liderów cyberbezpieczeństwa, których połączyła pasja do technologii, wyzwań i ciągłego
           rozwoju. Tworzymy wydarzenia, które uczą, inspirują i integrują młodzież zainteresowaną światem IT i
           bezpieczeństwa cyfrowego.
         </p>
       </UContainer>
       <p
-        class="lg:text-[320px] md:text-[220px] text-[180px] font-semibold absolute -z-10 text-primary
+        class="lg:text-80 md:text-[300px] text-[180px] font-semibold absolute -z-10 text-primary
                stroked-text-full-screen w-screen md:w-auto text-wrap"
       >
         HACK4KRAK
@@ -40,12 +40,12 @@ const smallGalleryImageList = [
         <EventCard v-for="card in aboutUsTimeline" v-bind="card" :key="card.title" />
       </div>
       <NuxtImg
-        class="absolute h-[300px] left-0 md:top-auto top-[200px] -z-20" src="/img/blockAccentVector.svg"
+        class="absolute h-75 left-0 md:top-auto top-50 -z-20" src="/img/blockAccentVector.svg"
         alt="block accent vector"
         height="300px"
       />
       <NuxtImg
-        class="absolute h-[300px] right-0 md:top-auto top-[600px] -z-20 rotate-180" src="/img/blockAccentVector.svg"
+        class="absolute h-75 right-0 md:top-auto top-150 -z-20 rotate-180" src="/img/blockAccentVector.svg"
         alt="block accent vector"
         height="300px"
       />
