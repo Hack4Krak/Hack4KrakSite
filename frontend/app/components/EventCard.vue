@@ -77,13 +77,12 @@ const {
       </div>
       <div class="h-8 flex">
         <div :class="userNumber()">
-          <p>{{ participants }}</p>
+          <p>{{ participants.toString() }}</p>
           <SizedIcon name="pixelarticons:user" format="small" />
         </div>
         <div :class="button()">
           <Transition
-            enter-from-class="opacity-0 -translate-y-1"
-            leave-to-class="opacity-0 translate-y-1"
+            enter-from-class="opacity-0 -translate-y-1" leave-to-class="opacity-0 translate-y-1"
             enter-active-class="transition-all duration-200 ease-in-out"
             leave-active-class="transition-all duration-200 ease-in-out"
             mode="out-in"
