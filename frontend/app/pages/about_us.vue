@@ -15,7 +15,7 @@ useHead({
              text-center sm:items-center sm:px-0"
     >
       <UContainer class="flex flex-col justify-center items-center">
-        <h1 class="heading-h3 font-semibold text-lg w-auto">
+        <h1 class="text-lg font-semibold">
           {{ aboutUsContent.hero.title }}
         </h1>
         <p class="max-w-104">
@@ -50,7 +50,7 @@ useHead({
     <section id="mission">
       <UContainer class="flex lg:flex-row flex-col-reverse mx-auto gap-12">
         <div class="flex-1 flex flex-col gap-4 sm:px-0">
-          <h3 class="heading-h3 text-lg font-semibold">
+          <h3 class="text-lg font-semibold">
             {{ aboutUsContent.mission.title }}
           </h3>
           <p>
@@ -77,7 +77,7 @@ useHead({
           :src="image"
         />
         <div class="lg:row-span-2 lg:col-span-1 col-span-3 flex flex-col gap-2">
-          <h3 class="heading-h3 text-lg font-semibold">
+          <h3 class="text-lg font-semibold">
             {{ aboutUsContent.gallery.title }}
           </h3>
           <p v-for="paragraph in aboutUsContent.gallery.description" :key="paragraph">

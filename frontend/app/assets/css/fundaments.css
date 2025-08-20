@@ -14,25 +14,3 @@ https://www.figma.com/design/dGliKGjgY8I6qo65T8A2BC/hack4krak?node-id=1260-8153&
 
   --radius: 0;
 }
-
-@layer components {
-  .padding-box {
-    @apply md:px-20 px-8;
-  }
-
-  .heading-h3 {
-    @apply font-semibold text-lg;
-  }
-
-  .bold-text {
-    @apply font-semibold;
-  }
-
-  .accent-text {
-    @apply font-pixelify;
-  }
-
-  .secondary-text {
-    @apply text-content-secondary;
-  }
-}

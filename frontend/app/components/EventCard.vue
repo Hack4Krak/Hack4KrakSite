@@ -69,10 +69,10 @@ const {
         <NuxtImg :src="img" alt="event-img" class="rendering-pixelated w-full h-full object-cover" />
       </div>
       <div :class="contentWrapper()">
-        <p class="secondary-text">
+        <p class="text-content-secondary">
           {{ subtitle }}
         </p>
-        <p class="heading-h3">
+        <p class="text-lg font-semibold">
           {{ title }}
         </p>
       </div>
