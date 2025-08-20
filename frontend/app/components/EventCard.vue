@@ -9,6 +9,7 @@ const props = withDefaults(defineProps<EventCardProps>(), {
 
 const open = ref(false)
 const isHoverMode = useBreakpoints(breakpointsTailwind).greater('md')
+const contentMarkdown = await parseMarkdown(props.description)
 
 const card = tv({
   slots: {
@@ -96,8 +97,8 @@ const {
     <template #content>
       <div class="md:max-w-90 max-w-75">
         <span>
-          <LazyMarkdownContent
-            :text="description"
+          <MDCRenderer
+            :body="contentMarkdown.body" :data="contentMarkdown.data"
             class="text-content-primary prose-p:my-0 prose-p:[&:not(:last-child)]:mb-4"
           />
         </span>
