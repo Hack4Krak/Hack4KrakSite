@@ -78,13 +78,7 @@ Requirements for running the production servers are:
 To start the production services, you can use the following command:
 
 ```bash
-docker compose --profile <NAME_OF_PROFILE> up
-```
-
-To start multiple profiles, you can use the following command:
-
-```bash
-docker compose --profile <NAME_OF_PROFILE_1> --profile <NAME_OF_PROFILE_2> up
+bun docker:<PROFILE-NAME>
 ```
 
 ### Environment variables
