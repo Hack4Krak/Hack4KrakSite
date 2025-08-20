@@ -49,6 +49,12 @@
   --spacing-icon-sm: --spacing(4);
   --spacing-icon-md: --spacing(5);
   --spacing-icon-lg: --spacing(7);
+
+  --vis-tooltip-background-color: var(--ui-bg-accented) !important;
+  --vis-tooltip-border-color: var(--ui-bg-elevated) !important;
+  --vis-axis-grid-line-width: 0.25 !important;
+  --tooltip-value-color: var(--ui-text);
+  --tooltip-label-color: var(--ui-text);
 }
 
 @theme static {

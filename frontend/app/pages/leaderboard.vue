@@ -1,21 +1,7 @@
 <script lang="ts" setup>
 import type { ApiResponse } from '#open-fetch'
 import type { TableColumn } from '@nuxt/ui'
-import type { ChartOptions } from 'chart.js'
-import {
-  CategoryScale,
-  Chart as ChartJS,
-  Legend,
-  LinearScale,
-  LineElement,
-  PointElement,
-  TimeScale,
-  Title,
-  Tooltip,
-} from 'chart.js'
-
-import { Line } from 'vue-chartjs'
-import 'chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm'
+import { LineChart } from 'vue-chrts'
 
 definePageMeta({
   middleware: [
@@ -30,8 +16,6 @@ useSeoMeta({
 
 export type Team = ApiResponse<'teams'>[0]
 
-ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, TimeScale)
-
 const { data, refresh: refreshChart } = await useApi('/leaderboard/chart')
 
 const targetTimezone = 'Europe/Warsaw'
@@ -42,45 +26,23 @@ const adjustedTimestamps = computed(() => {
   ) ?? []
 })
 
-const datasets = computed(() => (data.value?.team_points_over_time || []).map(item => ({
-  label: item.label,
-  data: item.points,
-  borderColor: item.color,
-  lineTension: 0.2,
-})))
+const team_points_over_time = computed(() => (data.value?.team_points_over_time || []))
 
-const chartData = ref({
-  labels: adjustedTimestamps,
-  datasets,
-})
+const chartData: any[] = []
+const categories: any = {}
+for (const team of team_points_over_time.value) {
+  categories[team.label] = { name: team.label, color: team.color }
+}
 
-const { data: eventInformation } = await useApi('/event/info')
+for (let i = 0; i < adjustedTimestamps.value.length; i++) {
+  const obj: any = { time: adjustedTimestamps.value[i] }
+  for (const team of team_points_over_time.value) {
+    obj[team.label] = team.points[i]
+  }
+  chartData.push(obj)
+}
 
-const chartOptions = ref<ChartOptions<'line'>>({
-  responsive: true,
-  maintainAspectRatio: false,
-  scales: {
-    x: {
-      type: 'time',
-      time: {
-        unit: 'hour',
-        tooltipFormat: 'DD.MM.YYYY HH:mm',
-      },
-      title: {
-        display: true,
-        text: 'Date',
-      },
-      min: eventInformation.value?.start_date,
-      max: eventInformation.value?.end_date,
-    },
-    y: {
-      title: {
-        display: true,
-        text: 'Value',
-      },
-    },
-  },
-})
+const xFormatter = (i: number) => dayjs.utc(chartData[i].time).tz(targetTimezone).format('HH:mm')
 
 const { data: teams, refresh: refreshTeams } = await useApi('/leaderboard/teams')
 
@@ -116,6 +78,21 @@ if (import.meta.client) {
     toast.add({ title: 'Błąd połączenia', description: 'Nie można połączyć się z serwerem', color: 'error' })
   }
 }
+
+function makeTooltip(values: any) {
+  if (values === undefined)
+    return []
+  const tooltip = { ...values }
+  delete tooltip.time
+  const tooltipArray: [string, number][] = Object.entries(tooltip)
+  return tooltipArray.sort(([_n, points1], [_n2, points2]) => points2 - points1).slice(0, 10)
+}
+
+function tooltipName(values: any) {
+  if (values === undefined)
+    return null
+  return `Top 10 drużyn (${dayjs.utc(values.time).tz(targetTimezone).format('HH:mm')}):`
+}
 </script>
 
 <template>
@@ -123,10 +100,57 @@ if (import.meta.client) {
     <h1 class="font-bold text-5xl">
       Punktacja
     </h1>
-    <div class="overflow-x-auto">
-      <div class="h-screen min-w-[50rem] px-10">
-        <Line :data="chartData" :options="chartOptions" />
-      </div>
+    <div class="h-screen p-2">
+      <LineChart
+        :data="chartData"
+        :categories="categories"
+        :height="700"
+        :x-formatter="xFormatter"
+        x-label="Czas"
+        y-label="Punkty"
+        :y-grid-line="true"
+        :hide-legend="false"
+      >
+        <template #tooltip="{ values }">
+          <div class="px-4 py-2.5">
+            <div
+              :style="{
+                color: 'var(--tooltip-value-color)',
+                textTransform: 'capitalize',
+                borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+                marginBottom: '0.25rem',
+                paddingBottom: '0.25rem',
+              }"
+            >
+              {{ tooltipName(values) }}
+            </div>
+            <div
+              v-for="([key, value], index) in makeTooltip(values)"
+              :key="key"
+              style="display: flex; align-items: center; margin-bottom: 4px"
+            >
+              <span
+                style="width: 8px; height: 8px; border-radius: 4px; margin-right: 8px"
+                :style="{
+                  backgroundColor: categories[key]?.color
+                    ? categories[key].color
+                    : `var(--vis-color${index})`,
+                }"
+              />
+              <div>
+                <span
+                  style="font-weight: 600; margin-right: 8px"
+                  :style="{ color: 'var(--tooltip-label-color)' }"
+                >{{ index + 1 }}. {{ key }}:</span>
+                <span
+                  style="font-weight: 400"
+                  :style="{ color: 'var(--tooltip-value-color)' }"
+                >{{ value }}</span>
+              </div>
+            </div>
+          </div>
+        </template>
+      </LineChart>
     </div>
     <div class="overflow-x-auto">
       <UTable :data="teamsTableData" :columns="columns" class="flex-1 px-15" />
