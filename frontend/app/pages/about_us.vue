@@ -1,5 +1,11 @@
 <script setup lang="ts">
 import { aboutUsTimeline } from '~~/content/about-us-timeline'
+
+const smallGalleryImageList = [
+  '/img/about-us/Gallery1.webp',
+  '/img/about-us/Gallery2.webp',
+  '/img/about-us/Gallery3.webp',
+]
 </script>
 
 <template>
@@ -73,9 +79,12 @@ import { aboutUsTimeline } from '~~/content/about-us-timeline'
     </section>
     <section id="mini-gallery">
       <UContainer class="grid lg:grid-cols-4 lg:grid-rows-[auto, auto] grid-cols-3 gap-4">
-        <NuxtImg class="gallery-small-image" src="/img/about-us/Gallery3.webp" />
-        <NuxtImg class="gallery-small-image" src="/img/about-us/Gallery2.webp" />
-        <NuxtImg class="gallery-small-image" src="/img/about-us/Gallery1.webp" />
+        <NuxtImg
+          v-for="image in smallGalleryImageList"
+          :key="image.split('/').pop()" class="hidden md:block w-full h-full px-6 sm:px-0 object-cover border-2 border-content-secondary
+          [&:nth-child(3)]:!border-accent-primary"
+          :src="image"
+        />
         <div class="lg:row-span-2 lg:col-span-1 col-span-3 flex flex-col gap-2">
           <h3 class="heading-h3 text-lg font-semibold">
             Inicjatywa stworzona
@@ -91,7 +100,10 @@ import { aboutUsTimeline } from '~~/content/about-us-timeline'
             rozwiązują zadania z obszaru bezpieczeństwa cyfrowego.
           </p>
         </div>
-        <NuxtImg class="col-span-3 h-full object-cover border-2 border-content-secondary" src="/img/about-us/GalleryMain.webp" />
+        <NuxtImg
+          class="col-span-3 h-full object-cover border-2 border-content-secondary"
+          src="/img/about-us/GalleryMain.webp"
+        />
       </UContainer>
     </section>
     <Footer />
@@ -99,12 +111,6 @@ import { aboutUsTimeline } from '~~/content/about-us-timeline'
 </template>
 
 <style scoped>
-@reference "../assets/css/main.css";
-
-.gallery-small-image {
-  @apply hidden md:block w-full h-full px-6 sm:px-0 object-cover border-2 border-content-secondary;
-}
-
 .stroked-text-full-screen {
   -webkit-text-stroke-color: transparent;
   -webkit-text-fill-color: var(--ui-bg);
