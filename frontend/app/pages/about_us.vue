@@ -6,6 +6,10 @@ const smallGalleryImageList = [
   '/img/about-us/Gallery2.webp',
   '/img/about-us/Gallery3.webp',
 ]
+
+useHead({
+  title: 'O nas',
+})
 </script>
 
 <template>
