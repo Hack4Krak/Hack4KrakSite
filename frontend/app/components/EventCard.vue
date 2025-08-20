@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { EventCardProps } from '~~/content/about-us-timeline'
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { tv } from 'tailwind-variants'
 
 const props = withDefaults(defineProps<EventCardProps>(), {
@@ -7,8 +8,7 @@ const props = withDefaults(defineProps<EventCardProps>(), {
 })
 
 const open = ref(false)
-const { width } = useWindowSize()
-const isHoverMode = computed(() => width.value >= 1024)
+const isHoverMode = useBreakpoints(breakpointsTailwind).greater('md')
 
 const card = tv({
   slots: {
