@@ -79,7 +79,7 @@ const {
       <div class="h-8 flex">
         <div :class="userNumber()">
           <p>{{ participants.toString() }}</p>
-          <UIcon name="pixelarticons:user" class="size-small" />
+          <UIcon name="pixelarticons:user" class="size-sm" />
         </div>
         <div :class="button()">
           <Transition
@@ -88,8 +88,8 @@ const {
             leave-active-class="transition-all duration-200 ease-in-out"
             mode="out-in"
           >
-            <UIcon v-if="!open" key="down" name="pixelarticons:chevron-down" class="size-large" />
-            <UIcon v-else key="up" name="pixelarticons:chevron-up" class="size-large" />
+            <UIcon v-if="!open" key="down" name="pixelarticons:chevron-down" class="size-lg" />
+            <UIcon v-else key="up" name="pixelarticons:chevron-up" class="size-lg" />
           </transition>
         </div>
       </div>
