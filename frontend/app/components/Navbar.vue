@@ -22,49 +22,55 @@ watch(() => router.currentRoute.value, () => {
 </script>
 
 <template>
-  <DefineNavbarTemplate>
-    <UNavigationMenu
-      content-orientation="vertical"
-      :items="NAVBAR_ITEMS" variant="link" class="w-full" color="error"
-      :ui="{
-        linkLabel: 'hover:underline underline-offset-5',
-        viewport: 'w-(--reka-navigation-menu-viewport-width)',
-        childList: 'flex-col items-center',
-        link: 'text-md text-default data-active:text-primary',
-        list: 'gap-4',
-      }"
-    >
-      <template #logo>
-        <div class="md:flex hidden">
+  <DefineNavbarTemplate v-slot="{ orientation }">
+    <div class="flex w-full">
+      <div class="md:flex hidden flex-1 items-center">
+        <NuxtLink to="/">
           <LogoWithText />
-        </div>
-      </template>
-
-      <template #button>
-        <ElevatedButton variant="light">
-          {{ isLoggedIn ? "Otwórz panel" : "Zaloguj się!" }}
-        </ElevatedButton>
-      </template>
-    </UNavigationMenu>
+        </NuxtLink>
+      </div>
+      <div>
+        <UNavigationMenu
+          content-orientation="vertical"
+          :orientation="orientation"
+          :items="NAVBAR_ITEMS" variant="link" class="w-full" color="error"
+          :ui="{
+            linkLabel: 'hover:underline underline-offset-5 text-md',
+            viewport: 'w-(--reka-navigation-menu-viewport-width)',
+            childList: 'flex-col items-center',
+            link: 'text-md text-default data-active:text-primary',
+            list: 'gap-8',
+          }"
+        />
+      </div>
+      <div class="md:flex hidden flex-1 justify-end items-center">
+        <NuxtLink to="/login" class="text-md font-semibold">
+          {{ isLoggedIn ? "Otwórz panel" : "Zaloguj się" }}
+        </NuxtLink>
+      </div>
+    </div>
   </DefineNavbarTemplate>
 
   <UContainer class="sticky top-0 max-w-full font-sans bg-default z-20 print:hidden">
-    <div class="hidden md:block h-(--ui-header-height)">
-      <ReuseNavbarTemplate />
+    <div class="hidden md:flex justify-center items-center h-(--ui-header-height)">
+      <ReuseNavbarTemplate orientation="horizontal" />
     </div>
 
     <!-- Mobile Navigation -->
-    <div class="md:hidden flex pt-4">
-      <NuxtLink to="/" class="flex items-center mb-4">
+    <div class="md:hidden flex gap-4 py-2">
+      <NuxtLink to="/" class="flex items-center">
         <LogoWithText />
       </NuxtLink>
+      <NuxtLink to="/login" class="flex items-center text-md font-semibold ml-auto" :aria-label="isLoggedIn ? 'Otwórz panel' : 'Zaloguj się'">
+        <UIcon :name="isLoggedIn ? 'pixelarticons:user' : 'pixelarticons:login'" class="size-md" />
+      </NuxtLink>
       <button
-        class="p-2 ml-auto cursor-pointer flex justify-center"
+        class="p-2 cursor-pointer flex justify-center"
         aria-label="Przełącz nawigacje mobilną"
         data-testid="mobile-menu-toggle"
         @click="toggleMobileMenu"
       >
-        <Icon :name="isMobileMenuOpen ? 'mdi:close' : 'mdi:hamburger-menu'" size="28" />
+        <UIcon :name="isMobileMenuOpen ? 'pixelarticons:close' : 'pixelarticons:menu'" class="size-lg" />
       </button>
     </div>
 
@@ -75,7 +81,7 @@ watch(() => router.currentRoute.value, () => {
       leave-active-class="transition duration-200"
       hydrate-on-media-query="(max-width: 768px)"
     >
-      <div v-if="isMobileMenuOpen" class="-my-5 md:hidden h-screen [&>a]:text-5xl ">
+      <div v-if="isMobileMenuOpen" class="my-2 md:hidden h-screen [&>a]:text-5xl ">
         <ReuseNavbarTemplate orientation="vertical" />
       </div>
     </Transition>
