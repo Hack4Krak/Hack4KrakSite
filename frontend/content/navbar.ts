@@ -6,15 +6,15 @@ import { LANDING_SOCIALS } from '~~/content/landing-socials'
 export const NAVBAR_ITEMS: NavigationMenuItem[] = [
   [
     {
+      label: 'Zadania',
+      ariaLabel: 'Przejdź do zadań',
+      to: '/tasks',
+    },
+    {
       label: 'Ranking',
       to: '/leaderboard',
       ariaLabel: 'Przejdź do rankingu',
       prefetch: false,
-    },
-    {
-      label: 'Zadania',
-      ariaLabel: 'Przejdź do zadań',
-      to: '/tasks',
     },
     {
       label: 'Regulamin',
@@ -25,6 +25,11 @@ export const NAVBAR_ITEMS: NavigationMenuItem[] = [
       label: 'FAQ',
       ariaLabel: 'Przejdź do najczęściej zadawanych pytań',
       to: '/docs/faq',
+    },
+    {
+      label: 'O nas',
+      ariaLabel: 'Przejdź do informacji o Hack4Krak',
+      to: '/about_us',
     },
     {
       label: 'Kontakt',
