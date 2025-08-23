@@ -15,16 +15,26 @@
   --color-red-450: #fb4d3d;
 }
 
+body,
+html {
+  height: 100%;
+}
+
+#__nuxt {
+  flex: 1;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
 @utility rendering-pixelated {
   image-rendering: pixelated;
 }
 
 @utility h-screen-without-header {
   height: calc(100vh - var(--ui-header-height));
-}
-
-@utility min-h-screen-without-header {
-  min-height: calc(100vh - var(--ui-header-height));
 }
 
 @utility scrollbar-hide {
