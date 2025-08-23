@@ -49,7 +49,7 @@ watch(() => router.currentRoute.value, () => {
   </DefineNavbarTemplate>
 
   <UContainer class="sticky top-0 max-w-full font-sans bg-default z-20 print:hidden">
-    <div class="hidden md:block h-(--ui-header-height)">
+    <div class="hidden md:block h-(--ui-navbar-height)">
       <ReuseNavbarTemplate />
     </div>
 
