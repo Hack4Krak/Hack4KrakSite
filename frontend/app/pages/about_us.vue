@@ -37,13 +37,13 @@ useSeoMeta({
       <div class="flex md:flex-row flex-wrap flex-col gap-8 items-center justify-center">
         <EventCard v-for="card in aboutUsTimeline" v-bind="card" :key="card.title" />
       </div>
-      <NuxtImg
-        class="absolute h-75 left-0 md:top-auto top-50 -z-20" src="/img/blockAccentVector.svg"
+      <img
+        class="absolute h-75 left-0 md:top-auto top-50 -z-20" src="@/assets/img/blockAccentVector.svg"
         alt="block accent vector"
         height="300px"
       />
-      <NuxtImg
-        class="absolute h-75 right-0 md:top-auto top-150 -z-20 rotate-180" src="/img/blockAccentVector.svg"
+      <img
+        class="absolute h-75 right-0 md:top-auto top-150 -z-20 rotate-180" src="@/assets/img/blockAccentVector.svg"
         alt="block accent vector"
         height="300px"
       />
