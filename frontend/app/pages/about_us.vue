@@ -41,12 +41,12 @@ useSeoMeta({
         class="absolute h-75 left-0 md:top-auto top-50 -z-20" src="@/assets/img/blockAccentVector.svg"
         alt="block accent vector"
         height="300px"
-      />
+      >
       <img
         class="absolute h-75 right-0 md:top-auto top-150 -z-20 rotate-180" src="@/assets/img/blockAccentVector.svg"
         alt="block accent vector"
         height="300px"
-      />
+      >
     </section>
     <section id="mission">
       <UContainer class="flex lg:flex-row flex-col-reverse mx-auto gap-12">
@@ -58,7 +58,9 @@ useSeoMeta({
             {{ aboutUsContent.mission.description }}
           </p>
           <div class="flex flex-wrap gap-4">
-            <Label v-for="label in aboutUsContent.mission.labels" :key="label">{{ label }}</Label>
+            <UBadge v-for="label in aboutUsContent.mission.labels" :key="label">
+              {{ label }}
+            </UBadge>
           </div>
           <p>
             {{ aboutUsContent.mission.additionalText }}
