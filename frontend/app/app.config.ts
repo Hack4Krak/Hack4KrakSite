@@ -11,6 +11,28 @@ export default defineAppConfig({
         base: 'cursor-pointer',
       },
     },
+    badge: {
+      slots: {
+        base: 'font-normal',
+      },
+      defaultVariants: {
+        size: 'md',
+        color: 'primary',
+        variant: 'outline',
+      },
+      variants: {
+        size: {
+          md: {
+            base: 'text-md px-4 py-2',
+          },
+        },
+      },
+      compoundVariants: {
+        color: 'primary',
+        variant: 'outline',
+        class: 'text-content-primary ring-2 ring-accent-primary',
+      },
+    },
     input: {
       slots: { root: 'w-full' },
     },
