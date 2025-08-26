@@ -2,8 +2,9 @@
 import { aboutUsContent } from '~~/content/about-us-content'
 import { aboutUsTimeline } from '~~/content/about-us-timeline'
 
-useHead({
+useSeoMeta({
   title: aboutUsContent.meta.title,
+  description: aboutUsContent.hero.description,
 })
 </script>
 
