@@ -1,7 +1,7 @@
 use crate::entities::users;
 use crate::services::emails;
-use crate::services::emails::{Email, EmailMeta, UNDISCLOSED_RECIPIENTS};
 use crate::utils::app_state;
+use crate::utils::email::{Email, EmailMeta, UNDISCLOSED_RECIPIENTS};
 use crate::utils::error::Error;
 use crate::utils::success_response::SuccessResponse;
 use actix_web::web::{Data, Json};
