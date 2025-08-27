@@ -20,16 +20,7 @@
     Wydarzenie jest współorganizowane przez
     <a href="https://www.lo31.krakow.pl/">XXXI Liceum Ogólnokształcące w Krakowie</a>.
 </p>
-<div>
-    <a href="{{ link }}" style="display: inline-block; text-decoration: none; padding: 16px 24px; font-size: 16px; line-height: 1; border-radius: 4px; color: #fffffe; background-color: #020617" class="hover-bg-slate-800">
-        <!--[if mso]><i style="mso-font-width: 150%; mso-text-raise: 31px" hidden>&emsp;</i><![endif]-->
-        <span style="mso-text-raise: 16px">Zarejestruj drużyny!</span>
-        <!--[if mso]><i hidden style="mso-font-width: 150%">&emsp;&#8203;</i><![endif]-->
-    </a>
-</div>
-<div role="separator" style="height: 1px; line-height: 1px; background-color: #cbd5e1; margin-top: 24px; margin-bottom: 24px">&zwj;</div>
-<p class="mso-break-all" style="margin: 0; font-size: 12px; line-height: 20px; color: #475569">
-    Jeśli masz problem z kliknięciem przycisku, skopiuj i wklej poniższy link do przeglądarki:
-    <a href="%link%" style="color: #1e293b; text-decoration: underline">%link%</a>
-</p>
+
+{% call macros::cta_button("Zarejestruj drużyny!", link) %}
+
 {% endblock %}
