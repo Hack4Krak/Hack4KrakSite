@@ -62,7 +62,7 @@ watch(() => router.currentRoute.value, () => {
         <LogoWithText />
       </NuxtLink>
       <NuxtLink to="/login" class="flex items-center text-md font-semibold ml-auto" :aria-label="isLoggedIn ? 'Otwórz panel' : 'Zaloguj się'">
-        <UIcon :name="isLoggedIn ? 'pixelarticons:user' : 'pixelarticons:login'" class="size-md" />
+        <UIcon :name="isLoggedIn ? 'pixelarticons:user' : 'pixelarticons:login'" class="size-icon-md" />
       </NuxtLink>
       <button
         class="p-2 cursor-pointer flex justify-center"
@@ -70,7 +70,7 @@ watch(() => router.currentRoute.value, () => {
         data-testid="mobile-menu-toggle"
         @click="toggleMobileMenu"
       >
-        <UIcon :name="isMobileMenuOpen ? 'pixelarticons:close' : 'pixelarticons:menu'" class="size-lg" />
+        <UIcon :name="isMobileMenuOpen ? 'pixelarticons:close' : 'pixelarticons:menu'" class="size-icon-lg" />
       </button>
     </div>
 
