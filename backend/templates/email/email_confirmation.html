@@ -9,11 +9,7 @@
 <p style="margin: 0 0 24px; font-size: 16px; line-height: 24px; color: #475569">
     Dziękujemy za zarejestrowanie się na naszej stronie. Aby dokończyć proces rejestracji, kliknij poniższy przycisk.
 </p>
-<div>
-    <a href="{{ link }}" style="display: inline-block; text-decoration: none; padding: 16px 24px; font-size: 16px; line-height: 1; border-radius: 4px; color: #fffffe; background-color: #020617" class="hover-bg-slate-800">
-        <!--[if mso]><i style="mso-font-width: 150%; mso-text-raise: 31px" hidden>&emsp;</i><![endif]-->
-        <span style="mso-text-raise: 16px">Potwierdź Email</span>
-        <!--[if mso]><i hidden style="mso-font-width: 150%">&emsp;&#8203;</i><![endif]-->
-    </a>
-</div>
+
+{% call macros::cta_button("Potwierdź Email", link) %}
+
 {% endblock %}
