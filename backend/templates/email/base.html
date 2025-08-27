@@ -34,6 +34,13 @@
                 padding-right: 16px !important
             }
         }
+
+        @media (prefers-color-scheme: dark) {
+            img {
+                filter: invert(1);
+            }
+        }
+
     </style>
 </head>
 <body style="margin: 0; width: 100%; background-color: #f8fafc; padding: 0; -webkit-font-smoothing: antialiased; word-break: break-word">
@@ -50,7 +57,7 @@
                         <tr>
                             <td class="sm-p-6" style="border-radius: 8px; background-color: #fffffe; padding: 24px 36px; border: 1px solid #e2e8f0">
                                 <a href="https://hack4krak.pl">
-                                    <img src="https://hack4krak.pl/img/logo.png" width="85" alt="Hack4Krak" style="max-width: 100%; vertical-align: middle">
+                                    <img src="https://hack4krak.pl/img/logo.png" height="85" alt="Hack4Krak" style="max-width: 100%; vertical-align: middle">
                                 </a>
                                 <div role="separator" style="line-height: 24px">&zwj;</div>
                                 {% block content %}{% endblock %}
