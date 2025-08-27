@@ -2,7 +2,7 @@
 
 use crate::test_utils::mail::SmtpTestClient;
 use hack4krak_backend::services::emails;
-use hack4krak_backend::services::emails::{Email, EmailMeta};
+use hack4krak_backend::utils::email::{Email, EmailMeta};
 
 #[actix_web::test]
 async fn send_mail() {

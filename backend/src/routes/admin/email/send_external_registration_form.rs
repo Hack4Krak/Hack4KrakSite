@@ -1,9 +1,9 @@
 use crate::entities::email_verification_request;
 use crate::models::email_verification_request::EmailVerificationAction;
 use crate::services::emails;
-use crate::services::emails::Email;
 use crate::services::env::EnvConfig;
 use crate::utils::app_state;
+use crate::utils::email::Email;
 use crate::utils::error::Error;
 use crate::utils::success_response::SuccessResponse;
 use actix_web::web::{Data, Json};
