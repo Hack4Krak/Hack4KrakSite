@@ -1,13 +1,17 @@
 use crate::services::env::EnvConfig;
+use crate::utils::email::RawToHeader;
 use crate::utils::error::Error;
 use askama::{DynTemplate, Template};
-use lettre::message::{Mailbox, Mailboxes, SinglePart, header};
+use lettre::message::{Mailbox, SinglePart, header};
 use lettre::{Message, SmtpTransport, Transport};
 use serde::{Deserialize, Serialize};
 use std::any::type_name;
 use std::collections::HashMap;
 use std::option::Option;
+use std::str::FromStr;
 use utoipa::ToSchema;
+
+pub const UNDISCLOSED_RECIPIENTS: &str = "undisclosed-recipients:;";
 
 #[derive(Template, Serialize, Deserialize, ToSchema)]
 #[template(path = "email/email_confirmation.html")]
@@ -64,18 +68,22 @@ pub struct Email {
     /// When this field is not None, it overrides original behaviour
     pub meta: Option<EmailMeta>,
     pub email: String,
+    /// All recipients will be able to see each other
+    /// Use `bcc` field for hidden recipients
     pub recipients: Vec<String>,
+    pub bcc: Vec<String>,
     pub template: Box<dyn EmailTemplate>,
 }
 
 impl Email {
     pub fn new(email: String, recipients: Vec<String>, template: Box<dyn EmailTemplate>) -> Self {
-        Self::new_with_meta(email, recipients, template, None)
+        Self::new_with_meta(email, Vec::new(), recipients, template, None)
     }
 
     pub fn new_with_meta(
         email: String,
         recipients: Vec<String>,
+        bcc: Vec<String>,
         template: Box<dyn EmailTemplate>,
         meta: Option<EmailMeta>,
     ) -> Self {
@@ -85,42 +93,56 @@ impl Email {
             meta,
             email: full_email,
             recipients,
+            bcc,
             template,
         }
     }
 
     pub async fn send(&self, smtp_client: &SmtpTransport) -> Result<(), Error> {
-        let meta = self.meta();
-        let rendered_email = self.template.dyn_render()?;
-
-        let mailboxes: Mailboxes = self
-            .recipients
-            .iter()
-            .map(|recipient| recipient.parse())
-            .collect::<Result<Mailboxes, _>>()
-            .map_err(|_| Error::InvalidEmailRecipients(self.recipients.join(", ")))?;
-
-        let sender = Mailbox::new(
-            meta.sender_name,
-            self.email
-                .parse()
-                .map_err(|_| Error::InvalidEmailSender(self.email.clone()))?,
-        );
-
-        let html_part = SinglePart::builder()
-            .header(header::ContentType::TEXT_HTML)
-            .body(rendered_email);
-
-        let email = Message::builder()
-            .from(sender)
-            .mailbox(header::To::from(mailboxes))
-            .subject(&meta.subject)
-            .singlepart(html_part)
-            .map_err(Error::FailedToBuildEmail)?;
-
+        let email = self.build_email()?;
         smtp_client.send(&email).map_err(Error::FailedToSendEmail)?;
 
         Ok(())
+    }
+
+    fn parse_address<T: FromStr>(address: &str) -> Result<T, Error> {
+        address
+            .parse()
+            .map_err(|_| Error::InvalidEmailSender(address.to_string()))
+    }
+
+    fn build_email(&self) -> Result<Message, Error> {
+        let meta = self.meta();
+        let rendered_email = self.template.dyn_render()?;
+
+        let mut email_builder = Message::builder()
+            .from(Mailbox::new(
+                meta.sender_name,
+                Self::parse_address(&self.email)?,
+            ))
+            .subject(&meta.subject);
+
+        for to in &self.recipients {
+            if to == UNDISCLOSED_RECIPIENTS {
+                email_builder = email_builder.header(RawToHeader(UNDISCLOSED_RECIPIENTS));
+                continue;
+            }
+            email_builder = email_builder.to(Self::parse_address(to)?);
+        }
+
+        for bcc in &self.bcc {
+            email_builder = email_builder.bcc(Self::parse_address(bcc)?);
+        }
+
+        let email = email_builder
+            .singlepart(
+                SinglePart::builder()
+                    .header(header::ContentType::TEXT_HTML)
+                    .body(rendered_email),
+            )
+            .map_err(Error::FailedToBuildEmail)?;
+
+        Ok(email)
     }
 
     fn meta(&self) -> EmailMeta {
