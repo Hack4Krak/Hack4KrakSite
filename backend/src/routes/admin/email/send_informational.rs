@@ -1,6 +1,6 @@
 use crate::entities::users;
 use crate::services::emails;
-use crate::services::emails::{Email, EmailMeta};
+use crate::services::emails::{Email, EmailMeta, UNDISCLOSED_RECIPIENTS};
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::success_response::SuccessResponse;
@@ -8,6 +8,7 @@ use actix_web::web::{Data, Json};
 use actix_web::{HttpResponse, post};
 use sea_orm::{EntityTrait, QuerySelect};
 use serde::{Deserialize, Serialize};
+use std::mem::swap;
 use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, ToSchema)]
@@ -41,7 +42,7 @@ pub async fn send_informational(
     app_state: Data<app_state::AppState>,
     model: Json<EmailSendingModel>,
 ) -> Result<HttpResponse, Error> {
-    let recipients = match model.send_target {
+    let mut recipients = match model.send_target {
         EmailSendTarget::AllUsers => {
             users::Entity::find()
                 .select_only()
@@ -56,9 +57,16 @@ pub async fn send_informational(
         }
     };
 
+    let mut bcc = Vec::new();
+    if recipients.len() > 1 {
+        swap(&mut bcc, &mut recipients);
+        recipients = vec![UNDISCLOSED_RECIPIENTS.to_string()];
+    }
+
     Email::new_with_meta(
         model.address.clone(),
         recipients,
+        bcc,
         Box::new(emails::Informational {
             title: model.meta.subject.clone(),
             content: model.content.clone(),

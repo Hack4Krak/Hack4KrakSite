@@ -18,6 +18,7 @@ async fn send_mail() {
             "dziegiel@domain.tld".to_string(),
             "borbert@domain.tld".to_string(),
         ],
+        bcc: Vec::new(),
         template: Box::new(emails::Informational {
             title: "Important message".to_string(),
             content: "Le Corbusier and his crimes".to_string(),
