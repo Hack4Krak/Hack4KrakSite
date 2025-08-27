@@ -41,8 +41,5 @@
   },
   "resolutions": {
     "zod": "4.0.5"
-  },
-  "dependencies": {
-    "nuxt-charts": "^0.2.3"
   }
 }

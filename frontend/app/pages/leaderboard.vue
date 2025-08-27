@@ -29,7 +29,7 @@ const team_points_over_time = computed(() => (data.value?.team_points_over_time 
 
 const { data: _eventInformation } = await useApi('/event/info')
 
-const dataa: any[] = []
+const chartData: any[] = []
 const categories: any = {}
 for (const team of team_points_over_time.value) {
   categories[team.label] = { name: team.label, color: team.color }
@@ -40,10 +40,10 @@ for (let i = 0; i < adjustedTimestamps.value.length; i++) {
   for (const team of team_points_over_time.value) {
     obj[team.label] = team.points[i]
   }
-  dataa.push(obj)
+  chartData.push(obj)
 }
 
-const xFormatter = (i: number) => new Date(dataa[i].time).toLocaleTimeString()
+const xFormatter = (i: number) => new Date(chartData[i].time).toLocaleTimeString()
 
 const { data: teams, refresh: refreshTeams } = await useApi('/leaderboard/teams')
 
@@ -103,12 +103,13 @@ function tooltipName(values: any) {
     </h1>
     <div class="h-screen p-2">
       <LineChart
-        :data="dataa"
+        :data="chartData"
         :categories="categories"
         :height="700"
         :x-formatter="xFormatter"
         x-label="Czas"
         y-label="Punkty"
+        :hide-legend="false"
       >
         <template #tooltip="{ values }">
           <div style="padding: 10px 15px;">
