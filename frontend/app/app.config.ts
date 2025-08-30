@@ -11,6 +11,11 @@ export default defineAppConfig({
         base: 'cursor-pointer',
       },
     },
+    toast: {
+      slots: {
+        progress: '*:bg-surface-secondary',
+      },
+    },
     badge: {
       slots: {
         base: 'font-normal',
