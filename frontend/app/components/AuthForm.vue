@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { FormSubmitEvent } from '#ui/types'
+import { AInputPasswordToggle } from '#components'
 import { FetchError } from 'ofetch'
 
 const props = defineProps<{
@@ -8,22 +8,13 @@ const props = defineProps<{
 
 type Schema = zInfer<typeof schema>
 const schema = z.object({
-  email: z.email({ error: 'Niepoprawny adres e-mail' }),
-  password: zPassword(),
   ...(props.isLogin ? {} : { name: zUsername() }),
+  email: z.email({ error: 'Niepoprawny adres e-mail' }),
+  password: zPassword().meta({ title: 'Hasło', input: { component: AInputPasswordToggle } }),
 })
 
 const loading = ref(false)
 const toast = useToast()
-const state = reactive<Partial<Schema>>({
-  email: undefined,
-  password: undefined,
-  name: undefined,
-})
-
-const isButtonEnabled = computed(() => {
-  return schema.safeParse(state).success
-})
 
 const OAuthBaseUrl = `${useRuntimeConfig().public.openFetch.api.baseURL}/auth/oauth`
 
@@ -40,9 +31,7 @@ if (route.query.redirect_from_confirmation === 'true' && import.meta.client) {
   useRouter().replace({ query })
 }
 
-async function onSubmit(event: FormSubmitEvent<Schema>) {
-  event.preventDefault()
-
+async function onSubmit(event: Schema) {
   loading.value = true
 
   try {
@@ -54,7 +43,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     await useNuxtApp().$api(address, {
       method: 'POST',
       credentials: 'include',
-      body: event.data,
+      body: event,
     })
 
     if (props.isLogin) {
@@ -73,8 +62,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     loading.value = false
   }
 }
-
-const showPassword = ref(false)
 </script>
 
 <template>
@@ -83,54 +70,22 @@ const showPassword = ref(false)
       {{ isLogin ? 'Zaloguj się' : 'Zarejestruj się' }}
     </h1>
 
-    <UForm :schema="schema" :state="state" class="space-y-4 text-center" @submit="onSubmit">
-      <UFormField v-if="!isLogin" label="Nazwa użytkownika" name="name">
-        <UInput v-model="state.name as string" />
-      </UFormField>
+    <AutoForm :schema="schema" class="text-center" :config="{ submit: { props: { label: isLogin ? 'Zaloguj' : 'Zarejestruj' } } }" @submit="onSubmit">
+      <template #email-hint>
+        <NuxtLink v-if="isLogin" class="link-without-underline" to="/request_password_reset" tabindex="-1">
+          Zresetuj hasło
+        </NuxtLink>
+      </template>
+    </AutoForm>
 
-      <UFormField label="Email" name="email">
-        <UInput v-model="state.email" type="email" />
-      </UFormField>
-
-      <div class="flex flex-col items-start gap-1">
-        <UFormField label="Hasło" name="password" class="w-full">
-          <UInput v-model="state.password" class="w-full" :type="showPassword ? 'text' : 'password'">
-            <template #trailing>
-              <UButton
-                color="neutral"
-                variant="link"
-                size="sm"
-                :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
-                :aria-label="showPassword ? 'Ukryj hasło' : 'Pokaż hasło'"
-                :aria-pressed="showPassword"
-                aria-controls="password"
-                @click="showPassword = !showPassword"
-              />
-            </template>
-          </UInput>
-          <template #hint>
-            <NuxtLink v-if="isLogin" class="link-without-underline" to="/request_password_reset" tabindex="-1">
-              Zresetuj hasło
-            </NuxtLink>
-          </template>
-        </UFormField>
-      </div>
-
-      <div class="space-y-2">
-        <UButton type="submit" class="w-full text-center inline rounded-3xl py-2 bg-neutral-300" :disabled="loading" :class="isButtonEnabled ? 'bg-primary' : ''">
-          {{ isLogin ? 'Zaloguj' : 'Zarejestruj' }}
-        </UButton>
-
-        <div class="flex flex-col gap-1">
-          <span class="text-sm text-neutral-400">
-            {{ isLogin ? 'Nie masz konta?' : 'Masz już konto?' }}
-            <NuxtLink class="link" :to="isLogin ? '/register' : '/login'">
-              {{ isLogin ? 'Załóż je' : 'Zaloguj się' }}
-            </NuxtLink>
-          </span>
-        </div>
-      </div>
-    </UForm>
+    <div class="flex flex-col gap-1 w-full text-center">
+      <span class="text-sm text-neutral-400">
+        {{ isLogin ? 'Nie masz konta?' : 'Masz już konto?' }}
+        <NuxtLink class="link" :to="isLogin ? '/register' : '/login'">
+          {{ isLogin ? 'Załóż je' : 'Zaloguj się' }}
+        </NuxtLink>
+      </span>
+    </div>
 
     <div class="w-full text-center">
       <USeparator class="my-3" label="Albo kontynuuj z" :ui="{ label: 'text-zinc-400' }" />

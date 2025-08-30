@@ -10,7 +10,7 @@ useSeoMeta({
 })
 
 const schema = z.object({
-  new_password: zPassword().meta({ title: 'Nowe hasło' }),
+  new_password: zPassword('Nowe hasło'),
 })
 
 const code = useRoute().query.code
