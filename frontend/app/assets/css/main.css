@@ -13,10 +13,21 @@
   --font-pixelify: Pixelify Sans Hack4Krak; /* Pixelify Sans font with changed number "5" */
   --font-roboto: 'Roboto', sans-serif;
   --color-red-450: #fb4d3d;
+}
 
-  --spacing-icon-sm: --spacing(4);
-  --spacing-icon-md: --spacing(5);
-  --spacing-icon-lg: --spacing(7);
+@utility icon-sm {
+  width: --spacing(4);
+  height: --spacing(4);
+}
+
+@utility icon-md {
+  width: --spacing(5);
+  height: --spacing(5);
+}
+
+@utility icon-lg {
+  width: --spacing(7);
+  height: --spacing(7);
 }
 
 @utility rendering-pixelated {
