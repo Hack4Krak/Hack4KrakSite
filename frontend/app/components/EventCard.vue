@@ -66,7 +66,7 @@ const {
       @mouseleave="isHoverMode && (open = false)"
     >
       <div :class="imgWrapper()">
-        <NuxtImg :src="img" alt="card-background-event-image" class="rendering-pixelated w-full h-full object-cover" />
+        <NuxtImg :src="img" alt="card-background-event-image" class="w-full h-full object-cover" />
       </div>
       <div :class="contentWrapper()">
         <p class="text-content-secondary">

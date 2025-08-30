@@ -25,10 +25,10 @@ export const aboutUsContent = {
       'Działamy jako niezależna organizacja, której celem jest promowanie wiedzy z zakresu cyberbezpieczeństwa wśród młodzieży poprzez organizację wydarzeń typu CTF (Capture The Flag) – konkursów, w których uczestnicy rozwiązują zadania z obszaru bezpieczeństwa cyfrowego.',
     ],
     smallGalleryImages: [
-      '/img/about-us/Gallery1.webp',
-      '/img/about-us/Gallery2.webp',
-      '/img/about-us/Gallery3.webp',
+      '/img/about-us/gallery1.webp',
+      '/img/about-us/gallery2.webp',
+      '/img/about-us/gallery3.webp',
     ],
-    mainGalleryImage: '/img/about-us/GalleryMain.webp',
+    mainGalleryImage: '/img/about-us/gallery_main.webp',
   },
 }

@@ -38,12 +38,12 @@ useSeoMeta({
         <EventCard v-for="card in aboutUsTimeline" v-bind="card" :key="card.title" />
       </div>
       <img
-        class="absolute h-75 left-0 md:top-auto top-50 -z-20" src="@/assets/img/blockAccentVector.svg"
+        class="absolute h-75 left-0 md:top-auto top-50 -z-20" src="../assets/img/block_accent_vector.svg"
         alt="block accent vector"
         height="300px"
       >
       <img
-        class="absolute h-75 right-0 md:top-auto top-150 -z-20 rotate-180" src="@/assets/img/blockAccentVector.svg"
+        class="absolute h-75 right-0 md:top-auto top-150 -z-20 rotate-180" src="../assets/img/block_accent_vector.svg"
         alt="block accent vector"
         height="300px"
       >
