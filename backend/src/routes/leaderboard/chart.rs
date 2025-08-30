@@ -13,7 +13,7 @@ use actix_web::{HttpResponse, get};
 )]
 #[get("/chart")]
 pub async fn chart(app_state: Data<AppState>) -> Result<HttpResponse, Error> {
-    let points_counter = PointsCounter::work(&app_state.database).await?;
+    let points_counter = PointsCounter::work(&app_state).await?;
 
     Ok(HttpResponse::Ok().json(points_counter.to_chart()))
 }
