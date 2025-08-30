@@ -2,13 +2,40 @@ export default defineAppConfig({
   // https://ui.nuxt.com/getting-started/theme#design-system
   ui: {
     colors: {
-      primary: 'amber',
-      neutral: 'zinc',
+      primary: 'yellow',
+      neutral: 'neutral',
       warning: 'orange',
     },
     button: {
       slots: {
         base: 'cursor-pointer',
+      },
+    },
+    toast: {
+      slots: {
+        progress: '*:bg-surface-secondary',
+      },
+    },
+    badge: {
+      slots: {
+        base: 'font-normal',
+      },
+      defaultVariants: {
+        size: 'md',
+        color: 'primary',
+        variant: 'outline',
+      },
+      variants: {
+        size: {
+          md: {
+            base: 'text-md px-4 py-2',
+          },
+        },
+      },
+      compoundVariants: {
+        color: 'primary',
+        variant: 'outline',
+        class: 'text-content-primary ring-2 ring-accent-primary',
       },
     },
     input: {
