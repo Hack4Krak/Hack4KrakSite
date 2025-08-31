@@ -13,7 +13,7 @@ const contentMarkdown = await parseMarkdown(props.description)
 
 const card = tv({
   slots: {
-    root: 'sm:w-90 w-80 border-2 flex flex-col bg-surface-primary',
+    root: 'sm:w-90 w-80 border-2 flex flex-col bg-default',
     imgWrapper: 'h-40 border-b-2',
     contentWrapper: 'border-b-2 flex-1 flex flex-col justify-center p-8',
     button: 'flex-1 flex items-center justify-center',
@@ -26,16 +26,16 @@ const card = tv({
         root: 'border-primary',
         imgWrapper: 'border-primary',
         contentWrapper: 'border-primary',
-        button: 'bg-primary text-content-primary',
-        content: 'ring-accent-primary',
+        button: 'bg-primary text-default',
+        content: 'ring-primary',
       },
       neutral: {
-        root: 'border-content-secondary',
-        imgWrapper: 'border-content-secondary',
-        contentWrapper: 'border-content-secondary',
-        button: 'bg-content-secondary text-surface-primary',
-        content: 'ring-content-secondary',
-        userNumber: 'text-content-secondary',
+        root: 'border-default',
+        imgWrapper: 'border-default',
+        contentWrapper: 'border-default',
+        button: 'bg-text-muted text-inverted',
+        content: 'ring-text-muted',
+        userNumber: 'text-muted',
       },
     },
   },
@@ -69,7 +69,7 @@ const {
         <NuxtImg :src="img" alt="card-background-event-image" class="w-full h-full object-cover" />
       </div>
       <div :class="contentWrapper()">
-        <p class="text-content-secondary">
+        <p class="text-muted">
           {{ subtitle }}
         </p>
         <p class="text-lg font-semibold">
@@ -99,7 +99,7 @@ const {
         <span>
           <MDCRenderer
             :body="contentMarkdown.body" :data="contentMarkdown.data"
-            class="text-content-primary prose-p:my-0 prose-p:[&:not(:last-child)]:mb-4"
+            class="text-default prose-p:my-0 prose-p:[&:not(:last-child)]:mb-4"
           />
         </span>
       </div>

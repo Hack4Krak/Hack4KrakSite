@@ -10,18 +10,26 @@
 
   --ui-header-height: --spacing(20);
 
-  --ui-bg: var(--color-surface-primary);
-  --ui-bg-muted: var(--color-surface-secondary);
-  --ui-bg-accented: var(--color-surface-accent);
+  --ui-primary: var(--color-primary);
+  --ui-secondary: var(--color-secondary);
 
-  --ui-border: var(--color-surface-secondary);
-  --ui-border-accented: var(--color-surface-secondary);
+  --ui-text-dimmed: var(--color-text-muted);
+  --ui-text-muted: var(--color-text-muted);
+  --ui-text-toned: var(--color-text-default);
+  --ui-text: var(--color-text-default);
+  --ui-text-highlighted: var(--color-text-default);
+  --ui-text-inverted: var(--color-surface-default);
 
-  --ui-primary: var(--color-accent-primary);
-  --ui-secondary: var(--color-accent-secondary);
+  --ui-bg: var(--color-surface-default);
+  --ui-bg-muted: var(--color-surface-muted);
+  --ui-bg-elevated: var(--color-surface-muted);
+  --ui-bg-accented: var(--color-surface-muted);
+  --ui-bg-inverted: var(--color-text-default);
 
-  --ui-text: var(--color-content-primary);
-  --ui-text-muted: var(--color-content-secondary);
+  --ui-border: var(--color-text-muted);
+  --ui-border-muted: var(--color-surface-muted);
+  --ui-border-accented: var(--color-surface-muted);
+  --ui-border-inverted: var(--color-text-default);
 
   --ui-radius: var(--radius);
 }

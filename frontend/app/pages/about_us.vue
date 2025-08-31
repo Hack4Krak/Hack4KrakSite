@@ -75,8 +75,8 @@ useSeoMeta({
       <UContainer class="grid lg:grid-cols-4 lg:grid-rows-[auto, auto] grid-cols-3 gap-4">
         <NuxtImg
           v-for="image in aboutUsContent.gallery.smallGalleryImages"
-          :key="image.split('/').pop()" class="hidden md:block w-full h-full px-6 sm:px-0 object-cover border-2 border-content-secondary
-          [&:nth-child(3)]:!border-accent-primary"
+          :key="image.split('/').pop()" class="hidden md:block size-full px-6 sm:px-0 object-cover border-2 border-default
+          [&:nth-child(3)]:!border-primary"
           :src="image"
         />
         <div class="lg:row-span-2 lg:col-span-1 col-span-3 flex flex-col gap-2">
@@ -88,7 +88,7 @@ useSeoMeta({
           </p>
         </div>
         <NuxtImg
-          class="col-span-3 h-full object-cover border-2 border-content-secondary"
+          class="col-span-3 h-full object-cover border-2 border-default"
           :src="aboutUsContent.gallery.mainGalleryImage"
         />
       </UContainer>
@@ -102,7 +102,7 @@ useSeoMeta({
   -webkit-text-stroke-color: transparent;
   -webkit-text-fill-color: var(--ui-bg);
   user-select: none;
-  background-color: --alpha(var(--color-accent-primary) / 20%);
+  background-color: --alpha(var(--color-primary) / 20%);
   background-clip: text;
   -webkit-text-stroke-width: 0.02em;
 }

@@ -11,11 +11,6 @@ export default defineAppConfig({
         base: 'cursor-pointer',
       },
     },
-    toast: {
-      slots: {
-        progress: '*:bg-surface-secondary',
-      },
-    },
     badge: {
       slots: {
         base: 'font-normal',
@@ -35,7 +30,7 @@ export default defineAppConfig({
       compoundVariants: {
         color: 'primary',
         variant: 'outline',
-        class: 'text-content-primary ring-2 ring-accent-primary',
+        class: 'text-default ring-2 ring-primary',
       },
     },
     input: {
