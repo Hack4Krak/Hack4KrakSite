@@ -30,9 +30,9 @@ const card = tv({
         content: 'ring-primary',
       },
       neutral: {
-        root: 'border-default',
-        imgWrapper: 'border-default',
-        contentWrapper: 'border-default',
+        root: 'border-muted',
+        imgWrapper: 'border-muted',
+        contentWrapper: 'border-muted',
         button: 'bg-text-muted text-inverted',
         content: 'ring-text-muted',
         userNumber: 'text-muted',
@@ -66,7 +66,14 @@ const {
       @mouseleave="isHoverMode && (open = false)"
     >
       <div :class="imgWrapper()">
-        <NuxtImg :src="img" alt="card-background-event-image" class="w-full h-full object-cover" />
+        <NuxtImg
+          width="360"
+          height="160"
+          :modifiers="props.imgCrop ? {
+            crop: props.imgCrop,
+          } : undefined"
+          :src="img" alt="card-background-event-image" class="w-full h-full object-cover"
+        />
       </div>
       <div :class="contentWrapper()">
         <p class="text-muted">

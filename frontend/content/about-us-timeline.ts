@@ -2,6 +2,7 @@ export interface EventCardProps {
   title: string
   subtitle: string
   img: string
+  imgCrop?: string
   participants: number
   description: string
   addColorAccent?: boolean
@@ -34,7 +35,8 @@ export const aboutUsTimeline: EventCardProps[] = [
     description: 'Trzecia edycja **Hack4Krak CTF** będzie stacjonarnym wydarzeniem dla uczniów szkół średnich. \n\n'
       + 'Planujemy przyciągnąć setki uczestników, oferując angażujące zadania i rozwijając kluczowe umiejętności. '
       + 'Wydarzenie ma podnieść standard konkursów cyberbezpieczeństwa dla młodzieży w całej Polsce.',
-    img: '/img/events/event3.webp',
+    img: '/img/our-team.webp',
+    imgCrop: '900_100_3500_1700',
     addColorAccent: true,
   },
 ]

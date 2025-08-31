@@ -26,9 +26,9 @@
   --ui-bg-accented: var(--color-surface-muted);
   --ui-bg-inverted: var(--color-text-default);
 
-  --ui-border: var(--color-text-muted);
-  --ui-border-muted: var(--color-surface-muted);
-  --ui-border-accented: var(--color-surface-muted);
+  --ui-border: var(--color-surface-muted);
+  --ui-border-muted: var(--color-text-muted);
+  --ui-border-accented: var(--color-text-muted);
   --ui-border-inverted: var(--color-text-default);
 
   --ui-radius: var(--radius);

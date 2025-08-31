@@ -38,12 +38,12 @@ useSeoMeta({
         <EventCard v-for="card in aboutUsTimeline" v-bind="card" :key="card.title" />
       </div>
       <img
-        class="absolute h-75 left-0 md:top-auto top-50 -z-20" src="../assets/img/block_accent_vector.svg"
+        class="absolute h-75 left-0 md:top-auto top-50 -z-20" src="assets/img/block_accent_vector.svg"
         alt="block accent vector"
         height="300px"
       >
       <img
-        class="absolute h-75 right-0 md:top-auto top-150 -z-20 rotate-180" src="../assets/img/block_accent_vector.svg"
+        class="absolute h-75 right-0 md:top-auto top-150 -z-20 rotate-180" src="assets/img/block_accent_vector.svg"
         alt="block accent vector"
         height="300px"
       >
@@ -75,7 +75,8 @@ useSeoMeta({
       <UContainer class="grid lg:grid-cols-4 lg:grid-rows-[auto, auto] grid-cols-3 gap-4">
         <NuxtImg
           v-for="image in aboutUsContent.gallery.smallGalleryImages"
-          :key="image.split('/').pop()" class="hidden md:block size-full px-6 sm:px-0 object-cover border-2 border-default
+          :key="image.split('/').pop()" height="130"
+          width="300" class="hidden md:block size-full px-6 sm:px-0 object-cover border-2 border-muted
           [&:nth-child(3)]:!border-primary"
           :src="image"
         />
@@ -88,7 +89,13 @@ useSeoMeta({
           </p>
         </div>
         <NuxtImg
-          class="col-span-3 h-full object-cover border-2 border-default"
+          width="1000" height="300"
+          :modifiers="{
+            crop: '850_132_3681_950',
+            fit: 'contain',
+            gravity: 'north',
+          }"
+          class="col-span-3 w-full object-cover border-2 border-muted"
           :src="aboutUsContent.gallery.mainGalleryImage"
         />
       </UContainer>

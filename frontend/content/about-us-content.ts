@@ -29,6 +29,6 @@ export const aboutUsContent = {
       '/img/about-us/gallery2.webp',
       '/img/about-us/gallery3.webp',
     ],
-    mainGalleryImage: '/img/about-us/gallery_main.webp',
+    mainGalleryImage: '/img/our-team.webp',
   },
 }

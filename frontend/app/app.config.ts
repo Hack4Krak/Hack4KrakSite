@@ -35,6 +35,11 @@ export default defineAppConfig({
     },
     input: {
       slots: { root: 'w-full' },
+      variants: {
+        variant: {
+          outline: 'ring-default',
+        },
+      },
     },
     select: {
       slots: { base: 'w-full' },
