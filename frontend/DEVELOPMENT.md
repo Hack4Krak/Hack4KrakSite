@@ -95,7 +95,7 @@ bun typecheck
 RustRover offers excellent Rust support, smooth integration with frontend tooling, and customizable plugins that enhance productivity.
 
 **Tailwind CSS Plugin (RustRover)**\
-To enable Tailwind class suggestions—especially in :ui fields—install the Tailwind CSS plugin in RustRover and ensure your tailwind.config file is properly detected. Once set up, you'll get full IntelliSense support for Tailwind classes across your frontend code.
+To enable Tailwind class suggestions - especially in `:ui` fields - install the Tailwind CSS plugin in RustRover and ensure your tailwind.config file is properly configured. Once set up, you'll get full IntelliSense support for Tailwind classes across your frontend code.
 
 **You can use the config provided below:**
 
