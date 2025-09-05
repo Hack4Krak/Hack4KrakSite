@@ -88,3 +88,61 @@ bun lint:fix
 # Verify TypeScript definitions
 bun typecheck
 ```
+
+## ⚙️ Configuring your IDE
+
+**Recommended IDE: RustRover**\
+RustRover offers excellent Rust support, smooth integration with frontend tooling, and customizable plugins that enhance productivity.
+
+**Tailwind CSS Plugin (JetBrains IDE)**\
+To enable Tailwind class suggestions - especially in `:ui` fields - install the Tailwind CSS plugin in your IDE and ensure your tailwind.config file is properly configured. Once set up, you'll get full IntelliSense support for Tailwind classes across your frontend code.
+
+**You can use the config provided below:**
+
+```json
+{
+  "includeLanguages": {
+    "ftl": "html",
+    "jinja": "html",
+    "jinja2": "html",
+    "smarty": "html",
+    "tmpl": "gohtml",
+    "cshtml": "html",
+    "vbhtml": "html",
+    "razor": "html"
+  },
+  "files": {
+    "exclude": [
+      "**/.git/**",
+      "**/node_modules/**",
+      "**/.hg/**",
+      "**/.svn/**"
+    ]
+  },
+  "emmetCompletions": false,
+  "classAttributes": ["class", "className", "ngClass", "ui"],
+  "colorDecorators": true,
+  "showPixelEquivalents": true,
+  "rootFontSize": 16,
+  "hovers": true,
+  "suggestions": true,
+  "codeActions": true,
+  "validate": true,
+  "lint": {
+    "invalidScreen": "error",
+    "invalidVariant": "error",
+    "invalidTailwindDirective": "error",
+    "invalidApply": "error",
+    "invalidConfigPath": "error",
+    "cssConflict": "warning",
+    "recommendedVariantOrder": "warning"
+  },
+  "experimental": {
+    "configFile": null,
+    "classRegex": [
+      ["([\"'`][^\"'`]*.*?[\"'`])", "[\"'`]([^\"'`]*).*?[\"'`]"],
+      ["ui:\\s*{([^)]*)\\s*}", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+    ]
+  }
+}
+```
