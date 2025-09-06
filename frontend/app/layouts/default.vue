@@ -1,11 +1,9 @@
 <template>
-  <main>
+  <main class="h-full flex flex-col">
     <NuxtLoadingIndicator color="var(--ui-primary)" :height="2" />
     <UApp>
       <Navbar />
-      <div class="flex min-h-screen-without-header">
-        <slot />
-      </div>
+      <slot />
     </UApp>
   </main>
 </template>
