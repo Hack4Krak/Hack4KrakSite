@@ -1,0 +1,17 @@
+/*
+Fundaments are based on this design document:
+https://www.figma.com/design/dGliKGjgY8I6qo65T8A2BC/hack4krak?node-id=1260-8153&t=B8DTJgF25i33zkhF-1
+*/
+
+@theme static {
+  --color-surface-default: #171717;
+  --color-surface-muted: #262626;
+
+  --color-text-default: #fafafa;
+  --color-text-muted: #737373;
+
+  --color-primary: #d08700;
+  --color-secondary: #efb100;
+
+  --radius: 0;
+}
