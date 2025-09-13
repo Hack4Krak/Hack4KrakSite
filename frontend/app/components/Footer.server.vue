@@ -12,7 +12,7 @@ const { commitHash, branchName } = useGitInfo()
         <!-- Left section -->
         <div class="flex flex-col items-center lg:items-baseline justify-between gap-2 mb-5 lg:mb-0">
           <!-- Logo section -->
-          <LogoWithText class="text-sm" />
+          <img src="/img/logo.svg" class="h-lg" alt="logo"/>
 
           <!-- Copyright -->
           <p class="text-center lg:text-left">
