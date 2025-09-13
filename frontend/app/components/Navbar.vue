@@ -38,7 +38,7 @@ watch(() => router.currentRoute.value, () => {
             linkLabel: 'hover:underline underline-offset-5 text-md',
             viewport: 'w-(--reka-navigation-menu-viewport-width)',
             childList: 'flex-col items-center',
-            link: 'text-md text-default data-active:text-primary',
+            link: 'text-md text-default data-active:text-secondary',
             list: 'gap-8',
           }"
         />
@@ -64,13 +64,16 @@ watch(() => router.currentRoute.value, () => {
       <NuxtLink to="/login" class="flex items-center text-md font-semibold ml-auto" :aria-label="isLoggedIn ? 'Otwórz panel' : 'Zaloguj się'">
         <UIcon :name="isLoggedIn ? 'pixelarticons:user' : 'pixelarticons:login'" class="size-md" />
       </NuxtLink>
+      <NuxtLink to="/login" class="flex items-center text-md font-semibold ml-auto" :aria-label="isLoggedIn ? 'Otwórz panel' : 'Zaloguj się'">
+        <UIcon :name="isLoggedIn ? 'pixelarticons:user' : 'pixelarticons:login'" class="icon-md" />
+      </NuxtLink>
       <button
         class="p-2 cursor-pointer flex justify-center"
         aria-label="Przełącz nawigacje mobilną"
         data-testid="mobile-menu-toggle"
         @click="toggleMobileMenu"
       >
-        <UIcon :name="isMobileMenuOpen ? 'pixelarticons:close' : 'pixelarticons:menu'" class="size-lg" />
+        <UIcon :name="isMobileMenuOpen ? 'pixelarticons:close' : 'pixelarticons:menu'" class="icon-lg" />
       </button>
     </div>
 
