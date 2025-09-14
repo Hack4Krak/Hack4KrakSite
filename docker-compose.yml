@@ -12,6 +12,40 @@ services:
       - "5432:5432"
     volumes:
       - database:/var/lib/postgresql/data
+    profiles:
+      - db
+      - all
+
+  backend:
+    container_name: hack4krak_backend
+    build:
+        context: .
+        dockerfile: backend/Dockerfile
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    profiles:
+      - backend
+      - all
+    env_file:
+      - .env
+    environment:
+      - BACKEND_ADDRESS=${BACKEND_ADDRESS:-0.0.0.0:8080}
+      - DATABASE_URL=${DATABASE_URL:-postgresql://backend:password@db:5432/hack4krak}
+
+  frontend:
+    container_name: hack4krak_frontend
+    build:
+        context: .
+        dockerfile: frontend/Dockerfile
+    restart: on-failure
+    ports:
+      - "3000:3000"
+    profiles:
+      - frontend
+      - all
+    env_file:
+      - .env
 
 volumes:
   database:
