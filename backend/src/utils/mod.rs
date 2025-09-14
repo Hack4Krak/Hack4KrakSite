@@ -3,6 +3,7 @@ pub mod bearer;
 pub mod colors;
 pub mod common_responses;
 pub mod cookies;
+pub mod email;
 pub mod error;
 pub mod handle_database_error;
 pub mod jwt;

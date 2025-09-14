@@ -2,14 +2,14 @@ use actix_web::HttpServer;
 use actix_web::web::Data;
 use hack4krak_backend::services::env::EnvConfig;
 use hack4krak_backend::services::task_manager::TaskManager;
-use hack4krak_backend::setup_actix_app;
 use hack4krak_backend::utils::app_state::AppState;
 use hack4krak_backend::utils::openapi::write_openapi;
+use hack4krak_backend::{entities, setup_actix_app};
 use migration::{Migrator, MigratorTrait};
 use sea_orm::{Database, DatabaseConnection};
 use std::env;
 use std::time::Instant;
-use tracing::info;
+use tracing::{error, info};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -31,6 +31,15 @@ async fn main() -> std::io::Result<()> {
     info!("Loaded {} tasks from file system", task_manager.tasks.len());
 
     let app_data = Data::new(AppState::setup(database).await);
+
+    info!("Cleaning up email verification requests...");
+    let database = &app_data.get_ref().database;
+
+    entities::email_verification_request::Model::delete_expired(database)
+        .await
+        .unwrap_or_else(|error| {
+            error!("Error while deleting expired email verification requests: {error}",);
+        });
 
     info!("Starting server...");
     let server = HttpServer::new(move || {

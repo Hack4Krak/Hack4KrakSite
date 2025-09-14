@@ -44,7 +44,7 @@ watchEffect(() => {
   if (error.statusCode === 404) {
     if (message.includes('page not found')) {
       errorTitle.value.message
-          = 'Uwaga rycerzu,\n ta strona zniknęła jak zamek w chmurach.\n Wróć na właściwą drogę!'
+        = 'Uwaga rycerzu,\n ta strona zniknęła jak zamek w chmurach.\n Wróć na właściwą drogę!'
     }
   } else if (error.statusCode === 500) {
     errorTitle.value.message = 'Rycerz napotkał przeszkodę\n Na swojej drodze.\n Spróbuj ponownie później.'

@@ -1,11 +1,37 @@
 @import 'tailwindcss' theme(static);
 @import '@nuxt/ui';
+@import './fundaments.css';
+
 @plugin "@tailwindcss/typography";
 @tailwind utilities;
 
 :root {
   --default-font-family: var(--font-sans);
-  --ui-header-height: --spacing(18);
+
+  --ui-header-height: --spacing(20);
+
+  --ui-primary: var(--color-primary);
+  --ui-secondary: var(--color-secondary);
+
+  --ui-text-dimmed: var(--color-text-muted);
+  --ui-text-muted: var(--color-text-muted);
+  --ui-text-toned: var(--color-text-default);
+  --ui-text: var(--color-text-default);
+  --ui-text-highlighted: var(--color-text-default);
+  --ui-text-inverted: var(--color-surface-default);
+
+  --ui-bg: var(--color-surface-default);
+  --ui-bg-muted: var(--color-surface-muted);
+  --ui-bg-elevated: var(--color-surface-muted);
+  --ui-bg-accented: var(--color-surface-muted);
+  --ui-bg-inverted: var(--color-text-default);
+
+  --ui-border: var(--color-surface-muted);
+  --ui-border-muted: var(--color-text-muted);
+  --ui-border-accented: var(--color-text-muted);
+  --ui-border-inverted: var(--color-text-default);
+
+  --ui-radius: var(--radius);
 }
 
 @theme static {
@@ -13,6 +39,21 @@
   --font-pixelify: Pixelify Sans Hack4Krak; /* Pixelify Sans font with changed number "5" */
   --font-roboto: 'Roboto', sans-serif;
   --color-red-450: #fb4d3d;
+}
+
+@utility icon-sm {
+  width: --spacing(4);
+  height: --spacing(4);
+}
+
+@utility icon-md {
+  width: --spacing(5);
+  height: --spacing(5);
+}
+
+@utility icon-lg {
+  width: --spacing(7);
+  height: --spacing(7);
 }
 
 @utility rendering-pixelated {

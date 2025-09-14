@@ -23,7 +23,7 @@ useSeoMeta({
       <section class="my-8">
         <SectionInfoTiles />
       </section>
-      <Footer hydrate-on-idle class="mt-8 lg:mt-12" />
+      <Footer class="mt-8 lg:mt-12" />
     </UContainer>
   </main>
 </template>
