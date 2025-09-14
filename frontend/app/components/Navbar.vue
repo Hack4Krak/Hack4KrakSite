@@ -26,7 +26,7 @@ watch(() => router.currentRoute.value, () => {
     <div class="flex w-full">
       <div class="md:flex hidden flex-1 items-center">
         <NuxtLink to="/">
-          <img src="/img/logo.svg" class="h-lg" alt="logo">
+          <img src="/img/logo.svg" class="h-lg" alt="Hack4Krak">
         </NuxtLink>
       </div>
       <div>
@@ -59,7 +59,7 @@ watch(() => router.currentRoute.value, () => {
     <!-- Mobile Navigation -->
     <div class="md:hidden flex gap-4 py-2">
       <NuxtLink to="/" class="flex items-center pl-2">
-        <img src="/img/logo.svg" class="h-lg" alt="logo">
+        <img src="/img/logo.svg" class="h-lg" alt="Hack4Krak">
       </NuxtLink>
       <NuxtLink to="/login" class="flex items-center text-md font-semibold ml-auto" :aria-label="isLoggedIn ? 'Otwórz panel' : 'Zaloguj się'">
         <UIcon :name="isLoggedIn ? 'pixelarticons:user' : 'pixelarticons:login'" class="size-md" />
