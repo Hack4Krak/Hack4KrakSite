@@ -24,7 +24,6 @@
         "@vueuse/nuxt": "13.6.0",
         "better-sqlite3": "~12.2.0",
         "chart.js": "^4.4.9",
-        "chartjs-adapter-dayjs-4": "~1.0.4",
         "dayjs-nuxt": "2.1.11",
         "nuxt": "4.0.0",
         "nuxt-charts": "^0.2.3",
@@ -1234,8 +1233,6 @@
     "character-reference-invalid": ["character-reference-invalid@2.0.1", "", {}, "sha512-iBZ4F4wRbyORVsu0jPV7gXkOsGYjGHPmAyv+HiHG8gi5PtC9KI2j1+v8/tlibRvjoWX027ypmG/n0HtO5t7unw=="],
 
     "chart.js": ["chart.js@4.5.0", "", { "dependencies": { "@kurkle/color": "^0.3.0" } }, "sha512-aYeC/jDgSEx8SHWZvANYMioYMZ2KX02W6f6uVfyteuCGcadDLcYVHdfdygsTQkQ4TKn5lghoojAsPj5pu0SnvQ=="],
-
-    "chartjs-adapter-dayjs-4": ["chartjs-adapter-dayjs-4@1.0.4", "", { "peerDependencies": { "chart.js": ">=4.0.1", "dayjs": "^1.9.7" } }, "sha512-yy9BAYW4aNzPVrCWZetbILegTRb7HokhgospPoC3b5iZ5qdlqNmXts2KdSp6AqnjkPAp/YWyHDxLvIvwt5x81w=="],
 
     "check-error": ["check-error@2.1.1", "", {}, "sha512-OAlb+T7V4Op9OwdkjmguYRqncdlx5JiofwOAUkmTF+jNdHwzTaTs4sRAGpzLF3oOz5xAyDGrPgeIDFQmDOTiJw=="],
 
