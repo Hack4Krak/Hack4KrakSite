@@ -62,9 +62,6 @@ watch(() => router.currentRoute.value, () => {
         <img src="assets/img/logo.svg" class="h-lg" alt="Hack4Krak">
       </NuxtLink>
       <NuxtLink to="/login" class="flex items-center text-md font-semibold ml-auto" :aria-label="isLoggedIn ? 'Otwórz panel' : 'Zaloguj się'">
-        <UIcon :name="isLoggedIn ? 'pixelarticons:user' : 'pixelarticons:login'" class="size-md" />
-      </NuxtLink>
-      <NuxtLink to="/login" class="flex items-center text-md font-semibold ml-auto" :aria-label="isLoggedIn ? 'Otwórz panel' : 'Zaloguj się'">
         <UIcon :name="isLoggedIn ? 'pixelarticons:user' : 'pixelarticons:login'" class="icon-md" />
       </NuxtLink>
       <button
