@@ -7,13 +7,23 @@
     "group:allNonMajor",
     ":semanticCommitTypeAll(chore)",
     "workarounds:all",
-    ":preserveSemverRanges",
-    "github>Turbo87/renovate-config//rust/updateToolchain"
+    ":preserveSemverRanges"
   ],
   "ignoreDeps": [
     "zod"
   ],
   "dependencyDashboard": false,
+  "regexManagers": [
+    {
+      "fileMatch": ["(^|/)rust-toolchain\\.toml?$"],
+      "matchStrings": [
+        "channel\\s*=\\s*\"(?<currentValue>\\d+\\.\\d+(\\.\\d+)?)\""
+      ],
+      "depNameTemplate": "rust",
+      "lookupNameTemplate": "rust-lang/rust",
+      "datasourceTemplate": "github-tags"
+    }
+  ],
   "packageRules": [
     {
       "groupName": "Frontend dependencies",
@@ -28,6 +38,11 @@
     {
       "groupName": "Frontend icons",
       "matchPackageNames": ["^@iconify-json/"]
+    },
+    {
+      "groupName": "Rust toolchain",
+      "matchManagers": ["regex"],
+      "matchDepNames": ["rust"]
     }
   ]
 }
