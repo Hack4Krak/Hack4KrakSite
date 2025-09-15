@@ -81,7 +81,7 @@ pub enum Error {
     #[serde(skip)]
     InvalidJson(#[from] serde_json::Error),
     #[serde(skip)]
-    InvalidYaml(#[from] serde_yml::Error),
+    InvalidYaml(#[from] serde_norway::Error),
     InvalidEmailConfirmationCode,
     InvalidColorFormat,
     EmailConfirmationCodeExpired,

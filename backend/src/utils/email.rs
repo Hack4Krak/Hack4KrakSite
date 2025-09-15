@@ -142,7 +142,7 @@ impl Email {
 
     fn meta(&self) -> EmailMeta {
         let file = include_str!("../../templates/email/config.yaml");
-        let templates: HashMap<String, EmailMeta> = serde_yml::from_str(file).unwrap();
+        let templates: HashMap<String, EmailMeta> = serde_norway::from_str(file).unwrap();
 
         match &self.meta {
             Some(meta) => meta.clone(),

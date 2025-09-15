@@ -8,7 +8,7 @@ pub fn localized_error_impl(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let enum_name = &input.ident;
 
-    let messages: serde_yml::Value = serde_yml::from_str(ERRORS_YAML).expect("Invalid YAML");
+    let messages: serde_norway::Value = serde_norway::from_str(ERRORS_YAML).expect("Invalid YAML");
 
     let enum_messages = messages
         .get(enum_name.to_string())

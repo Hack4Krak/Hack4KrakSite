@@ -57,7 +57,7 @@ impl TaskManager {
             let path = entry.path();
             let file_content = fs::read_to_string(path.join("config.yaml")).await.unwrap();
 
-            if let Ok(task) = serde_yml::from_str::<TaskConfig>(&file_content) {
+            if let Ok(task) = serde_norway::from_str::<TaskConfig>(&file_content) {
                 tasks.insert(task.meta.id.clone(), task);
             } else {
                 error!("Failed to parse task config at {:?}", path);
@@ -69,7 +69,7 @@ impl TaskManager {
         let path = EnvConfig::get().tasks_base_path.join(path);
 
         let file_content = fs::read_to_string(path).await.unwrap();
-        serde_yml::from_str::<T>(&file_content).unwrap()
+        serde_norway::from_str::<T>(&file_content).unwrap()
     }
 
     pub async fn load() -> Self {

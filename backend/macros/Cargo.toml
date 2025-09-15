@@ -10,4 +10,4 @@ proc-macro = true
 syn = { version = "^2.0.106", features = ["full"] }
 quote = "^1.0.40"
 
-serde_yml.workspace = true
+serde_norway.workspace = true
