@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FOOTER_SOCIALS } from '~~/content/footer-socials'
 
-const { commitHash, branchName } = useGitInfo()
+const runtimeConfig = useRuntimeConfig().public
 </script>
 
 <template>
@@ -27,7 +27,7 @@ const { commitHash, branchName } = useGitInfo()
             </NuxtLink>!
           </div>
           <div class="hidden lg:block">
-            <span aria-hidden="true" class="text-xs text-dimmed">{{ branchName }}@{{ commitHash }}</span>
+            <span aria-hidden="true" class="text-xs text-dimmed">{{ runtimeConfig.gitCommit }}@{{ runtimeConfig.gitBranch }}</span>
           </div>
         </div>
 
