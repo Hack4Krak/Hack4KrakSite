@@ -1,5 +1,9 @@
-# Ignore directories
+# Backend
 backend/target/
+backend/openapi-cli/
+backend/TasksTemplate/
+
+# Frontend
 **/node_modules/
 frontend/tests
 frontend/.output
