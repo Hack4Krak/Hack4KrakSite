@@ -14,7 +14,7 @@ version = "2.0.0"
 edition = "2024"
 
 [workspace.dependencies]
-sea-orm = { version = "1.1.14", features = [ "sqlx-postgres", "sqlx-sqlite", "runtime-tokio-rustls", "macros", "mock" ] }
+sea-orm = { version = "1.1.16", features = [ "sqlx-postgres", "sqlx-sqlite", "runtime-tokio-rustls", "macros", "mock" ] }
 tokio = { version = "1.47.1", features = ["macros", "rt", "rt-multi-thread", "fs"] }
 serde_norway = "0.9.42"
 
@@ -33,12 +33,12 @@ actix-web = { version = "4.11.0", features = ["cookies"] }
 actix-web-validation = { version = "0.8.0", features = ["validator"] }
 actix-cors = "0.7.1"
 actix-governor = "0.8.0"
-actix-files = "0.6.6"
+actix-files = "0.6.8"
 actix-http = "3.11.1"
 
 # Serde
-serde = { version = "1.0.219", features = ["derive"] }
-serde_json = "1.0.142"
+serde = { version = "1.0.226", features = ["derive"] }
+serde_json = "1.0.145"
 serde_norway.workspace = true
 
 # Workspace
@@ -46,24 +46,24 @@ sea-orm.workspace = true
 tokio.workspace = true
 
 # Utils
-regex = "1.11.1"
+regex = "1.11.2"
 futures-util = "0.3.31"
 reqwest = { version = "0.12.23", features = ["json"] }
-uuid = { version = "1.18.0", features = ["serde", "v4"] }
+uuid = { version = "1.18.1", features = ["serde", "v4"] }
 envy = "0.4.2"
 dotenvy = "0.15.7"
-thiserror = "2.0.15"
+thiserror = "2.0.16"
 tracing = "0.1.41"
-tracing-subscriber = "0.3.19"
-argon2 = "0.6.0-rc.0"
+tracing-subscriber = "0.3.20"
+argon2 = "0.6.0-rc.1"
 jsonwebtoken = "9.3.1"
-chrono = "0.4.41"
+chrono = "0.4.42"
 oauth2 = { version = "5.0.0", features = ["reqwest"] }
 lettre = "0.11.18"
 dashmap = "6.1.0"
 validator = { version = "0.20.0", features = ["derive"] }
 sha2 = "0.10.9"
-url = "2.5.4"
+url = "2.5.7"
 async-stream = "0.3.6"
 rand = "0.9.2"
 prometheus = "0.14.0"
