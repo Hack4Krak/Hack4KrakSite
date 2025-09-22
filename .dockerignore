@@ -1,6 +1,6 @@
 # Ignore directories
 backend/target/
-node_modules/
+**/node_modules/
 frontend/tests
 frontend/.output
 frontend/.nuxt
