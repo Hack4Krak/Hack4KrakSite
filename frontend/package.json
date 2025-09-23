@@ -23,7 +23,7 @@
     "@norbiros/nuxt-auto-form": "0.5.0",
     "@nuxt/content": "https://pkg.pr.new/@nuxt/content@3482",
     "@nuxt/image": "1.11.0",
-    "@nuxt/ui": "3.3.2",
+    "@nuxt/ui": "4.0.0",
     "@nuxtjs/mdc": "0.17.2",
     "@nuxtjs/seo": "3.1.0",
     "@vueuse/nuxt": "13.6.0",
