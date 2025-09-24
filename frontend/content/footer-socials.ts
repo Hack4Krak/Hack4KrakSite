@@ -6,6 +6,7 @@ export const FOOTER_SOCIALS = [
     label: 'Polityka Prywatności',
     to: '/docs/privacy-policy',
     icon: null,
+    target: undefined,
   },
   {
     label: 'Regulamin',
