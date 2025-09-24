@@ -65,10 +65,6 @@
   height: calc(100vh - var(--ui-header-height));
 }
 
-@utility min-h-screen-without-header {
-  min-height: calc(100vh - var(--ui-header-height));
-}
-
 @utility scrollbar-hide {
   /* For Webkit-based browsers (Chrome, Safari and Opera) */
   ::-webkit-scrollbar {
