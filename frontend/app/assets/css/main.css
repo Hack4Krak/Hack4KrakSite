@@ -2,7 +2,8 @@
 @import '@nuxt/ui';
 @import './fundaments.css';
 
-@plugin "@tailwindcss/typography";
+@source "../content/**/*";
+
 @tailwind utilities;
 
 :root {
