@@ -7,8 +7,6 @@ const { content } = defineProps<{
     image: string
   }
 }>()
-
-const colorString = computed(() => `var(--color-${content.color})`)
 </script>
 
 <template>
@@ -19,7 +17,7 @@ const colorString = computed(() => `var(--color-${content.color})`)
            lg:text-3xl relative cursor-pointer lg:overflow-hidden
            group"
     :style="{
-      borderColor: colorString,
+      borderColor: content.color,
     }"
   >
     <div
@@ -27,7 +25,7 @@ const colorString = computed(() => `var(--color-${content.color})`)
              flex-col gap-4 lg:gap-12 items-center justify-center lg:p-0
              lg:group-hover:translate-y-[-100%]"
     >
-      <div class="text-lg lg:text-2xl text-center" :style="{ color: colorString }">
+      <div class="text-lg lg:text-2xl text-center" :style="{ color: content.color }">
         <MarkdownContent :prose="false" :text="content.front" />
       </div>
       <NuxtImg :src="content.image" alt="" height="400" class="h-12 lg:h-32 rendering-pixelated" />
