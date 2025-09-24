@@ -10,7 +10,11 @@ onMounted(() => {
 
 <template>
   <NuxtRouteAnnouncer />
-  <NuxtLayout>
-    <NuxtPage class="flex-grow" />
-  </NuxtLayout>
+  <NuxtLoadingIndicator color="var(--ui-primary)" :height="2" />
+
+  <UApp>
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+  </UApp>
 </template>

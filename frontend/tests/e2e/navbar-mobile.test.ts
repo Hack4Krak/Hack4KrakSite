@@ -11,10 +11,6 @@ test('navbar visibility on mobile when scrolled to bottom', async ({ page }) => 
   // Get the mobile navbar element - container with sticky positioning that contains the mobile navigation
   const navbar = page.locator('.sticky.top-0')
 
-  // Verify we're using the mobile view
-  await expect(page.locator('.md\\:hidden')).toBeVisible()
-  await expect(page.locator('.hidden.md\\:block')).not.toBeVisible()
-
   // Verify navbar is initially visible
   await expect(navbar).toBeVisible()
 

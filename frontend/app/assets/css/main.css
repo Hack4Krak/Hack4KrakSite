@@ -1,8 +1,9 @@
-@import 'tailwindcss' theme(static);
+@import 'tailwindcss';
 @import '@nuxt/ui';
 @import './fundaments.css';
 
-@plugin "@tailwindcss/typography";
+@source "../content/**/*";
+
 @tailwind utilities;
 
 :root {
@@ -62,10 +63,6 @@
 
 @utility h-screen-without-header {
   height: calc(100vh - var(--ui-header-height));
-}
-
-@utility min-h-screen-without-header {
-  min-height: calc(100vh - var(--ui-header-height));
 }
 
 @utility scrollbar-hide {

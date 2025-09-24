@@ -15,7 +15,7 @@ useSeoMeta({
   <h1 class="lg:-translate-y-1/3 font-bold text-center p-2 stroked-text-3 text-3xl lg:text-6xl">
     FAQ
   </h1>
-  <div class="mt-5 prose prose-invert pb-15">
+  <div class="mt-5 prose prose-invert pb-15 max-w-[65ch]">
     <div class="font-light mt-3 text-center text-xl mb-12">
       Czyli najczęściej zadawane pytania:
     </div>

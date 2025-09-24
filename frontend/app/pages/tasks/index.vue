@@ -28,5 +28,5 @@ const elements = ref<Tasks>(data.value ?? [])
 </script>
 
 <template>
-  <Map :elements="elements" :completed-tasks="completedTasks" class="mt-1" />
+  <Map :elements="elements" :completed-tasks="completedTasks" />
 </template>

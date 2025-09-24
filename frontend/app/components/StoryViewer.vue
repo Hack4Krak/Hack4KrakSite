@@ -50,7 +50,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    class="rendering-pixelated relative max-w-full max-h-screen justify-end flex flex-col bg-cover bg-center cursor-pointer"
+    class="min-h-[inherit] rendering-pixelated relative justify-end flex flex-col bg-cover bg-center cursor-pointer"
     :style="{ backgroundImage: `url('${image}')` }"
     @click="handleClick"
   >
