@@ -3,7 +3,9 @@ title: Regulamin Hack4Krak - edycja dla Szkół Podstawowych
 description: Regulamin Hack4Krak - edycja dla Szkół Podstawowych
 ---
 
-# :bangbang: Ten regulamin dotyczy poprzedniej edycji wydarzenia :bangbang:
+::caution
+Ten regulamin dotyczy poprzedniej edycji wydarzenia, która odbyła się w **Maju 2025**.
+::
 
 ## 1. Postanowienia ogólne
 
@@ -31,10 +33,9 @@ description: Regulamin Hack4Krak - edycja dla Szkół Podstawowych
 
 1. CTF odbywa się w dniu 30.05.2025 w godzinach 8:00 do 15:00 w 31 Liceum Ogólnokształcącym w Krakowie — ul. Kazimierza Odnowiciela 2, 31-481 Kraków.
 2. Harmonogram wydarzenia:
-
-- 8:00 - 8:30 - potwierdzenie obecności drużyn, oficjalne rozpoczęcie wydarzenia,
-- 8:30 - 14:30 - czas na rozwiązywanie zadań,
-- 14:30 - 15:00 - oficjalne zakończenie wydarzenia, ogłoszenie wyników i rozdanie nagród.
+   - 8:00 - 8:30 - potwierdzenie obecności drużyn, oficjalne rozpoczęcie wydarzenia,
+   - 8:30 - 14:30 - czas na rozwiązywanie zadań,
+   - 14:30 - 15:00 - oficjalne zakończenie wydarzenia, ogłoszenie wyników i rozdanie nagród.
 
 3. Każda drużyna zobowiązana jest do przybycia na wydarzenie z pracownikiem swojej szkoły, który będzie jej opiekunem. Jeżeli w CTF weźmie udział więcej niż jedna drużyna z danej szkoły, to z uczniami danej szkoły musi być obecny co najmniej jeden pracownik tej szkoły.
 4. Uczestnicy otrzymają w dniu CTF dostęp do zadań i ich dokumentacji.
@@ -63,18 +64,16 @@ description: Regulamin Hack4Krak - edycja dla Szkół Podstawowych
 1. Uczestnicy CTF zobowiązują się do przestrzegania regulaminu.
 2. W kwestiach nieujętych regulaminem decyzja organizatorów jest wiążąca.
 3. Uczestnicy CTF mogą odwołać się od decyzji organizatorów. Warunki odwołania od decyzji organizatora określa się w następujący sposób:
-
-- w przypadku złożenia odwołania od decyzji podjętej przed dniem, w którym odbywa się CTF, uczestnik ma tydzień na odwołanie się od decyzji, a organizator ma 3 dni robocze na rozpatrzenie odwołania,
-- w przypadku złożenia odwołania od decyzji podjętej w trakcie trwania CTF-a uczestnik ma czas do 15 minut przed czasem zakończenia CTF-a przewidzianym w harmonogramie na odwołanie się od decyzji, a organizator ma czas na rozpatrzenie odwołania do 30 minut po zakończeniu CTF-a,
-- w przypadku złożenia odwołania od decyzji podjętej po dniu, w którym odbywa się CTF, uczestnik ma czas do 6.06.2025 na odwołanie się od decyzji, a organizator ma 5 dni roboczych na rozpatrzenie odwołania, jednak pozytywne rozpatrzenie tego odwołania, nie może być podstawą, do anulowania wyników wydarzenia i powtórzenia go, ani do przekazania nagród rzeczowych między drużynami.
-- w przypadku pozytywnego rozpatrzenia odwołania od decyzji organizator ma obowiązek wycofać swoją decyzję, a w przypadku, w którym decyzja jest kluczowa do przebiegu CTF-a, organizator ma obowiązek podjąć nową decyzję, uwzględniająca odwołanie uczestnika. O wycofaniu decyzji i podjęciu nowej decyzji organizator informuje wszystkich uczestników CTF, na których dana decyzja miała wpływ drogą mailową.
+   - w przypadku złożenia odwołania od decyzji podjętej przed dniem, w którym odbywa się CTF, uczestnik ma tydzień na odwołanie się od decyzji, a organizator ma 3 dni robocze na rozpatrzenie odwołania,
+   - w przypadku złożenia odwołania od decyzji podjętej w trakcie trwania CTF-a uczestnik ma czas do 15 minut przed czasem zakończenia CTF-a przewidzianym w harmonogramie na odwołanie się od decyzji, a organizator ma czas na rozpatrzenie odwołania do 30 minut po zakończeniu CTF-a,
+   - w przypadku złożenia odwołania od decyzji podjętej po dniu, w którym odbywa się CTF, uczestnik ma czas do 6.06.2025 na odwołanie się od decyzji, a organizator ma 5 dni roboczych na rozpatrzenie odwołania, jednak pozytywne rozpatrzenie tego odwołania, nie może być podstawą, do anulowania wyników wydarzenia i powtórzenia go, ani do przekazania nagród rzeczowych między drużynami.
+   - w przypadku pozytywnego rozpatrzenia odwołania od decyzji organizator ma obowiązek wycofać swoją decyzję, a w przypadku, w którym decyzja jest kluczowa do przebiegu CTF-a, organizator ma obowiązek podjąć nową decyzję, uwzględniająca odwołanie uczestnika. O wycofaniu decyzji i podjęciu nowej decyzji organizator informuje wszystkich uczestników CTF, na których dana decyzja miała wpływ drogą mailową.
 
 4. Dane kontaktowe organizatorów:
-
-- email organizatorów: kontakt@hack4krak.pl,
-- Koordynator Główny ze strony Samorządu Uczniowskiego: email: jakub.starzyk@lo31.krakow.pl, tel.: 571 493 707,
-- email opiekuna ze strony Rady Pedagogicznej: aligaskowaluk@lo31.krakow.pl,
-- administrator danych osobowych: email: zso13@mjo.krakow.pl, tel.: 12 413 35 54.
+   - email organizatorów: kontakt@hack4krak.pl,
+   - Koordynator Główny ze strony Samorządu Uczniowskiego: email: jakub.starzyk@lo31.krakow.pl, tel.: 571 493 707,
+   - email opiekuna ze strony Rady Pedagogicznej: aligaskowaluk@lo31.krakow.pl,
+   - administrator danych osobowych: email: zso13@mjo.krakow.pl, tel.: 12 413 35 54.
 
 ## Załącznik nr 1
 
