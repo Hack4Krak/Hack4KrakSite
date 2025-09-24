@@ -28,7 +28,7 @@ const colorString = computed(() => `var(--color-${content.color})`)
              lg:group-hover:translate-y-[-100%]"
     >
       <div class="text-lg lg:text-2xl text-center" :style="{ color: colorString }">
-        <MarkdownContent prose="none" :text="content.front" />
+        <MarkdownContent :prose="false" :text="content.front" />
       </div>
       <NuxtImg :src="content.image" alt="" height="400" class="h-12 lg:h-32 rendering-pixelated" />
     </div>
@@ -40,7 +40,7 @@ const colorString = computed(() => `var(--color-${content.color})`)
     >
       <div class="w-full">
         <div class="text-[1rem] text-pretty text-left lg:px-12">
-          <MarkdownContent prose="none" :text="content.back" :style="{ color: colorString }" />
+          <MarkdownContent :prose="false" :text="content.back" :style="{ color: content.color }" />
         </div>
       </div>
     </div>

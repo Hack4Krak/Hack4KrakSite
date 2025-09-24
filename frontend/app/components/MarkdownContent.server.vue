@@ -1,20 +1,14 @@
 <script setup lang="ts">
 const props = withDefaults(defineProps<{
   text: string
-  prose?: 'light' | 'dark' | 'none'
+  prose?: boolean
   inline?: boolean
 }>(), {
-  prose: 'dark',
+  prose: true,
   inline: false,
 })
 
-const proseClass = computed(() => {
-  switch (props.prose) {
-    case 'light': return 'prose'
-    case 'dark': return 'prose prose-invert'
-    default: return ''
-  }
-})
+const proseClass = computed(() => props.prose ? 'max-w-[65ch]' : '')
 
 const inlineClass = computed(() => {
   return props.inline ? 'inline [&>p]:inline' : ''
@@ -22,7 +16,7 @@ const inlineClass = computed(() => {
 </script>
 
 <template>
-  <span :class="proseClass">
+  <div :class="proseClass">
     <MDC :value="text" :class="inlineClass" />
-  </span>
+  </div>
 </template>
