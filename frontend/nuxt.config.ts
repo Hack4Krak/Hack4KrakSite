@@ -1,5 +1,3 @@
-import { getDocsPages } from './app/utils/getDocsPages'
-
 const backendAddress = process.env.BACKEND_ADDRESS || 'http://localhost:8080'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
@@ -58,18 +56,16 @@ export default defineNuxtConfig({
 
   routeRules: {
     '/tasks/description/**': { swr: true },
+    // For now, we have to manually list all docs to prerender them
+    // due to some issues with Nitro crawling dynamic routes
     '/docs/**': { prerender: true },
+    '/docs/faq': { prerender: true },
+    '/docs/rules': { prerender: true },
+    '/docs/privacy-policy': { prerender: true },
     '/': { prerender: true },
     '/about_us': { prerender: true },
     '/faq': { redirect: '/docs/faq' },
     '/rules': { redirect: '/docs/rules' },
-  },
-
-  hooks: {
-    'nitro:config': async function (nitroConfig) {
-      const docsPaths = await getDocsPages()
-      nitroConfig.prerender?.routes?.push(...docsPaths)
-    },
   },
 
   app: {
