@@ -43,7 +43,7 @@ for (let i = 0; i < adjustedTimestamps.value.length; i++) {
   chartData.push(obj)
 }
 
-const xFormatter = (i: number) => new Date(chartData[i].time).toLocaleTimeString()
+const xFormatter = (i: number) => dayjs.utc(chartData[i].time).tz(targetTimezone).format('HH:mm')
 
 const { data: teams, refresh: refreshTeams } = await useApi('/leaderboard/teams')
 
@@ -92,7 +92,7 @@ function makeTooltip(values: any) {
 function tooltipName(values: any) {
   if (values === undefined)
     return null
-  return `Top 10 drużyn (${new Date(values.time).toLocaleTimeString()}):`
+  return `Top 10 drużyn (${dayjs.utc(values.time).tz(targetTimezone).format('HH:mm')}):`
 }
 </script>
 
@@ -109,10 +109,11 @@ function tooltipName(values: any) {
         :x-formatter="xFormatter"
         x-label="Czas"
         y-label="Punkty"
+        :y-grid-line="true"
         :hide-legend="false"
       >
         <template #tooltip="{ values }">
-          <div style="padding: 10px 15px;">
+          <div class="px-4 py-2.5">
             <div
               :style="{
                 color: 'var(--tooltip-value-color)',
