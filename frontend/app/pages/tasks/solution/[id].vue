@@ -4,7 +4,7 @@ const taskId = route.params.id
 
 const { data: taskName } = useApi('/tasks/name/{task_id}', {
   path: {
-    task_id: taskId,
+    task_id: taskId?.toString() ?? '',
   },
 })
 
