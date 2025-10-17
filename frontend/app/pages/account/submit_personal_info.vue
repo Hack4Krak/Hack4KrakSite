@@ -38,6 +38,7 @@ const schema = z.object({
   is_vegetarian: z.boolean({ error: 'Wybór jest wymagany' })
     .meta({ title: 'Preferencje żywieniowe' }),
   marketing_consent: z.boolean()
+    .default(false)
     .meta({
       title: 'Czy chcesz dostawać informacje o kolejnych wydarzeniach organizowanych przez Hack4Krak?',
       theme: { floatRight: true },
