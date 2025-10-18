@@ -14,6 +14,7 @@ async function logout() {
     credentials: 'include',
   })
 
+  await refreshNuxtData()
   await navigateTo('/login')
 }
 </script>
