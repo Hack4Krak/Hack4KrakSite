@@ -14,7 +14,7 @@ async function logout() {
     credentials: 'include',
   })
 
-  await navigateTo('/login')
+  await navigateTo('/login', { external: true })
 }
 </script>
 
