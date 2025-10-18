@@ -38,6 +38,11 @@ export default defineAppConfig({
     },
     select: {
       slots: { base: 'w-full' },
+      variants: {
+        variant: {
+          outline: 'ring-default',
+        },
+      },
     },
   },
   autoForm: {
