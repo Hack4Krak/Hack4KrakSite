@@ -14,7 +14,7 @@ async function onSubmit(data: zInfer<typeof schema>) {
 
   useToast().add({ title: 'Sukces', description: 'Pomyślnie zaproszono użytkownika', color: 'success' })
   open.value = false
-  navigateTo('/panel/team', { external: true })
+  await refreshNuxtData()
 }
 </script>
 
