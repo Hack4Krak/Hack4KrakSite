@@ -7,6 +7,7 @@ mod tasks;
 mod team_invites;
 mod teams;
 mod users;
+mod email_verification_request;
 
 pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(scope("/users").configure(users::config));
