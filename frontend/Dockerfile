@@ -9,6 +9,7 @@ FROM base as prerelease
 COPY package.json bun.lock ./
 COPY frontend/package.json frontend/
 COPY backend/package.json backend/
+COPY bunfig.toml .
 
 RUN bun install --frozen-lockfile --filter hack4krak-frontend
 
