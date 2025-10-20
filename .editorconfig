@@ -9,6 +9,6 @@ max_line_length = 120
 indent_size = 2
 tab_width = 2
 
-[.rs]
+[*.rs]
 indent_size = 4
 tab_width = 4
