@@ -160,4 +160,8 @@ export default defineNuxtConfig({
     description: 'Krakowski CTF dla wszystkich uczniów szkół średnich. Sprawdź swoje umiejętności i zawalcz o ciekawe nagrody biorąc udział w wydarzeniu! Nie zwlekaj i zgłoś swoją drużynę już dziś!',
     defaultLocale: 'pl',
   },
+  // https://content.nuxt.com/docs/getting-started
+  content: {
+    experimental: { nativeSqlite: true },
+  },
 })

@@ -27,7 +27,6 @@
     "@nuxtjs/mdc": "0.17.2",
     "@nuxtjs/seo": "3.1.0",
     "@vueuse/nuxt": "13.6.0",
-    "better-sqlite3": "~12.2.0",
     "chart.js": "^4.4.9",
     "chartjs-adapter-dayjs-4": "~1.0.4",
     "dayjs-nuxt": "2.1.11",
