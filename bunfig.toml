@@ -1,2 +1,2 @@
 [install]
-linker = "hoisted"
+publicHoistPattern = ["tailwind-variants", "@vueuse/core", "dayjs", "tailwindcss"]
