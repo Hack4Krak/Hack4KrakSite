@@ -9,7 +9,7 @@
     "lint:fix": "cargo clippy --fix --allow-staged --allow-dirty && cargo fmt",
     "test": "cargo test",
     "test:full": "cargo test --features=full-test-suite",
-    "db:generate-entities": "sea-orm-cli generate entity --with-serde both -o src/entities/ --model-extra-derives hack4krak_macros::DeriveUpdatableModel,utoipa::ToSchema,Default",
+    "db:generate-entities": "sea-orm-cli generate entity --with-serde both -o src/entities/ --model-extra-derives hack4krak_macros::DeriveUpdatableModel,Default --model-extra-attributes hack4krak_macros::to_schema_from_file_name",
     "db:rollback": "cd migration/ && cargo run -- down",
     "db:migration": "cd migration/ && cargo run -- generate",
     "db:fresh": "cd migration/ && cargo run -- fresh",
