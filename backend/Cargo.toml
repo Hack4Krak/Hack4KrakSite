@@ -71,4 +71,4 @@ askama = { version = "0.14.0", features = ["blocks"] }
 
 [dev-dependencies]
 quoted_printable = "0.5.1"
-testcontainers = "0.25.0"
+testcontainers = "0.25.2"
