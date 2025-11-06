@@ -27,7 +27,9 @@ async function onSubmit() {
 
   toast.add({ title: 'Sukces', description: props.toastSuccessMessage, color: 'success' })
   open.value = false
-  navigateTo(props.redirectTo, { external: true })
+
+  await refreshNuxtData()
+  navigateTo(props.redirectTo)
 }
 </script>
 
