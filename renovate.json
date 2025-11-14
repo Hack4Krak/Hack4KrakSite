@@ -43,6 +43,13 @@
       "groupName": "Rust toolchain",
       "matchManagers": ["regex"],
       "matchDepNames": ["rust"]
+    },
+    {
+      "groupName": "Bun",
+      "matchManagers": ["bun-version", "dockerfile"],
+      "matchDepNames": ["imbios/bun-node", "bun"],
+      "matchFileNames": [".bun-version"],
+      "rangeStrategy": "bump"
     }
   ]
 }
