@@ -27,6 +27,7 @@
   "packageRules": [
     {
       "groupName": "Frontend dependencies",
+      "matchManagers": ["bun"],
       "matchPaths": ["frontend/**"]
     },
     {
