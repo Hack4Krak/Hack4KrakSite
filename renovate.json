@@ -44,13 +44,14 @@
     {
       "groupName": "Rust toolchain",
       "matchManagers": ["regex", "dockerfile"],
-      "matchDepNames": ["rust", "lukemathwalker/cargo-chef"]
+      "matchDepNames": ["rust", "lukemathwalker/cargo-chef"],
+      "separateMultipleMajor": false
     },
     {
       "groupName": "Bun",
       "matchManagers": ["bun-version", "dockerfile"],
       "matchDepNames": ["imbios/bun-node", "bun"],
-      "matchFileNames": [".bun-version"],
+      "separateMultipleMajor": false,
       "rangeStrategy": "bump"
     }
   ]
