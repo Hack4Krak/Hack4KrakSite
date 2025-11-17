@@ -32,6 +32,7 @@
     {
       "groupName": "Backend dependencies",
       "matchPaths": ["backend/**"],
+      "matchManagers": ["cargo"],
       "rangeStrategy": "bump",
       "extends": ["schedule:weekly"]
     },
@@ -41,8 +42,8 @@
     },
     {
       "groupName": "Rust toolchain",
-      "matchManagers": ["regex"],
-      "matchDepNames": ["rust"]
+      "matchManagers": ["regex", "dockerfile"],
+      "matchDepNames": ["rust", "lukemathwalker/cargo-chef"]
     },
     {
       "groupName": "Bun",
