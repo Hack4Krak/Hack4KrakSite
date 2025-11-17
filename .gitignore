@@ -47,3 +47,5 @@ frontend/.unlighthouse
 # Tests
 frontend/playwright-report
 frontend/test-results
+
+mise.toml
