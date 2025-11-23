@@ -33,8 +33,8 @@ async function logout() {
     hydrate-on-visible
   />
 
-  <div class="grid grid-cols-[400px_1fr] h-155  divide-x my-5 mx-15 border w-full">
-    <div class=" h-full flex flex-col divide-y">
+  <div class="grid grid-cols-[400px_1fr] divide-x m-10 border flex-1">
+    <div class="h-full flex flex-col divide-y">
       <div class="grow items-center justify-center flex flex-col">
         <h3 class="text-xl font-bold">
           {{ user?.username }}

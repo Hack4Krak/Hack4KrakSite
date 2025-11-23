@@ -6,6 +6,18 @@
 
 @tailwind utilities;
 
+@layer base {
+  /* https://kyleshevlin.com/tailwind-minimum-full-height-layout/ */
+  html {
+    height: 100%;
+  }
+  body {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
 :root {
   --default-font-family: var(--font-sans);
 
