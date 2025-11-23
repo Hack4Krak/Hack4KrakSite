@@ -119,13 +119,17 @@ if (import.meta.client) {
 </script>
 
 <template>
-  <div class="m-5 text-center">
+  <div class="my-5 text-center flex flex-col gap-5">
     <h1 class="font-bold text-5xl">
       Punktacja
     </h1>
-    <div class="h-screen">
-      <Line :data="chartData" :options="chartOptions" class="m-5 " />
+    <div class="overflow-x-auto">
+      <div class="h-screen min-w-[50rem] px-10">
+        <Line :data="chartData" :options="chartOptions" />
+      </div>
     </div>
-    <UTable :data="teamsTableData" :columns="columns" class="flex-1  mx-10" />
+    <div class="overflow-x-auto">
+      <UTable :data="teamsTableData" :columns="columns" class="flex-1 px-15" />
+    </div>
   </div>
 </template>
