@@ -1,4 +1,6 @@
 <script setup lang="ts">
+definePageMeta({ layout: 'panel' })
+
 const { $api } = useNuxtApp()
 
 const { data: user } = await useAuth('/account/')
@@ -34,7 +36,7 @@ async function logout() {
     hydrate-on-visible
   />
 
-  <div class="grid grid-cols-[400px_1fr] divide-x m-10 border flex-1">
+  <div class="grid grid-cols-[400px_1fr] divide-x m-10 border min-w-fit flex-1">
     <div class="h-full flex flex-col divide-y">
       <div class="grow items-center justify-center flex flex-col">
         <h3 class="text-xl font-bold">
@@ -66,10 +68,10 @@ async function logout() {
       </div>
     </div>
 
-    <div class="divide-y w-full h-full flex flex-col">
-      <div class="w-full text-2xl font-bold p-5 flex justify-between items-center">
+    <div class="divide-y flex flex-col">
+      <div class="text-2xl font-bold flex justify-between items-center gap-5 p-5">
         Wydarzenia
-        <JoinTeamButton @click="joinExternalTeamModal = true" />
+        <JoinTeamButton class="whitespace-nowrap" @click="joinExternalTeamModal = true" />
       </div>
       <div class="grow">
         <Placeholder class="w-full h-full">
