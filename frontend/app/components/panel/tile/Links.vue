@@ -7,7 +7,7 @@ const LINKS = [
 </script>
 
 <template>
-  <div class="flex flex-col gap-5 items-center justify-center overflow-clip">
+  <div class="flex flex-col gap-5 items-center justify-center">
     <h3 class="text-xl font-bold">
       Ważne linki
     </h3>
