@@ -1,6 +1,6 @@
 <template>
   <NuxtLoadingIndicator color="var(--ui-primary)" :height="2" />
-  <UMain>
+  <UMain as="main">
     <slot />
   </UMain>
 </template>

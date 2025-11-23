@@ -64,7 +64,7 @@ async function finishTimer() {
 
 <template>
   <NuxtLayout name="default">
-    <div class="w-full mx-10 flex content-center items-center justify-center flex-col-reverse md:flex-row">
+    <div class="w-full flex-1 flex content-center items-center justify-center flex-col-reverse md:flex-row">
       <div class="flex flex-col md:mr-10 max-w-3/4 md:max-w-3/5 space-y-5">
         <h1 class="text-balance text-5xl text-primary font-bold" :class="errorTitle.titleClass">
           {{ errorTitle.title }}

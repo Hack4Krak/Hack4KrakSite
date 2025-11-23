@@ -1,6 +1,6 @@
 <template>
   <Navbar />
-  <UMain>
+  <UMain class="flex-1 flex flex-col" as="main">
     <slot />
   </UMain>
 </template>
