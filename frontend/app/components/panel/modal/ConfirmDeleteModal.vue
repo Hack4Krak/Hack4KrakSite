@@ -29,7 +29,7 @@ async function onSubmit() {
   open.value = false
 
   await refreshNuxtData()
-  navigateTo(props.redirectTo)
+  await navigateTo(props.redirectTo)
 }
 </script>
 
