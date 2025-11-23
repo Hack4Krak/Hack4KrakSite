@@ -21,9 +21,9 @@ const runtimeConfig = useRuntimeConfig().public
             <span>Open Source</span>
           </NuxtLink>!
         </div>
-      </div>
-      <div v-if="runtimeConfig.gitCommit" class="hidden lg:block">
-        <span aria-hidden="true" class="text-xs text-dimmed">{{ runtimeConfig.gitCommit }}@{{ runtimeConfig.gitBranch }}</span>
+        <div v-if="runtimeConfig.gitCommit" class="hidden lg:block">
+          <span aria-hidden="true" class="text-xs text-dimmed">{{ runtimeConfig.gitCommit }}@{{ runtimeConfig.gitBranch }}</span>
+        </div>
       </div>
     </template>
 
