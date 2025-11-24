@@ -93,7 +93,6 @@ useSeoMeta({
           :modifiers="{
             crop: '850_132_3681_950',
             fit: 'contain',
-            gravity: 'north',
           }"
           class="col-span-3 w-full object-cover border-2 border-muted"
           :src="aboutUsContent.gallery.mainGalleryImage"
