@@ -13,7 +13,7 @@ use actix_web::{HttpResponse, get};
 )]
 #[get("/teams")]
 pub async fn teams(app_state: Data<AppState>) -> Result<HttpResponse, Error> {
-    let points_counter = PointsCounter::work(&app_state.database).await?;
+    let points_counter = PointsCounter::work(&app_state).await?;
 
     Ok(HttpResponse::Ok().json(points_counter.get_final_team_points()))
 }
