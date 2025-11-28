@@ -23,7 +23,7 @@ const navigationMenuProperties = computed(() => ({
 <template>
   <UHeader :ui="{ container: 'max-w-full' }" class="bg-default">
     <template #title>
-      <LogoWithText class="text-base" />
+      <img src="~/assets/img/logo.svg" class="h-(--spacing-icon-lg)" alt="Hack4Krak">
     </template>
 
     <UNavigationMenu v-bind="navigationMenuProperties" />
