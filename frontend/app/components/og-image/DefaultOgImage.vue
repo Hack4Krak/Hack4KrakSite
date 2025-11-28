@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<{
   colorMode?: string
 }>(), {
   colorMode: 'dark',
-  icon: '/img/logo.svg',
+  icon: '/img/logo.png',
   theme: '#ff595e',
 })
 
