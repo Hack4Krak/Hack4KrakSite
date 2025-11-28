@@ -45,6 +45,10 @@
   --ui-border-inverted: var(--color-text-default);
 
   --ui-radius: var(--radius);
+
+  --spacing-icon-sm: --spacing(4);
+  --spacing-icon-md: --spacing(5);
+  --spacing-icon-lg: --spacing(7);
 }
 
 @theme static {
@@ -55,18 +59,18 @@
 }
 
 @utility icon-sm {
-  width: --spacing(4);
-  height: --spacing(4);
+  width: var(--spacing-icon-sm);
+  height: var(--spacing-icon-sm);
 }
 
 @utility icon-md {
-  width: --spacing(5);
-  height: --spacing(5);
+  width: var(--spacing-icon-md);
+  height: var(--spacing-icon-md);
 }
 
 @utility icon-lg {
-  width: --spacing(7);
-  height: --spacing(7);
+  width: var(--spacing-icon-lg);
+  height: var(--spacing-icon-lg);
 }
 
 @utility rendering-pixelated {
