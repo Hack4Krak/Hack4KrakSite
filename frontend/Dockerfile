@@ -5,7 +5,7 @@ WORKDIR /app
 ARG BACKEND_ADDRESS
 ENV BACKEND_ADDRESS=$BACKEND_ADDRESS
 
-FROM base as prerelease
+FROM base AS prerelease
 COPY package.json bun.lock ./
 COPY frontend/package.json frontend/
 COPY backend/package.json backend/
