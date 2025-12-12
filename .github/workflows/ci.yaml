@@ -40,7 +40,7 @@ jobs:
         run: bun frontend:test
 
       - name: "Cache Playwright binaries"
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('bun.lock') }}
