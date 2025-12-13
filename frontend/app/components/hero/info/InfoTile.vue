@@ -5,6 +5,7 @@ const { content } = defineProps<{
     back: string
     color: string
     image: string
+    alt: string
   }
 }>()
 </script>
@@ -28,7 +29,7 @@ const { content } = defineProps<{
       <div class="text-lg lg:text-2xl text-center" :style="{ color: content.color }">
         <MarkdownContent :prose="false" :text="content.front" />
       </div>
-      <NuxtImg :src="content.image" alt="" height="400" class="h-12 lg:h-32 rendering-pixelated" />
+      <NuxtImg :src="content.image" :alt="content.alt" height="400" class="h-12 lg:h-32 rendering-pixelated" />
     </div>
 
     <div
