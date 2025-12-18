@@ -1,7 +1,7 @@
 use crate::services::env::EnvConfig;
 use crate::utils::error::Error;
 use askama::DynTemplate;
-use lettre::message::header::{Header, HeaderName, HeaderValue};
+use lettre::message::header::{HeaderName, HeaderValue};
 use lettre::message::{Mailbox, SinglePart, header};
 use lettre::{Message, SmtpTransport, Transport};
 use serde::{Deserialize, Serialize};
@@ -10,26 +10,8 @@ use std::collections::HashMap;
 use std::str::FromStr;
 use utoipa::ToSchema;
 
-// Can be removed when lettre supports raw headers
-// https://github.com/lettre/lettre/issues/661
-#[derive(Clone, Debug)]
-pub struct RawToHeader<'a>(pub &'a str);
-
-impl<'a> Header for RawToHeader<'a> {
-    fn name() -> HeaderName {
-        HeaderName::new_from_ascii_str("To")
-    }
-
-    fn parse(_: &str) -> Result<Self, Box<dyn std::error::Error + Send + Sync>> {
-        unimplemented!()
-    }
-
-    fn display(&self) -> HeaderValue {
-        HeaderValue::new(Self::name(), self.0.into())
-    }
-}
-
 pub const UNDISCLOSED_RECIPIENTS: &str = "undisclosed-recipients:;";
+pub const TO_EMAIL_HEADER: HeaderName = HeaderName::new_from_ascii_str("To");
 
 #[derive(Serialize, Deserialize, ToSchema, Clone, Debug)]
 pub struct EmailMeta {
@@ -119,7 +101,10 @@ impl Email {
 
         for to in &self.recipients {
             if to == UNDISCLOSED_RECIPIENTS {
-                email_builder = email_builder.header(RawToHeader(UNDISCLOSED_RECIPIENTS));
+                email_builder = email_builder.raw_header(HeaderValue::new(
+                    TO_EMAIL_HEADER,
+                    UNDISCLOSED_RECIPIENTS.to_string(),
+                ));
                 continue;
             }
             email_builder = email_builder.to(Self::parse_address(to)?);
