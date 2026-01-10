@@ -5,20 +5,11 @@ FROM chef AS planner
 COPY backend/Cargo.toml backend/Cargo.lock ./
 COPY backend/macros/Cargo.toml ./macros/
 COPY backend/migration/Cargo.toml ./migration/
-# Create minimal openapi-cli structure to satisfy workspace (actual source excluded by .dockerignore)
-RUN mkdir -p openapi-cli/src && \
-    printf '[package]\n\
-name = "openapi-cli"\n\
-version.workspace = true\n\
-edition.workspace = true\n\
-\n\
-[dependencies]\n\
-tokio.workspace = true\n\
-hack4krak-backend = { path = "../" }\n' > openapi-cli/Cargo.toml && \
-    echo 'fn main() {}' > openapi-cli/src/main.rs
 COPY backend/src/lib.rs backend/src/main.rs ./src/
 COPY backend/macros/src/lib.rs ./macros/src/
 COPY backend/migration/src/lib.rs ./migration/src/
+# Remove openapi-cli from workspace members since it's excluded by .dockerignore
+RUN sed -i 's/members = \[.*\]/members = [".", "macros", "migration"]/' Cargo.toml
 RUN cargo chef prepare --recipe-path recipe.json
 
 FROM chef AS builder
