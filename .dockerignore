@@ -1,6 +1,7 @@
 # Backend
 backend/target/
 backend/openapi-cli/
+!backend/openapi-cli/Cargo.toml
 backend/TasksTemplate/
 
 # Frontend

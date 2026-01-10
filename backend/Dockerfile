@@ -2,7 +2,15 @@ FROM lukemathwalker/cargo-chef:latest-rust-1.91.1 AS chef
 WORKDIR /app
 
 FROM chef AS planner
-COPY backend .
+# Only copy Cargo manifests and lock file
+COPY backend/Cargo.toml backend/Cargo.lock ./
+COPY backend/macros/Cargo.toml ./macros/Cargo.toml
+COPY backend/migration/Cargo.toml ./migration/Cargo.toml
+COPY backend/openapi-cli/Cargo.toml ./openapi-cli/Cargo.toml
+COPY backend/rust-toolchain.toml ./rust-toolchain.toml
+# Create minimal lib.rs/main.rs stubs required by cargo
+RUN mkdir -p src macros/src migration/src openapi-cli/src \
+    && touch src/lib.rs src/main.rs macros/src/lib.rs migration/src/lib.rs openapi-cli/src/main.rs
 RUN cargo chef prepare --recipe-path recipe.json
 
 FROM chef AS builder
