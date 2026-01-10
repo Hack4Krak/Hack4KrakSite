@@ -2,7 +2,16 @@ FROM lukemathwalker/cargo-chef:latest-rust-1.91.1 AS chef
 WORKDIR /app
 
 FROM chef AS planner
-COPY backend .
+COPY backend/Cargo.toml backend/Cargo.lock ./
+COPY backend/macros/Cargo.toml ./macros/
+COPY backend/migration/Cargo.toml ./migration/
+# Create minimal openapi-cli structure to satisfy workspace (actual source excluded by .dockerignore)
+RUN mkdir -p openapi-cli/src && \
+    echo '[package]\nname = "openapi-cli"\nversion.workspace = true\nedition.workspace = true\n\n[dependencies]\ntokio.workspace = true\nhack4krak-backend = { path = "../" }' > openapi-cli/Cargo.toml && \
+    echo 'fn main() {}' > openapi-cli/src/main.rs
+COPY backend/src/lib.rs backend/src/main.rs ./src/
+COPY backend/macros/src/lib.rs ./macros/src/
+COPY backend/migration/src/lib.rs ./migration/src/
 RUN cargo chef prepare --recipe-path recipe.json
 
 FROM chef AS builder
