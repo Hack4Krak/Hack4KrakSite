@@ -7,7 +7,14 @@ COPY backend/macros/Cargo.toml ./macros/
 COPY backend/migration/Cargo.toml ./migration/
 # Create minimal openapi-cli structure to satisfy workspace (actual source excluded by .dockerignore)
 RUN mkdir -p openapi-cli/src && \
-    echo '[package]\nname = "openapi-cli"\nversion.workspace = true\nedition.workspace = true\n\n[dependencies]\ntokio.workspace = true\nhack4krak-backend = { path = "../" }' > openapi-cli/Cargo.toml && \
+    printf '[package]\n\
+name = "openapi-cli"\n\
+version.workspace = true\n\
+edition.workspace = true\n\
+\n\
+[dependencies]\n\
+tokio.workspace = true\n\
+hack4krak-backend = { path = "../" }\n' > openapi-cli/Cargo.toml && \
     echo 'fn main() {}' > openapi-cli/src/main.rs
 COPY backend/src/lib.rs backend/src/main.rs ./src/
 COPY backend/macros/src/lib.rs ./macros/src/
