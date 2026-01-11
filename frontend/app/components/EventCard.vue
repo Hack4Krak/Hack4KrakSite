@@ -85,7 +85,7 @@ const {
       </div>
       <div class="h-8 flex">
         <div :class="userNumber()">
-          <p>{{ participants.toString() }}</p>
+          <p>{{ participants }}</p>
           <UIcon name="pixelarticons:user" class="size-sm" />
         </div>
         <div :class="button()">
