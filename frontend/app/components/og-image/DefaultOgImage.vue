@@ -61,7 +61,7 @@ const siteName = computed(() => props.siteName || useSiteConfig().name)
           </p>
         </div>
         <div v-if="icon" class="flex justify-end" style="width: 30%;">
-          <img :src="icon" height="100" alt="Hack4Krak">
+          <img :src="icon" height="100" alt="Hack4Krak logo">
         </div>
       </div>
       <div class="flex flex-row justify-center items-center text-left w-full">
