@@ -1,7 +1,20 @@
 <script setup lang="ts">
 import { NAVBAR_ITEMS } from '~~/content/navbar'
 
-const { data: username } = useAsyncData('username', async () => useNavbarUser())
+let username: string | undefined = undefined
+const refreshToken = useCookie('refresh_token').value
+if (refreshToken) {
+  const payload = JSON.parse(atob(refreshToken.split('.')[1] ?? ''))
+  const email = payload?.email
+
+  if (email) {
+    const { data } = await useApi('/users/username-by-email', {
+      method: 'POST',
+      body: { email },
+    })
+    username = data?.value
+  }
+}
 
 async function logout() {
   await useAuth('/auth/logout', {
@@ -27,7 +40,7 @@ const navigationMenuProperties = computed(() => ({
 </script>
 
 <template>
-  <UHeader :ui="{ container: 'max-w-full' }" class="bg-default">
+  <UHeader :ui="{ container: 'max-w-full' }" class="bg-default" nuxt-client>
     <template #title>
       <LogoWithText class="text-base" />
     </template>

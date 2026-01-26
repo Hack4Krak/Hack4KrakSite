@@ -21,7 +21,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
   ],
   experimental: {
-    componentIslands: true,
+    componentIslands: { selectiveClient: true },
     typedPages: true,
     sharedPrerenderData: true,
   },
