@@ -54,6 +54,7 @@ pub fn setup_actix_app(
         .service(routes::metrics::metrics)
         .service(scope("/auth").configure(routes::auth::config))
         .service(scope("/teams").configure(routes::teams::config))
+        .service(scope("/users").configure(routes::users::config))
         .service(
             scope("/tasks")
                 .wrap(EventMiddleware::disallow_before_event())

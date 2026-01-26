@@ -1,10 +1,29 @@
 <script setup lang="ts">
 import { NAVBAR_ITEMS } from '~~/content/navbar'
 
-const { data: isLoggedIn } = useAuth('/auth/status', {
-  redirect: 'error',
-  onResponseError: undefined,
-})
+let username: string | undefined = undefined
+const refreshToken = useCookie('refresh_token').value
+if (refreshToken) {
+  const payload = JSON.parse(atob(refreshToken.split('.')[1] ?? ''))
+  const email = payload?.email
+
+  if (email) {
+    const { data } = await useApi('/users/username-by-email', {
+      method: 'POST',
+      body: { email },
+    })
+    username = data?.value
+  }
+}
+
+async function logout() {
+  await useAuth('/auth/logout', {
+    method: 'POST',
+  })
+
+  await refreshNuxtData()
+  await navigateTo('/login')
+}
 
 const navigationMenuProperties = computed(() => ({
   'content-orientation': 'vertical' as const,
@@ -21,7 +40,7 @@ const navigationMenuProperties = computed(() => ({
 </script>
 
 <template>
-  <UHeader :ui="{ container: 'max-w-full' }" class="bg-default">
+  <UHeader :ui="{ container: 'max-w-full' }" class="bg-default" nuxt-client>
     <template #title>
       <LogoWithText class="text-base" />
     </template>
@@ -29,11 +48,15 @@ const navigationMenuProperties = computed(() => ({
     <UNavigationMenu v-bind="navigationMenuProperties" />
 
     <template #right>
-      <NuxtLink to="/login" class="text-md font-semibold flex justify-end w-full" :aria-label="isLoggedIn ? 'Otwórz panel' : 'Zaloguj się'">
-        <UIcon :name="isLoggedIn ? 'pixelarticons:user' : 'pixelarticons:login'" class="icon-md lg:hidden" />
+      <NuxtLink to="/login" class="text-md font-semibold flex justify-end w-full" :aria-label="username ? 'Otwórz panel' : 'Zaloguj się'">
+        <UIcon :name="username ? 'pixelarticons:user' : 'pixelarticons:login'" class="icon-md lg:hidden" />
 
         <span class="hidden lg:inline">
-          {{ isLoggedIn ? "Otwórz panel" : "Zaloguj się" }}
+          <span v-if="!username">Zaloguj się</span>
+          <div v-else class="flex gap-1.5 items-center">
+            <span class="text-neutral-400 font-normal text-sm">{{ username }}</span>
+            <UIcon name="pixelarticons:logout" class="icon-lg" @click="logout" />
+          </div>
         </span>
       </NuxtLink>
 
