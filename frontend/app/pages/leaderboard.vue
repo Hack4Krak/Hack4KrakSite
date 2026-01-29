@@ -43,7 +43,7 @@ const adjustedTimestamps = computed(() => {
 })
 
 const datasets = computed(() => (data.value?.team_points_over_time || []).map(item => ({
-  label: item.label,
+  label: item.name,
   data: item.points,
   borderColor: item.color,
   lineTension: 0.2,

@@ -75,6 +75,8 @@ pub async fn submit(
         )
         .await?;
 
+        app_state.invalidate_points_cache().await;
+
         let _ = app_state
             .sse_event_sender
             .send(SseEvent::LeaderboardUpdate {

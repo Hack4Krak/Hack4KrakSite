@@ -5,237 +5,215 @@ use chrono::NaiveDateTime;
 use sea_orm::{EntityTrait, QueryOrder};
 use serde::ser::SerializeStruct;
 use serde::{Deserialize, Serialize, Serializer};
-use std::collections::HashMap;
+use std::cmp::Ordering;
+use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 use utoipa::ToSchema;
 use uuid::Uuid;
 
+#[derive(Debug, Default, Clone)]
+struct TeamTimeSeriesData {
+    points: Vec<usize>,
+    color: String,
+    solve_timestamps: Vec<NaiveDateTime>,
+    current_flags: usize,
+}
+
 #[derive(Serialize, Deserialize, ToSchema, Default, Debug, PartialEq)]
-pub struct TeamPoints {
-    pub label: String,
+pub struct TeamPointsTimeSeries {
+    pub name: String,
     pub color: String,
     pub points: Vec<usize>,
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Debug, PartialEq)]
-pub struct TeamCurrentPoints {
+pub struct TeamRanking {
     pub team_name: String,
     pub current_points: usize,
     pub captured_flags: usize,
     pub color: String,
 }
 
-#[derive(Serialize, Deserialize, ToSchema, Debug, Default)]
-pub struct TeamPointsAndFlagsOverTimeAndTeamColor {
-    pub points: Vec<usize>,
-    pub flags: Vec<usize>,
-    pub color: String,
-}
-
 #[derive(Serialize, Deserialize, ToSchema, Default, Debug, PartialEq)]
-pub struct Chart {
+pub struct LeaderboardChart {
     pub event_timestamps: Vec<NaiveDateTime>,
-    pub team_points_over_time: Vec<TeamPoints>,
+    pub team_points_over_time: Vec<TeamPointsTimeSeries>,
 }
 
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone)]
 pub struct PointsCounter {
     event_timestamps: Vec<NaiveDateTime>,
-    team_points_and_flags_over_time: HashMap<String, TeamPointsAndFlagsOverTimeAndTeamColor>,
+    team_time_series: HashMap<String, TeamTimeSeriesData>,
 }
 
 impl PointsCounter {
-    pub async fn work(app_state: &Arc<AppState>) -> Result<PointsCounter, Error> {
+    /// Calculates points for all teams based on flag captures.
+    /// Uses caching to avoid redundant database queries.
+    pub async fn calculate(app_state: &Arc<AppState>) -> Result<PointsCounter, Error> {
+        {
+            let cache = app_state.points_cache.read().await;
+            if let Some(cached) = cache.as_ref() {
+                return Ok(cached.clone());
+            }
+        }
+
         let captures = flag_capture::Entity::find()
             .order_by_asc(flag_capture::Column::SubmittedAt)
+            .order_by_asc(flag_capture::Column::Id)
             .all(&app_state.database)
             .await?;
+
         let teams = teams::Entity::find().all(&app_state.database).await?;
+        let start_time = app_state
+            .task_manager
+            .event_config
+            .read()
+            .await
+            .start_date
+            .naive_utc();
 
-        let mut output = Self::default();
-        let mut task_to_teams: HashMap<String, Vec<Uuid>> = HashMap::new();
-        let mut team_to_tasks: HashMap<Uuid, Vec<String>> = HashMap::new();
+        let mut counter = Self::default();
+        counter.event_timestamps.push(start_time);
 
-        let mut task_points: HashMap<String, usize> = HashMap::new();
-
-        // TODO: Improve this
-        output.event_timestamps.push(
-            app_state
-                .task_manager
-                .event_config
-                .read()
-                .await
-                .start_date
-                .naive_utc(),
-        );
         for team in &teams {
-            output
-                .team_points_and_flags_over_time
-                .entry(team.name.clone())
-                .or_default()
-                .points
-                .push(0);
+            counter.team_time_series.insert(
+                team.name.clone(),
+                TeamTimeSeriesData {
+                    points: vec![0],
+                    color: team.color.clone(),
+                    solve_timestamps: vec![],
+                    current_flags: 0,
+                },
+            );
         }
 
-        for capture in captures {
-            let task_name = capture.task.clone();
-            let team_id = capture.team;
+        counter.process_events(captures, &teams);
 
-            task_to_teams
-                .entry(task_name.clone())
-                .or_default()
-                .push(team_id);
+        *app_state.points_cache.write().await = Some(counter.clone());
 
-            team_to_tasks
-                .entry(team_id)
-                .or_default()
-                .push(task_name.clone());
-
-            let solves_amount = task_to_teams[&task_name].len();
-            let points = Self::calculate_task_points(solves_amount, teams.len());
-
-            task_points.insert(task_name.clone(), points);
-
-            for team in &teams {
-                let solves = team_to_tasks.get(&team.id);
-
-                let mut sum = 0;
-                if let Some(solves) = solves {
-                    for solve in solves {
-                        sum += task_points.get(solve).unwrap();
-                    }
-                }
-
-                output
-                    .team_points_and_flags_over_time
-                    .entry(team.name.clone())
-                    .or_default()
-                    .points
-                    .push(sum);
-
-                output
-                    .team_points_and_flags_over_time
-                    .entry(team.name.clone())
-                    .or_default()
-                    .flags
-                    .push(solves.unwrap_or(&Vec::new()).len());
-
-                output
-                    .team_points_and_flags_over_time
-                    .entry(team.name.clone())
-                    .or_default()
-                    .color = team.color.clone();
-            }
-
-            output.event_timestamps.push(capture.submitted_at);
-        }
-
-        Ok(output)
+        Ok(counter)
     }
 
-    pub fn get_final_team_points(&self) -> Vec<TeamCurrentPoints> {
-        let mut points = self
-            .team_points_and_flags_over_time
-            .iter()
-            .map(|(team_name, data)| {
-                let final_points = *data.points.last().unwrap_or(&0);
-                let final_flags = *data.flags.last().unwrap_or(&0);
+    fn process_events(&mut self, captures: Vec<flag_capture::Model>, teams: &[teams::Model]) {
+        let mut task_solve_counts: HashMap<String, usize> = HashMap::new();
+        let mut team_solves: HashMap<Uuid, HashSet<String>> = HashMap::new();
+        let total_teams = teams.len();
 
-                // Collect all timestamps when team solved tasks (points increased)
-                let solve_times = {
-                    let mut times = Vec::new();
-                    let mut prev_points = 0;
-                    for (i, &p) in data.points.iter().enumerate() {
-                        if p > prev_points
-                            && let Some(&time) = self.event_timestamps.get(i)
-                        {
-                            times.push(time);
-                        }
-                        prev_points = p;
-                    }
-                    times
+        for capture in captures {
+            *task_solve_counts.entry(capture.task.clone()).or_default() += 1;
+
+            team_solves
+                .entry(capture.team)
+                .or_default()
+                .insert(capture.task.clone());
+
+            for team in teams {
+                let solved_tasks = team_solves.get(&team.id);
+
+                let current_points = match solved_tasks {
+                    Some(tasks) => tasks
+                        .iter()
+                        .map(|t_id| {
+                            Self::calculate_task_value(
+                                *task_solve_counts.get(t_id).unwrap_or(&0),
+                                total_teams,
+                            )
+                        })
+                        .sum(),
+                    None => 0,
                 };
 
-                (
-                    TeamCurrentPoints {
-                        team_name: team_name.clone(),
-                        current_points: final_points,
-                        captured_flags: final_flags,
-                        color: data.color.clone(),
-                    },
-                    solve_times,
-                )
-            })
-            .collect::<Vec<_>>();
+                let flags_count = solved_tasks.map(|s| s.len()).unwrap_or(0);
 
-        points.sort_by(|a, b| {
-            b.0.current_points.cmp(&a.0.current_points).then_with(|| {
-                // Compare solve times from last to first
-                let times_a = &a.1;
-                let times_b = &b.1;
+                let team_data = self.team_time_series.get_mut(&team.name).unwrap();
+                team_data.points.push(current_points);
+                team_data.current_flags = flags_count;
 
-                // Iterate from the end (last solve) backwards
-                for i in (0..times_a.len().max(times_b.len())).rev() {
-                    match (times_a.get(i), times_b.get(i)) {
-                        (Some(time_a), Some(time_b)) => {
-                            let cmp = time_a.cmp(time_b);
-                            if cmp != std::cmp::Ordering::Equal {
-                                return cmp;
-                            }
-                        }
-                        (Some(_), None) => return std::cmp::Ordering::Greater,
-                        (None, Some(_)) => return std::cmp::Ordering::Less,
-                        (None, None) => {}
-                    }
+                if team.id == capture.team {
+                    team_data.solve_timestamps.push(capture.submitted_at);
                 }
-                std::cmp::Ordering::Equal
+            }
+
+            self.event_timestamps.push(capture.submitted_at);
+        }
+    }
+
+    /// Calculates point value for a task based on solve count using linear decay.
+    /// Points range from 500 (max) to 100 (min), decreasing linearly as more teams solve it.
+    fn calculate_task_value(solve_count: usize, total_teams: usize) -> usize {
+        const MAX_POINTS: f64 = 500f64;
+        const MIN_POINTS: f64 = 100f64;
+        const DECAY_RANGE: f64 = MAX_POINTS - MIN_POINTS;
+
+        if total_teams <= 2 || solve_count <= 2 {
+            return MAX_POINTS as usize;
+        }
+
+        let decay_factor = DECAY_RANGE / (total_teams - 2) as f64;
+        let solves_active = (solve_count - 2) as f64;
+        let points = MAX_POINTS - (solves_active * decay_factor);
+
+        points.round().max(MIN_POINTS) as usize
+    }
+
+    pub fn get_rankings(&self) -> Vec<TeamRanking> {
+        let mut rankings: Vec<TeamRanking> = self
+            .team_time_series
+            .iter()
+            .map(|(name, data)| TeamRanking {
+                team_name: name.clone(),
+                current_points: *data.points.last().unwrap_or(&0),
+                captured_flags: data.current_flags,
+                color: data.color.clone(),
             })
+            .collect();
+
+        rankings.sort_by(|a, b| {
+            let points_cmp = b.current_points.cmp(&a.current_points);
+            if points_cmp != Ordering::Equal {
+                return points_cmp;
+            }
+
+            let history_a = &self.team_time_series[&a.team_name].solve_timestamps;
+            let history_b = &self.team_time_series[&b.team_name].solve_timestamps;
+
+            for (time_a, time_b) in history_a.iter().rev().zip(history_b.iter().rev()) {
+                match time_a.cmp(time_b) {
+                    Ordering::Equal => continue,
+                    ordering => return ordering,
+                }
+            }
+
+            match history_a.len().cmp(&history_b.len()) {
+                Ordering::Equal => a.team_name.cmp(&b.team_name),
+                ordering => ordering.reverse(),
+            }
         });
 
-        points.into_iter().map(|(tp, _)| tp).collect()
+        rankings
     }
 
     pub fn team_rank(&self, team_name: &str) -> Option<(usize, usize)> {
-        let team_points = self.get_final_team_points();
-        let team_rank = team_points
-            .iter()
-            .position(|team| team.team_name == team_name)?
-            + 1;
-
-        Some((team_rank, team_points.len()))
+        let rankings = self.get_rankings();
+        let position = rankings.iter().position(|r| r.team_name == team_name)?;
+        Some((position + 1, rankings.len()))
     }
 
-    pub fn to_chart(self) -> Chart {
-        let points = self
-            .team_points_and_flags_over_time
+    pub fn to_chart(self) -> LeaderboardChart {
+        let team_points_over_time = self
+            .team_time_series
             .into_iter()
-            .map(|(team_id, time_points_and_flags)| TeamPoints {
-                label: team_id,
-                color: time_points_and_flags.color,
-                points: time_points_and_flags.points,
+            .map(|(name, data)| TeamPointsTimeSeries {
+                name,
+                color: data.color,
+                points: data.points,
             })
-            .collect::<Vec<TeamPoints>>();
+            .collect();
 
-        Chart {
+        LeaderboardChart {
             event_timestamps: self.event_timestamps,
-            team_points_over_time: points,
+            team_points_over_time,
         }
-    }
-
-    fn calculate_task_points(solves_amount: usize, total_teams: usize) -> usize {
-        const DEFAULT_POINTS_PER_TASK: usize = 500;
-        const POINTS_TO_DISTRIBUTE: usize = 400;
-
-        if solves_amount <= 2 {
-            return DEFAULT_POINTS_PER_TASK;
-        }
-
-        let solved_teams = (solves_amount - 2) as f64;
-
-        let points = DEFAULT_POINTS_PER_TASK as f64
-            - solved_teams * (POINTS_TO_DISTRIBUTE as f64 / (total_teams - 2) as f64);
-
-        points.round() as usize
     }
 }
 
@@ -245,22 +223,20 @@ impl Serialize for PointsCounter {
         S: Serializer,
     {
         let mut state = serializer.serialize_struct("PointsCounter", 2)?;
-
         state.serialize_field("events", &self.event_timestamps)?;
 
-        let team_points: Vec<_> = self
-            .team_points_and_flags_over_time
+        let series: Vec<_> = self
+            .team_time_series
             .iter()
-            .map(|(team_name, points_and_flags)| {
+            .map(|(k, v)| {
                 serde_json::json!({
-                    "label": team_name,
-                    "data": points_and_flags.points,
+                    "label": k,
+                    "data": v.points
                 })
             })
             .collect();
 
-        state.serialize_field("team_points_over_time", &team_points)?;
-
+        state.serialize_field("team_points_over_time", &series)?;
         state.end()
     }
 }
@@ -271,23 +247,50 @@ mod tests {
 
     #[test]
     fn test_calculate_task_points_with_2_or_fewer_solves() {
-        assert_eq!(PointsCounter::calculate_task_points(0, 3), 500);
-        assert_eq!(PointsCounter::calculate_task_points(1, 3), 500);
-        assert_eq!(PointsCounter::calculate_task_points(2, 3), 500);
+        assert_eq!(PointsCounter::calculate_task_value(0, 3), 500);
+        assert_eq!(PointsCounter::calculate_task_value(1, 3), 500);
+        assert_eq!(PointsCounter::calculate_task_value(2, 3), 500);
     }
 
     #[test]
     fn test_calculate_task_points_with_more_solves() {
-        let points = PointsCounter::calculate_task_points(3, 5);
+        let points = PointsCounter::calculate_task_value(3, 5);
         assert_eq!(points, 367, "Expected points to decrease with more solves");
 
-        let points = PointsCounter::calculate_task_points(4, 5);
+        let points = PointsCounter::calculate_task_value(4, 5);
         assert_eq!(points, 233, "Expected points to decrease with more solves");
     }
 
     #[test]
     fn test_calculate_task_everybody_solved() {
-        let points = PointsCounter::calculate_task_points(100, 100);
+        let points = PointsCounter::calculate_task_value(100, 100);
         assert_eq!(points, 100);
+    }
+
+    #[test]
+    fn test_calculate_task_value_never_below_minimum() {
+        for solve_count in 0..200 {
+            let points = PointsCounter::calculate_task_value(solve_count, 50);
+            assert!(
+                points >= 100,
+                "Points should never fall below minimum (100)"
+            );
+            assert!(points <= 500, "Points should never exceed maximum (500)");
+        }
+    }
+
+    #[test]
+    fn test_calculate_task_value_linear_decay() {
+        let total_teams = 10;
+        let points_3_solves = PointsCounter::calculate_task_value(3, total_teams);
+        let points_4_solves = PointsCounter::calculate_task_value(4, total_teams);
+        let points_5_solves = PointsCounter::calculate_task_value(5, total_teams);
+
+        assert!(points_3_solves > points_4_solves);
+        assert!(points_4_solves > points_5_solves);
+
+        let decay_1 = points_3_solves - points_4_solves;
+        let decay_2 = points_4_solves - points_5_solves;
+        assert_eq!(decay_1, decay_2, "Decay should be linear");
     }
 }
