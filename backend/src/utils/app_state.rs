@@ -1,10 +1,11 @@
 use crate::services::env::EnvConfig;
 use crate::services::task_manager::TaskManager;
 use crate::utils::oauth::OAuthProvider;
+use crate::utils::points_counter::PointsCounter;
 use crate::utils::sse_event::SseEvent;
 use lettre::SmtpTransport;
 use sea_orm::DatabaseConnection;
-use tokio::sync::broadcast;
+use tokio::sync::{RwLock, broadcast};
 
 const LEADERBOARD_UPDATES_CHANNEL_CAPACITY: i8 = 4;
 
@@ -15,6 +16,7 @@ pub struct AppState {
     pub google_oauth_provider: OAuthProvider,
     pub smtp_client: SmtpTransport,
     pub sse_event_sender: broadcast::Sender<SseEvent>,
+    pub points_cache: RwLock<Option<PointsCounter>>,
 }
 
 impl AppState {
@@ -61,6 +63,7 @@ impl AppState {
             google_oauth_provider,
             smtp_client,
             sse_event_sender: leaderboard_updates_transmitter,
+            points_cache: RwLock::new(None),
         }
     }
 
@@ -88,6 +91,10 @@ impl AppState {
             ..Default::default()
         }
     }
+
+    pub async fn invalidate_points_cache(&self) {
+        *self.points_cache.write().await = None;
+    }
 }
 
 impl Default for AppState {
@@ -107,6 +114,7 @@ impl Default for AppState {
             google_oauth_provider: oauth_provider,
             smtp_client: SmtpTransport::relay("email.example.com").unwrap().build(),
             sse_event_sender: broadcast::channel(LEADERBOARD_UPDATES_CHANNEL_CAPACITY as usize).0,
+            points_cache: RwLock::new(None),
         }
     }
 }
