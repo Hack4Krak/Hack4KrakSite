@@ -100,7 +100,7 @@ function tooltipName(values: any) {
     <h1 class="font-bold text-5xl">
       Punktacja
     </h1>
-    <div class="h-screen p-2">
+    <div class="h-screen p-2 overflow-x-auto min-w-200">
       <LineChart
         :data="chartData"
         :categories="categories"
