@@ -1,4 +1,4 @@
-FROM imbios/bun-node:1.3.7-current-alpine AS base
+FROM imbios/bun-node:1.3.8-current-alpine AS base
 RUN apk add --no-cache git
 WORKDIR /app
 
