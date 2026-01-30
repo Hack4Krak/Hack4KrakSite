@@ -1,6 +1,6 @@
 use crate::entities::sea_orm_active_enums::TeamStatus;
 use crate::entities::teams::ActiveModel;
-use crate::entities::{external_team_invitation, flag_capture, teams, users};
+use crate::entities::{external_team_invitation, flag_capture, team_invites, teams, users};
 use crate::models::task::RegistrationConfig;
 use crate::routes::flag::FlagError::TeamNotConfirmed;
 use crate::routes::teams::TeamError::*;
@@ -24,10 +24,18 @@ pub struct TeamWithMembers {
     pub id: Uuid,
     pub team_name: String,
     pub created_at: DateTime,
-    pub members: Vec<(Uuid, String)>,
+    pub members: Vec<TeamMember>,
     pub confirmation_code: Option<Uuid>,
     pub status: TeamStatus,
     pub organization: Option<String>,
+    pub size: u8,
+}
+
+#[derive(Serialize, Deserialize, ToSchema)]
+pub struct TeamMember {
+    pub id: Uuid,
+    pub username: String,
+    pub is_leader: bool,
 }
 
 impl teams::Model {
@@ -239,30 +247,53 @@ impl teams::Model {
         Ok(leader)
     }
 
+    pub async fn size(database: &DatabaseConnection, team_id: Uuid) -> Result<u8, Error> {
+        let mut size = users::Entity::find()
+            .filter(users::Column::Team.eq(team_id))
+            .count(database)
+            .await?;
+
+        size += team_invites::Entity::find()
+            .filter(team_invites::Column::Team.eq(team_id))
+            .count(database)
+            .await?;
+
+        size += external_team_invitation::Entity::find()
+            .filter(external_team_invitation::Column::Team.eq(team_id))
+            .count(database)
+            .await?;
+
+        Ok(size as u8)
+    }
+
     pub async fn list(database: &DatabaseConnection) -> Result<Vec<TeamWithMembers>, Error> {
         let teams = teams::Entity::find()
             .find_with_related(users::Entity)
             .all(database)
             .await?;
 
-        let teams_with_members = teams
-            .into_iter()
-            .map(|(team, users)| {
-                let members: Vec<(Uuid, String)> = users
-                    .into_iter()
-                    .map(|user| (user.id, user.username))
-                    .collect();
-                TeamWithMembers {
-                    id: team.id,
-                    team_name: team.name,
-                    created_at: team.created_at,
-                    members,
-                    confirmation_code: team.confirmation_code,
-                    status: team.status,
-                    organization: team.organization,
-                }
-            })
-            .collect::<Vec<TeamWithMembers>>();
+        let mut teams_with_members = Vec::new();
+
+        for (team, users) in teams {
+            let members: Vec<TeamMember> = users
+                .into_iter()
+                .map(|user| TeamMember {
+                    id: user.id,
+                    username: user.username,
+                    is_leader: user.is_leader,
+                })
+                .collect();
+            teams_with_members.push(TeamWithMembers {
+                id: team.id,
+                team_name: team.name,
+                created_at: team.created_at,
+                members,
+                confirmation_code: team.confirmation_code,
+                status: team.status,
+                organization: team.organization,
+                size: Self::size(database, team.id).await?,
+            });
+        }
 
         Ok(teams_with_members)
     }

@@ -111,6 +111,7 @@ pub enum Error {
     #[serde(skip)]
     #[error(transparent)]
     FailedToRenderTemplate(#[from] askama::Error),
+    TeamInviteNotFound,
 
     #[error(transparent)]
     Account(#[from] AccountError),
@@ -162,6 +163,7 @@ impl error::ResponseError for Error {
             | Error::AccessBeforeEventStart { .. } => StatusCode::FORBIDDEN,
             Error::UserWithEmailOrUsernameAlreadyExists => StatusCode::CONFLICT,
             Error::AccessAfterEventEnd => StatusCode::GONE,
+            Error::TeamInviteNotFound => StatusCode::NOT_FOUND,
             Error::Account(account_err) => account_err.status_code(),
             Error::Team(team_err) => team_err.status_code(),
             Error::Auth(auth_err) => auth_err.status_code(),
