@@ -31,7 +31,7 @@
     "chartjs-adapter-dayjs-4": "~1.0.4",
     "dayjs-nuxt": "2.1.11",
     "nuxt": "4.2.0",
-    "nuxt-open-fetch": "0.13.6",
+    "nuxt-open-fetch": "0.13.8",
     "nuxt-qrcode": "0.4.8",
     "party-js": "2.2.0",
     "rehype-katex": "7.0.1",
