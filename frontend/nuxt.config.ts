@@ -1,3 +1,7 @@
+import dotenv from 'dotenv'
+
+dotenv.config({ path: '../.env' })
+
 const backendAddress = process.env.BACKEND_ADDRESS || 'http://localhost:8080'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
