@@ -25,7 +25,7 @@ To learn more about code architecture and our crates refer to [ARCHITECTURE.md](
 
 3. Then, you need to set up the database.
     ```shell
-    docker compose up
+    docker compose --profile db up
     ```
 
 4. And after that you can finally start the backend in two different ways:
