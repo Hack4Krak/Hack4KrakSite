@@ -9,7 +9,7 @@ const runtimeConfig = useRuntimeConfig().public
   <UFooter class="w-full text-muted py-8 lg:px-12 lg:mb-8 text-xs lg:text-base">
     <template #left>
       <div class="flex flex-col items-center lg:items-start justify-between text-xs lg:text-base">
-        <img src="~/assets/img/logo.svg" class="h-(--spacing-icon-lg) mb-5 lg:mb-4" alt="Hack4Krak logo">
+        <img src="~/assets/img/logo.svg" class="h-(--spacing-icon-lg) mb-4 lg:mb-4" alt="Hack4Krak logo">
 
         <p class="text-center lg:text-left">
           © {{ new Date().getFullYear() }} Wszelkie prawa zastrzeżone.
