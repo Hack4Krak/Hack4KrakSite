@@ -23,6 +23,7 @@ export default defineNuxtConfig({
     'dayjs-nuxt',
     '@compodium/nuxt',
     '@vueuse/nuxt',
+    '@nuxt/hints',
   ],
   experimental: {
     componentIslands: true,
