@@ -4,7 +4,6 @@ const schema = z.object({
 })
 
 const open = defineModel<boolean>()
-const formRef = useTemplateRef('form')
 
 async function onSubmit(data: zInfer<typeof schema>) {
   await useNuxtApp().$auth('/teams/management/invite_user', {
@@ -19,14 +18,9 @@ async function onSubmit(data: zInfer<typeof schema>) {
 </script>
 
 <template>
-  <UModal v-model:open="open" title="Zaproś użytkownika" :ui="{ footer: 'justify-end' }">
+  <UModal v-model:open="open" title="Zaproś użytkownika">
     <template #body>
-      <AutoForm ref="form" :schema="schema" @submit="onSubmit" />
-    </template>
-
-    <template #footer>
-      <UButton label="Zamknij" color="neutral" variant="outline" @click="open = false" />
-      <UButton label="Stwórz" @click="formRef?.submit()" />
+      <AutoForm :schema="schema" @submit="onSubmit" />
     </template>
   </UModal>
 </template>

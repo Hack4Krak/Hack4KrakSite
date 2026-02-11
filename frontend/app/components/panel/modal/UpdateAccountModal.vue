@@ -4,7 +4,6 @@ const schema = z.object({
 })
 
 const open = defineModel<boolean>()
-const formRef = useTemplateRef('form')
 
 async function onSubmit(data: zInfer<typeof schema>) {
   await useNuxtApp().$auth('/account/update', {
@@ -18,14 +17,9 @@ async function onSubmit(data: zInfer<typeof schema>) {
 </script>
 
 <template>
-  <UModal v-model:open="open" title="Ustawienia konta" description="Zmień ustawienia konta" :ui="{ footer: 'justify-end' }">
+  <UModal v-model:open="open" title="Ustawienia konta" description="Zmień ustawienia konta">
     <template #body>
-      <AutoForm ref="form" :schema="schema" @submit="onSubmit" />
-    </template>
-
-    <template #footer>
-      <UButton label="Anuluj" color="neutral" variant="outline" @click="open = false" />
-      <UButton label="Potwierdź" @click="formRef?.submit()" />
+      <AutoForm :schema="schema" @submit="onSubmit" />
     </template>
   </UModal>
 </template>

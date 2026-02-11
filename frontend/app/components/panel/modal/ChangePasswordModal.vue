@@ -11,7 +11,6 @@ const schema = z
   }))
 
 const open = defineModel<boolean>()
-const formRef = useTemplateRef('form')
 
 async function onSubmit(data: zInfer<typeof schema>) {
   await useNuxtApp().$auth('/account/update/password', {
@@ -28,17 +27,12 @@ async function onSubmit(data: zInfer<typeof schema>) {
 </script>
 
 <template>
-  <UModal v-model:open="open" title="Ustawienia konta" description="Zmień hasło" :ui="{ footer: 'justify-end' }">
+  <UModal v-model:open="open" title="Ustawienia konta" description="Zmień hasło">
     <template #body>
-      <AutoForm ref="form" :schema="schema" @submit="onSubmit" />
+      <AutoForm :schema="schema" @submit="onSubmit" />
       <NuxtLink class="link" to="/request_password_reset">
         Zresetuj hasło
       </NuxtLink>
-    </template>
-
-    <template #footer>
-      <UButton label="Anuluj" color="neutral" variant="outline" @click="open = false" />
-      <UButton label="Potwierdź" @click="formRef?.submit()" />
     </template>
   </UModal>
 </template>
