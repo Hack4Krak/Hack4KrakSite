@@ -79,7 +79,10 @@ jobs:
 
       - name: "Run unlighthouse"
         # --budget 75
-        run: unlighthouse-ci --site http://localhost:3000 --build-static --output-path ${{ github.workspace }}/.unlighthouse
+        run: unlighthouse-ci --site http://localhost:3000 --build-static
+
+      - name: "Find report"
+        run: find ${{ github.workspace }} -name ".unlighthouse" -type d
 
       - name: "Upload report"
         uses: actions/upload-artifact@v6
