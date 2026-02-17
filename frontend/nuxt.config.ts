@@ -1,4 +1,5 @@
 import dotenv from 'dotenv'
+import { shikiLangNames, shikiTheme } from './app/utils/shiki'
 
 dotenv.config({ path: '../.env' })
 
@@ -167,5 +168,13 @@ export default defineNuxtConfig({
   // https://content.nuxt.com/docs/getting-started
   content: {
     experimental: { nativeSqlite: true },
+    build: {
+      markdown: {
+        highlight: {
+          theme: shikiTheme,
+          langs: shikiLangNames,
+        },
+      },
+    },
   },
 })
