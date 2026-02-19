@@ -54,28 +54,14 @@ jobs:
       - name: "Run e2e tests"
         run: bun frontend:e2e
 
-  lighthouse:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: ".bun-version"
-
-      - name: "Install dependencies"
-        run: bun frontend:install --frozen-lockfile
-
       - name: "Install unlighthouse"
         run: bun add -g @unlighthouse/cli puppeteer
 
-      - name: "Build frontend"
-        run: bun frontend:build
-
       - name: "Start preview server"
         run: |
-          cd frontend && bun run preview &
-          sleep 5
+          bun run preview &
+          sleep 10
+        working-directory: frontend
 
       - name: "Run unlighthouse"
         run: unlighthouse-ci --site http://localhost:3000 --budget 100
