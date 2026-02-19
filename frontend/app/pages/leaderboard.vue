@@ -16,8 +16,8 @@ useSeoMeta({
     <h1 class="font-bold text-5xl">
       Punktacja
     </h1>
-    <div class="overflow-x-auto">
-      <div class="h-screen min-w-200 px-10">
+    <div class="overflow-x-auto h-[80vh]">
+      <div class="h-full min-w-200 px-10">
         <LeaderboardChart />
       </div>
     </div>
