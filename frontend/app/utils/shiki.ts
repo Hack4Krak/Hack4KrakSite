@@ -6,6 +6,7 @@ import CssLang from '@shikijs/langs/css'
 import HtmlLang from '@shikijs/langs/html'
 import JsLang from '@shikijs/langs/javascript'
 import JsonLang from '@shikijs/langs/json'
+import ShellLang from '@shikijs/langs/shell'
 import MdLang from '@shikijs/langs/markdown'
 import MdcLang from '@shikijs/langs/mdc'
 import PythonLang from '@shikijs/langs/python'
@@ -28,6 +29,7 @@ export const shikiBundledLangs = {
   json: JsonLang,
   bash: BashLang,
   sh: BashLang,
+  shell: ShellLang,
   html: HtmlLang,
   css: CssLang,
   c: CLang,
