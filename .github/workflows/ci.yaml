@@ -39,14 +39,19 @@ jobs:
       - name: "Run tests"
         run: bun frontend:test
 
+      - name: "Get installed Playwright version for cache key"
+        run: echo "PLAYWRIGHT_VERSION=$(yq eval '.version' --output-format=yaml ./frontend/node_modules/@playwright/test/package.json)" >> $GITHUB_ENV
+
       - name: "Cache Playwright binaries"
         uses: actions/cache@v5
+        id: playwright-browser-cache
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('bun.lock') }}
+          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
 
       - name: "Prepare for e2e tests"
         run: bunx playwright install chromium --with-deps
+        if: steps.playwright-browser-cache.outputs.cache-hit != 'true'
 
       - name: "Build frontend"
         run: bun frontend:build
