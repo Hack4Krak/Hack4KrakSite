@@ -19,7 +19,9 @@ export default defineNuxtPlugin(() => {
       navigator.clipboard.writeText(pre.textContent ?? '')
       clearTimeout(timer)
       btn.innerHTML = checkSvg
-      timer = window.setTimeout(() => { btn.innerHTML = originalHTML }, 2000)
+      timer = window.setTimeout(() => {
+        btn.innerHTML = originalHTML
+      }, 2000)
     })
   }
 
