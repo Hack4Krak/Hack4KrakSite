@@ -8,8 +8,8 @@ const props = defineProps<{
 
 type Schema = zInfer<typeof schema>
 const schema = z.object({
-  ...(props.isLogin ? {} : { name: zUsername() }),
-  email: z.email({ error: 'Niepoprawny adres e-mail' }),
+  ...(props.isLogin ? {} : { name: zUsername().meta({ title: 'Nazwa użytkownika' }) }),
+  email: z.email({ error: 'Niepoprawny adres e-mail' }).meta({ title: 'Adres e-mail' }),
   password: zPassword().meta({ title: 'Hasło', input: { component: AInputPasswordToggle } }),
 })
 
