@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const schema = z.object({
-  team_name: zTeamName().meta({ title: 'Nazwa drużyny' }),
+  team_name: zTeamName(),
 })
 
 const open = defineModel<boolean>()

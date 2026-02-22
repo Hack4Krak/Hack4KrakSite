@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { AInputPasswordToggle } from '#components'
 import { FetchError } from 'ofetch'
 
 const props = defineProps<{
@@ -9,8 +8,8 @@ const props = defineProps<{
 type Schema = zInfer<typeof schema>
 const schema = z.object({
   ...(props.isLogin ? {} : { name: zUsername() }),
-  email: z.email({ error: 'Niepoprawny adres e-mail' }),
-  password: zPassword().meta({ title: 'Hasło', input: { component: AInputPasswordToggle } }),
+  email: z.email({ error: 'Niepoprawny adres e-mail' }).meta({ title: 'Adres e-mail' }),
+  password: zPassword(),
 })
 
 const loading = ref(false)
