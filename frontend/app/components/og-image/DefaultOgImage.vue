@@ -13,9 +13,7 @@ const props = withDefaults(defineProps<{
   theme?: string
   colorMode?: string
 }>(), {
-  colorMode: 'dark',
-  icon: '/img/logo.png',
-  theme: '#ff595e',
+  theme: '#D08700',
 })
 
 const HexRegex = /^#(?:[0-9a-f]{3}){1,2}$/i
@@ -34,13 +32,15 @@ const themeRgb = computed(() => hexToRgb(themeHex.value))
 
 const colorMode = computed(() => props.colorMode || 'dark')
 
+const icon = computed(() => props.icon || colorMode.value === 'light' ? '/img/logo-dark.png' : '/img/logo-light.png')
+
 const siteName = computed(() => props.siteName || useSiteConfig().name)
 </script>
 
 <template>
   <div
     class="w-full h-full flex justify-between relative p-[60px]"
-    :class="colorMode === 'light' ? ['bg-white', 'text-gray-900'] : ['bg-gray-900', 'text-white']"
+    :class="colorMode === 'light' ? ['bg-white', 'text-gray-900'] : ['bg-neutral-900', 'text-neutral-50']"
   >
     <div
       class="flex absolute top-0 right-[-100%]"
