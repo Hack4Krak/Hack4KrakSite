@@ -62,7 +62,7 @@ onMounted(() => {
   <div
     ref="mapContainer"
     autofocus
-    class="relative overflow-auto scrollbar-hide cursor-grab active:cursor-grabbing focus:outline-none"
+    class="relative overflow-auto scrollbar-hide cursor-grab active:cursor-grabbing focus:outline-none m-4"
     @mousedown="onMouseDown"
     @mousemove="onMouseMove"
     @mouseup="onMouseUp"
