@@ -20,8 +20,6 @@ onMounted(() => {
       <NuxtPage />
     </NuxtLayout>
 
-    <ClientOnly>
-      <CommandPalette v-model="commandPaletteOpen" />
-    </ClientOnly>
+    <CommandPalette v-model="commandPaletteOpen" />
   </UApp>
 </template>

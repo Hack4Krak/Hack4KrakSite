@@ -3,7 +3,7 @@ const open = defineModel<boolean>({ default: false })
 const toast = useToast()
 const { $auth } = useNuxtApp()
 
-const flagModalOpen = ref(false)
+const flagModalOpen = useFlagModalState()
 const flagInput = ref('')
 
 function close() {
@@ -42,46 +42,61 @@ async function logout() {
   await navigateTo('/login')
 }
 
+const { data: isLoggedIn } = useAuth('/auth/status', {
+  redirect: 'error',
+  onResponseError: () => {},
+})
+
+const { data: team } = await useAuth('/teams/membership/my_team', {
+  onResponseError: () => {},
+  redirect: 'error',
+})
+
 const groups = computed(() => [
-  {
-    id: 'actions',
-    label: 'Szybkie akcje',
-    items: [
-      { label: 'Oddaj flagę', icon: 'mdi:flag-plus', onSelect: openFlagModal },
-      { label: 'Wyloguj się', icon: 'mdi:logout', onSelect: logout },
-    ],
-  },
   {
     id: 'tasks',
     label: 'Zadania',
-    items: (tasks.value ?? []).map(task => ({
-      label: task.name,
-      icon: 'mdi:flag',
-      to: `/tasks/story/${task.id}`,
-      onSelect: close,
-    })),
+    items: [
+      { label: 'Mapa zadań', icon: 'mdi:map', to: '/tasks', onSelect: close },
+      ...(isLoggedIn.value && team.value
+        ? [{ label: 'Złóż flagę', icon: 'mdi:flag-plus', kbds: ['S', 'F'], onSelect: openFlagModal }]
+        : []),
+      ...(tasks.value ?? []).map(task => ({
+        label: task.name,
+        icon: 'mdi:flag',
+        to: `/tasks/story/${task.id}`,
+        onSelect: close,
+      })),
+    ],
   },
   {
     id: 'navigation',
     label: 'Nawigacja',
     items: [
       { label: 'Strona główna', icon: 'mdi:home', to: '/', onSelect: close },
-      { label: 'Zadania', icon: 'mdi:map', to: '/tasks', onSelect: close },
       { label: 'Ranking', icon: 'mdi:trophy', to: '/leaderboard', onSelect: close },
+      ...(isLoggedIn.value
+        ? [{ label: 'Panel', icon: 'mdi:view-dashboard', to: '/panel/', onSelect: close }]
+        : []),
       { label: 'Regulamin', icon: 'mdi:file-document', to: '/docs/rules', onSelect: close },
-      { label: 'FAQ', icon: 'mdi:help-circle', to: '/docs/faq', onSelect: close },
-      { label: 'O nas', icon: 'mdi:information', to: '/about_us', onSelect: close },
     ],
   },
   {
     id: 'account',
     label: 'Konto',
     items: [
-      { label: 'Zaloguj się', icon: 'pixelarticons:login', to: '/login', onSelect: close },
-      { label: 'Zarejestruj się', icon: 'mdi:account-plus', to: '/register', onSelect: close },
-      { label: 'Panel', icon: 'mdi:view-dashboard', to: '/panel/', onSelect: close },
-      { label: 'Profil', icon: 'mdi:account', to: '/panel/profile', onSelect: close },
-      { label: 'Drużyna', icon: 'mdi:account-group', to: '/panel/team', onSelect: close },
+      ...(!isLoggedIn.value
+        ? [
+            { label: 'Zaloguj się', icon: 'pixelarticons:login', to: '/login', onSelect: close },
+            { label: 'Zarejestruj się', icon: 'mdi:account-plus', to: '/register', onSelect: close },
+          ]
+        : [
+            { label: 'Profil', icon: 'mdi:account', to: '/panel/profile', onSelect: close },
+            ...(team.value
+              ? [{ label: 'Drużyna', icon: 'mdi:account-group', to: '/panel/team', onSelect: close }]
+              : []),
+            { label: 'Wyloguj się', icon: 'mdi:logout', onSelect: logout },
+          ]),
     ],
   },
   {
@@ -98,7 +113,7 @@ const groups = computed(() => [
 </script>
 
 <template>
-  <UModal v-model:open="flagModalOpen" title="Oddaj flagę" description="Wpisz flagę w formacie hack4KrakCTF{...}">
+  <UModal v-model:open="flagModalOpen" title="Złóż flagę" description="Wpisz flagę w formacie hack4KrakCTF{...}">
     <template #body>
       <form class="flex flex-col gap-4" @submit.prevent="submitFlag">
         <UInput v-model="flagInput" placeholder="hack4KrakCTF{...}" autofocus />
@@ -109,28 +124,34 @@ const groups = computed(() => [
     </template>
   </UModal>
 
-  <UModal v-model:open="open">
+  <UModal v-model:open="open" title="Paleta poleceń" description="Szukaj i nawiguj po stronie">
     <template #content>
       <UCommandPalette
         :groups="groups"
-        placeholder="Szukaj stron..."
+        placeholder="Szukaj..."
         close
         icon="mdi:magnify"
         @update:open="open = $event"
       >
         <template #footer>
-          <div class="flex items-center justify-between gap-2 text-xs text-muted">
+          <div class="flex items-center justify-between gap-2 text-sm text-muted">
             <div class="flex items-center gap-2">
-              <UKbd value="↑" size="sm" />
-              <UKbd value="↓" size="sm" />
+              <UKbd>
+                <UIcon name="pixelarticons:arrow-up" />
+              </UKbd>
+              <UKbd>
+                <UIcon name="pixelarticons:arrow-down" />
+              </UKbd>
               <span>Nawigacja</span>
             </div>
             <div class="flex items-center gap-2">
-              <UKbd value="↵" size="sm" />
+              <UKbd>
+                <UIcon name="pixelarticons:corner-down-left" />
+              </UKbd>
               <span>Otwórz</span>
             </div>
             <div class="flex items-center gap-2">
-              <UKbd value="esc" size="sm" />
+              <UKbd value="esc" />
               <span>Zamknij</span>
             </div>
           </div>
