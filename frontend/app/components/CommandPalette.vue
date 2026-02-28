@@ -5,13 +5,25 @@ function close() {
   open.value = false
 }
 
-const groups = [
+const { data: tasks } = await useApi('/tasks/list')
+
+const groups = computed(() => [
+  {
+    id: 'tasks',
+    label: 'Zadania',
+    items: (tasks.value ?? []).map(task => ({
+      label: task.name,
+      icon: 'mdi:flag',
+      to: `/tasks/story/${task.id}`,
+      onSelect: close,
+    })),
+  },
   {
     id: 'navigation',
     label: 'Nawigacja',
     items: [
       { label: 'Strona główna', icon: 'mdi:home', to: '/', onSelect: close },
-      { label: 'Zadania', icon: 'mdi:flag', to: '/tasks', onSelect: close },
+      { label: 'Zadania', icon: 'mdi:map', to: '/tasks', onSelect: close },
       { label: 'Ranking', icon: 'mdi:trophy', to: '/leaderboard', onSelect: close },
       { label: 'Regulamin', icon: 'mdi:file-document', to: '/docs/rules', onSelect: close },
       { label: 'FAQ', icon: 'mdi:help-circle', to: '/docs/faq', onSelect: close },
@@ -39,7 +51,7 @@ const groups = [
       { label: 'Email', icon: 'mdi:envelope', to: 'mailto:hack4krak@gmail.com', onSelect: close },
     ],
   },
-]
+])
 </script>
 
 <template>
