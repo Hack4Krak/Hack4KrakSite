@@ -18,6 +18,10 @@ const navigationMenuProperties = computed(() => ({
     list: 'gap-8',
   },
 }))
+
+function openCommandPalette() {
+  useCommandPaletteState().value = true
+}
 </script>
 
 <template>
@@ -29,7 +33,20 @@ const navigationMenuProperties = computed(() => ({
     <UNavigationMenu v-bind="navigationMenuProperties" />
 
     <template #right>
-      <NuxtLink to="/login" class="text-md font-semibold flex justify-end w-full" :aria-label="isLoggedIn ? 'Otwórz panel' : 'Zaloguj się'">
+      <button
+        class="hidden lg:flex items-center gap-2 px-3 py-1.5 text-sm text-muted border border-default rounded-md hover:bg-elevated cursor-pointer transition-colors"
+        aria-label="Wyszukaj strony (Ctrl+K)"
+        @click="openCommandPalette"
+      >
+        <UIcon name="mdi:magnify" class="text-base" />
+        <span>Szukaj...</span>
+        <span class="ml-2 inline-flex items-center gap-0.5">
+          <UKbd value="meta" size="sm" />
+          <UKbd value="K" size="sm" />
+        </span>
+      </button>
+
+      <NuxtLink to="/login" class="ml-4 text-md font-semibold flex justify-end" :aria-label="isLoggedIn ? 'Otwórz panel' : 'Zaloguj się'">
         <UIcon :name="isLoggedIn ? 'pixelarticons:user' : 'pixelarticons:login'" class="icon-md lg:hidden" />
 
         <span class="hidden lg:inline">
