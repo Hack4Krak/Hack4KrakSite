@@ -133,6 +133,9 @@ const groups = computed(() => [
         icon="mdi:magnify"
         @update:open="open = $event"
       >
+        <template #empty>
+          Brak wyników
+        </template>
         <template #footer>
           <div class="flex items-center justify-between gap-2 text-sm text-muted">
             <div class="flex items-center gap-2">
