@@ -36,8 +36,6 @@ const navigationMenuProperties = computed(() => ({
           {{ isLoggedIn ? "Otwórz panel" : "Zaloguj się" }}
         </span>
       </NuxtLink>
-
-      <div class="md:flex hidden flex-1 justify-end items-center" />
     </template>
 
     <template #toggle="{ open, toggle }">
