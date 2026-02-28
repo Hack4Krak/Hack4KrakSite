@@ -29,7 +29,7 @@ const navigationMenuProperties = computed(() => ({
     <UNavigationMenu v-bind="navigationMenuProperties" />
 
     <template #right>
-      <NuxtLink to="/login" class="text-md font-semibold flex justify-end w-full" :aria-label="isLoggedIn ? 'Otwórz panel' : 'Zaloguj się'">
+      <NuxtLink to="/login" class="text-md font-semibold flex grow-0" :aria-label="isLoggedIn ? 'Otwórz panel' : 'Zaloguj się'">
         <UIcon :name="isLoggedIn ? 'pixelarticons:user' : 'pixelarticons:login'" class="icon-md lg:hidden" />
 
         <span class="hidden lg:inline">
