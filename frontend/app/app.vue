@@ -3,6 +3,9 @@ import { setFavicon } from '~/utils/setFavicon'
 
 useOgImage()
 
+const commandPaletteOpen = useCommandPaletteState()
+useKeyboardShortcuts()
+
 onMounted(() => {
   setFavicon()
 })
@@ -16,5 +19,9 @@ onMounted(() => {
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
+
+    <ClientOnly>
+      <CommandPalette v-model="commandPaletteOpen" />
+    </ClientOnly>
   </UApp>
 </template>
