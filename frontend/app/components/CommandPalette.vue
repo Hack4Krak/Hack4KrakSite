@@ -1,5 +1,10 @@
 <script setup lang="ts">
 const open = defineModel<boolean>({ default: false })
+const toast = useToast()
+const { $auth } = useNuxtApp()
+
+const flagModalOpen = ref(false)
+const flagInput = ref('')
 
 function close() {
   open.value = false
@@ -7,7 +12,45 @@ function close() {
 
 const { data: tasks } = await useApi('/tasks/list')
 
+function openFlagModal() {
+  close()
+  flagInput.value = ''
+  flagModalOpen.value = true
+}
+
+async function submitFlag() {
+  try {
+    await $auth('/flag/submit', {
+      method: 'POST',
+      body: { flag: flagInput.value },
+    })
+    toast.add({ title: 'Brawo!', description: 'To była poprawna flaga!', color: 'success' })
+    flagModalOpen.value = false
+    flagInput.value = ''
+  } catch {
+    toast.add({ title: 'Niepoprawna flaga', color: 'error' })
+  }
+}
+
+async function logout() {
+  close()
+  await $auth('/auth/logout', {
+    method: 'POST',
+    credentials: 'include',
+  })
+  await refreshNuxtData()
+  await navigateTo('/login')
+}
+
 const groups = computed(() => [
+  {
+    id: 'actions',
+    label: 'Szybkie akcje',
+    items: [
+      { label: 'Oddaj flagę', icon: 'mdi:flag-plus', onSelect: openFlagModal },
+      { label: 'Wyloguj się', icon: 'mdi:logout', onSelect: logout },
+    ],
+  },
   {
     id: 'tasks',
     label: 'Zadania',
@@ -55,6 +98,17 @@ const groups = computed(() => [
 </script>
 
 <template>
+  <UModal v-model:open="flagModalOpen" title="Oddaj flagę" description="Wpisz flagę w formacie hack4KrakCTF{...}">
+    <template #body>
+      <form class="flex flex-col gap-4" @submit.prevent="submitFlag">
+        <UInput v-model="flagInput" placeholder="hack4KrakCTF{...}" autofocus />
+        <UButton type="submit" block>
+          Sprawdź
+        </UButton>
+      </form>
+    </template>
+  </UModal>
+
   <UModal v-model:open="open">
     <template #content>
       <UCommandPalette
