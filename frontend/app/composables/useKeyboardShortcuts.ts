@@ -18,6 +18,7 @@ export function useKeyboardShortcuts() {
       commandPaletteOpen.value = true
     },
     's-f': () => {
+      commandPaletteOpen.value = false
       flagModalOpen.value = true
     },
   })

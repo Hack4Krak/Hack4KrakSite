@@ -44,11 +44,11 @@ async function logout() {
 
 const { data: isLoggedIn } = useAuth('/auth/status', {
   redirect: 'error',
-  onResponseError: () => {},
+  onResponseError: undefined,
 })
 
 const { data: team } = await useAuth('/teams/membership/my_team', {
-  onResponseError: () => {},
+  onResponseError: undefined,
   redirect: 'error',
 })
 
