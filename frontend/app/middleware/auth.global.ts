@@ -5,7 +5,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
         redirect: 'error',
       })
       if (error.value || !data.value) {
-        return '/login'
+        return `/login?callback=${encodeURIComponent(to.fullPath)}`
       }
       if (to.path.startsWith('/panel')) {
         if (data.value.has_personal_information === false) {
@@ -13,7 +13,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
         }
       }
     } catch {
-      return '/login'
+      return `/login?callback=${encodeURIComponent(to.fullPath)}`
     }
   }
 })
