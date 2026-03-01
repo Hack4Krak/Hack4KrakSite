@@ -1,3 +1,10 @@
+<script setup lang="ts">
+defineSlots<{
+  title: () => VNode | VNode[]
+  content: () => VNode | VNode[]
+}>()
+</script>
+
 <template>
   <section
     class="lg:h-screen-without-header flex flex-col items-center w-full gap-y-12 pt-6 lg:pt-0 lg:gap-0"
@@ -9,8 +16,11 @@
              gap-y-12 lg:gap-0 place-content-between xl:w-(--ui-container) px-6"
     >
       <HeroContent>
-        <template v-for="(_, name) in $slots" #[name]="data">
-          <slot :name="name" v-bind="data" />
+        <template #title>
+          <slot name="title" />
+        </template>
+        <template #content>
+          <slot name="content" />
         </template>
       </HeroContent>
       <HeroSocialMediaContainer />
