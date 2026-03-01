@@ -4,6 +4,14 @@ dotenv.config({ path: '../.env' })
 
 const backendAddress = process.env.BACKEND_ADDRESS || 'http://localhost:8080'
 
+function removeDataTestAttrs(node: { type: number, props?: { type: number, name: string }[] }) {
+  if (node.type === 1 && node.props) {
+    node.props = node.props.filter(
+      prop => !(prop.type === 6 && prop.name === 'data-testid'),
+    )
+  }
+}
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   // Nuxt-specific configuration
@@ -34,6 +42,19 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
   compatibilityDate: '2025-07-16',
+
+  vite: {
+    vue: {
+      template: {
+        compilerOptions: {
+          nodeTransforms: process.env.NODE_ENV === 'production'
+            ? [removeDataTestAttrs]
+            : [],
+        },
+      },
+    },
+  },
+
   imports: {
     presets: [
       {
