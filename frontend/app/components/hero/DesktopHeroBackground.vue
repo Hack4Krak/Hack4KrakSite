@@ -1,5 +1,13 @@
 <script setup lang="ts">
 const { y } = useWindowScroll()
+const { height: windowHeight } = useWindowSize()
+
+const scrollProgress = computed(() => {
+  if (!import.meta.client)
+    return 0
+  const maxScroll = Math.max(document.documentElement.scrollHeight - windowHeight.value, 1)
+  return Math.min(Math.max(y.value / maxScroll, 0), 1)
+})
 
 useHead({
   link: [{
@@ -15,9 +23,9 @@ useHead({
     <div
       class="bg-[url(/img/landing_background.webp)] rendering-pixelated bg-cover bg-no-repeat w-full h-full will-change-transform"
       :style="{
-        opacity: 1 - (y / 1500),
-        backgroundPosition: `0 -${y / 6}px`,
-        transform: `scale(${1 + y / 10000})`,
+        opacity: 1 - scrollProgress,
+        backgroundPosition: `0 -${scrollProgress * 250}px`,
+        transform: `scale(${1 + scrollProgress * 0.15})`,
       }"
     />
   </div>
