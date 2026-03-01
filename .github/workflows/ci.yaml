@@ -71,6 +71,10 @@ jobs:
         with:
           rust-src-dir: backend
 
+      - name: Install cargo-llvm-cov
+        if: github.ref == 'refs/heads/master'
+        uses: taiki-e/install-action@cargo-llvm-cov
+
       - name: Install dependencies
         run: cargo build --locked
         working-directory: backend
@@ -80,8 +84,28 @@ jobs:
         working-directory: backend
 
       - name: Run tests
+        if: github.ref != 'refs/heads/master'
         run: cargo test --features=full-test-suite
         working-directory: backend
+
+      - name: Run tests with coverage
+        if: github.ref == 'refs/heads/master'
+        run: cargo llvm-cov --features=full-test-suite --lcov --output-path lcov.info
+        working-directory: backend
+
+      - name: Log coverage summary
+        if: github.ref == 'refs/heads/master'
+        run: cargo llvm-cov report
+        working-directory: backend
+
+      - name: Upload backend coverage to Codecov
+        if: github.ref == 'refs/heads/master'
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: backend/lcov.info
+          flags: backend
+          fail_ci_if_error: true
 
       - name: Run lint
         run: cargo fmt && cargo clippy

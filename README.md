@@ -1,6 +1,7 @@
 # <picture> <source srcset="https://raw.githubusercontent.com/Hack4Krak/Hack4KrakSite/refs/heads/master/.github/assets/banner-light.png" media="(prefers-color-scheme: dark)"/> <img src="https://raw.githubusercontent.com/Hack4Krak/Hack4KrakSite/refs/heads/master/.github/assets/banner-dark.png" /> </picture>
 
 <p align=center>
+    <a href="https://codecov.io/gh/Hack4Krak/Hack4KrakSite"><img alt="Backend coverage" src="https://img.shields.io/codecov/c/github/Hack4Krak/Hack4KrakSite?color=ffb900&label=coverage&style=for-the-badge" /></a>
     <img alt="Issues" src="https://img.shields.io/github/issues-raw/Hack4Krak/Hack4KrakSite?color=ffb900&label=issues&style=for-the-badge" />
     <img alt="Pull Requests" src="https://img.shields.io/github/issues-pr-raw/Hack4Krak/Hack4KrakSite?color=ffb900&label=PRs&style=for-the-badge" />
     <img alt="Contributors" src="https://img.shields.io/github/contributors/Hack4Krak/Hack4KrakSite?color=ffb900&label=contributors&style=for-the-badge" />
