@@ -5,7 +5,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
         redirect: 'error',
       })
       if (error.value || !data.value) {
-        return `/login?callback=${encodeURIComponent(to.fullPath)}`
+        return await navigateTo({ name: 'product', params: { callback: to.fullPath } })
       }
       if (to.path.startsWith('/panel')) {
         if (data.value.has_personal_information === false) {
