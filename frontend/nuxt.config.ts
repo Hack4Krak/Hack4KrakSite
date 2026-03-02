@@ -1,16 +1,9 @@
 import dotenv from 'dotenv'
+import { getNodeTransforms } from './app/utils/node-transforms'
 
 dotenv.config({ path: '../.env' })
 
 const backendAddress = process.env.BACKEND_ADDRESS || 'http://localhost:8080'
-
-function removeDataTestAttrs(node: { type: number, props?: { type: number, name: string }[] }) {
-  if (node.type === 1 && node.props) {
-    node.props = node.props.filter(
-      prop => !(prop.type === 6 && prop.name === 'data-testid'),
-    )
-  }
-}
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -47,9 +40,7 @@ export default defineNuxtConfig({
     vue: {
       template: {
         compilerOptions: {
-          nodeTransforms: process.env.NODE_ENV === 'production'
-            ? [removeDataTestAttrs]
-            : [],
+          nodeTransforms: getNodeTransforms(),
         },
       },
     },
