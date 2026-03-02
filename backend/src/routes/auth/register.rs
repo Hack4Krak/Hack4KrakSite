@@ -18,6 +18,7 @@ pub struct RegisterModel {
     pub email: String,
     #[validate(length(min = 8, max = 32))]
     pub password: Password,
+    #[validate(length(max = 256))]
     pub callback: Option<String>,
 }
 
