@@ -21,10 +21,14 @@ pub async fn confirm_email(
     confirmation_code: web::Path<Uuid>,
 ) -> Result<HttpResponse, Error> {
     match AuthService::confirm_email(&app_state, confirmation_code.into_inner()).await {
-        Ok(()) => {
-            let url = EnvConfig::get()
+        Ok(callback) => {
+            let mut url = EnvConfig::get()
                 .frontend_url
                 .join("/login?redirect_from_confirmation=true")?;
+
+            if let Some(callback) = callback {
+                url.query_pairs_mut().append_pair("callback", &callback);
+            }
 
             let mut response = common_responses::create_redirect_response(url)?;
 
