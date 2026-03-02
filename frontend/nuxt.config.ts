@@ -1,5 +1,5 @@
 import dotenv from 'dotenv'
-import { getNodeTransforms } from './app/utils/node-transforms'
+import { getNodeTransforms } from './app/utils/vite-node-transforms'
 import { shikiLangNames, shikiTheme } from './app/utils/shiki'
 
 dotenv.config({ path: '../.env' })
