@@ -48,7 +48,7 @@ const chartOption = computed<EChartsOption>(() => {
       backgroundColor: '#000000',
       borderWidth: 0,
       textStyle: { color: '#ffffff' },
-      transitionDuration: 0,
+      transitionDuration: 1,
       renderMode: 'html',
 
       axisPointer: {
