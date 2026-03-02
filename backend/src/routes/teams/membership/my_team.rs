@@ -15,12 +15,13 @@ use utoipa::ToSchema;
 pub struct MyTeamWithMembers {
     pub team_name: String,
     pub created_at: DateTime,
-    pub members: Vec<TeamMember>,
+    pub members: Vec<MyTeamMember>,
     pub status: TeamStatus,
 }
 
+// todo: maybe get rid of this shite before mergin to master
 #[derive(Serialize, Deserialize, ToSchema)]
-pub struct TeamMember {
+pub struct MyTeamMember {
     pub name: String,
     pub is_leader: bool,
 }
@@ -49,7 +50,7 @@ pub async fn my_team(
 
     let members = users
         .into_iter()
-        .map(|user| TeamMember {
+        .map(|user| MyTeamMember {
             name: user.username,
             is_leader: user.is_leader,
         })

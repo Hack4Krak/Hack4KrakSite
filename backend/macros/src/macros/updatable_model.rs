@@ -1,4 +1,4 @@
-use proc_macro::TokenStream;
+use proc_macro::{Span, TokenStream};
 use quote::quote;
 use syn::{Attribute, Data, DeriveInput, Fields, parse_macro_input};
 
@@ -6,6 +6,24 @@ pub fn derive_updatable_model_impl(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
 
     let name = input.ident;
+    let span = name.span().unwrap();
+
+    let panic_message =
+        "Could not determine file name for the macro `derive_to_schema_from_file_name`";
+
+    let file_path = Span::file(&span);
+    let file_name = file_path
+        .split("/")
+        .last()
+        .unwrap_or_else(|| {
+            panic!("{}", panic_message);
+        })
+        .split('.')
+        .next()
+        .unwrap_or_else(|| {
+            panic!("{}", panic_message);
+        });
+    let openapi_identifier = syn::Ident::new(file_name, name.span());
     let new_struct_name = syn::Ident::new(&format!("Updatable{name}"), name.span());
 
     let fields = match input.data {
@@ -40,6 +58,7 @@ pub fn derive_updatable_model_impl(input: TokenStream) -> TokenStream {
 
     let output = quote! {
         #[derive(serde::Serialize, serde::Deserialize, utoipa::ToSchema, Default)]
+        #[schema(as = #openapi_identifier)]
         pub struct #new_struct_name {
             #(#new_fields,)*
         }
