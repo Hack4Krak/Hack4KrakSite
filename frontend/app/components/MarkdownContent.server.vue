@@ -13,10 +13,13 @@ const proseClass = computed(() => props.prose ? 'max-w-[65ch]' : '')
 const inlineClass = computed(() => {
   return props.inline ? 'inline [&>p]:inline' : ''
 })
+
+const parse = useMarkdownParser()
+const ast = await parse(props.text)
 </script>
 
 <template>
   <div :class="proseClass">
-    <MDC :value="text" :class="inlineClass" />
+    <MDCRenderer v-if="ast?.body" :body="ast.body" :data="ast.data" :class="inlineClass" />
   </div>
 </template>

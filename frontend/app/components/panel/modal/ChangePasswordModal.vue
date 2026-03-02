@@ -1,9 +1,9 @@
 <script setup lang="ts">
 const schema = z
   .object({
-    new_password: zPassword(),
-    confirm_new_password: zPassword('Potwierdzenie hasła jest wymagane'),
-    old_password: zPassword('Stare hasło jest wymagane'),
+    old_password: zPassword('Stare hasło jest wymagane').meta({ title: 'Stare hasło' }),
+    new_password: zPassword('Nowe hasło jest wymagane').meta({ title: 'Nowe hasło' }),
+    confirm_new_password: zPassword('Potwierdzenie hasła jest wymagane').meta({ title: 'Powtórz nowe hasło' }),
   })
   .check(z.refine(data => data.new_password === data.confirm_new_password, {
     message: 'Hasła nie są takie same',

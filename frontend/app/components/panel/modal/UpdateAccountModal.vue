@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const schema = z.object({
-  username: zUsername().meta({ title: 'Nazwa użytkownika' }),
+  username: zUsername(),
 })
 
 const open = defineModel<boolean>()
