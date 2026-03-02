@@ -1,4 +1,5 @@
 import dotenv from 'dotenv'
+import { shikiLangNames, shikiTheme } from './app/utils/shiki'
 
 dotenv.config({ path: '../.env' })
 
@@ -17,6 +18,7 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     '@nuxtjs/mdc',
     '@formkit/auto-animate/nuxt',
+    'nuxt-echarts',
     'nuxt-open-fetch',
     'nuxt-qrcode',
     '@norbiros/nuxt-auto-form',
@@ -25,6 +27,14 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxt/hints',
   ],
+  echarts: {
+    charts: ['LineChart'],
+    components: [
+      'TooltipComponent',
+      'LegendComponent',
+      'GridComponent',
+    ],
+  },
   experimental: {
     componentIslands: true,
     typedPages: true,
@@ -168,5 +178,13 @@ export default defineNuxtConfig({
   // https://content.nuxt.com/docs/getting-started
   content: {
     experimental: { nativeSqlite: true },
+    build: {
+      markdown: {
+        highlight: {
+          theme: shikiTheme,
+          langs: shikiLangNames,
+        },
+      },
+    },
   },
 })

@@ -1,17 +1,8 @@
-use crate::models::task::{TaskDisplay, TaskMeta};
+use crate::services::task_manager::SimpleTask;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::web::Data;
 use actix_web::{HttpResponse, get};
-use serde::{Deserialize, Serialize};
-use utoipa::ToSchema;
-
-#[derive(Serialize, Deserialize, ToSchema)]
-pub struct SimpleTask {
-    #[serde(flatten)]
-    pub description: TaskMeta,
-    pub display: TaskDisplay,
-}
 
 #[utoipa::path(
     responses(
@@ -25,13 +16,7 @@ pub struct SimpleTask {
 pub async fn list(app_state: Data<AppState>) -> Result<HttpResponse, Error> {
     let manager = &app_state.task_manager;
 
-    let mut tasks = Vec::new();
-    for task in manager.tasks.iter() {
-        tasks.push(SimpleTask {
-            description: task.meta.clone(),
-            display: task.display.clone(),
-        })
-    }
+    let tasks = manager.get_tasks_sorted();
 
     Ok(HttpResponse::Ok().json(tasks))
 }

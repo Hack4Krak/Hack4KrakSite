@@ -13,6 +13,7 @@ use uuid::Uuid;
 
 #[derive(Debug, Default, Clone)]
 struct TeamTimeSeriesData {
+    name: String,
     points: Vec<usize>,
     color: String,
     solve_timestamps: Vec<NaiveDateTime>,
@@ -28,6 +29,7 @@ pub struct TeamPointsTimeSeries {
 
 #[derive(Serialize, Deserialize, ToSchema, Debug, PartialEq)]
 pub struct TeamRanking {
+    pub team_id: Uuid,
     pub team_name: String,
     pub current_points: usize,
     pub captured_flags: usize,
@@ -43,7 +45,7 @@ pub struct LeaderboardChart {
 #[derive(Default, Debug, Clone)]
 pub struct PointsCounter {
     event_timestamps: Vec<NaiveDateTime>,
-    team_time_series: HashMap<String, TeamTimeSeriesData>,
+    team_time_series: HashMap<Uuid, TeamTimeSeriesData>,
 }
 
 impl PointsCounter {
@@ -77,8 +79,9 @@ impl PointsCounter {
 
         for team in &teams {
             counter.team_time_series.insert(
-                team.name.clone(),
+                team.id,
                 TeamTimeSeriesData {
+                    name: team.name.clone(),
                     points: vec![0],
                     color: team.color.clone(),
                     solve_timestamps: vec![],
@@ -125,7 +128,7 @@ impl PointsCounter {
 
                 let flags_count = solved_tasks.map(|s| s.len()).unwrap_or(0);
 
-                let team_data = self.team_time_series.get_mut(&team.name).unwrap();
+                let team_data = self.team_time_series.get_mut(&team.id).unwrap();
                 team_data.points.push(current_points);
                 team_data.current_flags = flags_count;
 
@@ -160,8 +163,9 @@ impl PointsCounter {
         let mut rankings: Vec<TeamRanking> = self
             .team_time_series
             .iter()
-            .map(|(name, data)| TeamRanking {
-                team_name: name.clone(),
+            .map(|(id, data)| TeamRanking {
+                team_id: *id,
+                team_name: data.name.clone(),
                 current_points: *data.points.last().unwrap_or(&0),
                 captured_flags: data.current_flags,
                 color: data.color.clone(),
@@ -174,8 +178,8 @@ impl PointsCounter {
                 return points_cmp;
             }
 
-            let history_a = &self.team_time_series[&a.team_name].solve_timestamps;
-            let history_b = &self.team_time_series[&b.team_name].solve_timestamps;
+            let history_a = &self.team_time_series[&a.team_id].solve_timestamps;
+            let history_b = &self.team_time_series[&b.team_id].solve_timestamps;
 
             for (time_a, time_b) in history_a.iter().rev().zip(history_b.iter().rev()) {
                 match time_a.cmp(time_b) {
@@ -202,9 +206,9 @@ impl PointsCounter {
     pub fn to_chart(self) -> LeaderboardChart {
         let team_points_over_time = self
             .team_time_series
-            .into_iter()
-            .map(|(name, data)| TeamPointsTimeSeries {
-                name,
+            .into_values()
+            .map(|data| TeamPointsTimeSeries {
+                name: data.name,
                 color: data.color,
                 points: data.points,
             })
