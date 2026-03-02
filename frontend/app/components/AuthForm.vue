@@ -18,6 +18,7 @@ const toast = useToast()
 const OAuthBaseUrl = `${useRuntimeConfig().public.openFetch.api.baseURL}/auth/oauth`
 
 const route = useRoute()
+const callback = route.query.callback as string | undefined
 
 if (route.query.redirect_from_confirmation === 'true' && import.meta.client) {
   toast.add({
@@ -39,18 +40,22 @@ async function onSubmit(event: Schema) {
       toast.add({ title: 'Oczekiwanie', description: 'Wysyłanie emaila…', color: 'info' })
     }
 
+    const body = props.isLogin
+      ? event
+      : { ...event, callback }
+
     await useNuxtApp().$api(address, {
       method: 'POST',
       credentials: 'include',
-      body: event,
+      body,
     })
 
     if (props.isLogin) {
       toast.add({ title: 'Sukces', description: 'Pomyślnie zalogowano!', color: 'success' })
-      await navigateTo((route.query.callback as string) || '/panel/')
+      await navigateTo(callback || '/panel/')
     } else {
       toast.add({ title: 'Sukces', description: 'Pomyślnie zarejestrowano! Wysłaliśmy Ci na podany adres email link do aktywacji konta', color: 'success' })
-      await navigateTo('/login')
+      await navigateTo({ path: '/login', query: { callback } })
     }
   } catch (error) {
     console.error(error)
@@ -80,7 +85,7 @@ async function onSubmit(event: Schema) {
     <div class="flex flex-col gap-1 w-full text-center">
       <span class="text-sm text-neutral-400">
         {{ isLogin ? 'Nie masz konta?' : 'Masz już konto?' }}
-        <NuxtLink class="link" :to="isLogin ? '/register' : '/login'">
+        <NuxtLink class="link" :to="{ path: isLogin ? '/register' : '/login', query: { callback } }">
           {{ isLogin ? 'Załóż je' : 'Zaloguj się' }}
         </NuxtLink>
       </span>
