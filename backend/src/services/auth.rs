@@ -23,6 +23,8 @@ use argon2::password_hash::SaltString;
 use argon2::password_hash::rand_core::OsRng;
 use argon2::{Argon2, PasswordHash, PasswordHasher, PasswordVerifier};
 use chrono::Duration;
+use lettre::SmtpTransport;
+use sea_orm::DatabaseConnection;
 use uuid::Uuid;
 use validator::ValidateEmail;
 
@@ -38,11 +40,29 @@ impl AuthService {
         }
 
         let password_hash = Self::hash_password(credentials.password.clone())?;
+
+        let database = app_state.database.clone();
+        let smtp_client = app_state.smtp_client.clone();
+
+        actix_web::rt::spawn(async move {
+            let _ = Self::send_registration_email(database, smtp_client, credentials, password_hash)
+                .await;
+        });
+
+        Ok(SuccessResponse::default().http_response())
+    }
+
+    async fn send_registration_email(
+        database: DatabaseConnection,
+        smtp_client: SmtpTransport,
+        credentials: RegisterModel,
+        password_hash: String,
+    ) -> Result<(), Error> {
         let user_information =
-            UserInformation::new(&app_state.database, password_hash, &credentials).await?;
+            UserInformation::new(&database, password_hash, &credentials).await?;
 
         let confirmation_code = email_verification_request::Model::create(
-            &app_state.database,
+            &database,
             EmailVerificationAction::ConfirmEmailAddress { user_information },
             credentials.email.clone(),
             Some(Duration::minutes(30)),
@@ -59,10 +79,10 @@ impl AuthService {
                 user: credentials.name,
             }),
         )
-        .send(&app_state.smtp_client)
+        .send(&smtp_client)
         .await?;
 
-        Ok(SuccessResponse::default().http_response())
+        Ok(())
     }
 
     pub fn assert_password_is_valid(
@@ -157,9 +177,11 @@ impl AuthService {
         app_state: &app_state::AppState,
         email: String,
     ) -> Result<(), Error> {
-        users::Model::find_by_email(&app_state.database, &email)
-            .await?
-            .ok_or(Error::Auth(InvalidEmailAddress))?;
+        let user = users::Model::find_by_email(&app_state.database, &email).await?;
+
+        if user.is_none() {
+            return Ok(());
+        }
 
         let confirmation_code = email_verification_request::Model::create(
             &app_state.database,
