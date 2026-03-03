@@ -11,8 +11,11 @@ export function useKeyboardShortcuts() {
   const isFlagModalOpen = useFlagModalState()
 
   defineShortcuts({
-    'meta_k': () => {
-      isCommandPaletteOpen.value = !isCommandPaletteOpen.value
+    'meta_k': {
+      usingInput: true,
+      handler: () => {
+        isCommandPaletteOpen.value = !isCommandPaletteOpen.value
+      },
     },
     '/': () => {
       isCommandPaletteOpen.value = true

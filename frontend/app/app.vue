@@ -24,6 +24,7 @@ onMounted(() => {
       <NuxtPage />
     </NuxtLayout>
 
-    <LazyCommandPalette v-if="isCommandPaletteOpen" v-model="isCommandPaletteOpen" />
+    <LazyCommandPalette hydrate-on-idle v-model="isCommandPaletteOpen" />
+    <LazyFlagSubmitModal hydrate-on-idle v-model="isFlagModalOpen" />
   </UApp>
 </template>

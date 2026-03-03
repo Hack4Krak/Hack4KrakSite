@@ -38,13 +38,12 @@ const groups = computed(() => [
     id: 'tasks',
     label: 'Zadania',
     items: [
-      { label: 'Mapa zadań', icon: 'mdi:map', to: '/tasks', onSelect: close },
       ...(isLoggedIn.value && team.value
-        ? [{ label: 'Złóż flagę', icon: 'mdi:flag-plus', kbds: ['S', 'F'], onSelect: openFlagModal }]
+        ? [{ label: 'Złóż flagę', icon: 'pixelarticons:flag', kbds: ['S', 'F'], onSelect: openFlagModal }]
         : []),
       ...(tasks.value ?? []).map(task => ({
         label: task.name,
-        icon: 'mdi:flag',
+        icon: 'pixelarticons:flag',
         to: `/tasks/story/${task.id}`,
         onSelect: close,
       })),
@@ -54,12 +53,12 @@ const groups = computed(() => [
     id: 'navigation',
     label: 'Nawigacja',
     items: [
-      { label: 'Strona główna', icon: 'mdi:home', to: '/', onSelect: close },
+      { label: 'Strona główna', icon: 'pixelarticons:home', to: '/', onSelect: close },
       ...NAVBAR_ITEMS.flat()
         .filter(item => 'to' in item)
-        .map(item => ({ label: item.label, icon: 'mdi:link', to: item.to, onSelect: close })),
+        .map(item => ({ label: item.label, icon: 'pixelarticons:link', to: item.to, onSelect: close })),
       ...(isLoggedIn.value
-        ? [{ label: 'Panel', icon: 'mdi:view-dashboard', to: '/panel/', onSelect: close }]
+        ? [{ label: 'Panel', icon: 'pixelarticons:dashboard', to: '/panel/', onSelect: close }]
         : []),
     ],
   },
@@ -70,14 +69,14 @@ const groups = computed(() => [
       ...(!isLoggedIn.value
         ? [
             { label: 'Zaloguj się', icon: 'pixelarticons:login', to: '/login', onSelect: close },
-            { label: 'Zarejestruj się', icon: 'mdi:account-plus', to: '/register', onSelect: close },
+            { label: 'Zarejestruj się', icon: 'pixelarticons:user-plus', to: '/register', onSelect: close },
           ]
         : [
-            { label: 'Profil', icon: 'mdi:account', to: '/panel/profile', onSelect: close },
+            { label: 'Profil', icon: 'pixelarticons:user', to: '/panel/profile', onSelect: close },
             ...(team.value
-              ? [{ label: 'Drużyna', icon: 'mdi:account-group', to: '/panel/team', onSelect: close }]
+              ? [{ label: 'Drużyna', icon: 'pixelarticons:users', to: '/panel/team', onSelect: close }]
               : []),
-            { label: 'Wyloguj się', icon: 'mdi:logout', onSelect: handleLogout },
+            { label: 'Wyloguj się', icon: 'pixelarticons:logout', onSelect: handleLogout },
           ]),
     ],
   },
@@ -96,7 +95,7 @@ const groups = computed(() => [
         :groups="groups"
         placeholder="Szukaj..."
         close
-        icon="mdi:magnify"
+        icon="pixelarticons:search"
         @update:open="isOpen = $event"
       >
         <template #empty>
