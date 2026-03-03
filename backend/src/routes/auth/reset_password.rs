@@ -7,6 +7,7 @@ use actix_web::web::{Data, Json};
 use actix_web::{HttpResponse, patch, post};
 use actix_web_validation::Validated;
 use serde::{Deserialize, Serialize};
+use tracing::{error, info};
 use utoipa::ToSchema;
 use uuid::Uuid;
 use validator::Validate;
@@ -20,7 +21,6 @@ pub struct RequestResetPasswordModel {
     request_body = RequestResetPasswordModel,
     responses(
         (status = 200, description = "Password reset email sent."),
-        (status = 500, description = "Internal server error.")
     ),
     tag = "auth"
 )]
@@ -29,7 +29,15 @@ pub async fn request_reset_password(
     app_state: Data<app_state::AppState>,
     model: Json<RequestResetPasswordModel>,
 ) -> Result<HttpResponse, Error> {
-    AuthService::request_password_reset(&app_state, model.into_inner().email).await?;
+    let email = model.into_inner().email;
+
+    actix_web::rt::spawn(async move {
+        if let Err(error) = AuthService::request_password_reset(&app_state, email.clone()).await {
+            error!("Failed to process password reset request: {error}");
+        } else {
+            info!("Password reset request processed successfully for email: {email}");
+        }
+    });
 
     Ok(SuccessResponse::default().http_response())
 }

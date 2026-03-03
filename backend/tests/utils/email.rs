@@ -28,7 +28,7 @@ async fn send_mail() {
 
     email.send(&mail_client.smtp_client).await.unwrap();
 
-    let emails = mail_client.get_emails().await;
+    let emails = mail_client.wait_for_emails(1).await;
     assert_eq!(emails.count, 1, "No email found in MailHog");
 
     let first_email = &emails.items[0];
