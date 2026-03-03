@@ -1,8 +1,8 @@
 <script setup lang="ts">
-defineSlots<{
-  title: () => VNode | VNode[]
-  content: () => VNode | VNode[]
-}>()
+import type { ComponentExposed } from 'vue-component-type-helpers'
+import type HeroContent from './HeroContent.vue'
+
+defineSlots<ComponentExposed<typeof HeroContent>['$slots']>()
 </script>
 
 <template>
@@ -16,11 +16,8 @@ defineSlots<{
              gap-y-12 lg:gap-0 place-content-between xl:w-(--ui-container) px-6"
     >
       <HeroContent>
-        <template #title>
-          <slot name="title" />
-        </template>
-        <template #content>
-          <slot name="content" />
+        <template v-for="(_, name) in $slots" #[name]="slotProps">
+          <slot :name="name" v-bind="slotProps ?? {}" />
         </template>
       </HeroContent>
       <HeroSocialMediaContainer />
