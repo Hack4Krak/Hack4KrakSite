@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const callback = useRoute().query.callback as string | undefined
+
 const REFERRAL_SOURCES = [
   'Linkedin',
   'Facebook',
@@ -83,7 +85,7 @@ async function onSubmit(data: zInfer<typeof schema>) {
   useToast().add({ title: 'Sukces', description: 'Pomyślnie uzupełniono dane', color: 'success' })
 
   await refreshNuxtData()
-  navigateTo('/panel')
+  navigateTo(callback || '/panel')
 }
 </script>
 
