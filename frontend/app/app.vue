@@ -4,7 +4,6 @@ import { setFavicon } from '~/utils/setFavicon'
 useOgImage()
 
 const isCommandPaletteOpen = useCommandPaletteState()
-const isFlagModalOpen = useFlagModalState()
 
 if (import.meta.client) {
   useKeyboardShortcuts()
