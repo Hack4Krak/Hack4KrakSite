@@ -7,19 +7,19 @@ export function useFlagModalState() {
 }
 
 export function useKeyboardShortcuts() {
-  const commandPaletteOpen = useCommandPaletteState()
-  const flagModalOpen = useFlagModalState()
+  const isCommandPaletteOpen = useCommandPaletteState()
+  const isFlagModalOpen = useFlagModalState()
 
   defineShortcuts({
     'meta_k': () => {
-      commandPaletteOpen.value = !commandPaletteOpen.value
+      isCommandPaletteOpen.value = !isCommandPaletteOpen.value
     },
     '/': () => {
-      commandPaletteOpen.value = true
+      isCommandPaletteOpen.value = true
     },
     's-f': () => {
-      commandPaletteOpen.value = false
-      flagModalOpen.value = true
+      isCommandPaletteOpen.value = false
+      isFlagModalOpen.value = true
     },
   })
 }

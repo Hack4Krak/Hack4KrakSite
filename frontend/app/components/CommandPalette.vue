@@ -1,45 +1,26 @@
 <script setup lang="ts">
-const open = defineModel<boolean>({ default: false })
-const toast = useToast()
-const { $auth } = useNuxtApp()
+import { LANDING_SOCIALS } from '~~/content/landing-socials'
+import { NAVBAR_ITEMS } from '~~/content/navbar'
 
-const flagModalOpen = useFlagModalState()
-const flagInput = ref('')
+const isOpen = defineModel<boolean>({ default: false })
+
+const isFlagModalOpen = useFlagModalState()
+const { logout } = useLogout()
 
 function close() {
-  open.value = false
+  isOpen.value = false
 }
 
-const { data: tasks } = await useApi('/tasks/list')
+const { data: tasks } = useLazyApi('/tasks/list')
 
 function openFlagModal() {
   close()
-  flagInput.value = ''
-  flagModalOpen.value = true
+  isFlagModalOpen.value = true
 }
 
-async function submitFlag() {
-  try {
-    await $auth('/flag/submit', {
-      method: 'POST',
-      body: { flag: flagInput.value },
-    })
-    toast.add({ title: 'Brawo!', description: 'To była poprawna flaga!', color: 'success' })
-    flagModalOpen.value = false
-    flagInput.value = ''
-  } catch {
-    toast.add({ title: 'Niepoprawna flaga', color: 'error' })
-  }
-}
-
-async function logout() {
+async function handleLogout() {
   close()
-  await $auth('/auth/logout', {
-    method: 'POST',
-    credentials: 'include',
-  })
-  await refreshNuxtData()
-  await navigateTo('/login')
+  await logout()
 }
 
 const { data: isLoggedIn } = useAuth('/auth/status', {
@@ -47,7 +28,7 @@ const { data: isLoggedIn } = useAuth('/auth/status', {
   onResponseError: undefined,
 })
 
-const { data: team } = await useAuth('/teams/membership/my_team', {
+const { data: team } = useAuth('/teams/membership/my_team', {
   onResponseError: undefined,
   redirect: 'error',
 })
@@ -74,11 +55,12 @@ const groups = computed(() => [
     label: 'Nawigacja',
     items: [
       { label: 'Strona główna', icon: 'mdi:home', to: '/', onSelect: close },
-      { label: 'Ranking', icon: 'mdi:trophy', to: '/leaderboard', onSelect: close },
+      ...NAVBAR_ITEMS.flat()
+        .filter(item => 'to' in item)
+        .map(item => ({ label: item.label, icon: 'mdi:link', to: item.to, onSelect: close })),
       ...(isLoggedIn.value
         ? [{ label: 'Panel', icon: 'mdi:view-dashboard', to: '/panel/', onSelect: close }]
         : []),
-      { label: 'Regulamin', icon: 'mdi:file-document', to: '/docs/rules', onSelect: close },
     ],
   },
   {
@@ -95,43 +77,27 @@ const groups = computed(() => [
             ...(team.value
               ? [{ label: 'Drużyna', icon: 'mdi:account-group', to: '/panel/team', onSelect: close }]
               : []),
-            { label: 'Wyloguj się', icon: 'mdi:logout', onSelect: logout },
+            { label: 'Wyloguj się', icon: 'mdi:logout', onSelect: handleLogout },
           ]),
     ],
   },
   {
     id: 'contact',
     label: 'Kontakt',
-    items: [
-      { label: 'Discord', icon: 'ic:baseline-discord', to: 'https://discord.gg/ASPqckzEd8', target: '_blank', onSelect: close },
-      { label: 'Instagram', icon: 'mdi:instagram', to: 'https://www.instagram.com/hack4krak/', target: '_blank', onSelect: close },
-      { label: 'LinkedIn', icon: 'mdi:linkedin', to: 'https://pl.linkedin.com/company/hack4krak', target: '_blank', onSelect: close },
-      { label: 'Email', icon: 'mdi:envelope', to: 'mailto:hack4krak@gmail.com', onSelect: close },
-    ],
+    items: LANDING_SOCIALS.map(social => ({ ...social, onSelect: close })),
   },
 ])
 </script>
 
 <template>
-  <UModal v-model:open="flagModalOpen" title="Złóż flagę" description="Wpisz flagę w formacie hack4KrakCTF{...}">
-    <template #body>
-      <form class="flex flex-col gap-4" @submit.prevent="submitFlag">
-        <UInput v-model="flagInput" placeholder="hack4KrakCTF{...}" autofocus />
-        <UButton type="submit" block>
-          Sprawdź
-        </UButton>
-      </form>
-    </template>
-  </UModal>
-
-  <UModal v-model:open="open" title="Paleta poleceń" description="Szukaj i nawiguj po stronie">
+  <UModal v-model:open="isOpen" title="Paleta poleceń" description="Szukaj i nawiguj po stronie">
     <template #content>
       <UCommandPalette
         :groups="groups"
         placeholder="Szukaj..."
         close
         icon="mdi:magnify"
-        @update:open="open = $event"
+        @update:open="isOpen = $event"
       >
         <template #empty>
           Brak wyników
