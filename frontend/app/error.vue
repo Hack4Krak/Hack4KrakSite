@@ -39,14 +39,14 @@ watchEffect(() => {
   }
 
   const message = error.message?.toString().toLowerCase() || ''
-  errorTitle.value.title = error.statusCode.toString()
+  errorTitle.value.title = error.status?.toString() ?? ''
 
-  if (error.statusCode === 404) {
+  if (error.status === 404) {
     if (message.includes('page not found')) {
       errorTitle.value.message
         = 'Uwaga rycerzu,\n ta strona zniknęła jak zamek w chmurach.\n Wróć na właściwą drogę!'
     }
-  } else if (error.statusCode === 500) {
+  } else if (error.status === 500) {
     errorTitle.value.message = 'Rycerz napotkał przeszkodę\n Na swojej drodze.\n Spróbuj ponownie później.'
   }
 })
