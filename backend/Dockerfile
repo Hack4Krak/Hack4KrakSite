@@ -1,4 +1,4 @@
-FROM lukemathwalker/cargo-chef:latest-rust-1.91.1 AS chef
+FROM lukemathwalker/cargo-chef:latest-rust-1.93.1 AS chef
 WORKDIR /app
 
 FROM chef AS planner
@@ -11,13 +11,14 @@ COPY backend/rust-toolchain.toml ./rust-toolchain.toml
 # Create minimal lib.rs/main.rs stubs required by cargo
 RUN mkdir -p src macros/src migration/src openapi-cli/src \
     && touch src/lib.rs src/main.rs macros/src/lib.rs migration/src/lib.rs openapi-cli/src/main.rs
-RUN cargo chef prepare --recipe-path recipe.json
+RUN cargo chef prepare --recipe-path recipe.json --bin hack4krak-backend
 
 FROM chef AS builder
 COPY --from=planner /app/recipe.json recipe.json
 # Build dependencies - this is the caching Docker layer!
 RUN cargo chef cook --release --recipe-path recipe.json
 # Build application
+COPY --from=planner /app/openapi-cli/ openapi-cli/
 COPY backend .
 RUN cargo build --release --bin hack4krak-backend
 
