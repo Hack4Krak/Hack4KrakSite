@@ -9,7 +9,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
       }
       if (to.path.startsWith('/panel')) {
         if (data.value.has_personal_information === false) {
-          return '/account/submit_personal_info'
+          return { path: '/account/submit_personal_info', query: { callback: to.fullPath } }
         }
       }
     } catch {
