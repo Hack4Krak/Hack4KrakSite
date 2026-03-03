@@ -14,8 +14,7 @@ async function submitFlag() {
     toast.add({ title: 'Brawo!', description: 'To była poprawna flaga!', color: 'success' })
     isOpen.value = false
     flagInput.value = ''
-  }
-  catch {
+  } catch {
     toast.add({ title: 'Niepoprawna flaga', color: 'error' })
   }
 }
