@@ -1,5 +1,6 @@
 import dotenv from 'dotenv'
 import { shikiLangNames, shikiTheme } from './app/utils/shiki'
+import { getNodeTransforms } from './app/utils/vite-node-transforms'
 
 dotenv.config({ path: '../.env' })
 
@@ -44,6 +45,17 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
   compatibilityDate: '2025-07-16',
+
+  vite: {
+    vue: {
+      template: {
+        compilerOptions: {
+          nodeTransforms: getNodeTransforms(),
+        },
+      },
+    },
+  },
+
   imports: {
     presets: [
       {
