@@ -1,0 +1,27 @@
+diff --git a/dist/module.json b/dist/module.json
+index 57ddd7a0c755d58367d24d3348f0928b0057edd8..d01f090b6084a2274cb13defed12da780c6b72b9 100644
+--- a/dist/module.json
++++ b/dist/module.json
+@@ -2,7 +2,7 @@
+   "name": "nuxt-purgecss",
+   "configKey": "purgecss",
+   "compatibility": {
+-    "nuxt": "^3.0.0-rc.11"
++    "nuxt": ">=3.0.0-rc.11"
+   },
+   "version": "2.0.0"
+ }
+\ No newline at end of file
+diff --git a/dist/module.mjs b/dist/module.mjs
+index 473ec462a53ef996e78c2d708211b89a3777bac7..8cf9dedfda55f0dc1205da5e880a7f7b9fd46170 100644
+--- a/dist/module.mjs
++++ b/dist/module.mjs
+@@ -159,7 +159,7 @@ const module = defineNuxtModule({
+     name: "nuxt-purgecss",
+     configKey: "purgecss",
+     compatibility: {
+-      nuxt: "^3.0.0-rc.11"
++      nuxt: ">=3.0.0-rc.11"
+     }
+   },
+   defaults: (nuxt) => {
