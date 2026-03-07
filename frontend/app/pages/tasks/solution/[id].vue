@@ -1,8 +1,8 @@
 <script setup lang="ts">
-const route = useRoute('tasks-description-id')
+const route = useRoute('tasks-solution-id')
 const taskId = route.params.id
 
-const { data: taskName } = useApi('/tasks/name/{task_id}', {
+const { data: taskName } = await useApi('/tasks/name/{task_id}', {
   path: {
     task_id: taskId?.toString() ?? '',
   },

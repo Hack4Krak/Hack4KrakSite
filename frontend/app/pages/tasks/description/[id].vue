@@ -2,7 +2,7 @@
 const route = useRoute('tasks-description-id')
 const taskId = String(route.params.id)
 
-const { data: taskName } = useApi('/tasks/name/{task_id}', {
+const { data: taskName } = await useApi('/tasks/name/{task_id}', {
   path: {
     task_id: taskId,
   },
