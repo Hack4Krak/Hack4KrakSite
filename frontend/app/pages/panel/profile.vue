@@ -1,6 +1,4 @@
 <script setup lang="ts">
-definePageMeta({ layout: 'panel' })
-
 const { $api } = useNuxtApp()
 
 const { data: user } = await useAuth('/account/')

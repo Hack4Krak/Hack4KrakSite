@@ -1,8 +1,4 @@
 <script setup lang="ts">
-definePageMeta({
-  layout: 'centered',
-})
-
 useSeoMeta({
   title: 'Rejestracja drużyn',
 })
