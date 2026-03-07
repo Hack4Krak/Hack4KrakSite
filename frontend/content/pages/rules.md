@@ -52,9 +52,9 @@ description: Regulamin Hack4Krak - edycja dla Szkół Średnich w Małopolsce
 ## 4. Zasady wyłonienia zwycięzcy
 
 1. Po zakończeniu czasu na rozwiązywanie zadań organizatorzy na podstawie punktu 4. rozdziału 3 regulaminu obliczają punkty każdego zespołu. Na podstawie uzyskanych punktów ustalają kolejność drużyn.
-2. W przypadku, gdy drużyny uzyskają tę samą liczbę punktów, organizatorzy dokonują wyłonienia zwycięzcy w następujący sposób:
-   `1)` Organizatorzy porównują czas, który minął od rozpoczęcia wydarzenia do rozwiązania ostatniego zadania, które rozwiązały drużyny, które uzyskały tę samą liczbę punktów,
-   `2)` Drużyna, która rozwiązała ostatnie zadanie wcześniej, zajmuje wyższą pozycję w rankingu
+2. W przypadku, gdy drużyny uzyskają tę samą liczbę punktów, organizatorzy dokonują wyłonienia zwycięzcy w następujący sposób:\
+   `1)` Organizatorzy porównują czas, który minął od rozpoczęcia wydarzenia do rozwiązania ostatniego zadania, które rozwiązały drużyny, które uzyskały tę samą liczbę punktów,\
+   `2)` Drużyna, która rozwiązała ostatnie zadanie wcześniej, zajmuje wyższą pozycję w rankingu\
    `3)` Jeżeli drużyny rozwiązały ostatnie zadanie w tym samym czasie, organizatorzy porównują czas, który minął od rozpoczęcia wydarzenia do rozwiązania każdego następnego zadania, które rozwiązały drużyny, zaczynając od przedostatniego, w kolejności rosnącej liczby czasu od rozwiązania zadania, aż do momentu, w którym jedna z drużyn rozwiązała zadanie wcześniej niż druga drużyna
 
 ## 5. Uprawnienia i obowiązki uczestników
