@@ -10,7 +10,7 @@ useSeoMeta({
 
 const toast = useToast()
 const schema = z.object({
-  email: z.email().meta({ title: 'Adres e-mail' }),
+  email: z.email({ error: 'Niepoprawny adres e-mail' }).meta({ title: 'Adres e-mail' }),
 })
 
 async function onSubmit(data: zInfer<typeof schema>) {
