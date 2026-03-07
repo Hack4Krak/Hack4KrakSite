@@ -2,10 +2,6 @@
 const slug = useRoute('docs-slug').params.slug
 const { data: page } = await useAsyncData(`docs-${slug}`, () => queryCollection('content').path(`/pages/${slug}`).first())
 
-definePageMeta({
-  layout: 'static-page',
-})
-
 if (!page.value?.title) {
   showError({
     statusCode: 404,

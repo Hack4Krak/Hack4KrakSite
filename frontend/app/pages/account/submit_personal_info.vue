@@ -1,8 +1,4 @@
 <script setup lang="ts">
-definePageMeta({
-  layout: 'centered',
-})
-
 const REFERRAL_SOURCES = [
   'Linkedin',
   'Facebook',
