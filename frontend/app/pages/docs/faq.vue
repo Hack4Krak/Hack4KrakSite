@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import file from '~~/content/faq.json'
 
-definePageMeta({
-  layout: 'static-page',
-})
-
 useSeoMeta({
   title: 'FAQ',
   description: 'Najczęściej zadawane pytania dotyczące naszego wydarzenia!',

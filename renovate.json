@@ -9,9 +9,6 @@
     "workarounds:all",
     ":preserveSemverRanges"
   ],
-  "ignoreDeps": [
-    "zod"
-  ],
   "dependencyDashboard": false,
   "regexManagers": [
     {

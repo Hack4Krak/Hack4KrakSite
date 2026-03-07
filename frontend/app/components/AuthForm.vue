@@ -25,7 +25,7 @@ if (route.query.redirect_from_confirmation === 'true' && import.meta.client) {
     description: 'Pomyślnie aktywowano konto! Możesz się teraz zalogować',
     color: 'success',
   })
-  const query = Object.assign({}, route.query)
+  const query = { ...route.query }
   delete query.redirect_from_confirmation
   useRouter().replace({ query })
 }
