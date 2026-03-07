@@ -80,7 +80,7 @@ async function finishTimer() {
           <template #body>
             <section class="flex flex-col text-lg space-y-5">
               <div
-                v-for="(element, i) in [['Kod', error?.statusCode], ['Wiadomość', error?.statusMessage], ['Dane', error?.data]]"
+                v-for="(element, i) in [['Kod', error?.status], ['Wiadomość', error?.statusMessage], ['Dane', error?.data]]"
                 :key="i"
               >
                 <h2 class="text-xl font-bold text-primary">
