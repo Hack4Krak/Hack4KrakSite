@@ -11,7 +11,11 @@ use uuid::Uuid;
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "snake_case", tag = "name", content = "data")]
 pub enum EmailVerificationAction {
-    ConfirmEmailAddress { user_information: UserInformation },
+    ConfirmEmailAddress {
+        user_information: UserInformation,
+        #[serde(default)]
+        callback: Option<String>,
+    },
     ResetPassword,
     RegisterTeam { organization: String },
 }
@@ -117,6 +121,7 @@ mod tests {
                 name: NAME.to_string(),
                 ..Default::default()
             },
+            callback: None,
         };
         let (name, data) = action.get();
         assert_eq!(name, "confirm_email_address");
@@ -130,6 +135,7 @@ mod tests {
                 name: NAME.to_string(),
                 ..Default::default()
             },
+            callback: Some("/panel".to_string()),
         };
         let (action_type, additional_data) = action.get();
 
@@ -142,8 +148,9 @@ mod tests {
         let restored = model.get_action().unwrap();
 
         match restored {
-            EmailVerificationAction::ConfirmEmailAddress { user_information } => {
+            EmailVerificationAction::ConfirmEmailAddress { user_information, callback } => {
                 assert_eq!(NAME, user_information.name);
+                assert_eq!(callback, Some("/panel".to_string()));
             }
             _ => panic!("Unexpected variant"),
         }
