@@ -1,8 +1,4 @@
 <script setup lang="ts">
-definePageMeta({
-  middleware: 'guest',
-})
-
 useSeoMeta({
   title: 'Resetowanie hasła',
   description: 'Zresetuj hasło do swojego konta, aby móc brać udział w wydarzeniu!',
