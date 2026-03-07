@@ -15,15 +15,13 @@ const schema = z.object({
 })
 
 async function onSubmit(data: zInfer<typeof schema>) {
-  toast.add({ title: 'Oczekiwanie', description: 'Wysyłanie emaila…', color: 'info' })
+  toast.add({ title: 'Sukces', description: 'Jeśli podany adres email jest powiązany z kontem, wkrótce otrzymasz link do zresetowania hasła', color: 'success' })
 
   await useNuxtApp().$api('/auth/request_reset_password', {
     method: 'POST',
     credentials: 'include',
     body: data,
   })
-
-  toast.add({ title: 'Sukces', description: 'Pomyślnie wysłano link do resetowania hasła', color: 'success' })
 }
 </script>
 
@@ -38,7 +36,7 @@ async function onSubmit(data: zInfer<typeof schema>) {
         Bardzo nam przykro, że straciłeś dostęp do swojego konta :c
       </p>
       <p>
-        Podaj swój adres, na który wyślemy wiadomość do potwierdzenia maila
+        Podaj swój adres email, a jeśli istnieje powiązane z nim konto, wyślemy link do zresetowania hasła.
       </p>
     </div>
 

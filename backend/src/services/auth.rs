@@ -157,9 +157,11 @@ impl AuthService {
         app_state: &app_state::AppState,
         email: String,
     ) -> Result<(), Error> {
-        users::Model::find_by_email(&app_state.database, &email)
-            .await?
-            .ok_or(Error::Auth(InvalidEmailAddress))?;
+        let user = users::Model::find_by_email(&app_state.database, &email).await?;
+
+        if user.is_none() {
+            return Ok(());
+        }
 
         let confirmation_code = email_verification_request::Model::create(
             &app_state.database,
