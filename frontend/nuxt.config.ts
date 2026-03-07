@@ -27,6 +27,8 @@ export default defineNuxtConfig({
     '@compodium/nuxt',
     '@vueuse/nuxt',
     '@nuxt/hints',
+    'nuxt-purgecss',
+    '@nuxtjs/critters'
   ],
   echarts: {
     charts: ['LineChart'],
@@ -50,6 +52,7 @@ export default defineNuxtConfig({
     vue: {
       template: {
         compilerOptions: {
+          comments: false,
           nodeTransforms: getNodeTransforms(),
         },
       },

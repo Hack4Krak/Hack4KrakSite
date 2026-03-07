@@ -41,5 +41,8 @@
   },
   "resolutions": {
     "zod": "4.0.5"
+  },
+  "patchedDependencies": {
+    "nuxt-purgecss@2.0.0": "patches/nuxt-purgecss@2.0.0.patch"
   }
 }
