@@ -59,6 +59,18 @@ jobs:
       - name: Run e2e tests
         run: bun frontend:e2e
 
+      - name: "Install unlighthouse"
+        run: bun add -g @unlighthouse/cli puppeteer
+
+      - name: "Start preview server"
+        run: |
+          bun run preview &
+          sleep 10
+        working-directory: frontend
+
+      - name: "Run unlighthouse"
+        run: unlighthouse-ci --site http://localhost:3000 --budget 100
+
   backend:
     runs-on: ubuntu-latest
     steps:
