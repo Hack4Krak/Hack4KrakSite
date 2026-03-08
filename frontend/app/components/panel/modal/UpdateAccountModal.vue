@@ -17,9 +17,11 @@ async function onSubmit(data: zInfer<typeof schema>) {
 </script>
 
 <template>
-  <UModal v-model:open="open" title="Ustawienia konta" description="Zmień ustawienia konta">
-    <template #body>
-      <AutoForm :schema="schema" @submit="onSubmit" />
-    </template>
-  </UModal>
+  <AutoFormModal
+    v-model:open="open"
+    title="Ustawienia konta"
+    description="Zmień ustawienia konta"
+    :schema="schema"
+    @submit="onSubmit"
+  />
 </template>
