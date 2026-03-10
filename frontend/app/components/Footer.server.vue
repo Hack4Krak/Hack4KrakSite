@@ -5,7 +5,7 @@ const runtimeConfig = useRuntimeConfig().public
 </script>
 
 <template>
-  <footer>
+  <div>
     <USeparator />
     <UFooter class="w-full text-muted py-8 lg:px-12 lg:mb-8 text-xs lg:text-base">
       <template #left>
@@ -51,5 +51,5 @@ const runtimeConfig = useRuntimeConfig().public
         </div>
       </template>
     </UFooter>
-  </footer>
+  </div>
 </template>
