@@ -40,8 +40,8 @@ const members = computed<Members | null>(() => {
 
 <template>
   <div>
-    <PanelModalInviteUser v-model="inviteUserModal" />
-    <PanelModalConfirmDeleteModal
+    <LazyPanelModalInviteUser v-model="inviteUserModal" hydrate-on-idle />
+    <LazyPanelModalConfirmDeleteModal
       v-model="deleteTeamModal"
       url="/teams/management/delete"
       modal-title="Usuwanie drużyny"
@@ -49,8 +49,9 @@ const members = computed<Members | null>(() => {
       toast-success-message="Pomyślnie usunięto drużynę"
       :request-body="undefined"
       redirect-to="/panel/"
+      hydrate-on-idle
     />
-    <PanelModalConfirmDeleteModal
+    <LazyPanelModalConfirmDeleteModal
       v-model="leaveTeamModal"
       url="/teams/membership/leave_team"
       modal-title="Opuść drużynę"
@@ -58,8 +59,9 @@ const members = computed<Members | null>(() => {
       toast-success-message="Pomyślnie opuściłeś drużynę"
       :request-body="undefined"
       redirect-to="/panel/"
+      hydrate-on-idle
     />
-    <PanelModalConfirmDeleteModal
+    <LazyPanelModalConfirmDeleteModal
       v-model="kickUserModal"
       url="/teams/management/kick_user"
       modal-title="Wyrzucenie użytkownika"
@@ -67,8 +69,9 @@ const members = computed<Members | null>(() => {
       toast-success-message="Pomyślnie wyrzucono użytkownika"
       :request-body="{ username: kickedUser }"
       redirect-to="/panel/team"
+      hydrate-on-idle
     />
-    <PanelModalConfirmDeleteModal
+    <LazyPanelModalConfirmDeleteModal
       v-model="revokeInvitationModal"
       :url="`/teams/management/revoke_invitation/${revokedInvitation}` as any"
       modal-title="Cofnięcie zaproszenia"
@@ -76,6 +79,7 @@ const members = computed<Members | null>(() => {
       toast-success-message="Pomyślnie cofnięto zaproszenie"
       :request-body="undefined"
       redirect-to="/panel/team"
+      hydrate-on-idle
     />
 
     <NuxtLink to="/panel/" class="flex items-center gap-3 font-900 pt-5 pl-5">

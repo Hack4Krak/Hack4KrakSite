@@ -85,7 +85,7 @@ export default defineNuxtConfig({
     '/tasks/description/**': { swr: true },
     // For now, we have to manually list all docs to prerender them
     // due to some issues with Nitro crawling dynamic routes
-    '/docs/**': { prerender: true },
+    '/docs/**': { prerender: true, appLayout: 'static-page' },
     '/docs/faq': { prerender: true },
     '/docs/rules': { prerender: true },
     '/docs/privacy-policy': { prerender: true },
@@ -93,6 +93,13 @@ export default defineNuxtConfig({
     '/about_us': { prerender: true },
     '/faq': { redirect: '/docs/faq' },
     '/rules': { redirect: '/docs/rules' },
+    '/login': { appLayout: 'centered' },
+    '/register': { appLayout: 'centered' },
+    '/request_password_reset': { appLayout: 'centered' },
+    '/reset_password': { appLayout: 'centered' },
+    '/admin/**': { appLayout: 'centered' },
+    '/account/**': { appLayout: 'centered' },
+    '/panel/**': { appLayout: 'panel' },
   },
 
   app: {

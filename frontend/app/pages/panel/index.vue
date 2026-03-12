@@ -1,6 +1,4 @@
 <script setup lang="ts">
-definePageMeta({ layout: 'panel' })
-
 useSeoMeta({
   title: 'Panel użytkownika',
   description: 'Zarządzaj swoim kontem i drużyną w naszym CTF-ie! Sprawdź swoje zadania i postępy!',

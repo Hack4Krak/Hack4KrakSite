@@ -2,6 +2,8 @@ import type { MDCElement, MDCNode, MDCRoot } from '@nuxtjs/mdc'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import useMarkdownParser from '~/composables/useMarkdownParser'
 
+const shikiColorPattern = /--shiki-default:#[0-9a-fA-F]/
+
 function findNodes(node: MDCRoot | MDCNode | undefined, tag: string): MDCElement[] {
   const results: MDCElement[] = []
   if (!node)
@@ -85,7 +87,7 @@ describe('useMarkdownParser', () => {
     const { body } = await parse('```typescript\nconst msg: string = "hi";\n```')
 
     const spans = findNodes(body, 'span')
-    const coloredSpans = spans.filter(n => /--shiki-default:#[0-9a-fA-F]/.test(n.props?.style ?? ''))
+    const coloredSpans = spans.filter(n => shikiColorPattern.test(n.props?.style ?? ''))
     expect(coloredSpans.length).toBeGreaterThan(0)
   })
 
