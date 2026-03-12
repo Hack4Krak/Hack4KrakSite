@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 useSeoMeta({
   title: 'Resetowanie hasła',
   description: 'Zresetuj hasło do swojego konta, aby móc brać udział w wydarzeniu!',
