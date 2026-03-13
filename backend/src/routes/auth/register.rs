@@ -8,7 +8,14 @@ use actix_web::{HttpResponse, post, web};
 use actix_web_validation::Validated;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
-use validator::Validate;
+use validator::{Validate, ValidationError};
+
+fn validate_callback(callback: &str) -> Result<(), ValidationError> {
+    if callback.starts_with('/') {
+        return Ok(());
+    }
+    Err(ValidationError::new("invalid_callback"))
+}
 
 #[derive(Serialize, Deserialize, ToSchema, Validate, Debug)]
 pub struct RegisterModel {
@@ -18,6 +25,8 @@ pub struct RegisterModel {
     pub email: String,
     #[validate(length(min = 8, max = 32))]
     pub password: Password,
+    #[validate(length(max = 256), custom(function = "validate_callback"))]
+    pub callback: Option<String>,
 }
 
 #[utoipa::path(

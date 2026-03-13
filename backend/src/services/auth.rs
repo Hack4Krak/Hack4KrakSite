@@ -43,7 +43,10 @@ impl AuthService {
 
         let confirmation_code = email_verification_request::Model::create(
             &app_state.database,
-            EmailVerificationAction::ConfirmEmailAddress { user_information },
+            EmailVerificationAction::ConfirmEmailAddress {
+                user_information,
+                callback: credentials.callback.clone(),
+            },
             credentials.email.clone(),
             Some(Duration::minutes(30)),
         )
@@ -117,14 +120,16 @@ impl AuthService {
     pub async fn confirm_email(
         app_state: &app_state::AppState,
         confirmation_code: Uuid,
-    ) -> Result<(), Error> {
+    ) -> Result<Option<String>, Error> {
         let email_confirmation = email_verification_request::Model::find_and_verify(
             &app_state.database,
             confirmation_code,
         )
         .await?;
-        let EmailVerificationAction::ConfirmEmailAddress { user_information } =
-            email_confirmation.get_action()?
+        let EmailVerificationAction::ConfirmEmailAddress {
+            user_information,
+            callback,
+        } = email_confirmation.get_action()?
         else {
             return Err(Error::InvalidEmailConfirmationCode);
         };
@@ -133,7 +138,7 @@ impl AuthService {
 
         email_confirmation.delete(&app_state.database).await?;
 
-        Ok(())
+        Ok(callback)
     }
 
     fn create_email_confirmation_link(confirmation_code: &str) -> Result<String, Error> {
