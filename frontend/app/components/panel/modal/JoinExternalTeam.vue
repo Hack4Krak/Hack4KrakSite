@@ -44,8 +44,6 @@ function codeScanned(code: string, state?: Partial<Schema>) {
     title="Dołącz do zespołu"
     description="Aby wziąć udział w tym wydarzeniu nauczyciel z Twojej szkoły musi zarejestrować drużyne!"
     :schema="schema"
-    submit-label="Dołącz"
-    close-label="Zamknij"
     @submit="onSubmit"
   >
     <template #code="{ field, state }">

@@ -40,8 +40,6 @@ async function onSubmit() {
     :schema="schema"
     :title="modalTitle"
     :description="modalDescription"
-    submit-label="Potwierdź"
-    close-label="Anuluj"
     @submit="onSubmit"
   />
 </template>

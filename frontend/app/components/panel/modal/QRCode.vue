@@ -32,8 +32,6 @@ function onError(error: Error) {
     title="Zeskanuj kod QR"
     :schema="schema"
     :config="{ submit: false }"
-    submit-label="Zamknij"
-    close-label="Anuluj"
     @submit="open = false"
   >
     <template #code>
