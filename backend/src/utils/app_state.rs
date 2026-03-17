@@ -1,7 +1,7 @@
 use crate::services::env::EnvConfig;
 use crate::services::task_manager::TaskManager;
 use crate::utils::oauth::OAuthProvider;
-use crate::utils::points_counter::PointsCounter;
+use crate::utils::points_counter::PointsCacheEntry;
 use crate::utils::sse_event::SseEvent;
 use lettre::SmtpTransport;
 use sea_orm::DatabaseConnection;
@@ -16,7 +16,7 @@ pub struct AppState {
     pub google_oauth_provider: OAuthProvider,
     pub smtp_client: SmtpTransport,
     pub sse_event_sender: broadcast::Sender<SseEvent>,
-    pub points_cache: RwLock<Option<PointsCounter>>,
+    pub points_cache: RwLock<Option<PointsCacheEntry>>,
 }
 
 impl AppState {

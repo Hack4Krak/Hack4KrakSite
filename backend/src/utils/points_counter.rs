@@ -1,7 +1,8 @@
 use crate::entities::{flag_capture, teams};
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
-use chrono::NaiveDateTime;
+use crate::utils::leaderboard_freeze::active_freeze_cutoff;
+use chrono::{NaiveDateTime, Utc};
 use sea_orm::{EntityTrait, QueryOrder};
 use serde::ser::SerializeStruct;
 use serde::{Deserialize, Serialize, Serializer};
@@ -48,31 +49,44 @@ pub struct PointsCounter {
     team_time_series: HashMap<Uuid, TeamTimeSeriesData>,
 }
 
+#[derive(Debug, Clone)]
+pub struct PointsCacheEntry {
+    pub freeze_cutoff: Option<NaiveDateTime>,
+    pub counter: PointsCounter,
+}
+
 impl PointsCounter {
     /// Calculates points for all teams based on flag captures.
     /// Uses caching to avoid redundant database queries.
     pub async fn calculate(app_state: &Arc<AppState>) -> Result<PointsCounter, Error> {
+        let (freeze_cutoff, start_time) = {
+            let event_config = app_state.task_manager.event_config.read().await;
+            (
+                active_freeze_cutoff(Utc::now(), event_config.end_date),
+                event_config.start_date.naive_utc(),
+            )
+        };
+
         {
             let cache = app_state.points_cache.read().await;
-            if let Some(cached) = cache.as_ref() {
-                return Ok(cached.clone());
+            if let Some(cached) = cache.as_ref()
+                && cached.freeze_cutoff == freeze_cutoff
+            {
+                return Ok(cached.counter.clone());
             }
         }
 
-        let captures = flag_capture::Entity::find()
+        let mut captures = flag_capture::Entity::find()
             .order_by_asc(flag_capture::Column::SubmittedAt)
             .order_by_asc(flag_capture::Column::Id)
             .all(&app_state.database)
             .await?;
 
+        if let Some(cutoff) = freeze_cutoff {
+            captures.retain(|capture| capture.submitted_at <= cutoff);
+        }
+
         let teams = teams::Entity::find().all(&app_state.database).await?;
-        let start_time = app_state
-            .task_manager
-            .event_config
-            .read()
-            .await
-            .start_date
-            .naive_utc();
 
         let mut counter = Self::default();
         counter.event_timestamps.push(start_time);
@@ -92,7 +106,10 @@ impl PointsCounter {
 
         counter.process_events(captures, &teams);
 
-        *app_state.points_cache.write().await = Some(counter.clone());
+        *app_state.points_cache.write().await = Some(PointsCacheEntry {
+            freeze_cutoff,
+            counter: counter.clone(),
+        });
 
         Ok(counter)
     }

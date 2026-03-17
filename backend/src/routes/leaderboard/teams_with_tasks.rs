@@ -1,9 +1,11 @@
 use crate::entities::teams;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
+use crate::utils::leaderboard_freeze::active_freeze_cutoff;
 use crate::utils::points_counter::PointsCounter;
 use actix_web::web::Data;
 use actix_web::{HttpResponse, get};
+use chrono::Utc;
 use sea_orm::prelude::DateTime;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -30,9 +32,15 @@ pub struct TeamRankingWithTasks {
 #[get("/teams_with_tasks")]
 pub async fn teams_with_tasks(app_state: Data<AppState>) -> Result<HttpResponse, Error> {
     let rankings = PointsCounter::calculate(&app_state).await?.get_rankings();
+    let freeze_cutoff = {
+        let event_config = app_state.task_manager.event_config.read().await;
+        active_freeze_cutoff(Utc::now(), event_config.end_date)
+    };
+
     let tasks_by_team = teams::Model::get_tasks_by_team(
         &app_state.database,
         rankings.iter().map(|ranking| ranking.team_id).collect(),
+        freeze_cutoff,
     )
     .await?;
     let merged = rankings

@@ -361,12 +361,18 @@ impl teams::Model {
     pub async fn get_tasks_by_team(
         database: &DatabaseConnection,
         team_ids: Vec<Uuid>,
+        freeze_cutoff: Option<DateTime>,
     ) -> Result<HashMap<Uuid, HashMap<String, DateTime>>, Error> {
         let mut tasks: HashMap<Uuid, HashMap<String, DateTime>> = HashMap::new();
-        let flag_captures = flag_capture::Entity::find()
-            .filter(flag_capture::Column::Team.is_in(team_ids))
-            .all(database)
-            .await?;
+        let mut flag_capture_query =
+            flag_capture::Entity::find().filter(flag_capture::Column::Team.is_in(team_ids));
+
+        if let Some(freeze_cutoff) = freeze_cutoff {
+            flag_capture_query =
+                flag_capture_query.filter(flag_capture::Column::SubmittedAt.lte(freeze_cutoff));
+        }
+
+        let flag_captures = flag_capture_query.all(database).await?;
 
         for flag_capture in flag_captures {
             tasks

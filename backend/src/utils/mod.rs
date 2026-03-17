@@ -7,6 +7,7 @@ pub mod email;
 pub mod error;
 pub mod handle_database_error;
 pub mod jwt;
+pub mod leaderboard_freeze;
 pub mod oauth;
 pub mod openapi;
 pub mod points_counter;
