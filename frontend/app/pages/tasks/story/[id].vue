@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FetchError } from 'ofetch'
 
-const route = useRoute('tasks-description-id')
+const route = useRoute('tasks-story-id')
 const taskId = String(route.params.id)
 
 const { data: taskName } = await useApi('/tasks/name/{task_id}', {
