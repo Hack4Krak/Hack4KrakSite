@@ -45,6 +45,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
   compatibilityDate: '2025-07-16',
+  future: {
+    compatibilityVersion: 5,
+  },
 
   vite: {
     vue: {
