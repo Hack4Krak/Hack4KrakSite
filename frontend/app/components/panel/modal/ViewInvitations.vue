@@ -6,6 +6,7 @@ const { data, refresh } = await useAuth('/teams/invitations/', {
 const { $auth } = useNuxtApp()
 
 const open = defineModel<boolean>()
+const schema = z.object({})
 
 watch(open, (newValue) => {
   if (newValue) {
@@ -30,8 +31,14 @@ async function accept(team_name: string) {
 </script>
 
 <template>
-  <UModal v-model:open="open" title="Zaproszenia" description="Zbierz brygade swoich poteżnych team-matów do walki!" :ui="{ footer: 'justify-end' }">
-    <template #body>
+  <AutoFormModal
+    v-model:open="open"
+    title="Zaproszenia"
+    description="Zbierz brygade swoich poteżnych team-matów do walki!"
+    :schema="schema"
+    @submit="open = false"
+  >
+    <template #after-fields>
       <div v-if="data?.length === 0">
         Brak danych do wyświetlenia
       </div>
@@ -42,8 +49,8 @@ async function accept(team_name: string) {
       </div>
     </template>
 
-    <template #footer>
-      <UButton label="Zamknij" color="neutral" variant="outline" @click="open = false" />
+    <template #footer="{ close }">
+      <UButton label="Zamknij" color="neutral" variant="outline" @click="close" />
     </template>
-  </UModal>
+  </AutoFormModal>
 </template>

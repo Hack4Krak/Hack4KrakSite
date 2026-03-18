@@ -107,9 +107,9 @@ async function onSubmit(data: zInfer<typeof schema>) {
     </div>
 
     <AutoForm :schema="schema" :initial-state="state" @submit="onSubmit">
-      <template #is_vegetarian="{ field, state: stateValue }">
+      <template #is_vegetarian="{ state: stateValue }">
         <USelect
-          v-model="stateValue[field]"
+          v-model="stateValue.is_vegetarian"
           :items="[
             {
               label: 'Dieta mięsna',

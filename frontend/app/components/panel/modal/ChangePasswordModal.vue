@@ -27,12 +27,17 @@ async function onSubmit(data: zInfer<typeof schema>) {
 </script>
 
 <template>
-  <UModal v-model:open="open" title="Ustawienia konta" description="Zmień hasło">
-    <template #body>
-      <AutoForm :schema="schema" @submit="onSubmit" />
+  <AutoFormModal
+    v-model:open="open"
+    title="Ustawienia konta"
+    description="Zmień hasło"
+    :schema="schema"
+    @submit="onSubmit"
+  >
+    <template #after-fields>
       <NuxtLink class="link" to="/request_password_reset">
         Zresetuj hasło
       </NuxtLink>
     </template>
-  </UModal>
+  </AutoFormModal>
 </template>

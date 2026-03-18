@@ -17,9 +17,11 @@ async function onSubmit(data: zInfer<typeof schema>) {
 </script>
 
 <template>
-  <UModal v-model:open="open" title="Stwórz team" description="Zbierz brygadę swoich potężnych team-matów do walki!">
-    <template #body>
-      <AutoForm :schema="schema" @submit="onSubmit" />
-    </template>
-  </UModal>
+  <AutoFormModal
+    v-model:open="open"
+    title="Stwórz team"
+    description="Zbierz brygadę swoich potężnych team-matów do walki!"
+    :schema="schema"
+    @submit="onSubmit"
+  />
 </template>
