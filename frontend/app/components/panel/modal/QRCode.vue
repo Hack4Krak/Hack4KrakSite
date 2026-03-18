@@ -5,8 +5,13 @@ const emit = defineEmits<{
 
 const open = defineModel<boolean>()
 
+const schema = z.object({
+  code: z.string().meta({ title: 'Kod QR' }),
+})
+
 function onDetect(detectedCodes: DetectedBarcode[]) {
   emit('codeScanned', detectedCodes[0]!.rawValue)
+  open.value = false
 }
 
 function onError(error: Error) {
@@ -22,12 +27,21 @@ function onError(error: Error) {
 </script>
 
 <template>
-  <UModal v-model:open="open" title="Zeskanuj kod QR">
-    <template #body>
+  <AutoFormModal
+    v-model:open="open"
+    title="Zeskanuj kod QR"
+    :schema="schema"
+    :config="{ submit: false }"
+    @submit="open = false"
+  >
+    <template #code>
       <QrcodeStream
         @detect="onDetect"
         @error="onError"
       />
     </template>
-  </UModal>
+    <template #footer="{ close }">
+      <UButton label="Zamknij" color="neutral" variant="outline" @click="close" />
+    </template>
+  </AutoFormModal>
 </template>

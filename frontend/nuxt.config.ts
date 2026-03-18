@@ -190,6 +190,12 @@ export default defineNuxtConfig({
     description: 'Hack4Krak to największy w Polsce CTF dla uczniów szkół średnich! Sprawdź swoje umiejętności w cyberbezpieczeństwie, zgłoś swoją drużynę i rywalizuj o nagrody!',
     defaultLocale: 'pl',
   },
+    autoForm: {
+    modal: {
+      submitLabel: 'Potwierdź',
+      closeLabel: 'Anuluj',
+    },
+  },
   // https://content.nuxt.com/docs/getting-started
   content: {
     experimental: { sqliteConnector: 'native' },
