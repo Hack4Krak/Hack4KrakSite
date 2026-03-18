@@ -23,7 +23,7 @@ function checkImage() {
   img.src = backgroundImage
   img.onerror = () => {
     showError({
-      statusCode: 404,
+      status: 404,
       message: 'Zdjęcie nie zostało znalezione',
     })
   }
@@ -36,7 +36,7 @@ try {
 
   if (storyResponse.value === undefined) {
     showError({
-      statusCode: 404,
+      status: 404,
       message: 'Zadanie nie zostało znalezione',
     })
     console.error('Task not found')

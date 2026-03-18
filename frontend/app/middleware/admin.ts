@@ -5,7 +5,7 @@ export default defineNuxtRouteMiddleware(async () => {
     })
     if (error.value || !data.value) {
       showError({
-        statusCode: 403,
+        status: 403,
         message: 'Ta strona dostępna jest tylko dla administratorów.',
       })
     }

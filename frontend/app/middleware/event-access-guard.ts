@@ -6,9 +6,9 @@ export default defineNuxtRouteMiddleware(async () => {
   if (!error?.value)
     return
 
-  if (error.value.statusCode === 403) {
+  if (error.value.status === 403) {
     return showError({
-      statusCode: 403,
+      status: 403,
       data: {
         response: error.value.data,
       },

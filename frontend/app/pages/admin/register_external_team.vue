@@ -1,8 +1,4 @@
 <script setup lang="ts">
-definePageMeta({
-  layout: 'centered',
-})
-
 useSeoMeta({
   title: 'Rejestracja drużyn',
 })
@@ -19,7 +15,7 @@ const { data, refresh, error } = await useApi('/teams/external_invitations/info/
 
 if (error.value) {
   showError({
-    statusCode: 400,
+    status: 400,
     message: 'Zły kod rejestracji.\n Skontaktuj się z organizatorami...',
   })
 }
