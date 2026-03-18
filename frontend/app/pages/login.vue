@@ -1,7 +1,6 @@
 <script setup>
 definePageMeta({
   middleware: 'guest',
-  layout: 'centered',
 })
 
 useSeoMeta({

@@ -85,10 +85,17 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
+    '/login': { appLayout: 'centered' },
+    '/register': { appLayout: 'centered' },
+    '/request_password_reset': { appLayout: 'centered' },
+    '/reset_password': { appLayout: 'centered' },
+    '/account/submit_personal_info': { appLayout: 'centered' },
+    '/admin/register_external_team': { appLayout: 'centered' },
+    '/panel': { appLayout: 'panel' },
+    '/docs/**': { appLayout: 'static-page', prerender: true },
     '/tasks/description/**': { swr: true },
     // For now, we have to manually list all docs to prerender them
     // due to some issues with Nitro crawling dynamic routes
-    '/docs/**': { prerender: true },
     '/docs/faq': { prerender: true },
     '/docs/rules': { prerender: true },
     '/docs/privacy-policy': { prerender: true },

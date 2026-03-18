@@ -39,14 +39,15 @@ watchEffect(() => {
   }
 
   const message = error.message?.toString().toLowerCase() || ''
-  errorTitle.value.title = error.statusCode.toString()
+  const status = error.status
+  errorTitle.value.title = String(status ?? 'Błąd')
 
-  if (error.statusCode === 404) {
+  if (error.status === 404) {
     if (message.includes('page not found')) {
       errorTitle.value.message
         = 'Uwaga rycerzu,\n ta strona zniknęła jak zamek w chmurach.\n Wróć na właściwą drogę!'
     }
-  } else if (error.statusCode === 500) {
+  } else if (error.status === 500) {
     errorTitle.value.message = 'Rycerz napotkał przeszkodę\n Na swojej drodze.\n Spróbuj ponownie później.'
   }
 })
@@ -80,7 +81,7 @@ async function finishTimer() {
           <template #body>
             <section class="flex flex-col text-lg space-y-5">
               <div
-                v-for="(element, i) in [['Kod', error?.statusCode], ['Wiadomość', error?.statusMessage], ['Dane', error?.data]]"
+                v-for="(element, i) in [['Kod', error?.status], ['Wiadomość', error?.statusText], ['Dane', error?.data]]"
                 :key="i"
               >
                 <h2 class="text-xl font-bold text-primary">
