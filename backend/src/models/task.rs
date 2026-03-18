@@ -110,8 +110,8 @@ pub struct TaskDisplay {
 
 #[derive(Serialize, Deserialize, ToSchema, Debug, Clone, Default)]
 pub struct Coordinates {
-    pub x: i32,
-    pub y: i32,
+    pub x: f32,
+    pub y: f32,
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Debug)]

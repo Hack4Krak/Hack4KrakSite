@@ -29,6 +29,7 @@
     "@nuxtjs/seo": "3.2.2",
     "@vueuse/nuxt": "14.0.0",
     "dayjs-nuxt": "2.1.11",
+    "maplibre-gl": "^5.20.2",
     "nuxt": "4.2.0",
     "nuxt-echarts": "^1.0.1",
     "nuxt-open-fetch": "0.13.8",
