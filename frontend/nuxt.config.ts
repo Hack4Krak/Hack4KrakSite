@@ -192,7 +192,7 @@ export default defineNuxtConfig({
   },
   // https://content.nuxt.com/docs/getting-started
   content: {
-    experimental: { nativeSqlite: true },
+    experimental: { sqliteConnector: 'native' },
     build: {
       markdown: {
         highlight: {
