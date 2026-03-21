@@ -1,4 +1,6 @@
-use crate::models::task::{EventConfig, LabelsConfig, RegistrationConfig, TaskConfig};
+use crate::models::task::{
+    EventConfig, LabelsConfig, RegistrationConfig, TaskConfig, TaskDisplay, TaskMeta,
+};
 use crate::routes::task::TaskError;
 use crate::services::env::EnvConfig;
 use crate::utils::error::Error;
@@ -6,10 +8,19 @@ use actix_files::NamedFile;
 use dashmap::DashMap;
 use dashmap::mapref::multiple::RefMulti;
 use dashmap::mapref::one::Ref;
+use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use tokio::fs;
 use tokio::sync::RwLock;
 use tracing::error;
+use utoipa::ToSchema;
+
+#[derive(Serialize, Deserialize, ToSchema)]
+pub struct SimpleTask {
+    #[serde(flatten)]
+    pub description: TaskMeta,
+    pub display: TaskDisplay,
+}
 
 #[derive(Default)]
 pub struct TaskManager {
@@ -43,6 +54,20 @@ impl TaskManager {
         // todo: refreshconfigs
         self.tasks.clear();
         Self::load_tasks(&self.tasks).await;
+    }
+
+    pub fn get_tasks_sorted(&self) -> Vec<SimpleTask> {
+        let mut tasks: Vec<SimpleTask> = self
+            .tasks
+            .iter()
+            .map(|task| SimpleTask {
+                description: task.meta.clone(),
+                display: task.display.clone(),
+            })
+            .collect();
+        tasks.sort_by(|a, b| a.description.id.cmp(&b.description.id));
+
+        tasks
     }
 
     async fn load_tasks(tasks: &DashMap<String, TaskConfig>) {

@@ -15,6 +15,7 @@ use sea_orm::prelude::DateTime;
 use sea_orm::{ActiveModelTrait, ConnectionTrait, ModelTrait, PaginatorTrait, QueryFilter};
 use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, TransactionTrait};
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use std::future;
 use utoipa::ToSchema;
 use uuid::Uuid;
@@ -353,6 +354,27 @@ impl teams::Model {
             .into_iter()
             .map(|flag_capture| flag_capture.task)
             .collect();
+
+        Ok(tasks)
+    }
+
+    pub async fn get_tasks_by_team(
+        database: &DatabaseConnection,
+        team_ids: Vec<Uuid>,
+    ) -> Result<HashMap<Uuid, HashMap<String, DateTime>>, Error> {
+        let mut tasks: HashMap<Uuid, HashMap<String, DateTime>> = HashMap::new();
+        let flag_captures = flag_capture::Entity::find()
+            .filter(flag_capture::Column::Team.is_in(team_ids))
+            .all(database)
+            .await?;
+
+        for flag_capture in flag_captures {
+            tasks
+                .entry(flag_capture.team)
+                .or_default()
+                .entry(flag_capture.task.clone())
+                .or_insert(flag_capture.submitted_at);
+        }
 
         Ok(tasks)
     }

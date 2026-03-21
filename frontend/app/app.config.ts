@@ -45,9 +45,14 @@ export default defineAppConfig({
       },
     },
   },
+  // https://nuxt-auto-form.norbiros.dev/customization/config
   autoForm: {
     submit: {
       props: { label: 'Wyślij', class: 'w-full flex justify-center' },
+    },
+    modal: {
+      submitLabel: 'Potwierdź',
+      closeLabel: 'Anuluj',
     },
   },
 })

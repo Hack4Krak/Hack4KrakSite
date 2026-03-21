@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const schema = z.object({
-  username: zUsername().meta({ title: 'Nazwa użytkownika' }),
+  username: zUsername(),
 })
 
 const open = defineModel<boolean>()
@@ -18,9 +18,10 @@ async function onSubmit(data: zInfer<typeof schema>) {
 </script>
 
 <template>
-  <UModal v-model:open="open" title="Zaproś użytkownika">
-    <template #body>
-      <AutoForm :schema="schema" @submit="onSubmit" />
-    </template>
-  </UModal>
+  <AutoFormModal
+    v-model:open="open"
+    title="Zaproś użytkownika"
+    :schema="schema"
+    @submit="onSubmit"
+  />
 </template>

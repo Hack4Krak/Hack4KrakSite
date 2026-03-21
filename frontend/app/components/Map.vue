@@ -62,7 +62,7 @@ onMounted(() => {
   <div
     ref="mapContainer"
     autofocus
-    class="relative overflow-auto scrollbar-hide cursor-grab active:cursor-grabbing focus:outline-none"
+    class="relative overflow-auto scrollbar-hide cursor-grab active:cursor-grabbing focus:outline-none m-4"
     @mousedown="onMouseDown"
     @mousemove="onMouseMove"
     @mouseup="onMouseUp"
@@ -109,7 +109,7 @@ onMounted(() => {
                   'hover:drop-shadow-[0px_0px_2px_#555555]': !completedTasks.includes(item.id),
                   'drop-shadow-[0px_0px_2px_#458018]': completedTasks.includes(item.id),
                 }"
-                class="rendering-pixelated hover:drop-shadow-[0px_0px_2px_#555555] transition-all duration-300 ease-in-out"
+                class="rendering-pixelated hover:drop-shadow-[0px_0px_2px_#555555] transition-all duration-300 ease-in-out select-none"
                 :alt="item.name"
               >
             </NuxtLink>

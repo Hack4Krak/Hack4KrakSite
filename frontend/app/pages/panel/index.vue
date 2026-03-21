@@ -1,6 +1,4 @@
 <script setup lang="ts">
-definePageMeta({ layout: 'panel' })
-
 useSeoMeta({
   title: 'Panel użytkownika',
   description: 'Zarządzaj swoim kontem i drużyną w naszym CTF-ie! Sprawdź swoje zadania i postępy!',
@@ -37,7 +35,7 @@ const isFlagModalOpen = useFlagModalState()
     <!-- Top full-width bar -->
     <div class="col-span-2 border-b h-15 flex items-center divide-x font-bold">
       <span class="w-15 h-full flex items-center justify-center text-xl">
-        X
+        <UIcon name="pixelarticons:close" class="size-lg font-bold" />
       </span>
       <span v-if="team?.team_name" class="px-5 h-full flex items-center">
         {{ team?.team_name }}

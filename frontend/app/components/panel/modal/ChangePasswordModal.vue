@@ -1,9 +1,9 @@
 <script setup lang="ts">
 const schema = z
   .object({
-    new_password: zPassword(),
-    confirm_new_password: zPassword('Potwierdzenie hasła jest wymagane'),
-    old_password: zPassword('Stare hasło jest wymagane'),
+    old_password: zPassword('Stare hasło jest wymagane').meta({ title: 'Stare hasło' }),
+    new_password: zPassword('Nowe hasło jest wymagane').meta({ title: 'Nowe hasło' }),
+    confirm_new_password: zPassword('Potwierdzenie hasła jest wymagane').meta({ title: 'Powtórz nowe hasło' }),
   })
   .check(z.refine(data => data.new_password === data.confirm_new_password, {
     message: 'Hasła nie są takie same',
@@ -27,12 +27,17 @@ async function onSubmit(data: zInfer<typeof schema>) {
 </script>
 
 <template>
-  <UModal v-model:open="open" title="Ustawienia konta" description="Zmień hasło">
-    <template #body>
-      <AutoForm :schema="schema" @submit="onSubmit" />
+  <AutoFormModal
+    v-model:open="open"
+    title="Ustawienia konta"
+    description="Zmień hasło"
+    :schema="schema"
+    @submit="onSubmit"
+  >
+    <template #after-fields>
       <NuxtLink class="link" to="/request_password_reset">
         Zresetuj hasło
       </NuxtLink>
     </template>
-  </UModal>
+  </AutoFormModal>
 </template>

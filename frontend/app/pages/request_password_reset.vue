@@ -1,6 +1,5 @@
 <script setup lang="ts">
 definePageMeta({
-  middleware: 'guest',
   layout: 'centered',
 })
 
@@ -11,7 +10,7 @@ useSeoMeta({
 
 const toast = useToast()
 const schema = z.object({
-  email: z.email().meta({ title: 'Email' }),
+  email: z.email({ error: 'Niepoprawny adres e-mail' }).meta({ title: 'Adres e-mail' }),
 })
 
 async function onSubmit(data: zInfer<typeof schema>) {

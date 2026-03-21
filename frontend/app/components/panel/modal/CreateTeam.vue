@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const schema = z.object({
-  team_name: zTeamName().meta({ title: 'Nazwa drużyny' }),
+  team_name: zTeamName(),
 })
 
 const open = defineModel<boolean>()
@@ -17,9 +17,11 @@ async function onSubmit(data: zInfer<typeof schema>) {
 </script>
 
 <template>
-  <UModal v-model:open="open" title="Stwórz team" description="Zbierz brygadę swoich potężnych team-matów do walki!">
-    <template #body>
-      <AutoForm :schema="schema" @submit="onSubmit" />
-    </template>
-  </UModal>
+  <AutoFormModal
+    v-model:open="open"
+    title="Stwórz team"
+    description="Zbierz brygadę swoich potężnych team-matów do walki!"
+    :schema="schema"
+    @submit="onSubmit"
+  />
 </template>

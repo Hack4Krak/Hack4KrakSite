@@ -1,4 +1,6 @@
 import dotenv from 'dotenv'
+import { shikiLangNames, shikiTheme } from './app/utils/shiki'
+import { getNodeTransforms } from './app/utils/vite-node-transforms'
 
 dotenv.config({ path: '../.env' })
 
@@ -17,6 +19,7 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     '@nuxtjs/mdc',
     '@formkit/auto-animate/nuxt',
+    'nuxt-echarts',
     'nuxt-open-fetch',
     'nuxt-qrcode',
     '@norbiros/nuxt-auto-form',
@@ -25,6 +28,14 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxt/hints',
   ],
+  echarts: {
+    charts: ['LineChart'],
+    components: [
+      'TooltipComponent',
+      'LegendComponent',
+      'GridComponent',
+    ],
+  },
   experimental: {
     componentIslands: true,
     typedPages: true,
@@ -34,6 +45,17 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
   compatibilityDate: '2025-07-16',
+
+  vite: {
+    vue: {
+      template: {
+        compilerOptions: {
+          nodeTransforms: getNodeTransforms(),
+        },
+      },
+    },
+  },
+
   imports: {
     presets: [
       {
@@ -60,10 +82,12 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
+    '/panel/**': { appLayout: 'panel' },
+    '/account/**': { appLayout: 'centered' },
     '/tasks/description/**': { swr: true },
     // For now, we have to manually list all docs to prerender them
     // due to some issues with Nitro crawling dynamic routes
-    '/docs/**': { prerender: true },
+    '/docs/**': { appLayout: 'static-page', prerender: true },
     '/docs/faq': { prerender: true },
     '/docs/rules': { prerender: true },
     '/docs/privacy-policy': { prerender: true },
@@ -167,6 +191,14 @@ export default defineNuxtConfig({
   },
   // https://content.nuxt.com/docs/getting-started
   content: {
-    experimental: { nativeSqlite: true },
+    experimental: { sqliteConnector: 'native' },
+    build: {
+      markdown: {
+        highlight: {
+          theme: shikiTheme,
+          langs: shikiLangNames,
+        },
+      },
+    },
   },
 })

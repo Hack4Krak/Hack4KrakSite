@@ -1,7 +1,7 @@
 <script setup lang="ts">
-definePageMeta({ layout: 'panel' })
-
 const { logout } = useLogout()
+
+const { $api } = useNuxtApp()
 
 const { data: user } = await useAuth('/account/')
 
@@ -12,9 +12,9 @@ const deleteAccountModal = ref(false)
 </script>
 
 <template>
-  <LazyPanelModalJoinExternalTeam v-model="joinExternalTeamModal" hydrate-on-visible />
-  <LazyPanelModalUpdateAccountModal v-model="updateAccountModal" hydrate-on-visible />
-  <LazyPanelModalChangePasswordModal v-model="changePasswordModal" hydrate-on-visible />
+  <LazyPanelModalJoinExternalTeam v-model="joinExternalTeamModal" hydrate-on-idle />
+  <LazyPanelModalUpdateAccountModal v-model="updateAccountModal" hydrate-on-idle />
+  <LazyPanelModalChangePasswordModal v-model="changePasswordModal" hydrate-on-idle />
   <LazyPanelModalConfirmDeleteModal
     v-model="deleteAccountModal"
     url="/account/delete"
@@ -23,7 +23,7 @@ const deleteAccountModal = ref(false)
     toast-success-message="Pomyślnie usunięto konto"
     :request-body="undefined"
     redirect-to="/"
-    hydrate-on-visible
+    hydrate-on-idle
   />
 
   <div class="grid grid-cols-[400px_1fr] divide-x m-10 border min-w-fit flex-1">
