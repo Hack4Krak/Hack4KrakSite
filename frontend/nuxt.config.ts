@@ -83,6 +83,7 @@ export default defineNuxtConfig({
 
   routeRules: {
     '/panel/**': { appLayout: 'panel' },
+    '/account/**': { appLayout: 'centered' },
     '/tasks/description/**': { swr: true },
     // For now, we have to manually list all docs to prerender them
     // due to some issues with Nitro crawling dynamic routes
