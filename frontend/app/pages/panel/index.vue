@@ -23,8 +23,6 @@ const { data: now, refresh: updateDate } = useAsyncData('formattedNow', async ()
 })
 
 useRafFn(() => updateDate())
-
-const isFlagModalOpen = useFlagModalState()
 </script>
 
 <template>
@@ -61,13 +59,8 @@ const isFlagModalOpen = useFlagModalState()
 
     <!-- Top two boxes -->
     <div class="flex divide-x border-b font-pixelify" :class="{ 'col-span-2': !team }">
-      <div class="flex flex-1 flex-col shadow items-center justify-center font-pixelify">
-        <h3 class="font-bold text-xl">
-          Składanie flagi
-        </h3>
-        <ElevatedButton class="w-40 mt-3" @click="isFlagModalOpen = true">
-          Złóż flagę
-        </ElevatedButton>
+      <div class="flex flex-1 flex-col shadow items-center justify-center">
+        <PanelTileFlagForm class="mx-20" />
       </div>
       <PanelTileLinks class="w-2/5 m-5" />
     </div>

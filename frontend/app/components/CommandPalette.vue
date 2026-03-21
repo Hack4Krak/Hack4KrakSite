@@ -33,12 +33,24 @@ const { data: team } = useAuth('/teams/membership/my_team', {
   redirect: 'error',
 })
 
+const isTasksCollapsed = ref(true)
+
+const tasksHeader = {
+  label: 'Zadania',
+  slot: 'tasks-header' as const,
+  ui: { item: 'cursor-pointer' },
+  onSelect(e: Event) {
+    e.preventDefault()
+    isTasksCollapsed.value = !isTasksCollapsed.value
+  },
+}
+
 const groups = computed(() => [
   {
     id: 'tasks',
-    label: 'Zadania',
     items: [
-      ...(isLoggedIn.value && team.value
+      tasksHeader,
+      ...(isLoggedIn.value && team.value?.team_name
         ? [{ label: 'Złóż flagę', icon: 'pixelarticons:flag', kbds: ['S', 'F'], onSelect: openFlagModal }]
         : []),
       ...(tasks.value ?? []).map(task => ({
@@ -48,6 +60,10 @@ const groups = computed(() => [
         onSelect: close,
       })),
     ],
+    postFilter(searchTerm: string, filteredItems: any[]) {
+      const rest = filteredItems.filter(i => i.slot !== 'tasks-header')
+      return (!searchTerm && isTasksCollapsed.value) ? [tasksHeader] : [tasksHeader, ...rest]
+    },
   },
   {
     id: 'navigation',
@@ -73,7 +89,7 @@ const groups = computed(() => [
           ]
         : [
             { label: 'Profil', icon: 'pixelarticons:user', to: '/panel/profile', onSelect: close },
-            ...(team.value
+            ...(team.value?.team_name
               ? [{ label: 'Drużyna', icon: 'pixelarticons:users', to: '/panel/team', onSelect: close }]
               : []),
             { label: 'Wyloguj się', icon: 'pixelarticons:logout', onSelect: handleLogout },
@@ -98,6 +114,16 @@ const groups = computed(() => [
         icon="pixelarticons:search"
         @update:open="isOpen = $event"
       >
+        <template #tasks-header-leading />
+        <template #tasks-header-label>
+          <span class="font-semibold text-highlighted">Zadania</span>
+        </template>
+        <template #tasks-header-trailing>
+          <UIcon
+            :name="isTasksCollapsed ? 'pixelarticons:chevron-down' : 'pixelarticons:chevron-up'"
+            class="size-5 text-primary"
+          />
+        </template>
         <template #empty>
           Brak wyników
         </template>

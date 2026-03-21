@@ -1,8 +1,6 @@
 <script setup lang="ts">
 const { logout } = useLogout()
 
-const { $api } = useNuxtApp()
-
 const { data: user } = await useAuth('/account/')
 
 const joinExternalTeamModal = ref(false)

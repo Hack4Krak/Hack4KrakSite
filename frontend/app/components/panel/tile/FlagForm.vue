@@ -2,6 +2,12 @@
 import type { FormSubmitEvent } from '@nuxt/ui'
 import * as party from 'party-js'
 
+const { showHeading = true } = defineProps<{
+  showHeading?: boolean
+}>()
+
+const emit = defineEmits<{ success: [] }>()
+
 const flagPattern = /^hack4KrakCTF\{.*\}$/
 const schema = z.object({
   flag: z.string({ error: 'Wpisz flagę' })
@@ -39,12 +45,13 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
   toast.add({ title: 'Brawo! To była poprawna flaga', description: getRandomJoke(), color: 'success', duration: 12500 })
   state.flag = undefined
+  emit('success')
 }
 </script>
 
 <template>
   <UForm :schema="schema" :state="state" class="space-y-3 flex flex-col text-center items-center justify-center" @submit="onSubmit">
-    <h3 class="font-bold text-xl">
+    <h3 v-if="showHeading" class="font-bold text-xl">
       Podaj Flagę
     </h3>
     <UFormField name="flag">
