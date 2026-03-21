@@ -201,4 +201,10 @@ export default defineNuxtConfig({
       },
     },
   },
+  // https://ui.nuxt.com/docs/getting-started/installation/nuxt#options
+  ui: {
+    experimental: {
+      componentDetection: true,
+    },
+  },
 })
