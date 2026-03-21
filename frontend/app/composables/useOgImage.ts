@@ -1,3 +1,3 @@
 export function useOgImage() {
-  defineOgImageComponent('DefaultOgImage')
+  defineOgImage('DefaultOgImage')
 }

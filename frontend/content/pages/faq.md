@@ -47,7 +47,7 @@ Tak, dbamy o Wasz komfort i energię! Podczas wydarzenia zapewnimy Wam przekąsk
 ::
 
 ::faq-accordion{question="Co powinienem zabrać ze sobą na wydarzenie?"}
-Koniecznie zabierz ze sobą laptopa lub inne urządzenie elektroniczne, które będzie potrzebne do rozwiązywania zadań. Jeśli nie masz własnego sprzętu, organizatorzy mogą zapewnić urządzenia na miejscu – ich liczba jest jednak ograniczona. Jeśli jesteś osobą niepełnoletnią, obowiązkowo przynieś podpisaną przez rodzica lub opiekuna prawnego [zgodę](/documents/Zgoda_rodzica_lub_opiekuna_prawnego_na_uczestnictwo_w_wydarzeniu.pdf) na udział w wydarzeniu! Najważniejsze jednak, abyś zabrał ze sobą pozytywne nastawienie, chęć do współpracy i mnóstwo energii do rozwiązywania zadań!
+Koniecznie zabierz ze sobą laptopa lub inne urządzenie elektroniczne, które będzie potrzebne do rozwiązywania zadań. Jeśli nie masz własnego sprzętu, organizatorzy mogą zapewnić urządzenia na miejscu – ich liczba jest jednak ograniczona. Jeśli jesteś osobą niepełnoletnią, obowiązkowo przynieś podpisaną przez rodzica lub opiekuna prawnego zgodę na udział w wydarzeniu! Najważniejsze jednak, abyś zabrał ze sobą pozytywne nastawienie, chęć do współpracy i mnóstwo energii do rozwiązywania zadań!
 ::
 
 ::faq-accordion{question="Jakie nagrody czekają na zwycięzców?"}
