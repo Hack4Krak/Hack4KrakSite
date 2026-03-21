@@ -6,7 +6,7 @@ const emit = defineEmits<{
 const open = defineModel<boolean>()
 
 const schema = z.object({
-  code: z.string().meta({ title: 'Kod QR' }),
+  code: z.string().meta({ title: '' }),
 })
 
 function onDetect(detectedCodes: DetectedBarcode[]) {

@@ -45,9 +45,6 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
   compatibilityDate: '2025-07-16',
-  future: {
-    compatibilityVersion: 5,
-  },
 
   vite: {
     vue: {
@@ -92,10 +89,10 @@ export default defineNuxtConfig({
     '/account/submit_personal_info': { appLayout: 'centered' },
     '/admin/register_external_team': { appLayout: 'centered' },
     '/panel': { appLayout: 'panel' },
-    '/docs/**': { appLayout: 'static-page', prerender: true },
     '/tasks/description/**': { swr: true },
     // For now, we have to manually list all docs to prerender them
     // due to some issues with Nitro crawling dynamic routes
+    '/docs/**': { appLayout: 'static-page', prerender: true },
     '/docs/faq': { prerender: true },
     '/docs/rules': { prerender: true },
     '/docs/privacy-policy': { prerender: true },
@@ -197,6 +194,7 @@ export default defineNuxtConfig({
     description: 'Hack4Krak to największy w Polsce CTF dla uczniów szkół średnich! Sprawdź swoje umiejętności w cyberbezpieczeństwie, zgłoś swoją drużynę i rywalizuj o nagrody!',
     defaultLocale: 'pl',
   },
+  // https://nuxt-auto-form.norbiros.dev/customization/config
   autoForm: {
     modal: {
       submitLabel: 'Potwierdź',

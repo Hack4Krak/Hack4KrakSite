@@ -1,4 +1,4 @@
-export default {
+export default defineAppConfig({
   // https://ui.nuxt.com/getting-started/theme#design-system
   ui: {
     button: {
@@ -50,4 +50,4 @@ export default {
       props: { label: 'Wyślij', class: 'w-full flex justify-center' },
     },
   },
-}
+})
