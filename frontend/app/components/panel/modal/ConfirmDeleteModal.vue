@@ -12,7 +12,6 @@ const props = defineProps<{
 
 const toast = useToast()
 const open = defineModel<boolean>()
-const schema = z.object({})
 
 const { $auth } = useNuxtApp()
 
@@ -35,11 +34,10 @@ async function onSubmit() {
 </script>
 
 <template>
-  <AutoFormModal
-    v-model:open="open"
-    :schema="schema"
-    :title="modalTitle"
-    :description="modalDescription"
-    @submit="onSubmit"
-  />
+  <UModal v-model:open="open" :title="modalTitle" :description="modalDescription" :ui="{ footer: 'justify-end' }">
+    <template #footer>
+      <UButton label="Anuluj" color="neutral" variant="outline" @click="open = false" />
+      <UButton label="Usuń" @click="onSubmit()" />
+    </template>
+  </UModal>
 </template>
