@@ -11,7 +11,7 @@ Czyli najczęściej zadawane pytania:
 ::div{class="mt-8"}
 
 ::faq-accordion{question="Kiedy odbędzie się kolejna edycja Hack4Krak CTF?"}
-Na ten moment nie ma dokładnej daty. Planowany termin odbycia się wydarzenia to **2025/26 rok**.
+Na ten moment nie znamy jeszcze dokładnej daty. Planowany termin przypada na **Q2 2026 roku**. Szczegółowe informacje zostaną ogłoszone bliżej wydarzenia.
 ::
 
 ::faq-accordion{question="Czym jest CTF?"}
@@ -31,7 +31,11 @@ Przygotujcie się na różnorodne i ciekawe wyzwania, idealnie dopasowane do Was
 ::
 
 ::faq-accordion{question="Gdzie mogę dowiedzieć się więcej o CTF?"}
-Jeśli chcecie się lepiej przygotować, polecamy Wam [film LiveOverflowa](https://www.youtube.com/watch?v=8ev9ZX9J45A) oraz platformy z trudniejszymi zadaniami, takie jak [tryhackme.com](https://tryhackme.com/) i [rehayilmazlar.com](https://rehayilmazlar.com/). Dodatkowo w Internecie znajdziecie mnóstwo innych materiałów i filmów na ten temat. Pamiętajcie jednak, że zadania na naszym wydarzeniu będą dostosowane do uczniów szkół podstawowych :3
+Jeśli chcecie się lepiej zapoznać z tematyką wydarzenia, polecamy [film LiveOverflowa](https://www.youtube.com/watch?v=8ev9ZX9J45A). Dodatkowo w Internecie znajdziecie mnóstwo innych materiałów na ten temat.
+::
+
+::faq-accordion{question="Jak mogę przygotować się do wydarzenia?"}
+Najlepszym sposobem nauki jest praktyka, dlatego polecamy Wam platformy z różnorodnymi zadaniami takie jak [tryhackme.com](https://tryhackme.com/) i [rehayilmazlar.com](https://rehayilmazlar.com/). Pamiętajcie jednak, że zadania na naszym wydarzeniu będą dostosowane do uczniów szkół średnich :3
 ::
 
 ::faq-accordion{question="Czy można korzystać z Internetu i narzędzi AI podczas rozwiązywania zadań?"}
