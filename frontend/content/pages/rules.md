@@ -5,7 +5,7 @@ description: Regulamin Hack4Krak - edycja dla Szkół Średnich w Małopolsce
 
 ## 1. Postanowienia ogólne
 
-1. Organizatorem Hack4Krak - edycji dla Szkół Średnich w Małopolsce (zwanego dalej CTF) jest Wiktor Popiołek zamieszkały Mariana Markowskiego 4, 31-881 Kraków.
+1. Organizatorem Hack4Krak - edycji dla Szkół Średnich w Małopolsce (zwanego dalej CTF) jest Fundacja Ambasada Społeczności z siedzibą przy ul. Zabłocie 20.22/207, 30-701 Kraków, wpisana do KRS pod numerem 0000764613.
 2. CTF jest konkursem odbywającym się w formie "Jeopardy CTF" opisanej w [załączniku nr 1](#załącznik-nr-1).
 3. O zasadach CTF stanowi niniejszy regulamin wraz z załącznikami.
 4. Ilekroć w dalszych przepisach jest mowa bez bliższego przybliżenia o:
@@ -27,20 +27,20 @@ description: Regulamin Hack4Krak - edycja dla Szkół Średnich w Małopolsce
    `2)` Posiadanie przez wszystkich jej niepełnoletnich członków, w dniu wydarzenia, posiadali zgody rodzica lub opiekuna prawnego na udział w wydarzeniu, wyrażonej poprzez akceptację regulaminu oraz polityki prywatności. Wzór zgody znajduje się w dokumencie.
 7. Warunkiem uczestnictwa osoby w CTF jest, aby w dniu wydarzenia była członkiem drużyny, która została zarejestrowana zgodnie z powyższymi etapami rejestracji, oraz spełnia wymogi z punktu 6. tego rozdziału.
 8. Maksymalna liczba zarejestrowanych uczestników wynosi 150.
-9. Rejestracja trwa od 26.03.2026 do 16.04.2026 włącznie.
+9. Rejestracja trwa od 30.04.2026 do 20.05.2026 włącznie.
 10. W dniu następującym po zakończeniu rejestracji każda drużyna zobowiązana jest do potwierdzenia swojego udziału w CTF, poprzez odpowiedź na maila wysłanego przez organizatorów.
 
 ## 3. Przebieg CTF
 
-1. CTF odbywa się w dniach 18.04.2026-19.04.2026 w budynku Wydziału Zarządzania AGH — ul. Antoniego Gramatyka 10, 30-067 Kraków.
+1. CTF odbywa się w dniach 23.05.2026-24.05.2026.
 2. Harmonogram wydarzenia:
-   - Sobota, 18.04.2026 – pierwszy dzień zawodów:
+   - Sobota, 23.05.2026 – pierwszy dzień zawodów:
      - 08:00-09:30 – rejestracja uczestników
      - 09:00-11:00 – śniadanie
      - 09:30-10:00 – rozpoczęcie konkursu
      - 14:00-15:00 – przerwa obiadowa
      - 20:00-21:00 – przerwa na kolację
-   - Niedziela, 19.04.2026 – drugi dzień zawodów:
+   - Niedziela, 24.05.2026 – drugi dzień zawodów:
      - 09:00-11:00 – śniadanie
      - 14:00-15:00 – obiad
      - 16:00-16:30 – zakończenie konkursu
