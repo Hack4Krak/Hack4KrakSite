@@ -11,7 +11,7 @@ Czyli najczęściej zadawane pytania:
 ::div{class="mt-8"}
 
 ::faq-accordion{question="Kiedy odbędzie się kolejna edycja Hack4Krak CTF?"}
-Na ten moment nie znamy jeszcze dokładnej daty. Planowany termin przypada na **Q2 2026 roku**. Szczegółowe informacje zostaną ogłoszone bliżej wydarzenia.
+Na ten moment nie znamy jeszcze dokładnej daty. Planowany termin przypada na **2 kwartał 2026** roku. Szczegółowe informacje zostaną ogłoszone bliżej wydarzenia.
 ::
 
 ::faq-accordion{question="Czym jest CTF?"}
