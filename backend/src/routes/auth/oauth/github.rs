@@ -1,5 +1,4 @@
 use actix_web::{HttpResponse, get, web};
-use oauth2::reqwest;
 use reqwest::{Response, Url};
 use serde::Deserialize;
 

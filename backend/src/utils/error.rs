@@ -7,7 +7,6 @@ use crate::routes::teams::TeamError;
 use actix_web::http::StatusCode;
 use actix_web::{HttpRequest, HttpResponse, error};
 use hack4krak_macros::error_with_messages;
-use rand::rand_core::OsError;
 use sea_orm::RuntimeErr::SqlxError;
 use serde::Serialize;
 use serde_json::{Value, json, to_value};
@@ -55,7 +54,7 @@ pub fn validation_error_handler(
 #[error_with_messages]
 pub enum Error {
     #[serde(skip)]
-    HashPasswordFailed(argon2::password_hash::Error),
+    HashPasswordFailed(#[from] argon2::password_hash::Error),
     OAuth,
     #[serde(skip)]
     Request(#[from] reqwest::Error),
@@ -105,8 +104,6 @@ pub enum Error {
     ServerEventSendingError(#[from] broadcast::error::SendError<String>),
     #[serde(skip)]
     Metrics(#[from] prometheus::Error),
-    #[serde(skip)]
-    Os(#[from] OsError),
     Validator(validator::ValidationErrors),
     #[serde(skip)]
     #[error(transparent)]
@@ -143,7 +140,6 @@ impl error::ResponseError for Error {
             | Error::FailedToParseUrl(_)
             | Error::ConflictInDatabase
             | Error::Metrics(_)
-            | Error::Os(_)
             | Error::FailedToRenderTemplate(_)
             | Error::ServerEventSendingError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Unauthorized => StatusCode::UNAUTHORIZED,
@@ -188,5 +184,11 @@ impl From<sea_orm::DbErr> for Error {
             }
             _ => Error::DatabaseOperation(value),
         }
+    }
+}
+
+impl From<oauth2::reqwest::Error> for Error {
+    fn from(_: oauth2::reqwest::Error) -> Self {
+        Error::OAuth
     }
 }

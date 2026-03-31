@@ -2,7 +2,7 @@ use crate::entities::{external_team_invitation, teams, users};
 use crate::models::task::RegistrationConfig;
 use crate::utils::error::Error;
 use migration::JoinType;
-use rand::Rng;
+use rand::RngExt;
 use rand::distr::Alphanumeric;
 use sea_orm::{ActiveModelTrait, DatabaseConnection, EntityTrait, Set};
 use sea_orm::{ColumnTrait, IntoActiveModel, TransactionTrait};

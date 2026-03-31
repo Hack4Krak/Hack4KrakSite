@@ -2,10 +2,13 @@ use crate::entities::users;
 use crate::services::auth::AuthService;
 use crate::services::env::EnvConfig;
 use crate::utils::error::Error;
-use crate::utils::error::Error::OAuth;
+use crate::utils::error::Error::OAuth as OAuthError;
 use oauth2::basic::*;
-use oauth2::*;
-use reqwest::redirect::Policy;
+use oauth2::reqwest::{ClientBuilder, redirect::Policy};
+use oauth2::{
+    AuthUrl, AuthorizationCode, Client, ClientId, ClientSecret, CsrfToken, EndpointNotSet,
+    EndpointSet, RedirectUrl, Scope, StandardRevocableToken, TokenResponse, TokenUrl,
+};
 use sea_orm::DatabaseConnection;
 
 type OAuthClient = Client<
@@ -57,16 +60,14 @@ impl OAuthProvider {
     }
 
     pub async fn exchange_code(&self, code: String) -> Result<String, Error> {
-        let http_client = reqwest::ClientBuilder::new()
-            .redirect(Policy::none())
-            .build()?;
+        let http_client = ClientBuilder::new().redirect(Policy::none()).build()?;
 
         let token_result = self
             .0
             .exchange_code(AuthorizationCode::new(code))
             .request_async(&http_client)
             .await
-            .map_err(|_| OAuth)?;
+            .map_err(|_| OAuthError)?;
 
         Ok(format!("Bearer {}", token_result.access_token().secret()))
     }

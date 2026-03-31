@@ -7,7 +7,7 @@
 {% endmacro %}
 
 {% macro cta_button(text, to) %}
-{% call button(text, link) %}
+{% call button(text, link) %}{% endcall %}
 <div role="separator" style="height: 1px; line-height: 1px; background-color: #cbd5e1; margin-top: 24px; margin-bottom: 24px">&zwj;</div>
 <p class="mso-break-all" style="margin: 0; font-size: 12px; line-height: 20px; color: #475569">
     Jeśli masz problem z kliknięciem przycisku, skopiuj i wklej poniższy link do przeglądarki:

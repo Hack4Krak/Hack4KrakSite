@@ -148,11 +148,15 @@ impl TaskManager {
     }
 
     pub fn find_by_flag(&self, flag: &str) -> Option<RefMulti<'_, String, TaskConfig>> {
-        let mut hasher = Sha256::new();
-        hasher.update(flag);
-        let hashed_flag = format!("{:x}", hasher.finalize());
+        let hashed_flag = Sha256::digest(flag);
+        let hashed_flag_hex = hashed_flag
+            .iter()
+            .map(|byte| format!("{:02x}", byte))
+            .collect::<String>();
 
-        self.tasks.iter().find(|task| task.flag_hash == hashed_flag)
+        self.tasks
+            .iter()
+            .find(|task| task.flag_hash == hashed_flag_hex)
     }
 }
 
