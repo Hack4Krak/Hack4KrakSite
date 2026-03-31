@@ -15,13 +15,14 @@ use crate::utils::cookies::{
 };
 use crate::utils::email::Email;
 use crate::utils::error::Error;
-use crate::utils::error::Error::HashPasswordFailed;
 use crate::utils::jwt::encode_jwt;
 use crate::utils::success_response::SuccessResponse;
 use actix_web::{HttpResponse, HttpResponseBuilder};
-use argon2::password_hash::SaltString;
-use argon2::password_hash::rand_core::OsRng;
-use argon2::{Argon2, PasswordHash, PasswordHasher, PasswordVerifier};
+use argon2::password_hash::phc::Salt;
+use argon2::{
+    Argon2, PasswordHash,
+    password_hash::{PasswordHasher, PasswordVerifier},
+};
 use chrono::Duration;
 use uuid::Uuid;
 use validator::ValidateEmail;
@@ -74,7 +75,8 @@ impl AuthService {
             .clone()
             .ok_or(Error::Auth(PasswordAuthNotAvailable))?;
 
-        let parsed_hash = PasswordHash::new(&password).map_err(Error::HashPasswordFailed)?;
+        let parsed_hash =
+            PasswordHash::new(&password).map_err(|e| Error::HashPasswordFailed(e.into()))?;
 
         let is_verified = Argon2::default()
             .verify_password(password_to_verify.0.as_bytes(), &parsed_hash)
@@ -145,11 +147,11 @@ impl AuthService {
     }
 
     pub fn hash_password(password: Password) -> Result<String, Error> {
-        let salt = SaltString::try_from_rng(&mut OsRng)?;
+        let salt = Salt::generate();
 
         Ok(Argon2::default()
-            .hash_password(password.0.as_bytes(), &salt)
-            .map_err(HashPasswordFailed)?
+            .hash_password_with_salt(password.0.as_bytes(), &salt)
+            .map_err(Error::HashPasswordFailed)?
             .to_string())
     }
 
