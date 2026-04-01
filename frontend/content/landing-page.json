@@ -1,5 +1,58 @@
 {
   "title": "Hack4Krak",
   "subTitle": "Największy w Małopolsce konkurs CTF \n dla uczniów szkół ponadpodstawowych!",
-  "infoBox": "Dziękujemy za udział w ostatniej edycji, kolejna tuż za rogiem!"
+  "infoBox": "Zapisy na kolejną edycję już wkrótce — śledź nasze social media!",
+  "event": {
+    "dateStart": "2026-04-18",
+    "dateEnd": "2026-04-19",
+    "dateDisplay": "18–19 kwietnia 2026",
+    "timeStart": "08:00",
+    "venue": {
+      "name": "AGH Akademia Górniczo-Hutnicza",
+      "building": "Wydział Zarządzania AGH",
+      "address": "ul. Antoniego Gramatyka 10, 30-067 Kraków",
+      "city": "Kraków",
+      "mapsUrl": "https://www.openstreetmap.org/?mlat=50.0665&mlon=19.9088#map=17/50.0665/19.9088",
+      "lat": 50.0665,
+      "lon": 19.9088
+    },
+    "registrationOpen": true,
+    "registrationUrl": "/register"
+  },
+  "stats": [
+    { "value": "180+", "label": "Uczestników" },
+    { "value": "2", "label": "Edycje" },
+    { "value": "40+", "label": "Zadań CTF" },
+    { "value": "100%", "label": "Bezpłatny udział" }
+  ],
+  "faq": [
+    {
+      "question": "Czym jest CTF (Capture The Flag)?",
+      "answer": "CTF to rodzaj zawodów informatycznych, w których drużyny rozwiązują zadania z zakresu cyberbezpieczeństwa. Każde poprawnie rozwiązane zadanie to zdobycie flagi — unikalnego ciągu znaków — który przynosi punkty. Kategorie zadań obejmują kryptografię, web, forensics, reverse engineering i wiele innych."
+    },
+    {
+      "question": "Czy muszę mieć doświadczenie w cyberbezpieczeństwie?",
+      "answer": "Nie! Hack4Krak jest skierowany do uczniów na różnym poziomie zaawansowania. Zadania są zaprojektowane tak, by każdy mógł spróbować swoich sił i zdobyć pierwsze punkty — nawet bez wcześniejszego doświadczenia w CTF."
+    },
+    {
+      "question": "Czy udział jest bezpłatny?",
+      "answer": "Tak, udział w Hack4Krak jest całkowicie bezpłatny. Zapewniamy infrastrukturę, zadania oraz nagrody dla najlepszych drużyn."
+    },
+    {
+      "question": "Ile osób może być w drużynie?",
+      "answer": "Drużyna składa się maksymalnie z 5 osób. Możesz wystartować samodzielnie, choć współpraca w zespole znacznie ułatwia rozwiązywanie zadań z różnych kategorii."
+    },
+    {
+      "question": "Co muszę zabrać na wydarzenie?",
+      "answer": "Własny laptop lub inne urządzenie z przeglądarką internetową. Jeśli uczestniczysz jako uczeń niepełnoletni, pamiętaj o zabraniu podpisanej zgody rodzica lub opiekuna prawnego — formularz znajdziesz na naszej stronie."
+    },
+    {
+      "question": "Jak mogę się przygotować do zawodów?",
+      "answer": "Polecamy platformy ćwiczeniowe takie jak PicoCTF, HackTheBox czy TryHackMe. Możesz też przejrzeć zadania z poprzednich edycji Hack4Krak dostępne w zakładce Zadania na naszej stronie."
+    },
+    {
+      "question": "Skąd będę wiedział o nowych informacjach?",
+      "answer": "Obserwuj nasze media społecznościowe: Instagram, Discord i LinkedIn. Tam jako pierwszy dowiesz się o terminach, detalach logistycznych i wynikach."
+    }
+  ]
 }

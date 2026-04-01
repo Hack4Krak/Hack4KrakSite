@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { aboutUsContent } from '~~/content/about-us-content'
 import { aboutUsTimeline } from '~~/content/about-us-timeline'
+import { organizers } from '~~/content/organizers'
 
 useSeoMeta({
   title: aboutUsContent.meta.title,
@@ -99,6 +100,45 @@ useSeoMeta({
         />
       </UContainer>
     </section>
+
+    <section id="team">
+      <UContainer class="flex flex-col gap-8">
+        <div>
+          <p class="text-xs font-bold tracking-[0.25em] uppercase text-muted mb-2">
+            Zespół
+          </p>
+          <h2 class="font-pixelify text-3xl lg:text-4xl text-default">
+            Organizatorzy
+          </h2>
+        </div>
+        <div class="flex flex-wrap gap-4">
+          <a
+            v-for="person in organizers"
+            :key="person.linkedinUrl"
+            :href="person.linkedinUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group flex items-center gap-4 px-5 py-4 border-2 border-surface-muted
+                   hover:border-primary transition-all duration-200 min-w-[220px]"
+            :aria-label="`${person.name} na LinkedIn`"
+          >
+            <div class="flex flex-col gap-0.5 flex-1">
+              <span class="font-semibold text-default group-hover:text-primary transition-colors duration-200">
+                {{ person.name }}
+              </span>
+              <span class="text-xs text-muted">
+                {{ person.role }}
+              </span>
+            </div>
+            <UIcon
+              name="mdi:linkedin"
+              class="size-5 text-muted group-hover:text-primary transition-colors duration-200 flex-shrink-0"
+            />
+          </a>
+        </div>
+      </UContainer>
+    </section>
+
     <Footer />
   </div>
 </template>

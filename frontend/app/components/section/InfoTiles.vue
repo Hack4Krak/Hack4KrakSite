@@ -15,11 +15,11 @@ import { INFO_TILES_CONTENT } from '~~/content/info-tiles'
     >
       <div class="">
         <p class="lg:text-2xl font-bold text-red-450">
-          Chcesz zobaczyć, z jakimi zadaniami mierzyli się uczestnicy poprzednich edycji?
+          Masz więcej pytań dotyczących udziału lub formatu zawodów?
         </p> <br>
-        <NuxtLink to="/tasks">
+        <NuxtLink to="/docs/faq">
           <ElevatedButton class="lg:text-xl lg:scale-110 bg-red-450">
-            Dowiedz się więcej!
+            Odwiedź stronę FAQ
           </ElevatedButton>
         </NuxtLink>
       </div>

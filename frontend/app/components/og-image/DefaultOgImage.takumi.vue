@@ -1,77 +1,249 @@
 <script setup lang="ts">
 /**
- * @credits Nuxt SEO <https://nuxtseo.com/>
+ * Hack4Krak branded OG image
+ * 1200×630 (satori renders at 1200×630 by default)
  */
-
-import { computed } from 'vue'
 
 const props = withDefaults(defineProps<{
   title?: string
   description?: string
-  icon?: string
   siteName?: string
-  theme?: string
-  colorMode?: string
 }>(), {
-  colorMode: 'dark',
-  icon: '/img/logo.png',
-  theme: '#ff595e',
+  title: 'Hack4Krak CTF',
+  description: 'Największy w Małopolsce konkurs CTF dla uczniów szkół ponadpodstawowych!',
+  siteName: 'hack4krak.pl',
 })
 
-const HexRegex = /^#(?:[0-9a-f]{3}){1,2}$/i
-
-const themeHex = computed(() => {
-  if (HexRegex.test(props.theme))
-    return props.theme
-  if (HexRegex.test(`#${props.theme}`))
-    return `#${props.theme}`
-  if (props.theme.startsWith('rgb'))
-    return rgbToHex(props.theme)
-  return '#FFFFFF'
-})
-
-const themeRgb = computed(() => hexToRgb(themeHex.value))
-
-const colorMode = computed(() => props.colorMode || 'dark')
-
-const siteName = computed(() => props.siteName || useSiteConfig().name)
+const GOLD = '#d08700'
+const GOLD_LIGHT = '#efb100'
+const BG = '#0f0f0f'
+const SURFACE = '#1a1a1a'
+const MUTED = '#404040'
 </script>
 
 <template>
   <div
-    class="w-full h-full flex justify-between relative p-[60px]"
-    :class="colorMode === 'light' ? ['bg-white', 'text-gray-900'] : ['bg-gray-900', 'text-white']"
+    :style="{
+      width: '1200px',
+      height: '630px',
+      background: BG,
+      display: 'flex',
+      flexDirection: 'column',
+      position: 'relative',
+      overflow: 'hidden',
+      fontFamily: '\'Inter\', sans-serif',
+    }"
   >
+    <!-- Grid pattern background -->
     <div
-      class="flex absolute top-0 right-[-100%]"
       :style="{
-        width: '200%',
-        height: '200%',
-        backgroundImage: `radial-gradient(circle, rgba(${themeRgb}, 0.5) 0%, ${colorMode === 'dark' ? 'rgba(5, 5, 5,0.3)' : 'rgba(255, 255, 255, 0.7)'} 50%, ${colorMode === 'dark' ? 'rgba(5, 5, 5,0)' : 'rgba(255, 255, 255, 0)'} 70%)`,
+        position: 'absolute',
+        inset: 0,
+        backgroundImage: `linear-gradient(${MUTED}22 1px, transparent 1px), linear-gradient(90deg, ${MUTED}22 1px, transparent 1px)`,
+        backgroundSize: '40px 40px',
       }"
     />
-    <div class="h-full w-full justify-between relative">
-      <div class="flex flex-row justify-between items-start">
-        <div class="flex flex-col w-full max-w-[65%]">
-          <h1 class="m-0 font-bold mb-[30px] text-[75px]">
-            {{ title }}
-          </h1>
-          <p v-if="description" class="text-[35px]" :class="colorMode === 'light' ? 'text-gray-700' : 'text-gray-300'">
-            {{ description }}
-          </p>
+
+    <!-- Top-left corner accent lines -->
+    <div :style="{ position: 'absolute', top: 0, left: 0, width: '300px', height: '300px', display: 'flex' }">
+      <div :style="{ position: 'absolute', top: '40px', left: 0, width: '100%', height: '2px', background: `${GOLD}44` }" />
+      <div :style="{ position: 'absolute', top: 0, left: '40px', width: '2px', height: '100%', background: `${GOLD}44` }" />
+    </div>
+
+    <!-- Bottom-right corner accent -->
+    <div :style="{ position: 'absolute', bottom: 0, right: 0, width: '300px', height: '300px', display: 'flex' }">
+      <div :style="{ position: 'absolute', bottom: '40px', right: 0, width: '100%', height: '2px', background: `${GOLD}44` }" />
+      <div :style="{ position: 'absolute', bottom: 0, right: '40px', width: '2px', height: '100%', background: `${GOLD}44` }" />
+    </div>
+
+    <!-- Gold radial glow left -->
+    <div
+      :style="{
+        position: 'absolute',
+        top: '-200px',
+        left: '-100px',
+        width: '600px',
+        height: '600px',
+        background: `radial-gradient(circle, ${GOLD}28 0%, transparent 65%)`,
+        borderRadius: '50%',
+      }"
+    />
+
+    <!-- Gold radial glow right -->
+    <div
+      :style="{
+        position: 'absolute',
+        bottom: '-150px',
+        right: '-100px',
+        width: '500px',
+        height: '500px',
+        background: `radial-gradient(circle, ${GOLD}18 0%, transparent 60%)`,
+        borderRadius: '50%',
+      }"
+    />
+
+    <!-- Top gold bar -->
+    <div :style="{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: `linear-gradient(90deg, ${GOLD}, ${GOLD_LIGHT}, ${GOLD})` }" />
+
+    <!-- Main content -->
+    <div
+      :style="{
+        position: 'relative',
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        padding: '60px 80px',
+        gap: '24px',
+      }"
+    >
+      <!-- CTF badge -->
+      <div
+        :style="{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+        }"
+      >
+        <div
+          :style="{
+            background: GOLD,
+            color: '#000',
+            fontSize: '12px',
+            fontWeight: '800',
+            letterSpacing: '0.25em',
+            textTransform: 'uppercase',
+            padding: '4px 14px',
+            display: 'flex',
+          }"
+        >
+          CTF
         </div>
-        <div v-if="icon" class="flex justify-end" style="width: 30%;">
-          <img :src="icon" height="100" alt="Hack4Krak logo">
+        <div
+          :style="{
+            background: `${SURFACE}cc`,
+            border: `1px solid ${MUTED}`,
+            color: '#888',
+            fontSize: '12px',
+            fontWeight: '600',
+            letterSpacing: '0.15em',
+            textTransform: 'uppercase',
+            padding: '4px 14px',
+            display: 'flex',
+          }"
+        >
+          18–19 KWIETNIA 2026 · KRAKÓW
         </div>
       </div>
-      <div class="flex flex-row justify-center items-center text-left w-full">
-        <svg height="50" width="50" class="mr-3" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-          <path :fill="themeHex" d="M62.3,-53.9C74.4,-34.5,73.5,-9,67.1,13.8C60.6,36.5,48.7,56.5,30.7,66.1C12.7,75.7,-11.4,74.8,-31.6,65.2C-51.8,55.7,-67.9,37.4,-73.8,15.7C-79.6,-6,-75.1,-31.2,-61.1,-51C-47.1,-70.9,-23.6,-85.4,0.8,-86C25.1,-86.7,50.2,-73.4,62.3,-53.9Z" transform="translate(100 100)" />
-        </svg>
-        <p v-if="siteName" class="font-bold" style="font-size: 25px;">
-          {{ siteName }}
-        </p>
+
+      <!-- Title -->
+      <div
+        :style="{
+          fontSize: props.title === 'Hack4Krak CTF' ? '88px' : '64px',
+          fontWeight: '900',
+          color: '#ffffff',
+          lineHeight: '1.0',
+          letterSpacing: '-0.02em',
+          maxWidth: '780px',
+          display: 'flex',
+        }"
+      >
+        {{ props.title }}
+      </div>
+
+      <!-- Description -->
+      <div
+        :style="{
+          fontSize: '26px',
+          color: '#aaaaaa',
+          maxWidth: '700px',
+          lineHeight: '1.4',
+          fontWeight: '400',
+          display: 'flex',
+        }"
+      >
+        {{ props.description }}
       </div>
     </div>
+
+    <!-- Bottom bar -->
+    <div
+      :style="{
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: '64px',
+        background: `${SURFACE}ee`,
+        borderTop: `1px solid ${MUTED}66`,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0 80px',
+      }"
+    >
+      <!-- Logo area -->
+      <div
+        :style="{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '14px',
+        }"
+      >
+        <!-- Shield icon approximation via pure CSS box -->
+        <div
+          :style="{
+            width: '28px',
+            height: '32px',
+            background: GOLD,
+            clipPath: 'polygon(50% 0%, 100% 15%, 100% 60%, 50% 100%, 0% 60%, 0% 15%)',
+            display: 'flex',
+          }"
+        />
+        <div
+          :style="{
+            fontSize: '22px',
+            fontWeight: '800',
+            color: '#ffffff',
+            letterSpacing: '-0.01em',
+            display: 'flex',
+          }"
+        >
+          Hack4Krak
+        </div>
+      </div>
+
+      <!-- Right side: URL + tagline -->
+      <div
+        :style="{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '20px',
+        }"
+      >
+        <div
+          :style="{
+            width: '1px',
+            height: '24px',
+            background: MUTED,
+            display: 'flex',
+          }"
+        />
+        <div
+          :style="{
+            fontSize: '15px',
+            color: GOLD,
+            fontWeight: '600',
+            letterSpacing: '0.05em',
+            display: 'flex',
+          }"
+        >
+          {{ props.siteName }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom gold bar -->
+    <div :style="{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '3px', background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)` }" />
   </div>
 </template>

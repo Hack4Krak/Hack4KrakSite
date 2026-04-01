@@ -7,19 +7,19 @@ export const INFO_TILES_CONTENT = [
   },
   {
     front: '**Kto** może <br>wziąć udział?',
-    back: 'W wydarzeniu mogą wziąć udział **uczniowie szkół ponadpodstawowych**, którzy chcą spróbować swoich sił w świecie cyberbezpieczeństwa.',
+    back: 'W wydarzeniu mogą wziąć udział **uczniowie szkół ponadpodstawowych**, którzy chcą spróbować swoich sił w świecie cyberbezpieczeństwa. Udział jest **całkowicie bezpłatny**.',
     color: '#dab2ff', // purple-300
     image: '/img/character/witch_tower.png',
   },
   {
-    front: 'Kiedy odbędzie się **kolejne** wydarzenie?',
-    back: 'Na ten moment nie ma dokładnej daty. Planowany termin to **2025/26 rok**. Śledź nasze **social media**, by nie przegapić wiadomości o kolejnej edycji.',
+    front: 'Jak wygląda **format** rywalizacji?',
+    back: 'Zawody odbywają się w formacie **CTF Jeopardy** — drużyny rozwiązują niezależne zadania o różnym poziomie trudności. Kategorie obejmują kryptografię, web, forensics, OSINT, reverse engineering i inne.',
     color: '#ffdf26', // yellow-300
     image: '/img/character/king.png',
   },
   {
     front: 'Czym jest <br>**Hack4Krak**?',
-    back: '**Hack4Krak** to grupa krakowskich pasjonatów informatyki, która zajmuje się tworzeniem i organizacją wydarzeń typu **CTF Jeopardy** z zakresu cyberbezpieczeństwa, skierowanych do uczniów **szkół w całej Polsce**.',
+    back: '**Hack4Krak** to inicjatywa krakowskich pasjonatów informatyki, która tworzy i organizuje wydarzenia **CTF Jeopardy** z zakresu cyberbezpieczeństwa, skierowane do uczniów **szkół w całej Polsce**.',
     color: '#fef9c2', // yellow-100
     image: '/img/character/princess.png',
   },
