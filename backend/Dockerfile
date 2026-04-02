@@ -23,7 +23,7 @@ COPY backend .
 RUN cargo build --release --bin hack4krak-backend
 
 # We do not need the Rust toolchain to run the binary!
-FROM debian:bookworm-slim AS runtime
+FROM debian:trixie-slim AS runtime
 WORKDIR /app
 RUN apt-get update && apt-get install -y libssl3 ca-certificates git
 
