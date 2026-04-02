@@ -46,3 +46,7 @@ at [api.hack4krak.pl](https://api.hack4krak.pl/).
 ## 🎉 Stats
 
 ![Repobeats analytics image](https://repobeats.axiom.co/api/embed/b2a0612285a5cfef1231975dc94e601dc5f0b983.svg "Repobeats analytics image")
+
+---
+
+**Developed by [💫 Zerya](https://zerya.dev)** - Want to create amazing things with us? Feel free to get in touch!

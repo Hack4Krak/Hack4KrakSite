@@ -13,15 +13,18 @@ const runtimeConfig = useRuntimeConfig().public
           <img src="~/assets/img/logo.svg" class="h-(--spacing-icon-lg) mb-4 lg:mb-4" alt="Hack4Krak logo">
 
           <p class="text-center lg:text-left">
-            © {{ new Date().getFullYear() }} Wszelkie prawa zastrzeżone.
+            © {{ new Date().getFullYear() }} Hack4Krak
           </p>
 
-          <div class="hidden lg:block">
-            Jesteśmy
-            <NuxtLink to="https://github.com/Hack4Krak" class="underline" target="_blank">
-              <span>Open Source</span>
-            </NuxtLink>!
+          <div class="flex items-center gap-2">
+            <span>Stworzone przez <ULink to="https://zerya.dev" class="font-medium" target="_blank">Zerya</ULink></span>
+            <span
+              class="hidden lg:block w-1 h-1 rounded-full bg-(--ui-text-dimmed)"
+              aria-hidden="true"
+            />
+            <span>Kod źródłowy na <ULink to="https://github.com/Hack4Krak/Hack4KrakSite" class="font-medium" target="_blank">GitHub</ULink></span>
           </div>
+
           <div v-if="runtimeConfig.gitCommit" class="hidden lg:block">
             <span aria-hidden="true" class="text-xs text-dimmed">{{ runtimeConfig.gitBranch }}@{{ runtimeConfig.gitCommit }}</span>
           </div>
