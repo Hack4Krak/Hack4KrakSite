@@ -1,4 +1,5 @@
 use crate::entities::{flag_capture, teams};
+use crate::models::task::EventStageType;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use chrono::NaiveDateTime;
@@ -71,8 +72,9 @@ impl PointsCounter {
             .event_config
             .read()
             .await
-            .start_date
-            .naive_utc();
+            .event_stage_start(EventStageType::EventStart)
+            .map(|dt| dt.naive_utc())
+            .unwrap_or_default();
 
         let mut counter = Self::default();
         counter.event_timestamps.push(start_time);

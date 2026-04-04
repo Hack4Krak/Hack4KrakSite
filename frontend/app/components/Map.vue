@@ -101,7 +101,7 @@ onMounted(() => {
                 </ul>
               </div>
             </template>
-            <NuxtLink :to="{ name: 'tasks-story-id', params: { id: item.id } }">
+            <NuxtLink :to="{ name: 'tasks-description-id', params: { id: item.id } }">
               <img
                 v-if="isLoaded"
                 :src="`${taskIconBaseUrl}${item.id}`"

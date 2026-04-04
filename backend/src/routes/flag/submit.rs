@@ -8,7 +8,6 @@ use crate::utils::sse_event::SseEvent;
 use actix_web::web::{Data, Json};
 use actix_web::{HttpResponse, post};
 use actix_web_validation::Validated;
-use chrono::Utc;
 use sea_orm::EntityTrait;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
@@ -54,7 +53,7 @@ pub async fn submit(
 
     let event_config = app_state.task_manager.event_config.read().await;
 
-    if Utc::now() < event_config.end_date {
+    if !event_config.is_after_event() {
         let Some(team_id) = user.team else {
             return Err(Team(TeamError::UserDoesntBelongToAnyTeam {
                 username: user.username,

@@ -5,20 +5,16 @@ use std::string;
 use utoipa_actix_web::scope;
 
 mod assets;
-mod background;
 mod count;
 mod description;
 mod icon;
 mod list;
 mod name;
 mod solution;
-mod story;
 
 pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(list::list);
     config.service(icon::icon);
-    config.service(story::story);
-    config.service(background::background);
     config.service(description::description);
     config.service(solution::solution);
     config.service(scope("/assets").configure(assets::config));
