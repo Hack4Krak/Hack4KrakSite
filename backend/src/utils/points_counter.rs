@@ -9,6 +9,7 @@ use serde::{Deserialize, Serialize, Serializer};
 use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
+use std::vec;
 use utoipa::ToSchema;
 use uuid::Uuid;
 
@@ -47,6 +48,26 @@ pub struct LeaderboardChart {
 pub struct PointsCounter {
     event_timestamps: Vec<NaiveDateTime>,
     team_time_series: HashMap<Uuid, TeamTimeSeriesData>,
+}
+
+#[derive(Serialize, Deserialize, ToSchema, Default, Debug, PartialEq)]
+pub struct TeamStandings {
+    tasks: Vec<String>,
+    standings: Vec<SingleTeamStanding>,
+}
+
+#[derive(Serialize, Deserialize, ToSchema, Default, Debug, PartialEq)]
+pub struct SingleTeamStanding {
+    team: String,
+    score: usize,
+    #[serde(rename = "taskStats")]
+    task_stats: HashMap<String, TaskTeamStat>,
+}
+
+#[derive(Serialize, Deserialize, ToSchema, Default, Debug, PartialEq)]
+pub struct TaskTeamStat {
+    points: usize,
+    time: i64,
 }
 
 impl PointsCounter {
@@ -145,7 +166,7 @@ impl PointsCounter {
 
     /// Calculates point value for a task based on solve count using linear decay.
     /// Points range from 500 (max) to 100 (min), decreasing linearly as more teams solve it.
-    fn calculate_task_value(solve_count: usize, total_teams: usize) -> usize {
+    pub fn calculate_task_value(solve_count: usize, total_teams: usize) -> usize {
         const MAX_POINTS: f64 = 500f64;
         const MIN_POINTS: f64 = 100f64;
         const DECAY_RANGE: f64 = MAX_POINTS - MIN_POINTS;
@@ -220,6 +241,62 @@ impl PointsCounter {
             event_timestamps: self.event_timestamps,
             team_points_over_time,
         }
+    }
+
+    pub async fn to_standings(self, app_state: &Arc<AppState>) -> Result<TeamStandings, Error> {
+        let tasks_by_team = teams::Model::get_tasks_by_team(
+            &app_state.database,
+            self.team_time_series.keys().copied().collect(),
+        )
+        .await?;
+
+        let mut task_solve_counts: HashMap<String, usize> = HashMap::new();
+        for task_map in tasks_by_team.values() {
+            for task_name in task_map.keys() {
+                *task_solve_counts.entry(task_name.clone()).or_default() += 1;
+            }
+        }
+        let total_teams = self.team_time_series.len();
+
+        Ok(TeamStandings {
+            tasks: app_state
+                .task_manager
+                .tasks
+                .iter()
+                .map(|entry| entry.key().clone())
+                .collect(),
+            standings: self
+                .team_time_series
+                .iter()
+                .map(|(uuid, data)| {
+                    let task_stats = tasks_by_team
+                        .get(uuid)
+                        .map(|task_map| {
+                            task_map
+                                .iter()
+                                .map(|(task_name, submitted_at)| {
+                                    let solves = *task_solve_counts.get(task_name).unwrap_or(&0);
+                                    let points = Self::calculate_task_value(solves, total_teams);
+                                    (
+                                        task_name.clone(),
+                                        TaskTeamStat {
+                                            points,
+                                            time: submitted_at.and_utc().timestamp(),
+                                        },
+                                    )
+                                })
+                                .collect()
+                        })
+                        .unwrap_or_default();
+
+                    SingleTeamStanding {
+                        team: data.name.clone(),
+                        score: *data.points.last().unwrap_or(&0),
+                        task_stats,
+                    }
+                })
+                .collect(),
+        })
     }
 }
 
