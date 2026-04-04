@@ -3,6 +3,7 @@ use actix_web::{HttpResponse, ResponseError};
 use hack4krak_macros::error_with_messages;
 
 mod chart;
+mod ctftime;
 mod teams;
 mod teams_with_tasks;
 mod updates;
@@ -12,6 +13,7 @@ pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(teams::teams);
     config.service(teams_with_tasks::teams_with_tasks);
     config.route("/updates", actix_web::web::get().to(updates::sse_handler));
+    config.service(ctftime::team_standings);
 }
 
 #[error_with_messages]
