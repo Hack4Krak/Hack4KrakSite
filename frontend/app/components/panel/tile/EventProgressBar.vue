@@ -7,8 +7,11 @@ const { data: timeLeft, refresh: updateTimeLeft } = useAsyncData('timeLeft', asy
 
 function getEventState() {
   const now = dayjs()
-  const eventStart = dayjs(data.value?.start_date)
-  const eventEnd = dayjs(data.value?.end_date)
+  const stages = data.value?.stages ?? []
+  const eventStartStage = stages.find(s => s.stage_type === 'event-start')
+  const eventEndStage = stages.find(s => s.stage_type === 'event-end')
+  const eventStart = dayjs(eventStartStage?.start_date)
+  const eventEnd = dayjs(eventEndStage?.start_date)
 
   if (now.isBetween(eventStart, eventEnd)) {
     const totalDuration = eventEnd.diff(eventStart)

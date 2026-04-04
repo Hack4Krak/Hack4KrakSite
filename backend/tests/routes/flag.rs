@@ -6,7 +6,7 @@ use actix_web::test::TestRequest;
 use chrono::{DateTime, Duration, FixedOffset, Utc};
 use hack4krak_backend::entities::sea_orm_active_enums::TeamStatus;
 use hack4krak_backend::entities::{teams, users};
-use hack4krak_backend::models::task::TaskConfig;
+use hack4krak_backend::models::task::{EventStage, EventStageType, TaskConfig};
 use hack4krak_backend::services::task_manager::TaskManager;
 use serde_json::json;
 
@@ -53,8 +53,21 @@ async fn setup_app_with_task_manager(
         },
     );
 
-    task_manager.event_config.write().await.start_date = event_start_date;
-    task_manager.event_config.write().await.end_date = event_end_date;
+    // Set up event stages with the provided start and end dates
+    task_manager.event_config.write().await.stages = vec![
+        EventStage {
+            name: "Event Start".to_string(),
+            stage_type: EventStageType::EventStart,
+            start_date: event_start_date,
+            end_date: None,
+        },
+        EventStage {
+            name: "Event End".to_string(),
+            stage_type: EventStageType::EventEnd,
+            start_date: event_end_date,
+            end_date: None,
+        },
+    ];
 
     (absent_user, present_user, test_database, task_manager)
 }

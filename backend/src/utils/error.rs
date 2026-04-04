@@ -90,14 +90,20 @@ pub enum Error {
     UserMustHaveHigherRoleThanAffectedUser,
     UserMustBeOwnerToUpdateRoles,
     UserWithEmailOrUsernameAlreadyExists,
-    AccessBeforeEventStart {
-        event_start_date: String,
+    AccessBeforeStage {
+        stage_start_date: String,
     },
-    AccessAfterEventEnd,
+    AccessAfterStage {
+        stage_end_date: String,
+    },
     RecipientNotFound {
         username: String,
     },
-    AccessDuringEvent,
+    AccessDuringStage,
+    FailedToParseStage {
+        stage_identifier: String,
+    },
+
     #[serde(skip)]
     FailedToParseUrl(#[from] url::ParseError),
     #[serde(skip)]
@@ -153,11 +159,12 @@ impl error::ResponseError for Error {
             }
             Error::Forbidden { .. }
             | Error::UserMustHaveHigherRoleThanAffectedUser
-            | Error::AccessDuringEvent
+            | Error::AccessDuringStage
             | Error::UserMustBeOwnerToUpdateRoles
-            | Error::AccessBeforeEventStart { .. } => StatusCode::FORBIDDEN,
+            | Error::AccessBeforeStage { .. } => StatusCode::FORBIDDEN,
             Error::UserWithEmailOrUsernameAlreadyExists => StatusCode::CONFLICT,
-            Error::AccessAfterEventEnd => StatusCode::GONE,
+            Error::AccessAfterStage { .. } => StatusCode::GONE,
+            Error::FailedToParseStage { .. } => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Account(account_err) => account_err.status_code(),
             Error::Team(team_err) => team_err.status_code(),
             Error::Auth(auth_err) => auth_err.status_code(),
