@@ -50,6 +50,7 @@ pub struct PointsCounter {
     team_time_series: HashMap<Uuid, TeamTimeSeriesData>,
 }
 
+/// Team Standings for https://ctftime.org/json-scoreboard-feed
 #[derive(Serialize, Deserialize, ToSchema, Default, Debug, PartialEq)]
 pub struct TeamStandings {
     tasks: Vec<String>,
@@ -62,6 +63,8 @@ pub struct SingleTeamStanding {
     score: usize,
     #[serde(rename = "taskStats")]
     task_stats: HashMap<String, TaskTeamStat>,
+    #[serde(rename = "lastAccept")]
+    last_accept: i64,
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Default, Debug, PartialEq)]
@@ -166,7 +169,7 @@ impl PointsCounter {
 
     /// Calculates point value for a task based on solve count using linear decay.
     /// Points range from 500 (max) to 100 (min), decreasing linearly as more teams solve it.
-    pub fn calculate_task_value(solve_count: usize, total_teams: usize) -> usize {
+    fn calculate_task_value(solve_count: usize, total_teams: usize) -> usize {
         const MAX_POINTS: f64 = 500f64;
         const MIN_POINTS: f64 = 100f64;
         const DECAY_RANGE: f64 = MAX_POINTS - MIN_POINTS;
@@ -251,12 +254,56 @@ impl PointsCounter {
         .await?;
 
         let mut task_solve_counts: HashMap<String, usize> = HashMap::new();
+        let mut task_points: HashMap<String, usize> = HashMap::new();
+        let total_teams = self.team_time_series.len();
         for task_map in tasks_by_team.values() {
             for task_name in task_map.keys() {
                 *task_solve_counts.entry(task_name.clone()).or_default() += 1;
             }
         }
-        let total_teams = self.team_time_series.len();
+        for task in app_state.task_manager.tasks.iter() {
+            let solves = *task_solve_counts.get(task.key()).unwrap_or(&0);
+            task_points.insert(
+                task.key().clone(),
+                Self::calculate_task_value(solves, total_teams),
+            );
+        }
+
+        let standings = self
+            .team_time_series
+            .iter()
+            .map(|(uuid, data)| {
+                let mut last_accept = 0;
+                let task_stats = tasks_by_team
+                    .get(uuid)
+                    .map(|task_map| {
+                        task_map
+                            .iter()
+                            .map(|(task_name, submitted_at)| {
+                                let time = submitted_at.and_utc().timestamp();
+                                if time > last_accept {
+                                    last_accept = time
+                                }
+                                (
+                                    task_name.clone(),
+                                    TaskTeamStat {
+                                        points: *task_points.get(&task_name.clone()).unwrap(),
+                                        time,
+                                    },
+                                )
+                            })
+                            .collect()
+                    })
+                    .unwrap_or_default();
+
+                SingleTeamStanding {
+                    team: data.name.clone(),
+                    score: *data.points.last().unwrap_or(&0),
+                    task_stats,
+                    last_accept,
+                }
+            })
+            .collect();
 
         Ok(TeamStandings {
             tasks: app_state
@@ -265,37 +312,7 @@ impl PointsCounter {
                 .iter()
                 .map(|entry| entry.key().clone())
                 .collect(),
-            standings: self
-                .team_time_series
-                .iter()
-                .map(|(uuid, data)| {
-                    let task_stats = tasks_by_team
-                        .get(uuid)
-                        .map(|task_map| {
-                            task_map
-                                .iter()
-                                .map(|(task_name, submitted_at)| {
-                                    let solves = *task_solve_counts.get(task_name).unwrap_or(&0);
-                                    let points = Self::calculate_task_value(solves, total_teams);
-                                    (
-                                        task_name.clone(),
-                                        TaskTeamStat {
-                                            points,
-                                            time: submitted_at.and_utc().timestamp(),
-                                        },
-                                    )
-                                })
-                                .collect()
-                        })
-                        .unwrap_or_default();
-
-                    SingleTeamStanding {
-                        team: data.name.clone(),
-                        score: *data.points.last().unwrap_or(&0),
-                        task_stats,
-                    }
-                })
-                .collect(),
+            standings,
         })
     }
 }
