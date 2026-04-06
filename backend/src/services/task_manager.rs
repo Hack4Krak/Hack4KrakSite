@@ -1,5 +1,7 @@
 use crate::models::event_config::EventConfig;
-use crate::models::task::{LabelsConfig, RegistrationConfig, TaskConfig, TaskDisplay, TaskMeta};
+use crate::models::task::{
+    LabelsConfig, ParticipantTagsConfig, RegistrationConfig, TaskConfig, TaskDisplay, TaskMeta,
+};
 use crate::routes::task::TaskError;
 use crate::services::env::EnvConfig;
 use crate::utils::error::Error;
@@ -26,6 +28,7 @@ pub struct TaskManager {
     pub event_config: RwLock<EventConfig>,
     pub registration_config: RwLock<RegistrationConfig>,
     pub labels_config: RwLock<LabelsConfig>,
+    pub participant_tags_config: RwLock<ParticipantTagsConfig>,
     pub tasks: DashMap<String, TaskConfig>,
 }
 
@@ -107,9 +110,13 @@ impl TaskManager {
 
         let labels_config: LabelsConfig = Self::load_config("config/labels.yaml").await;
 
+        let participant_tags_config: ParticipantTagsConfig =
+            Self::load_config("config/participant-tags.yaml").await;
+
         Self {
             event_config: RwLock::new(event_config),
             labels_config: RwLock::new(labels_config),
+            participant_tags_config: RwLock::new(participant_tags_config),
             registration_config: RwLock::new(registration_config),
             tasks,
         }

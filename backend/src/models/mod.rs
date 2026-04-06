@@ -10,4 +10,5 @@ pub mod team_status;
 pub mod teams;
 pub mod user;
 pub mod user_onboarding;
+pub mod user_participant_tags;
 pub mod user_roles;

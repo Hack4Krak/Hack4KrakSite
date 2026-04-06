@@ -1,5 +1,6 @@
 mod info;
 mod label;
+mod participant_tags;
 mod registration;
 mod status;
 
@@ -8,4 +9,5 @@ pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(status::status);
     config.service(registration::registration);
     config.service(label::label);
+    config.service(participant_tags::participant_tags);
 }

@@ -29,6 +29,26 @@ pub struct Label {
     pub description: String,
 }
 
+#[derive(Serialize, Deserialize, ToSchema, Default, Debug, Clone)]
+#[serde(rename_all(deserialize = "kebab-case"))]
+pub struct ParticipantTagsConfig {
+    pub participant_tags: Vec<ParticipantTag>,
+}
+
+impl ParticipantTagsConfig {
+    pub fn tag_by_id(&self, id: &str) -> Option<&ParticipantTag> {
+        self.participant_tags.iter().find(|tag| tag.id == id)
+    }
+}
+
+#[derive(Serialize, Deserialize, ToSchema, Default, Debug, Clone)]
+#[serde(rename_all(deserialize = "kebab-case"))]
+pub struct ParticipantTag {
+    pub id: String,
+    pub name: String,
+    pub description: String,
+}
+
 #[derive(Debug, Serialize, Deserialize, ToSchema, Clone)]
 #[serde(rename_all = "kebab-case")]
 pub enum RegistrationMode {

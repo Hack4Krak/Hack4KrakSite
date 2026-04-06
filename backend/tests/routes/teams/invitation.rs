@@ -92,6 +92,7 @@ async fn init_database_with_teams(
             is_leader: Set(false),
             roles: Set(UserRoles::Default),
             team: Set(Some(team_uuid)),
+            verification_id: Set(uuid),
             ..Default::default()
         }
         .insert(database)

@@ -47,7 +47,7 @@ function codeScanned(code: string, state?: Partial<Schema>) {
     @submit="onSubmit"
   >
     <template #code="{ field, state }">
-      <LazyPanelModalQRCode v-model="qrCodeModal" hydrate-on-idle @code-scanned="code => codeScanned(code, state)" />
+      <LazyPanelModalQRCodeScan v-model="qrCodeModal" hydrate-on-idle @code-scanned="code => codeScanned(code, state)" />
 
       <div class="flex items-center space-x-2">
         <UPinInput

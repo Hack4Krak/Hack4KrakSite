@@ -28,9 +28,9 @@ impl Default for EmailMeta {
     }
 }
 
-impl<T: DynTemplate> EmailTemplate for T {}
+impl<T: DynTemplate + Send + Sync> EmailTemplate for T {}
 
-pub trait EmailTemplate: DynTemplate {
+pub trait EmailTemplate: DynTemplate + Send + Sync {
     fn id(&self) -> &str {
         type_name::<Self>().rsplit("::").next().unwrap()
     }
