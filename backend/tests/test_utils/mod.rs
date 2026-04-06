@@ -1,6 +1,8 @@
 pub mod database;
 pub mod header;
 pub mod mail;
+pub mod task_manager;
+pub mod verification_mock;
 
 use actix_http::Request;
 use actix_web::body::MessageBody;

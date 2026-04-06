@@ -159,10 +159,10 @@ impl users::Model {
     pub async fn create_from_user_info(
         database: &DatabaseConnection,
         user_info: UserInformation,
-    ) -> Result<(), Error> {
+    ) -> Result<Self, Error> {
         users::Model::assert_is_unique(database, &user_info.email, &user_info.name, None).await?;
 
-        users::ActiveModel {
+        let user = users::ActiveModel {
             id: Set(uuid_gen::new_v4()),
             username: Set(user_info.name.clone()),
             first_name: Set(Some(user_info.first_name.clone())),
@@ -171,12 +171,13 @@ impl users::Model {
             created_at: Set(Utc::now().naive_utc()),
             is_leader: Set(false),
             roles: Set(UserRoles::Default),
+            verification_id: Set(uuid_gen::new_v4()),
             ..Default::default()
         }
         .insert(database)
         .await?;
 
-        Ok(())
+        Ok(user)
     }
 
     pub async fn delete(
