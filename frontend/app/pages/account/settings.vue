@@ -4,10 +4,12 @@ definePageMeta({
 })
 
 const { data: user } = await useAuth('/account/')
+const { data: verification_data } = await useAuth('/account/verification')
 
 const updateAccountModal = ref(false)
 const changePasswordModal = ref(false)
 const deleteAccountModal = ref(false)
+const qrCodeModal = ref(false)
 
 useSeoMeta({
   title: 'Ustawienia konta',
@@ -28,8 +30,9 @@ useSeoMeta({
     redirect-to="/"
     hydrate-on-idle
   />
+  <LazyPanelModalQRCode v-model="qrCodeModal" :verification-id="verification_data?.verification_id" hydrate-on-idle />
 
-  <div class="space-y-8 max-w-2xl">
+  <div class="space-y-8 w-full">
     <header>
       <h1 class="font-pixelify text-3xl lg:text-4xl leading-none">
         Ustawienia konta
@@ -39,27 +42,37 @@ useSeoMeta({
       </p>
     </header>
 
-    <div class="space-y-px bg-surface-muted border-2 border-surface-muted">
-      <PanelTileSettingsRow label="Email" :value="user?.email ?? ''">
-        <span class="text-[10px] font-pixelify uppercase tracking-widest text-success border border-success px-2 py-1">
-          zweryfikowany
-        </span>
-      </PanelTileSettingsRow>
+    <div class="flex gap-4 w-full">
+      <div class="space-y-px bg-surface-muted border-2 border-surface-muted max-w-2xl grow">
+        <PanelTileSettingsRow label="Email" :value="user?.email ?? ''">
+          <span class="text-[10px] font-pixelify uppercase tracking-widest text-success border border-success px-2 py-1">
+            zweryfikowany
+          </span>
+        </PanelTileSettingsRow>
 
-      <PanelTileSettingsRow label="Nazwa wyświetlana" :value="user?.username ?? ''">
-        <UButton variant="ghost" color="neutral" size="sm" icon="pixelarticons:edit" @click="updateAccountModal = true">
-          Edytuj
-        </UButton>
-      </PanelTileSettingsRow>
+        <PanelTileSettingsRow label="Nazwa wyświetlana" :value="user?.username ?? ''">
+          <UButton variant="ghost" color="neutral" size="sm" icon="pixelarticons:edit" @click="updateAccountModal = true">
+            Edytuj
+          </UButton>
+        </PanelTileSettingsRow>
 
-      <PanelTileSettingsRow label="Hasło" value="••••••••">
-        <UButton variant="ghost" color="neutral" size="sm" icon="pixelarticons:lock" @click="changePasswordModal = true">
-          Zmień
-        </UButton>
-      </PanelTileSettingsRow>
+        <PanelTileSettingsRow label="Hasło" value="••••••••">
+          <UButton variant="ghost" color="neutral" size="sm" icon="pixelarticons:lock" @click="changePasswordModal = true">
+            Zmień
+          </UButton>
+        </PanelTileSettingsRow>
+
+        <PanelTileSettingsRow label="Identyfikacyjny kod QR" :value="verification_data?.verification_id ?? ''">
+          <UButton variant="ghost" color="neutral" size="sm" icon="mdi:qrcode" @click="qrCodeModal = true">
+            Wyświetl
+          </UButton>
+        </PanelTileSettingsRow>
+      </div>
+
+      <PanelTileParticipantTags v-if="verification_data" :tags="verification_data?.applied_tags ?? []" class="max-w-2xl" />
     </div>
 
-    <PanelTileSettingsRow danger label="Strefa zagrożenia" value="Operacja nieodwracalna. Usuniemy konto i powiązane dane.">
+    <PanelTileSettingsRow danger label="Strefa zagrożenia" value="Operacja nieodwracalna. Usuniemy konto i powiązane dane." class="max-w-2xl">
       <UButton variant="outline" color="error" size="sm" icon="pixelarticons:trash" @click="deleteAccountModal = true">
         Usuń konto
       </UButton>
