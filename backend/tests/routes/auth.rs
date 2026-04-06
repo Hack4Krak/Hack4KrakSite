@@ -137,6 +137,10 @@ async fn auth_flow() {
 
 #[actix_web::test]
 async fn email_confirmation_success() {
+    use crate::test_utils::verification_mock::MockVerificationEmailSender;
+    use hack4krak_backend::services::auth::AuthService;
+    use hack4krak_backend::utils::app_state::AppState;
+
     let test_database = TestDatabase::new().await;
 
     let confirmation_code = Uuid::new_v4();
@@ -159,15 +163,17 @@ async fn email_confirmation_success() {
         .await
         .unwrap();
 
-    let app = TestApp::default()
-        .with_database(test_database)
-        .build_app()
-        .await;
+    let mut mock_sender = MockVerificationEmailSender::new();
+    mock_sender
+        .expect_send_verification_qr_email()
+        .times(1)
+        .returning(|_, _, _, _| Ok(()));
 
-    let path = format!("/auth/confirm/{confirmation_code}");
-    let request = test::TestRequest::get().uri(&path).to_request();
-    let response = test::call_service(&app, request).await;
-    assert!(response.status().is_success());
+    let app_state = AppState::with_database(test_database.database);
+
+    let result = AuthService::confirm_email(&app_state, confirmation_code, &mock_sender).await;
+
+    assert!(result.is_ok());
 }
 
 #[actix_web::test]

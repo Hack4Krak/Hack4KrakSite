@@ -2,11 +2,13 @@
 const { $api } = useNuxtApp()
 
 const { data: user } = await useAuth('/account/')
+const { data: verification } = await useAuth('/account/verification')
 
 const joinExternalTeamModal = ref(false)
 const updateAccountModal = ref(false)
 const changePasswordModal = ref(false)
 const deleteAccountModal = ref(false)
+const qrCodeModal = ref(false)
 
 async function logout() {
   await $api('/auth/logout', {
@@ -33,6 +35,7 @@ async function logout() {
     redirect-to="/"
     hydrate-on-idle
   />
+  <LazyPanelModalQRCode v-model="qrCodeModal" :verification-id="verification?.verification_id" hydrate-on-idle />
 
   <div class="grid grid-cols-[400px_1fr] divide-x m-10 border min-w-fit flex-1">
     <div class="h-full flex flex-col divide-y">
@@ -42,6 +45,27 @@ async function logout() {
         </h3>
         <span>Przesłane flagi: 0</span>
       </div>
+
+      <div v-if="verification?.applied_tags && verification.applied_tags.length > 0" class="p-5">
+        <h1 class="font-bold text-xl mb-3">
+          Przypisane tagi
+        </h1>
+        <div class="flex flex-col gap-2">
+          <div
+            v-for="tag in verification.applied_tags"
+            :key="tag.id"
+            class="p-2 rounded bg-elevated border border-accented"
+          >
+            <p class="font-semibold text-sm">
+              {{ tag.name }}
+            </p>
+            <p class="text-xs text-gray-400">
+              {{ tag.description }}
+            </p>
+          </div>
+        </div>
+      </div>
+
       <div class="p-5">
         <h1 class="font-bold text-xl">
           Ustawienia konta
@@ -52,6 +76,9 @@ async function logout() {
           </UButton>
           <UButton icon="mdi:account-cog" variant="ghost" color="neutral" @click="updateAccountModal = true">
             Zmień ustawienia konta
+          </UButton>
+          <UButton icon="mdi:qrcode" variant="ghost" color="neutral" @click="qrCodeModal = true">
+            Zobacz swój identyfikacyjny kod QR
           </UButton>
           <UButton icon="mdi:account-key" variant="ghost" color="neutral" @click="changePasswordModal = true">
             Zmień hasło

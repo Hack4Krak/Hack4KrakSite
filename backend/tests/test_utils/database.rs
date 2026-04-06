@@ -35,6 +35,7 @@ impl TestDatabase {
             password: Some("$argon2id$v=19$m=19456,t=2,p=1$GuyDKoLJCF5tt+MDGJqRfA$8NZPkyNbR/IWuLg6tR7tn0RH/lJGahLYDODj23ajP3Y".to_string()),
             roles: UserRoles::Default,
             personal_info: None,
+            verification_id: uuid,
         });
 
         users::Entity::insert(updated)

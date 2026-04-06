@@ -9,6 +9,7 @@ mod get_personal_information;
 pub mod index;
 mod submit_personal_information;
 pub mod update;
+mod verification;
 
 pub use submit_personal_information::UserPersonalInformationSubmissionRequest;
 
@@ -19,6 +20,7 @@ pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(update::change_password);
     cfg.service(submit_personal_information::submit_personal_information);
     cfg.service(get_personal_information::get_personal_information);
+    cfg.service(verification::verification);
 }
 
 #[error_with_messages]
