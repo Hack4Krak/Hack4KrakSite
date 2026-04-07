@@ -72,7 +72,7 @@ const userMenuItems = computed(() => [
         <UDropdownMenu
           :items="userMenuItems"
           :content="{ align: 'end', sideOffset: 8 }"
-          :ui="{ content: 'w-48' }"
+          :ui="{ content: 'w-48', item: 'cursor-pointer' }"
         >
           <button class="flex items-center gap-2 cursor-pointer font-semibold text-md" aria-label="Menu użytkownika">
             <UIcon name="pixelarticons:user" class="icon-md" />
