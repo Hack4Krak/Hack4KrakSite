@@ -5,6 +5,7 @@ import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 import * as echarts from 'echarts/core'
 import { SVGRenderer } from 'echarts/renderers'
+import useEventStartAndEnd from '~/composables/useEventStartAndEnd'
 
 echarts.use([SVGRenderer])
 
@@ -35,11 +36,7 @@ const chartOption = computed<EChartsOption>(() => {
     return { series: [] }
   }
 
-  const stages = eventInformation.value.stages
-  const eventStartStage = stages.find(s => s.stage_type === 'event-start')
-  const eventEndStage = stages.find(s => s.stage_type === 'event-end')
-  const start = eventStartStage?.start_date ? new Date(eventStartStage.start_date) : undefined
-  const end = eventEndStage?.start_date ? new Date(eventEndStage.start_date) : undefined
+  const [start, end] = useEventStartAndEnd()
 
   return {
     tooltip: {
