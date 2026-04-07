@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { NAVBAR_ITEMS } from '~~/content/navbar'
 
-const { $api } = useNuxtApp()
-
-const { data: isLoggedIn } = useAuth('/auth/status', {
-  redirect: 'error',
-  onResponseError: undefined,
-})
+const { $auth } = useNuxtApp()
 
 const { data: user } = useAuth('/account/', {
   redirect: 'error',
@@ -27,9 +22,8 @@ const navigationMenuProperties = computed(() => ({
 }))
 
 async function logout() {
-  await $api('/auth/logout', {
+  await $auth('/auth/logout', {
     method: 'POST',
-    credentials: 'include',
   })
 
   await refreshNuxtData()
@@ -68,7 +62,7 @@ const userMenuItems = computed(() => [
     <UNavigationMenu v-bind="navigationMenuProperties" />
 
     <template #right>
-      <template v-if="isLoggedIn && user">
+      <template v-if="user">
         <UDropdownMenu
           :items="userMenuItems"
           :content="{ align: 'end', sideOffset: 8 }"
