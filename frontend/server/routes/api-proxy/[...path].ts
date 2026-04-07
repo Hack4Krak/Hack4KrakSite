@@ -6,9 +6,10 @@ export default defineEventHandler(async (event) => {
   }
 
   const backendAddress = process.env.BACKEND_ADDRESS || 'http://localhost:8080'
+  const normalizedBackendAddress = backendAddress.includes('://') ? backendAddress : `http://${backendAddress}`
   const targetPath = event.path.replace(apiProxyPrefix, '') || '/'
 
-  return proxyRequest(event, `${backendAddress}${targetPath}`, {
+  return proxyRequest(event, `${normalizedBackendAddress}${targetPath}`, {
     cookieDomainRewrite: { '*': '' },
   })
 })
