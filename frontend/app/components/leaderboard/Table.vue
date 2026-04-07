@@ -94,12 +94,12 @@ const meta = computed<TableMeta<Team>>(() => ({
 function getTaskIcon(teamId: string, taskId: string) {
   const top3 = top3PerTask.value[taskId] || []
   if (top3[0] === teamId)
-    return { icon: 'pixelarticons:trophy', color: 'text-yellow-400' }
+    return { icon: 'pixelarticons:trophy', color: 'text-yellow-400', label: 'First blood' }
   else if (top3[1] === teamId)
-    return { icon: 'lucide:medal', color: 'text-gray-400' }
+    return { icon: 'lucide:medal', color: 'text-gray-400', label: '2. rozwiązanie' }
   else if (top3[2] === teamId)
-    return { icon: 'lucide:medal', color: 'text-amber-600' }
-  return { icon: 'pixelarticons:flag', color: 'text-green-600' }
+    return { icon: 'lucide:medal', color: 'text-amber-600', label: '3. rozwiązanie' }
+  return { icon: 'pixelarticons:flag', color: 'text-green-600', label: 'Rozwiązane' }
 }
 </script>
 
@@ -147,9 +147,23 @@ function getTaskIcon(teamId: string, taskId: string) {
         <UIcon
           :name="getTaskIcon(row.original.team_id, task.id).icon"
           :class="`${getTaskIcon(row.original.team_id, task.id).color} text-xl`"
-          :title="dayjs(row.original.tasks[task.id]).format('DD.MM.YYYY HH:mm')"
+          :title="`${getTaskIcon(row.original.team_id, task.id).label} — ${dayjs(row.original.tasks[task.id]).format('DD.MM.YYYY HH:mm')}`"
         />
       </div>
     </template>
   </UTable>
+  <div class="flex gap-6 justify-center mt-4 text-sm text-neutral-400">
+    <span class="flex items-center gap-1">
+      <UIcon name="pixelarticons:trophy" class="text-yellow-400" /> First blood
+    </span>
+    <span class="flex items-center gap-1">
+      <UIcon name="lucide:medal" class="text-gray-400" /> 2. rozwiązanie
+    </span>
+    <span class="flex items-center gap-1">
+      <UIcon name="lucide:medal" class="text-amber-600" /> 3. rozwiązanie
+    </span>
+    <span class="flex items-center gap-1">
+      <UIcon name="pixelarticons:flag" class="text-green-600" /> Rozwiązane
+    </span>
+  </div>
 </template>
