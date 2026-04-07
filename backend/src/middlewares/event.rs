@@ -1,6 +1,6 @@
 use crate::entities::sea_orm_active_enums::UserRoles;
 use crate::entities::users;
-use crate::models::task::{EventConfig, EventStage, EventStageType};
+use crate::models::event_config::{EventConfig, EventStage, EventStageType};
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::body::{BoxBody, EitherBody};

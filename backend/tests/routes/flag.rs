@@ -6,7 +6,8 @@ use actix_web::test::TestRequest;
 use chrono::{DateTime, Duration, FixedOffset, Utc};
 use hack4krak_backend::entities::sea_orm_active_enums::TeamStatus;
 use hack4krak_backend::entities::{teams, users};
-use hack4krak_backend::models::task::{EventStage, EventStageType, TaskConfig};
+use hack4krak_backend::models::event_config::{EventStage, EventStageType};
+use hack4krak_backend::models::task::TaskConfig;
 use hack4krak_backend::services::task_manager::TaskManager;
 use serde_json::json;
 
