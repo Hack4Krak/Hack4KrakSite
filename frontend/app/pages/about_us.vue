@@ -6,6 +6,19 @@ useSeoMeta({
   title: aboutUsContent.meta.title,
   description: aboutUsContent.hero.description,
 })
+
+const allGalleryImages = [
+  ...aboutUsContent.gallery.smallGalleryImages,
+  aboutUsContent.gallery.mainGalleryImage,
+]
+
+const lightboxOpen = ref(false)
+const lightboxIndex = ref(0)
+
+function openLightbox(index: number) {
+  lightboxIndex.value = index
+  lightboxOpen.value = true
+}
 </script>
 
 <template>
@@ -74,11 +87,12 @@ useSeoMeta({
     <section id="mini-gallery">
       <UContainer class="grid lg:grid-cols-4 lg:grid-rows-[auto, auto] grid-cols-3 gap-4">
         <NuxtImg
-          v-for="image in aboutUsContent.gallery.smallGalleryImages"
+          v-for="(image, index) in aboutUsContent.gallery.smallGalleryImages"
           :key="image.split('/').pop()" height="130"
           width="300" class="hidden md:block size-full px-6 sm:px-0 object-cover border-2 border-muted
-          [&:nth-child(3)]:!border-primary"
+          [&:nth-child(3)]:!border-primary cursor-pointer hover:opacity-80 transition-opacity"
           :src="image"
+          @click="openLightbox(index)"
         />
         <div class="lg:row-span-2 lg:col-span-1 col-span-3 flex flex-col gap-2">
           <h3 class="text-lg font-semibold">
@@ -94,11 +108,24 @@ useSeoMeta({
             crop: '850_132_3681_950',
             fit: 'contain',
           }"
-          class="col-span-3 w-full object-cover border-2 border-muted"
+          class="col-span-3 w-full object-cover border-2 border-muted cursor-pointer hover:opacity-80 transition-opacity"
           :src="aboutUsContent.gallery.mainGalleryImage"
+          @click="openLightbox(aboutUsContent.gallery.smallGalleryImages.length)"
         />
       </UContainer>
     </section>
+
+    <UModal v-model:open="lightboxOpen" :ui="{ content: 'max-w-7xl bg-transparent shadow-none ring-0' }">
+      <template #content>
+        <div class="flex items-center justify-center" @click="lightboxOpen = false">
+          <NuxtImg
+            :src="allGalleryImages[lightboxIndex]"
+            class="max-h-[90vh] max-w-full object-contain rounded cursor-pointer"
+          />
+        </div>
+      </template>
+    </UModal>
+
     <Footer />
   </div>
 </template>
