@@ -1,5 +1,5 @@
 use crate::entities::{flag_capture, teams};
-use crate::models::task::EventStageType;
+use crate::models::event_config::EventStageType;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use chrono::NaiveDateTime;

@@ -1,6 +1,5 @@
-use crate::models::task::{
-    EventConfig, LabelsConfig, RegistrationConfig, TaskConfig, TaskDisplay, TaskMeta,
-};
+use crate::models::event_config::EventConfig;
+use crate::models::task::{LabelsConfig, RegistrationConfig, TaskConfig, TaskDisplay, TaskMeta};
 use crate::routes::task::TaskError;
 use crate::services::env::EnvConfig;
 use crate::utils::error::Error;

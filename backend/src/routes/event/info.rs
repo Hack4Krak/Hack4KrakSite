@@ -1,4 +1,4 @@
-use crate::models::task::EventConfig;
+use crate::models::event_config::EventConfig;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::web::Data;
