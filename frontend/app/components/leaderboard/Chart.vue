@@ -3,13 +3,6 @@ import type { EChartsOption } from 'echarts'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
-import * as echarts from 'echarts/core'
-import { SVGRenderer } from 'echarts/renderers'
-import useEventStartAndEnd from '~/composables/useEventStartAndEnd'
-
-echarts.use([SVGRenderer])
-
-const initOptions = { renderer: 'svg' } as const
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -23,18 +16,21 @@ interface TeamData {
 const targetTimezone = 'Europe/Warsaw'
 
 const { data: chartData } = useLazyApi('/leaderboard/chart')
-const [start, end] = await useEventStartAndEnd()
+const { data: eventInformation } = useLazyApi('/event/info')
 
-const adjustedTimestamps = computed(() =>
-  chartData.value?.event_timestamps?.map((ts: string) =>
-    dayjs.utc(ts).tz(targetTimezone).format('YYYY-MM-DDTHH:mm:ss'),
-  ) ?? [],
+const adjustedTimestamps = computed(
+  () =>
+    chartData.value?.event_timestamps?.map((ts: string) =>
+      dayjs.utc(ts).tz(targetTimezone).format('YYYY-MM-DDTHH:mm:ss'),
+    ) ?? [],
 )
 
 const chartOption = computed<EChartsOption>(() => {
-  if (!chartData.value?.team_points_over_time?.length || !start || !end) {
+  if (!chartData.value?.team_points_over_time?.length || !eventInformation.value) {
     return { series: [] }
   }
+
+  const [start, end] = useEventStartAndEnd()
 
   return {
     tooltip: {
@@ -77,7 +73,7 @@ const chartOption = computed<EChartsOption>(() => {
       type: 'time',
       min: start,
       max: end,
-      name: 'Date',
+      name: 'Data',
       nameLocation: 'middle',
       nameGap: 35,
       axisLabel: {
@@ -94,6 +90,21 @@ const chartOption = computed<EChartsOption>(() => {
         lineStyle: { color: '#737373', width: 1, type: 'solid' },
       },
     },
+
+    dataZoom: [
+      {
+        type: 'inside',
+        xAxisIndex: 0,
+        filterMode: 'none',
+        minSpan: 10,
+      },
+      {
+        type: 'inside',
+        yAxisIndex: 0,
+        filterMode: 'none',
+        minSpan: 10,
+      },
+    ],
 
     series: chartData.value.team_points_over_time.map((item: TeamData) => ({
       name: item.name,
@@ -125,12 +136,10 @@ const chartOption = computed<EChartsOption>(() => {
 
 <template>
   <div class="h-full w-full">
-    <VChart
-      v-if="chartData && start && end"
-      :option="chartOption"
-      autoresize
-      :init-options="initOptions"
-      class="h-full w-full"
-    />
+    <p class="text-center text-xs text-neutral-500 mb-1 flex items-center justify-center gap-1">
+      <UIcon name="pixelarticons:zap" />
+      Użyj scrolla, aby przybliżyć wykres
+    </p>
+    <VChart v-if="chartData && eventInformation" :option="chartOption" autoresize class="h-full w-full" />
   </div>
 </template>
