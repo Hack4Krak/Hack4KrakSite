@@ -19,6 +19,7 @@ Error:
   FailedToBuildEmail: "Nie udało się zbudować e-maila: {0}"
   InvalidJson: "Nie udało się zrozumieć formatu JSON: {0}"
   JsonDeserializationError: "Błąd deserializacji JSON"
+  InvalidUuid: "Nieprawidłowy format UUID"
   InvalidYaml: "Nie udało się zrozumieć formatu YAML: {0}"
   RouteNotFound: "Nie znaleziono ścieżki"
   InvalidEmailSender: "Nieprawidłowy adres e-mail nadawcy {0}"

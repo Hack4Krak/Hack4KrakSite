@@ -57,6 +57,14 @@ pub fn json_error_handler(
 ) -> actix_web::Error {
     Error::JsonDeserializationError.into()
 }
+
+pub fn uuid_path_error_handler(
+    _error: error::PathError,
+    _: &HttpRequest,
+) -> actix_web::Error {
+    Error::InvalidUuid.into()
+}
+
 #[error_with_messages]
 pub enum Error {
     #[serde(skip)]
@@ -86,6 +94,7 @@ pub enum Error {
     #[serde(skip)]
     InvalidJson(#[from] serde_json::Error),
     JsonDeserializationError,
+    InvalidUuid,
     #[serde(skip)]
     InvalidYaml(#[from] serde_norway::Error),
     InvalidEmailConfirmationCode,
@@ -135,7 +144,8 @@ impl error::ResponseError for Error {
             | Error::InvalidEmailSender(_)
             | Error::Validator(_)
             | Error::InvalidEmailRecipients(_)
-            | Error::JsonDeserializationError => StatusCode::BAD_REQUEST,
+            | Error::JsonDeserializationError
+            | Error::InvalidUuid => StatusCode::BAD_REQUEST,
             Error::HashPasswordFailed(_)
             | Error::DatabaseOperation(_)
             | Error::OAuth
