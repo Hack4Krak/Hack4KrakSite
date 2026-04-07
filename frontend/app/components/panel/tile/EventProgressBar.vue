@@ -1,25 +1,20 @@
 <script setup lang="ts">
+import useEventStartAndEnd from '~/composables/useEventStartAndEnd'
 import { dayjs, humanizeDifference } from '~/utils/duration'
-
-const { data } = await useAuth('/event/info')
 
 const { data: timeLeft, refresh: updateTimeLeft } = useAsyncData('timeLeft', async () => getEventState())
 
 function getEventState() {
   const now = dayjs()
-  const stages = data.value?.stages ?? []
-  const eventStartStage = stages.find(s => s.stage_type === 'event-start')
-  const eventEndStage = stages.find(s => s.stage_type === 'event-end')
-  const eventStart = dayjs(eventStartStage?.start_date)
-  const eventEnd = dayjs(eventEndStage?.start_date)
+  const [eventStart, eventEnd] = useEventStartAndEnd()
 
   if (now.isBetween(eventStart, eventEnd)) {
-    const totalDuration = eventEnd.diff(eventStart)
+    const totalDuration = dayjs(eventEnd).diff(eventStart)
     const elapsed = now.diff(eventStart)
     const percentage = Math.round((elapsed / totalDuration) * 10000) / 100
     return { diff: humanizeDifference(elapsed), percentage, color: 'rgba(110, 235, 131, 0.1)' }
   } else if (now.isBefore(eventStart)) {
-    return { diff: humanizeDifference(eventStart.diff(now)), percentage: 100, hidePercentage: true, color: 'rgba(246, 178, 22, 0.1)' }
+    return { diff: humanizeDifference(dayjs(eventStart).diff(now)), percentage: 100, hidePercentage: true, color: 'rgba(246, 178, 22, 0.1)' }
   } else {
     return { diff: humanizeDifference(now.diff(eventEnd)), percentage: 100, color: 'rgba(246, 178, 22, 0.1)' }
   }
