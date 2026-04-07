@@ -5,6 +5,9 @@ import { getNodeTransforms } from './app/utils/vite-node-transforms'
 dotenv.config({ path: '../.env' })
 
 const backendAddress = process.env.BACKEND_ADDRESS || 'http://localhost:8080'
+const isDev = process.env.NODE_ENV !== 'production'
+const useDevProxy = isDev && !backendAddress.startsWith('http://localhost')
+const fetchBaseURL = useDevProxy ? '/api-proxy' : backendAddress
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -137,11 +140,11 @@ export default defineNuxtConfig({
     disableNuxtPlugin: true,
     clients: {
       api: {
-        baseURL: backendAddress,
+        baseURL: fetchBaseURL,
         schema: 'openapi/api/openapi.json',
       },
       auth: {
-        baseURL: backendAddress,
+        baseURL: fetchBaseURL,
         schema: 'openapi/api/openapi.json',
       },
     },
