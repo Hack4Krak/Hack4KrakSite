@@ -4,7 +4,6 @@ import { NAVBAR_ITEMS } from '~~/content/navbar'
 
 const isOpen = defineModel<boolean>({ default: false })
 
-const isFlagModalOpen = useFlagModalState()
 const { logout } = useLogout()
 
 function close() {
@@ -15,7 +14,7 @@ const { data: tasks } = useLazyApi('/tasks/list')
 
 function openFlagModal() {
   close()
-  isFlagModalOpen.value = true
+  openFlagSubmitModal()
 }
 
 async function handleLogout() {
