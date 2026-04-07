@@ -5,7 +5,7 @@ use crate::routes::flag::FlagError;
 use crate::routes::task::TaskError;
 use crate::routes::teams::TeamError;
 use actix_web::http::StatusCode;
-use actix_web::{HttpRequest, HttpResponse, error};
+use actix_web::{HttpResponse, error};
 use hack4krak_macros::error_with_messages;
 use sea_orm::RuntimeErr::SqlxError;
 use serde::Serialize;
@@ -42,27 +42,6 @@ pub fn error_response_builder<T: error::ResponseError + Serialize>(error: &T) ->
         .insert(ErrorHttpResponseExtension::new(error_message));
 
     response
-}
-
-pub fn validation_error_handler(
-    errors: validator::ValidationErrors,
-    _: &HttpRequest,
-) -> actix_web::Error {
-    Error::Validator(errors).into()
-}
-
-pub fn json_error_handler(
-    _error: error::JsonPayloadError,
-    _: &HttpRequest,
-) -> actix_web::Error {
-    Error::JsonDeserializationError.into()
-}
-
-pub fn uuid_path_error_handler(
-    _error: error::PathError,
-    _: &HttpRequest,
-) -> actix_web::Error {
-    Error::InvalidUuid.into()
 }
 
 #[error_with_messages]
