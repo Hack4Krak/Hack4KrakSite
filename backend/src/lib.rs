@@ -3,7 +3,7 @@ use crate::middlewares::event::EventMiddleware;
 use crate::middlewares::status_code_drain_middleware::StatusCodeDrain;
 use crate::services::env::EnvConfig;
 use crate::utils::error::Error::RouteNotFound;
-use crate::utils::error::validation_error_handler;
+use crate::utils::error::{json_error_handler, uuid_path_error_handler, validation_error_handler};
 use crate::utils::openapi::ApiDoc;
 use actix_cors::Cors;
 use actix_governor::governor::clock::QuantaInstant;
@@ -47,6 +47,7 @@ pub fn setup_actix_app(
     let mut app = App::new()
         .validator_error_handler(Arc::new(validation_error_handler))
         .app_data(web::JsonConfig::default().error_handler(json_error_handler))
+        .app_data(web::PathConfig::default().error_handler(uuid_path_error_handler))
         .wrap(StatusCodeDrain)
         .wrap(Logger::default())
         .wrap(cors_middleware)
