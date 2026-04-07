@@ -16,10 +16,11 @@ const top3PerTask = computed(() => {
     return {} as Record<string, string[]>
 
   return tasks.value.reduce<Record<string, string[]>>((acc, task) => {
-    const solves = teams.value?.map((team) => {
-      const solvedAt = team.tasks?.[task.id]
-      return solvedAt ? { teamId: team.team_id, time: new Date(solvedAt).getTime() } : null
-    })
+    const solves = teams.value
+      ?.map((team) => {
+        const solvedAt = team.tasks?.[task.id]
+        return solvedAt ? { teamId: team.team_id, time: new Date(solvedAt).getTime() } : null
+      })
       .filter(Boolean) as { teamId: string, time: number }[]
 
     solves.sort((a, b) => a.time - b.time)
@@ -29,19 +30,22 @@ const top3PerTask = computed(() => {
   }, {})
 })
 
-const taskColumns = computed<TableColumn<Team>[]>(() => tasks.value?.map((task) => {
-  return {
-    accessorFn: (row: Team) => row.tasks?.[task.id],
-    id: task.id,
-    header: task.name,
-    meta: {
-      class: {
-        th: 'w-10 px-1',
-        td: 'w-10 px-1',
-      },
-    },
-  }
-}) ?? [])
+const taskColumns = computed<TableColumn<Team>[]>(
+  () =>
+    tasks.value?.map((task) => {
+      return {
+        accessorFn: (row: Team) => row.tasks?.[task.id],
+        id: task.id,
+        header: task.name,
+        meta: {
+          class: {
+            th: 'w-10 px-1',
+            td: 'w-10 px-1',
+          },
+        },
+      }
+    }) ?? [],
+)
 
 const defaultHeaderMeta = {
   class: {
@@ -91,15 +95,22 @@ const meta = computed<TableMeta<Team>>(() => ({
   },
 }))
 
+const TASK_ICONS = {
+  first: { icon: 'pixelarticons:trophy', color: 'text-yellow-400', label: '1. rozwiązanie' },
+  second: { icon: 'lucide:medal', color: 'text-gray-400', label: '2. rozwiązanie' },
+  third: { icon: 'lucide:medal', color: 'text-amber-600', label: '3. rozwiązanie' },
+  solved: { icon: 'pixelarticons:flag', color: 'text-green-600', label: 'Rozwiązane' },
+} as const
+
 function getTaskIcon(teamId: string, taskId: string) {
   const top3 = top3PerTask.value[taskId] || []
   if (top3[0] === teamId)
-    return { icon: 'pixelarticons:trophy', color: 'text-yellow-400', label: 'First blood' }
+    return TASK_ICONS.first
   else if (top3[1] === teamId)
-    return { icon: 'lucide:medal', color: 'text-gray-400', label: '2. rozwiązanie' }
+    return TASK_ICONS.second
   else if (top3[2] === teamId)
-    return { icon: 'lucide:medal', color: 'text-amber-600', label: '3. rozwiązanie' }
-  return { icon: 'pixelarticons:flag', color: 'text-green-600', label: 'Rozwiązane' }
+    return TASK_ICONS.third
+  return TASK_ICONS.solved
 }
 </script>
 
@@ -116,34 +127,22 @@ function getTaskIcon(teamId: string, taskId: string) {
       tr: 'text-neutral-50',
     }"
   >
-    <template
-      v-for="task in tasks"
-      :key="`${task.id}-header`"
-      #[`${task.id}-header`]
-    >
-      <UTooltip :text="task.name" :delay-duration="200">
-        <div
-          class="border-b-0 border border-accented w-15 h-25 skew-x-45 relative -left-[80%]"
-        >
-          <div
-            class="relative left-1/2 -translate-x-1/2 w-28 h-full flex items-center justify-center overflow-visible"
-          >
+    <template v-for="task in tasks" :key="`${task.id}-header`" #[`${task.id}-header`]>
+      <div class="border-b-0 border border-accented w-15 h-25 skew-x-45 relative -left-[80%]">
+        <div class="relative left-1/2 -translate-x-1/2 w-28 h-full flex items-center justify-center overflow-visible">
+          <UTooltip :text="task.name" :delay-duration="200" :content="{ side: 'bottom', align: 'center' }">
             <NuxtLink
               class="whitespace-nowrap truncate flex-1 mt-2"
-              style="transform: skew(-45deg) rotate(45deg);"
+              style="transform: skew(-45deg) rotate(45deg)"
               :to="`/tasks/description/${task.id}`"
             >
               {{ task.name }}
             </NuxtLink>
-          </div>
+          </UTooltip>
         </div>
-      </UTooltip>
+      </div>
     </template>
-    <template
-      v-for="task in tasks"
-      :key="`${task.id}-cell`"
-      #[`${task.id}-cell`]="{ row }"
-    >
+    <template v-for="task in tasks" :key="`${task.id}-cell`" #[`${task.id}-cell`]="{ row }">
       <div v-if="row.original.tasks?.[task.id]">
         <UIcon
           :name="getTaskIcon(row.original.team_id, task.id).icon"
@@ -154,17 +153,8 @@ function getTaskIcon(teamId: string, taskId: string) {
     </template>
   </UTable>
   <div class="flex gap-6 justify-center mt-4 text-sm text-neutral-400">
-    <span class="flex items-center gap-1">
-      <UIcon name="pixelarticons:trophy" class="text-yellow-400" /> First blood
-    </span>
-    <span class="flex items-center gap-1">
-      <UIcon name="lucide:medal" class="text-gray-400" /> 2. rozwiązanie
-    </span>
-    <span class="flex items-center gap-1">
-      <UIcon name="lucide:medal" class="text-amber-600" /> 3. rozwiązanie
-    </span>
-    <span class="flex items-center gap-1">
-      <UIcon name="pixelarticons:flag" class="text-green-600" /> Rozwiązane
+    <span v-for="item in Object.values(TASK_ICONS)" :key="item.label" class="flex items-center gap-1">
+      <UIcon :name="item.icon" :class="item.color" /> {{ item.label }}
     </span>
   </div>
 </template>
