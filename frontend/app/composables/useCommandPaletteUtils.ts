@@ -6,9 +6,13 @@ export function useFlagModalState() {
   return useState('flag-modal-open', () => false)
 }
 
-export function useKeyboardShortcuts() {
-  const isCommandPaletteOpen = useCommandPaletteState()
+export function openFlagSubmitModal() {
   const isFlagModalOpen = useFlagModalState()
+  isFlagModalOpen.value = true
+}
+
+export function useCommandPaletteShortcuts() {
+  const isCommandPaletteOpen = useCommandPaletteState()
 
   defineShortcuts({
     'meta_k': {
@@ -22,7 +26,7 @@ export function useKeyboardShortcuts() {
     },
     's-f': () => {
       isCommandPaletteOpen.value = false
-      isFlagModalOpen.value = true
+      openFlagSubmitModal()
     },
   })
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'panel' })
 
-const { logout } = useLogout()
+const { logout } = useSession()
 
 const { data: user } = await useAuth('/account/')
 
