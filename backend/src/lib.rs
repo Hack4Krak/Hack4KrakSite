@@ -12,6 +12,7 @@ use actix_governor::{Governor, GovernorConfig, GovernorConfigBuilder, PeerIpKeyE
 use actix_web::body::MessageBody;
 use actix_web::dev::{ServiceFactory, ServiceRequest, ServiceResponse};
 use actix_web::middleware::Logger;
+use actix_web::web;
 use actix_web::{App, Error, ResponseError};
 use actix_web_validation::validator::ValidatorErrorHandlerExt;
 use std::sync::Arc;
@@ -45,6 +46,7 @@ pub fn setup_actix_app(
 
     let mut app = App::new()
         .validator_error_handler(Arc::new(validation_error_handler))
+        .app_data(web::JsonConfig::default().error_handler(json_error_handler))
         .wrap(StatusCodeDrain)
         .wrap(Logger::default())
         .wrap(cors_middleware)

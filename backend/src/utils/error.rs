@@ -51,6 +51,12 @@ pub fn validation_error_handler(
     Error::Validator(errors).into()
 }
 
+pub fn json_error_handler(
+    _error: error::JsonPayloadError,
+    _: &HttpRequest,
+) -> actix_web::Error {
+    Error::JsonDeserializationError.into()
+}
 #[error_with_messages]
 pub enum Error {
     #[serde(skip)]
@@ -79,6 +85,7 @@ pub enum Error {
     FailedToBuildEmail(#[from] lettre::error::Error),
     #[serde(skip)]
     InvalidJson(#[from] serde_json::Error),
+    JsonDeserializationError,
     #[serde(skip)]
     InvalidYaml(#[from] serde_norway::Error),
     InvalidEmailConfirmationCode,
@@ -127,7 +134,8 @@ impl error::ResponseError for Error {
             Error::PlaceholdersRequired
             | Error::InvalidEmailSender(_)
             | Error::Validator(_)
-            | Error::InvalidEmailRecipients(_) => StatusCode::BAD_REQUEST,
+            | Error::InvalidEmailRecipients(_)
+            | Error::JsonDeserializationError => StatusCode::BAD_REQUEST,
             Error::HashPasswordFailed(_)
             | Error::DatabaseOperation(_)
             | Error::OAuth
