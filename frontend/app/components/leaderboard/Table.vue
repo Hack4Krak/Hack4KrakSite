@@ -121,22 +121,23 @@ function getTaskIcon(teamId: string, taskId: string) {
       :key="`${task.id}-header`"
       #[`${task.id}-header`]
     >
-      <div
-        :title="task.name"
-        class="border-b-0 border border-accented w-15 h-25 skew-x-45 relative -left-[80%]"
-      >
+      <UTooltip :text="task.name" :delay-duration="200">
         <div
-          class="relative left-1/2 -translate-x-1/2 w-28 h-full flex items-center justify-center overflow-visible"
+          class="border-b-0 border border-accented w-15 h-25 skew-x-45 relative -left-[80%]"
         >
-          <NuxtLink
-            class="whitespace-nowrap truncate flex-1 mt-2"
-            style="transform: skew(-45deg) rotate(45deg);"
-            :to="`/tasks/description/${task.id}`"
+          <div
+            class="relative left-1/2 -translate-x-1/2 w-28 h-full flex items-center justify-center overflow-visible"
           >
-            {{ task.name }}
-          </NuxtLink>
+            <NuxtLink
+              class="whitespace-nowrap truncate flex-1 mt-2"
+              style="transform: skew(-45deg) rotate(45deg);"
+              :to="`/tasks/description/${task.id}`"
+            >
+              {{ task.name }}
+            </NuxtLink>
+          </div>
         </div>
-      </div>
+      </UTooltip>
     </template>
     <template
       v-for="task in tasks"
