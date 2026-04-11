@@ -1,6 +1,7 @@
 use crate::test_utils::TestApp;
 
 use crate::test_utils::database::TestDatabase;
+use crate::test_utils::header::TestAuthHeader;
 use actix_web::test;
 use actix_web::test::read_body_json;
 use chrono::Utc;
@@ -244,4 +245,229 @@ async fn reset_password_flow() {
         .to_request();
     let response = test::call_service(&app, request).await;
     assert_eq!(response.status(), 200);
+}
+
+#[actix_web::test]
+async fn logout_returns_reset_cookies() {
+    let app = TestApp::default().build_app().await;
+
+    let request = test::TestRequest::post().uri("/auth/logout").to_request();
+    let response = test::call_service(&app, request).await;
+    assert!(response.status().is_success());
+
+    let set_cookies: Vec<_> = response
+        .headers()
+        .get_all("Set-Cookie")
+        .map(|v| v.to_str().unwrap().to_string())
+        .collect();
+    assert!(set_cookies.iter().any(|c| c.contains("access_token")));
+    assert!(set_cookies.iter().any(|c| c.contains("refresh_token")));
+}
+
+#[actix_web::test]
+async fn login_invalid_credentials() {
+    let test_database = TestDatabase::new().await;
+    test_database.with_default_user().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::post()
+        .uri("/auth/login")
+        .set_json(json!({
+            "email": "example@gmail.com",
+            "password": "wrong_password"
+        }))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 401);
+}
+
+#[actix_web::test]
+async fn login_nonexistent_user() {
+    let app = TestApp::default().build_app().await;
+
+    let request = test::TestRequest::post()
+        .uri("/auth/login")
+        .set_json(json!({
+            "email": "nobody@example.com",
+            "password": "password123"
+        }))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 401);
+}
+
+#[actix_web::test]
+async fn auth_status_with_cookie() {
+    let app = TestApp::default().build_app().await;
+
+    let request = test::TestRequest::get()
+        .uri("/auth/status")
+        .insert_header(("Cookie", "refresh_token=some_value"))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert!(response.status().is_success());
+}
+
+#[actix_web::test]
+async fn auth_status_without_cookie() {
+    let app = TestApp::default().build_app().await;
+
+    let request = test::TestRequest::get().uri("/auth/status").to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 401);
+}
+
+#[actix_web::test]
+async fn refresh_without_cookie() {
+    let test_database = TestDatabase::new().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::post().uri("/auth/refresh").to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 401);
+}
+
+#[actix_web::test]
+async fn refresh_with_invalid_cookie() {
+    let test_database = TestDatabase::new().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::post()
+        .uri("/auth/refresh")
+        .insert_header(("Cookie", "refresh_token=invalid_jwt_token"))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 401);
+}
+
+#[actix_web::test]
+async fn login_success() {
+    let test_database = TestDatabase::new().await;
+    test_database.with_default_user().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::post()
+        .uri("/auth/login")
+        .set_json(json!({
+            "email": "example@gmail.com",
+            "password": "Dziengiel"
+        }))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert!(response.status().is_success());
+
+    let set_cookies: Vec<_> = response
+        .headers()
+        .get_all("Set-Cookie")
+        .map(|v| v.to_str().unwrap().to_string())
+        .collect();
+    assert!(set_cookies.iter().any(|c| c.contains("access_token")));
+    assert!(set_cookies.iter().any(|c| c.contains("refresh_token")));
+}
+
+#[actix_web::test]
+async fn login_missing_fields() {
+    let app = TestApp::default().build_app().await;
+
+    let request = test::TestRequest::post()
+        .uri("/auth/login")
+        .set_json(json!({ "email": "example@gmail.com" }))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 400);
+}
+
+#[actix_web::test]
+async fn register_password_too_short() {
+    let app = TestApp::default().build_app().await;
+
+    let request = test::TestRequest::post()
+        .uri("/auth/register")
+        .set_json(json!({
+            "email": "test@example.com",
+            "name": "test_user",
+            "password": "short"
+        }))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 400);
+}
+
+#[actix_web::test]
+async fn register_username_too_short() {
+    let app = TestApp::default().build_app().await;
+
+    let request = test::TestRequest::post()
+        .uri("/auth/register")
+        .set_json(json!({
+            "email": "test@example.com",
+            "name": "ab",
+            "password": "password123"
+        }))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 400);
+}
+
+#[actix_web::test]
+async fn email_confirmation_not_found() {
+    let test_database = TestDatabase::new().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::get()
+        .uri(&format!("/auth/confirm/{}", uuid::Uuid::new_v4()))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert!(response.status().is_client_error() || response.status().is_server_error());
+}
+
+#[actix_web::test]
+async fn login_then_access_account() {
+    let test_database = TestDatabase::new().await;
+    let user = test_database.with_default_user().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::get()
+        .uri("/account/")
+        .insert_header(TestAuthHeader::new(user))
+        .to_request();
+    let response: serde_json::Value = test::call_and_read_body_json(&app, request).await;
+    assert_eq!(response["username"], "test_user");
+    assert_eq!(response["email"], "example@gmail.com");
+}
+
+#[actix_web::test]
+async fn register_missing_fields() {
+    let app = TestApp::default().build_app().await;
+
+    let request = test::TestRequest::post()
+        .uri("/auth/register")
+        .set_json(json!({ "email": "test@example.com" }))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 400);
 }

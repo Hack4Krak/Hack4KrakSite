@@ -81,3 +81,163 @@ async fn account_update() {
     let response = test::call_service(&app, request).await;
     assert!(response.status().is_success());
 }
+
+#[actix_web::test]
+async fn update_username_too_short() {
+    let test_database = TestDatabase::new().await;
+    let user = test_database.with_default_user().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::patch()
+        .uri("/account/update")
+        .insert_header(TestAuthHeader::new(user))
+        .set_json(serde_json::json!({ "username": "ab" }))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 400);
+}
+
+#[actix_web::test]
+async fn update_username_too_long() {
+    let test_database = TestDatabase::new().await;
+    let user = test_database.with_default_user().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::patch()
+        .uri("/account/update")
+        .insert_header(TestAuthHeader::new(user))
+        .set_json(serde_json::json!({ "username": "a".repeat(33) }))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 400);
+}
+
+#[actix_web::test]
+async fn update_username_special_chars() {
+    let test_database = TestDatabase::new().await;
+    let user = test_database.with_default_user().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::patch()
+        .uri("/account/update")
+        .insert_header(TestAuthHeader::new(user))
+        .set_json(serde_json::json!({ "username": "user@name!" }))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 400);
+}
+
+#[actix_web::test]
+async fn update_username_unauthorized() {
+    let test_database = TestDatabase::new().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::patch()
+        .uri("/account/update")
+        .set_json(serde_json::json!({ "username": "NewName" }))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 401);
+}
+
+#[actix_web::test]
+async fn change_password_wrong_old_password() {
+    let test_database = TestDatabase::new().await;
+    let user = test_database.with_default_user().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::patch()
+        .uri("/account/update/password")
+        .insert_header(TestAuthHeader::new(user))
+        .set_json(serde_json::json!({
+            "old_password": "WrongPassword123",
+            "new_password": "NewPassword123"
+        }))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 401);
+}
+
+#[actix_web::test]
+async fn change_password_new_too_short() {
+    let test_database = TestDatabase::new().await;
+    let user = test_database.with_default_user().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::patch()
+        .uri("/account/update/password")
+        .insert_header(TestAuthHeader::new(user))
+        .set_json(serde_json::json!({
+            "old_password": "Dziengiel",
+            "new_password": "short"
+        }))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 400);
+}
+
+#[actix_web::test]
+async fn change_password_old_too_short() {
+    let test_database = TestDatabase::new().await;
+    let user = test_database.with_default_user().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::patch()
+        .uri("/account/update/password")
+        .insert_header(TestAuthHeader::new(user))
+        .set_json(serde_json::json!({
+            "old_password": "short",
+            "new_password": "ValidPassword123"
+        }))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 400);
+}
+
+#[actix_web::test]
+async fn change_password_unauthorized() {
+    let test_database = TestDatabase::new().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::patch()
+        .uri("/account/update/password")
+        .set_json(serde_json::json!({
+            "old_password": "Dziengiel",
+            "new_password": "NewPassword123"
+        }))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 401);
+}

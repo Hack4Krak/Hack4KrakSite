@@ -1,7 +1,8 @@
 use crate::test_utils;
 use chrono::Utc;
 use hack4krak_backend::entities::sea_orm_active_enums::{TeamStatus, UserRoles};
-use hack4krak_backend::entities::{teams, users};
+use hack4krak_backend::entities::{team_invites, teams, users};
+use sea_orm::ActiveValue::Set;
 use sea_orm::{DatabaseConnection, EntityTrait};
 use uuid::Uuid;
 
@@ -76,5 +77,16 @@ impl TestDatabase {
             .await
             .unwrap()
             .unwrap()
+    }
+
+    pub async fn with_invite(&self, user_id: Uuid, team_id: Uuid) {
+        team_invites::Entity::insert(team_invites::ActiveModel {
+            id: Set(Uuid::new_v4()),
+            user: Set(user_id),
+            team: Set(team_id),
+        })
+        .exec(&self.database)
+        .await
+        .unwrap();
     }
 }

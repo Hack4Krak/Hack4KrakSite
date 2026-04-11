@@ -132,3 +132,95 @@ async fn create_team_external_registration_mode() {
     let response: Value = test::call_and_read_body_json(&app, request).await;
     assert_eq!(response["error"].as_str().unwrap(), "Team");
 }
+
+#[actix_web::test]
+async fn create_team_unauthorized() {
+    let test_database = TestDatabase::new().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::post()
+        .uri("/teams/create")
+        .set_json(json!({ "team_name": "NewTeam" }))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 401);
+}
+
+#[actix_web::test]
+async fn create_team_name_too_short() {
+    let test_database = TestDatabase::new().await;
+    let user = test_database.with_default_user().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::post()
+        .uri("/teams/create")
+        .set_json(json!({ "team_name": "ab" }))
+        .insert_header(TestAuthHeader::new(user))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 400);
+}
+
+#[actix_web::test]
+async fn create_team_name_too_long() {
+    let test_database = TestDatabase::new().await;
+    let user = test_database.with_default_user().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::post()
+        .uri("/teams/create")
+        .set_json(json!({ "team_name": "a".repeat(33) }))
+        .insert_header(TestAuthHeader::new(user))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 400);
+}
+
+#[actix_web::test]
+async fn create_team_special_chars() {
+    let test_database = TestDatabase::new().await;
+    let user = test_database.with_default_user().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::post()
+        .uri("/teams/create")
+        .set_json(json!({ "team_name": "team@name!" }))
+        .insert_header(TestAuthHeader::new(user))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 400);
+}
+
+#[actix_web::test]
+async fn create_team_missing_body() {
+    let test_database = TestDatabase::new().await;
+    let user = test_database.with_default_user().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::post()
+        .uri("/teams/create")
+        .insert_header(TestAuthHeader::new(user))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 400);
+}

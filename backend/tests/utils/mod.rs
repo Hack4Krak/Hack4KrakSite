@@ -1,3 +1,10 @@
+mod bearer;
+mod common_responses;
+mod cookies;
 mod email;
 mod error;
+mod handle_database_error;
+mod jwt;
 mod points_counter;
+mod success_response;
+mod task_manager;

@@ -143,3 +143,117 @@ async fn submit_flag_after_event() {
     let response = test::call_service(&app, request.to_request()).await;
     assert_eq!(response.status(), 200);
 }
+
+#[actix_web::test]
+async fn submit_flag_unauthorized() {
+    let (_, _, database, task_manager) = setup_app_with_task_manager(
+        DateTime::from(Utc::now()),
+        DateTime::from(Utc::now() + Duration::days(1)),
+    )
+    .await;
+
+    let app = TestApp::default()
+        .with_database(database)
+        .with_task_manager(task_manager)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::post()
+        .uri("/flag/submit")
+        .set_json(json!({ "flag": "hack4KrakCTF{test}" }))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 401);
+}
+
+#[actix_web::test]
+async fn submit_flag_empty_flag() {
+    let (_, present_user, database, task_manager) = setup_app_with_task_manager(
+        DateTime::from(Utc::now()),
+        DateTime::from(Utc::now() + Duration::days(1)),
+    )
+    .await;
+
+    let app = TestApp::default()
+        .with_database(database)
+        .with_task_manager(task_manager)
+        .build_app()
+        .await;
+
+    let request = submit_flag(present_user.clone(), "").await;
+    let response = test::call_service(&app, request.to_request()).await;
+    assert!(response.status().is_client_error());
+}
+
+#[actix_web::test]
+async fn submit_flag_missing_body() {
+    let (_, present_user, database, task_manager) = setup_app_with_task_manager(
+        DateTime::from(Utc::now()),
+        DateTime::from(Utc::now() + Duration::days(1)),
+    )
+    .await;
+
+    let app = TestApp::default()
+        .with_database(database)
+        .with_task_manager(task_manager)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::post()
+        .uri("/flag/submit")
+        .insert_header(TestAuthHeader::new(present_user))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 400);
+}
+
+#[actix_web::test]
+async fn submit_flag_unconfirmed_team() {
+    let (absent_user, _, database, task_manager) = setup_app_with_task_manager(
+        DateTime::from(Utc::now()),
+        DateTime::from(Utc::now() + Duration::days(1)),
+    )
+    .await;
+
+    let app = TestApp::default()
+        .with_database(database)
+        .with_task_manager(task_manager)
+        .build_app()
+        .await;
+
+    let request = submit_flag(absent_user.clone(), "hack4KrakCTF{skibidi}").await;
+    let response = test::call_service(&app, request.to_request()).await;
+    assert_eq!(response.status(), 403);
+}
+
+#[actix_web::test]
+async fn submit_flag_no_team() {
+    let test_database = TestDatabase::new().await;
+    let user = test_database.with_default_user().await;
+
+    let task_manager = TaskManager::default();
+    task_manager.event_config.write().await.stages = vec![
+        EventStage {
+            name: "Event Start".to_string(),
+            stage_type: EventStageType::EventStart,
+            start_date: DateTime::from(Utc::now()),
+            end_date: None,
+        },
+        EventStage {
+            name: "Event End".to_string(),
+            stage_type: EventStageType::EventEnd,
+            start_date: DateTime::from(Utc::now() + Duration::days(1)),
+            end_date: None,
+        },
+    ];
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .with_task_manager(task_manager)
+        .build_app()
+        .await;
+
+    let request = submit_flag(user.clone(), "hack4KrakCTF{test}").await;
+    let response = test::call_service(&app, request.to_request()).await;
+    assert!(response.status().is_client_error() || response.status().is_server_error());
+}

@@ -110,3 +110,110 @@ async fn init_database_with_teams(
 
     (team_uuid, users_with_team)
 }
+
+#[actix_web::test]
+async fn my_invites_empty() {
+    let test_database = TestDatabase::new().await;
+    let user = test_database.with_default_user().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::get()
+        .uri("/teams/invitations/")
+        .insert_header(TestAuthHeader::new(user))
+        .to_request();
+    let response: Vec<String> = test::call_and_read_body_json(&app, request).await;
+    assert!(response.is_empty());
+}
+
+#[actix_web::test]
+async fn my_invites_returns_team_names() {
+    let test_database = TestDatabase::new().await;
+    let user = test_database.with_default_user().await;
+    init_database_with_teams(&test_database.database, user.id).await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::get()
+        .uri("/teams/invitations/")
+        .insert_header(TestAuthHeader::new(user))
+        .to_request();
+    let response: Vec<String> = test::call_and_read_body_json(&app, request).await;
+    assert_eq!(response.len(), 1);
+    assert_eq!(response[0], "dziengiel");
+}
+
+#[actix_web::test]
+async fn accept_invitation_team_not_found() {
+    let test_database = TestDatabase::new().await;
+    let user = test_database.with_default_user().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::post()
+        .uri("/teams/invitations/accept_invitation/nonexistent_team")
+        .insert_header(TestAuthHeader::new(user))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 404);
+}
+
+#[actix_web::test]
+async fn accept_invitation_no_invite() {
+    let test_database = TestDatabase::new().await;
+    let user = test_database.with_default_user().await;
+    test_database.with_default_team().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::post()
+        .uri("/teams/invitations/accept_invitation/Dziengiel")
+        .insert_header(TestAuthHeader::new(user))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert!(response.status().is_client_error());
+}
+
+#[actix_web::test]
+async fn accept_invitation_unauthorized() {
+    let test_database = TestDatabase::new().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::post()
+        .uri("/teams/invitations/accept_invitation/someteam")
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 401);
+}
+
+#[actix_web::test]
+async fn my_invites_unauthorized() {
+    let test_database = TestDatabase::new().await;
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::get()
+        .uri("/teams/invitations/")
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert_eq!(response.status(), 401);
+}

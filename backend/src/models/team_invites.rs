@@ -37,9 +37,9 @@ impl team_invites::Model {
         .await?;
 
         team_invites::Entity::insert(team_invites::ActiveModel {
+            id: Set(Uuid::new_v4()),
             user: Set(invited_user.id),
             team: Set(team.id),
-            ..Default::default()
         })
         .exec(database)
         .await?;
