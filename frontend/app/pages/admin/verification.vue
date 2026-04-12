@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { FetchError } from 'ofetch'
 import type { components } from '#open-fetch-schemas/api'
+import { FetchError } from 'ofetch'
 
 definePageMeta({
   middleware: 'admin',

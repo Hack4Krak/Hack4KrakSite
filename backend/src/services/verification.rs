@@ -90,7 +90,7 @@ impl VerificationService {
         tag_id: &str,
     ) -> Result<(), Error> {
         let participant_tags_config = task_manager.participant_tags_config.read().await;
-        if participant_tags_config.tag_by_id(tag_id).is_none() {
+        if !participant_tags_config.tag_exists(tag_id) {
             return Err(Error::InvalidTagId {
                 tag_id: tag_id.to_string(),
             });

@@ -1,5 +1,6 @@
 use crate::entities::user_participant_tags;
 use crate::entities::user_participant_tags::Model;
+use crate::models::task::ParticipantTagsConfig;
 use crate::utils::error::Error;
 use sea_orm::{
     ActiveModelTrait, ConnectionTrait, DatabaseBackend, DatabaseConnection, EntityTrait, Set,
@@ -9,10 +10,20 @@ use uuid::Uuid;
 
 impl Model {
     pub fn has_tag(&self, tag_id: &str) -> bool {
-        if self.tags.iter().any(|tag| tag == tag_id) {
-            return false;
-        }
-        true
+        self.tags.iter().any(|tag| tag == tag_id)
+    }
+
+    pub fn has_tag_type(
+        &self,
+        participant_tags_config: &ParticipantTagsConfig,
+        tag_type: &str,
+    ) -> bool {
+        self.tags.iter().any(|user_tag_id: &String| {
+            participant_tags_config
+                .tag_by_id(user_tag_id.as_str())
+                .map(|tag| tag.tag_type == tag_type)
+                .unwrap_or(false)
+        })
     }
 
     pub async fn add_tag(
@@ -22,6 +33,21 @@ impl Model {
     ) -> Result<(), Error> {
         let mut new_tag_list = self.tags.clone();
         new_tag_list.push(tag_id.to_string());
+
+        if database_connection.get_database_backend() == DatabaseBackend::Sqlite {
+            database_connection
+                .execute(Statement::from_sql_and_values(
+                    DatabaseBackend::Sqlite,
+                    "UPDATE user_participant_tags SET tags = ? WHERE user_id = ?",
+                    vec![
+                        serde_json::to_string(&new_tag_list)?.into(),
+                        self.user_id.to_string().into(),
+                    ],
+                ))
+                .await?;
+
+            return Ok(());
+        }
 
         let new_tag = user_participant_tags::UpdatableModel {
             tags: Some(new_tag_list),
