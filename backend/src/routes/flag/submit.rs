@@ -28,6 +28,8 @@ struct SubmitResponse {
     responses(
         (status = 200, description = "Correctly submitted flag.", body = SubmitResponse),
         (status = 400, description = "Invalid flag"),
+        (status = 403, description = "Team is not verified for flag submission"),
+        (status = 409, description = "Flag already submitted by the team"),
     ),
     tag = "flag"
 )]

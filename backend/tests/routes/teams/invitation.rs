@@ -62,7 +62,6 @@ async fn init_database_with_teams(
         id: Set(team_uuid),
         name: Set("dziengiel".to_string()),
         created_at: Set(Utc::now().naive_utc()),
-        confirmation_code: Set(Some(team_uuid)),
         status: Set(TeamStatus::Absent),
         organization: Set(Some("Hack4Krak".to_string())),
         color: Set("#000000".to_string()),

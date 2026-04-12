@@ -25,20 +25,21 @@ async fn get_participant_tags_success() {
     assert!(response.status().is_success());
 
     let body: Vec<ParticipantTag> = read_body_json(response).await;
-    assert_eq!(body.len(), 3);
+    assert_eq!(body.len(), 2);
 
     // Verify all tags are present with correct data
-    let sponsor = body.iter().find(|t| t.id == "sponsor").unwrap();
-    assert_eq!(sponsor.name, "Sponsor");
-    assert_eq!(sponsor.description, "Event sponsor");
+    let sponsor = body.iter().find(|t| t.id == "present-on-event").unwrap();
+    assert_eq!(sponsor.name, "Present on event");
+    assert_eq!(sponsor.description, "Participant is present on event");
+    assert_eq!(sponsor.tag_type, "verified");
 
-    let volunteer = body.iter().find(|t| t.id == "volunteer").unwrap();
-    assert_eq!(volunteer.name, "Volunteer");
-    assert_eq!(volunteer.description, "Event volunteer");
-
-    let judge = body.iter().find(|t| t.id == "judge").unwrap();
-    assert_eq!(judge.name, "Judge");
-    assert_eq!(judge.description, "Event judge");
+    let volunteer = body.iter().find(|t| t.id == "breakfast-day-1").unwrap();
+    assert_eq!(volunteer.name, "Breakfast day 1");
+    assert_eq!(
+        volunteer.description,
+        "Participant received breakfast on day 1"
+    );
+    assert_eq!(volunteer.tag_type, "meal");
 }
 
 #[actix_web::test]
