@@ -99,6 +99,7 @@ pub fn setup_actix_app(
         app = app.service(
             scope("/flag")
                 .wrap(Governor::new(&flag_governor))
+                .wrap(AuthMiddleware::with_user())
                 .wrap(EventMiddleware::allow_only_during_event())
                 .configure(routes::flag::config),
         );

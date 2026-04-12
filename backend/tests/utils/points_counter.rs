@@ -46,37 +46,33 @@ async fn init() -> PointsCounter {
                 name: "zero".to_string(),
                 created_at: Default::default(),
                 id: Uuid::from_u128(0),
-                confirmation_code: None,
-                status: TeamStatus::Absent,
                 color: "#FF0000".to_string(),
                 organization: None,
+                status: TeamStatus::Absent,
             },
             teams::Model {
                 name: "one".to_string(),
                 created_at: Default::default(),
                 id: Uuid::from_u128(1),
-                confirmation_code: None,
-                status: TeamStatus::Absent,
                 color: "#00FF00".to_string(),
                 organization: None,
+                status: TeamStatus::Absent,
             },
             teams::Model {
                 name: "two".to_string(),
                 created_at: Default::default(),
                 id: Uuid::from_u128(2),
-                confirmation_code: None,
-                status: TeamStatus::Absent,
                 color: "#0000FF".to_string(),
                 organization: None,
+                status: TeamStatus::Absent,
             },
             teams::Model {
                 name: "three".to_string(),
                 created_at: Default::default(),
                 id: Uuid::from_u128(3),
-                confirmation_code: None,
-                status: TeamStatus::Absent,
                 color: "#00FFFF".to_string(),
                 organization: None,
+                status: TeamStatus::Absent,
             },
         ]])
         .into_connection();
@@ -185,19 +181,17 @@ async fn tie_breakers_multi_level() {
                 name: "team_a".to_string(),
                 created_at: Default::default(),
                 id: Uuid::from_u128(0),
-                confirmation_code: None,
-                status: TeamStatus::Absent,
                 color: "#FF0000".to_string(),
                 organization: None,
+                status: TeamStatus::Absent,
             },
             teams::Model {
                 name: "team_b".to_string(),
                 created_at: Default::default(),
                 id: Uuid::from_u128(1),
-                confirmation_code: None,
-                status: TeamStatus::Absent,
                 color: "#00FF00".to_string(),
                 organization: None,
+                status: TeamStatus::Absent,
             },
         ]])
         .into_connection();
@@ -227,19 +221,17 @@ async fn no_captures() {
                 name: "team_a".to_string(),
                 created_at: Default::default(),
                 id: Uuid::from_u128(0),
-                confirmation_code: None,
-                status: TeamStatus::Absent,
                 color: "#FF0000".to_string(),
                 organization: None,
+                status: TeamStatus::Absent,
             },
             teams::Model {
                 name: "team_b".to_string(),
                 created_at: Default::default(),
                 id: Uuid::from_u128(1),
-                confirmation_code: None,
-                status: TeamStatus::Absent,
                 color: "#00FF00".to_string(),
                 organization: None,
+                status: TeamStatus::Absent,
             },
         ]])
         .into_connection();
@@ -287,19 +279,17 @@ async fn single_team_multiple_solves() {
                 name: "team_a".to_string(),
                 created_at: Default::default(),
                 id: Uuid::from_u128(0),
-                confirmation_code: None,
-                status: TeamStatus::Absent,
                 color: "#FF0000".to_string(),
                 organization: None,
+                status: TeamStatus::Absent,
             },
             teams::Model {
                 name: "team_b".to_string(),
                 created_at: Default::default(),
                 id: Uuid::from_u128(1),
-                confirmation_code: None,
-                status: TeamStatus::Absent,
                 color: "#00FF00".to_string(),
                 organization: None,
+                status: TeamStatus::Absent,
             },
         ]])
         .into_connection();
@@ -335,10 +325,9 @@ async fn cache_works() {
             name: "team_a".to_string(),
             created_at: Default::default(),
             id: Uuid::from_u128(0),
-            confirmation_code: None,
-            status: TeamStatus::Absent,
             color: "#FF0000".to_string(),
             organization: None,
+            status: TeamStatus::Absent,
         }]])
         .into_connection();
 
@@ -394,10 +383,9 @@ async fn to_chart_conversion() {
             name: "team_a".to_string(),
             created_at: Default::default(),
             id: Uuid::from_u128(0),
-            confirmation_code: None,
-            status: TeamStatus::Absent,
             color: "#FF0000".to_string(),
             organization: None,
+            status: TeamStatus::Absent,
         }]])
         .into_connection();
 
@@ -500,19 +488,17 @@ async fn ranking_deep_timestamp_recursion() {
                 name: "team_a".to_string(),
                 created_at: Default::default(),
                 id: Uuid::from_u128(0),
-                confirmation_code: None,
-                status: TeamStatus::Absent,
                 color: "#FF0000".to_string(),
                 organization: None,
+                status: TeamStatus::Absent,
             },
             teams::Model {
                 name: "team_b".to_string(),
                 created_at: Default::default(),
                 id: Uuid::from_u128(1),
-                confirmation_code: None,
-                status: TeamStatus::Absent,
                 color: "#00FF00".to_string(),
                 organization: None,
+                status: TeamStatus::Absent,
             },
         ]])
         .into_connection();
