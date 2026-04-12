@@ -42,6 +42,13 @@ pub async fn setup_database_with_schema() -> DatabaseConnection {
     setup_schema(&database, external_team_invitation::Entity).await;
     setup_schema(&database, flag_capture::Entity).await;
 
+    database
+        .execute_unprepared(
+            "CREATE TABLE user_participant_tags (user_id text PRIMARY KEY NOT NULL, tags text NOT NULL);",
+        )
+        .await
+        .unwrap();
+
     // We have to manually create all indexes
     database
         .execute_unprepared("CREATE UNIQUE INDEX unique_team_task ON flag_capture (team, task);")

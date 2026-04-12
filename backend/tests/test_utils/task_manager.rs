@@ -4,19 +4,16 @@ use hack4krak_backend::services::task_manager::TaskManager;
 pub fn default_participant_tags() -> Vec<ParticipantTag> {
     vec![
         ParticipantTag {
-            id: "sponsor".to_string(),
-            name: "Sponsor".to_string(),
-            description: "Event sponsor".to_string(),
+            id: "present-on-event".to_string(),
+            name: "Present on event".to_string(),
+            description: "Participant is present on event".to_string(),
+            tag_type: "verified".to_string(),
         },
         ParticipantTag {
-            id: "volunteer".to_string(),
-            name: "Volunteer".to_string(),
-            description: "Event volunteer".to_string(),
-        },
-        ParticipantTag {
-            id: "judge".to_string(),
-            name: "Judge".to_string(),
-            description: "Event judge".to_string(),
+            id: "breakfast-day-1".to_string(),
+            name: "Breakfast day 1".to_string(),
+            description: "Participant received breakfast on day 1".to_string(),
+            tag_type: "meal".to_string(),
         },
     ]
 }

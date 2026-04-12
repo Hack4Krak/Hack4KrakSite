@@ -36,6 +36,7 @@ async fn setup_app_with_task_manager(
             ..Default::default()
         })
         .await;
+
     let unconfirmed_team = test_database.with_default_team().await;
     let absent_user = test_database
         .with_user(users::UpdatableModel {
@@ -45,6 +46,7 @@ async fn setup_app_with_task_manager(
         .await;
 
     let task_manager = TaskManager::default();
+
     task_manager.tasks.insert(
         "test-task".to_string(),
         TaskConfig {

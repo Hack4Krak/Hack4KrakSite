@@ -39,14 +39,19 @@ impl ParticipantTagsConfig {
     pub fn tag_by_id(&self, id: &str) -> Option<&ParticipantTag> {
         self.participant_tags.iter().find(|tag| tag.id == id)
     }
+    pub fn tag_exists(&self, id: &str) -> bool {
+        self.tag_by_id(id).is_some()
+    }
 }
 
-#[derive(Serialize, Deserialize, ToSchema, Default, Debug, Clone)]
+#[derive(Serialize, Deserialize, ToSchema, Debug, Clone)]
 #[serde(rename_all(deserialize = "kebab-case"))]
 pub struct ParticipantTag {
     pub id: String,
     pub name: String,
     pub description: String,
+    #[serde(rename = "type")]
+    pub tag_type: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, Clone)]

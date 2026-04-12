@@ -62,10 +62,9 @@ impl TestDatabase {
             id: team_uuid,
             name: "Dziengiel".to_string(),
             created_at: Utc::now().naive_utc(),
-            confirmation_code: Default::default(),
-            status: TeamStatus::Absent,
             color: "#000000".to_string(),
             organization: Some("Hack4Krak".to_string()),
+            status: TeamStatus::Absent,
         });
 
         teams::Entity::insert(updated)

@@ -4,7 +4,6 @@ use actix_web::{HttpResponse, error};
 use hack4krak_macros::error_with_messages;
 use utoipa_actix_web::scope;
 
-mod confirm;
 mod create;
 mod external_invitations;
 mod invitations;
@@ -13,7 +12,6 @@ mod membership;
 
 pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(create::create);
-    config.service(confirm::confirm);
     config.service(scope("/external_invitations").configure(external_invitations::config));
     config.service(
         scope("/invitations")
