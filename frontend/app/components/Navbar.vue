@@ -1,62 +1,75 @@
 <script setup lang="ts">
-import { NAVBAR_ITEMS } from '~~/content/navbar'
+import { NAVBAR_ITEMS } from "~~/content/navbar";
 
-const { $auth } = useNuxtApp()
+const { $auth } = useNuxtApp();
 
-const { data: user } = useAuth('/account/', {
-  redirect: 'error',
+const { data: user, refresh: refreshUser } = useAuth("/account/", {
+  redirect: "error",
   onResponseError: undefined,
-})
+});
+
+const route = useRoute();
+watch(
+  () => route.fullPath,
+  () => refreshUser(),
+);
 
 const navigationMenuProperties = computed(() => ({
-  'content-orientation': 'vertical' as const,
-  'items': NAVBAR_ITEMS,
-  'variant': 'link' as const,
-  'ui': {
-    linkLabel: 'hover:underline underline-offset-5 text-md',
-    viewport: 'w-(--reka-navigation-menu-viewport-width)',
-    childList: 'flex-col items-center',
-    link: 'text-md text-default data-active:text-secondary',
-    list: 'gap-8',
+  "content-orientation": "vertical" as const,
+  items: NAVBAR_ITEMS,
+  variant: "link" as const,
+  ui: {
+    linkLabel: "hover:underline underline-offset-5 text-md",
+    viewport: "w-(--reka-navigation-menu-viewport-width)",
+    childList: "flex-col items-center",
+    link: "text-md text-default data-active:text-secondary",
+    list: "gap-8",
   },
-}))
+}));
 
 async function logout() {
-  await $auth('/auth/logout', {
-    method: 'POST',
-  })
+  await $auth("/auth/logout", {
+    method: "POST",
+  });
 
-  await refreshNuxtData()
-  await navigateTo('/login')
+  await refreshNuxtData();
+  await navigateTo("/login");
 }
 
 const userMenuItems = computed(() => [
-  [{
-    label: user.value?.username ?? 'Użytkownik',
-    type: 'label' as const,
-  }],
-  [{
-    label: 'Panel',
-    icon: 'pixelarticons:dashboard',
-    onSelect: () => navigateTo('/panel'),
-  }, {
-    label: 'Profil',
-    icon: 'pixelarticons:user',
-    onSelect: () => navigateTo('/panel/profile'),
-  }],
-  [{
-    label: 'Wyloguj się',
-    icon: 'pixelarticons:logout',
-    color: 'error' as const,
-    onSelect: logout,
-  }],
-])
+  [
+    {
+      label: user.value?.username ?? "Użytkownik",
+      type: "label" as const,
+    },
+  ],
+  [
+    {
+      label: "Panel",
+      icon: "pixelarticons:dashboard",
+      onSelect: () => navigateTo("/panel"),
+    },
+    {
+      label: "Profil",
+      icon: "pixelarticons:user",
+      onSelect: () => navigateTo("/panel/profile"),
+    },
+  ],
+  [
+    {
+      label: "Wyloguj się",
+      icon: "pixelarticons:logout",
+      color: "error" as const,
+      onSelect: logout,
+    },
+  ],
+]);
 </script>
 
 <template>
   <UHeader :ui="{ container: 'max-w-full' }" class="bg-default">
     <template #title>
-      <img src="~/assets/img/logo.svg" class="h-(--spacing-icon-lg)" alt="Hack4Krak logo">
+      <img src="~/assets/img/logo.svg" class="h-(--spacing-icon-lg)" alt="Hack4Krak logo" />
     </template>
 
     <UNavigationMenu v-bind="navigationMenuProperties" />
