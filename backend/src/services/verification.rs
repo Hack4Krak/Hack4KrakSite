@@ -5,22 +5,10 @@ use crate::services::task_manager::TaskManager;
 use crate::utils::app_state::AppState;
 use crate::utils::email::Email;
 use crate::utils::error::Error;
-use async_trait::async_trait;
 use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
-
-#[async_trait]
-pub trait VerificationQrCodeSender: Send + Sync {
-    async fn send_verification_qr_email(
-        &self,
-        app_state: &AppState,
-        username: &str,
-        email: &str,
-        verification_id: Uuid,
-    ) -> Result<(), Error>;
-}
 
 #[derive(Serialize, Deserialize, ToSchema, Debug)]
 pub struct VerifiedUserInfo {
@@ -38,10 +26,8 @@ pub struct UserVerificationInfo {
 
 pub struct VerificationService;
 
-#[async_trait]
-impl VerificationQrCodeSender for VerificationService {
-    async fn send_verification_qr_email(
-        &self,
+impl VerificationService {
+    pub async fn send_verification_qr_email(
         app_state: &AppState,
         username: &str,
         email: &str,
@@ -55,14 +41,12 @@ impl VerificationQrCodeSender for VerificationService {
                 verification_id: verification_id.to_string(),
             }),
         )
-        .send(&app_state.smtp_client)
+        .send(app_state.smtp_client.as_ref())
         .await?;
 
         Ok(())
     }
-}
 
-impl VerificationService {
     pub async fn identify_user(
         database: &DatabaseConnection,
         verification_id: Uuid,
@@ -173,10 +157,7 @@ impl VerificationService {
         )
         .await?;
 
-        let sender = VerificationService;
-        sender
-            .send_verification_qr_email(app_state, &username, &user_email, new_uuid)
-            .await?;
+        Self::send_verification_qr_email(app_state, &username, &user_email, new_uuid).await?;
 
         Ok(())
     }
