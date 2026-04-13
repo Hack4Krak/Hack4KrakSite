@@ -1,7 +1,7 @@
 use crate::entities::sea_orm_active_enums::TeamStatus;
 use crate::entities::teams::ActiveModel;
 use crate::entities::{external_team_invitation, flag_capture, teams, users};
-use crate::models::task::RegistrationConfig;
+use crate::models::task_manager::registration_config::RegistrationConfig;
 use crate::routes::flag::FlagError::TeamNotConfirmed;
 use crate::routes::teams::TeamError::*;
 use crate::utils::colors::TEAM_COLORS;

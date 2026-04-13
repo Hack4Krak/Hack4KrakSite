@@ -1,5 +1,5 @@
 use crate::entities::{external_team_invitation, teams, users};
-use crate::models::task::RegistrationConfig;
+use crate::models::task_manager::registration_config::RegistrationConfig;
 use crate::utils::error::Error;
 use migration::JoinType;
 use rand::RngExt;

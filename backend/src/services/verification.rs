@@ -1,5 +1,5 @@
 use crate::entities::{user_participant_tags, users};
-use crate::models::task::ParticipantTag;
+use crate::models::task_manager::participant_tags_config::ParticipantTag;
 use crate::services::emails::VerificationQrCode;
 use crate::services::task_manager::TaskManager;
 use crate::utils::app_state::AppState;
