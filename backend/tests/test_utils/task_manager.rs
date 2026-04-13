@@ -1,4 +1,6 @@
-use hack4krak_backend::models::task::{ParticipantTag, ParticipantTagsConfig};
+use hack4krak_backend::models::task_manager::participant_tags_config::{
+    ParticipantTag, ParticipantTagsConfig,
+};
 use hack4krak_backend::services::task_manager::TaskManager;
 
 pub fn default_participant_tags() -> Vec<ParticipantTag> {

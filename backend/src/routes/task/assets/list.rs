@@ -1,4 +1,4 @@
-use crate::models::task::TaskAsset;
+use crate::models::task_manager::task_config::TaskAsset;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use actix_web::{HttpResponse, get, web};

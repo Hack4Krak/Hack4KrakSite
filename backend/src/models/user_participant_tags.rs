@@ -1,6 +1,6 @@
 use crate::entities::user_participant_tags;
 use crate::entities::user_participant_tags::Model;
-use crate::models::task::ParticipantTagsConfig;
+use crate::models::task_manager::participant_tags_config::ParticipantTagsConfig;
 use crate::utils::error::Error;
 use sea_orm::{
     ActiveModelTrait, ConnectionTrait, DatabaseBackend, DatabaseConnection, EntityTrait, Set,

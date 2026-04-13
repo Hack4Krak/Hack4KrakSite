@@ -1,5 +1,5 @@
 use crate::entities::{team_invites, teams, users};
-use crate::models::task::RegistrationConfig;
+use crate::models::task_manager::registration_config::RegistrationConfig;
 use crate::routes::teams::TeamError::{
     UserAlreadyBelongsToTeam, UserAlreadyInvited, UserDoesntHaveAnyInvitations,
     UserDoesntHaveInvitationsFromTeam,

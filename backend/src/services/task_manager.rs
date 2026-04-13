@@ -1,7 +1,7 @@
-use crate::models::event_config::EventConfig;
-use crate::models::task::{
-    LabelsConfig, ParticipantTagsConfig, RegistrationConfig, TaskConfig, TaskDisplay, TaskMeta,
-};
+use crate::models::task_manager::event_config::EventConfig;
+use crate::models::task_manager::participant_tags_config::ParticipantTagsConfig;
+use crate::models::task_manager::registration_config::RegistrationConfig;
+use crate::models::task_manager::task_config::{LabelsConfig, TaskConfig, TaskDisplay, TaskMeta};
 use crate::routes::task::TaskError;
 use crate::services::env::EnvConfig;
 use crate::utils::error::Error;

@@ -1,5 +1,5 @@
 use crate::entities::{teams, users};
-use crate::models::task::RegistrationMode;
+use crate::models::task_manager::registration_config::RegistrationMode;
 use crate::models::user::validate_name_chars;
 use crate::routes::teams::AuthMiddleware;
 use crate::routes::teams::TeamError;

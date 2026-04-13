@@ -1,4 +1,4 @@
-use crate::models::task::ParticipantTag;
+use crate::models::task_manager::participant_tags_config::ParticipantTag;
 use crate::utils::app_state::AppState;
 use actix_web::web::Data;
 use actix_web::{HttpResponse, get};
