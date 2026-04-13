@@ -4,7 +4,7 @@ use crate::test_utils::header::TestAuthHeader;
 use actix_web::test;
 use chrono::{DateTime, Duration, Utc};
 use hack4krak_backend::entities::users;
-use hack4krak_backend::models::task::RegistrationMode;
+use hack4krak_backend::models::task_manager::registration_config::RegistrationMode;
 use hack4krak_backend::services::task_manager::TaskManager;
 use serde_json::{Value, json};
 

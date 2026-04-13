@@ -15,45 +15,6 @@ pub struct RegistrationConfig {
     pub max_teams_per_organization: u16,
 }
 
-#[derive(Serialize, Deserialize, ToSchema, Default, Debug)]
-#[serde(rename_all(deserialize = "kebab-case"))]
-pub struct LabelsConfig {
-    pub labels: Vec<Label>,
-}
-
-#[derive(Serialize, Deserialize, ToSchema, Default, Debug)]
-#[serde(rename_all(deserialize = "kebab-case"))]
-pub struct Label {
-    pub id: String,
-    pub name: String,
-    pub description: String,
-}
-
-#[derive(Serialize, Deserialize, ToSchema, Default, Debug, Clone)]
-#[serde(rename_all(deserialize = "kebab-case"))]
-pub struct ParticipantTagsConfig {
-    pub participant_tags: Vec<ParticipantTag>,
-}
-
-impl ParticipantTagsConfig {
-    pub fn tag_by_id(&self, id: &str) -> Option<&ParticipantTag> {
-        self.participant_tags.iter().find(|tag| tag.id == id)
-    }
-    pub fn tag_exists(&self, id: &str) -> bool {
-        self.tag_by_id(id).is_some()
-    }
-}
-
-#[derive(Serialize, Deserialize, ToSchema, Debug, Clone)]
-#[serde(rename_all(deserialize = "kebab-case"))]
-pub struct ParticipantTag {
-    pub id: String,
-    pub name: String,
-    pub description: String,
-    #[serde(rename = "type")]
-    pub tag_type: String,
-}
-
 #[derive(Debug, Serialize, Deserialize, ToSchema, Clone)]
 #[serde(rename_all = "kebab-case")]
 pub enum RegistrationMode {
@@ -91,42 +52,6 @@ impl Default for RegistrationConfig {
             max_teams_per_organization: 3,
         }
     }
-}
-
-#[derive(Serialize, Deserialize, ToSchema, Debug, Default)]
-pub struct TaskConfig {
-    #[serde(flatten)]
-    pub meta: TaskMeta,
-    #[serde(skip_serializing)]
-    pub flag_hash: String,
-    #[serde(default)]
-    pub assets: Vec<TaskAsset>,
-    pub display: TaskDisplay,
-}
-
-#[derive(Serialize, Deserialize, ToSchema, Debug, Clone, Default)]
-pub struct TaskMeta {
-    pub id: String,
-    pub name: String,
-    pub labels: Vec<String>,
-    pub difficulty_estimate: String,
-}
-
-#[derive(Serialize, Deserialize, ToSchema, Debug, Clone, Default)]
-pub struct TaskDisplay {
-    pub icon_coordinates: Coordinates,
-}
-
-#[derive(Serialize, Deserialize, ToSchema, Debug, Clone, Default)]
-pub struct Coordinates {
-    pub x: i32,
-    pub y: i32,
-}
-
-#[derive(Serialize, Deserialize, ToSchema, Debug)]
-pub struct TaskAsset {
-    pub description: String,
-    pub path: String,
 }
 
 #[cfg(test)]
