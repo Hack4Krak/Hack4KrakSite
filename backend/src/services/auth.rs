@@ -9,7 +9,7 @@ use crate::routes::auth::reset_password::ResetPasswordModel;
 use crate::services::emails;
 use crate::services::emails::EmailConfirmation;
 use crate::services::env::EnvConfig;
-use crate::services::verification::VerificationQrCodeSender;
+use crate::services::verification::VerificationService;
 use crate::utils::app_state;
 use crate::utils::cookies::{
     ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE, create_cookie, reset_cookie,
@@ -61,7 +61,7 @@ impl AuthService {
                 user: credentials.name,
             }),
         )
-        .send(&app_state.smtp_client)
+        .send(app_state.smtp_client.as_ref())
         .await?;
 
         Ok(SuccessResponse::default().http_response())
@@ -117,10 +117,9 @@ impl AuthService {
         Ok(response.finish())
     }
 
-    pub async fn confirm_email<T: VerificationQrCodeSender>(
+    pub async fn confirm_email(
         app_state: &app_state::AppState,
         confirmation_code: Uuid,
-        email_sender: &T,
     ) -> Result<(), Error> {
         let email_confirmation = email_verification_request::Model::find_and_verify(
             &app_state.database,
@@ -138,15 +137,13 @@ impl AuthService {
 
         email_confirmation.delete(&app_state.database).await?;
 
-        // Send verification QR code email using the provided sender
-        email_sender
-            .send_verification_qr_email(
-                app_state,
-                &user.username,
-                &user.email,
-                user.verification_id,
-            )
-            .await?;
+        VerificationService::send_verification_qr_email(
+            app_state,
+            &user.username,
+            &user.email,
+            user.verification_id,
+        )
+        .await?;
 
         Ok(())
     }
@@ -199,7 +196,7 @@ impl AuthService {
                 link: reset_password_link.to_string(),
             }),
         )
-        .send(&app_state.smtp_client)
+        .send(app_state.smtp_client.as_ref())
         .await?;
 
         Ok(())

@@ -1,10 +1,12 @@
 use crate::services::env::EnvConfig;
 use crate::services::task_manager::TaskManager;
+use crate::utils::email::SmtpClient;
 use crate::utils::oauth::OAuthProvider;
 use crate::utils::points_counter::PointsCounter;
 use crate::utils::sse_event::SseEvent;
 use lettre::SmtpTransport;
 use sea_orm::DatabaseConnection;
+use std::sync::Arc;
 use tokio::sync::{RwLock, broadcast};
 
 const LEADERBOARD_UPDATES_CHANNEL_CAPACITY: i8 = 4;
@@ -14,7 +16,7 @@ pub struct AppState {
     pub task_manager: TaskManager,
     pub github_oauth_provider: OAuthProvider,
     pub google_oauth_provider: OAuthProvider,
-    pub smtp_client: SmtpTransport,
+    pub smtp_client: Arc<dyn SmtpClient>,
     pub sse_event_sender: broadcast::Sender<SseEvent>,
     pub points_cache: RwLock<Option<PointsCounter>>,
 }
@@ -61,7 +63,7 @@ impl AppState {
             database,
             github_oauth_provider,
             google_oauth_provider,
-            smtp_client,
+            smtp_client: Arc::new(smtp_client),
             sse_event_sender: leaderboard_updates_transmitter,
             points_cache: RwLock::new(None),
         }
@@ -74,20 +76,20 @@ impl AppState {
         }
     }
 
-    pub fn with_email_client(smtp_client: SmtpTransport) -> AppState {
+    pub fn with_email_client(smtp_client: impl SmtpClient + 'static) -> AppState {
         AppState {
-            smtp_client,
+            smtp_client: Arc::new(smtp_client),
             ..Default::default()
         }
     }
 
     pub fn with_database_and_smtp_client(
         database: DatabaseConnection,
-        smtp_client: SmtpTransport,
+        smtp_client: impl SmtpClient + 'static,
     ) -> AppState {
         AppState {
             database,
-            smtp_client,
+            smtp_client: Arc::new(smtp_client),
             ..Default::default()
         }
     }
@@ -112,7 +114,7 @@ impl Default for AppState {
             task_manager: TaskManager::default(),
             github_oauth_provider: oauth_provider.clone(),
             google_oauth_provider: oauth_provider,
-            smtp_client: SmtpTransport::relay("email.example.com").unwrap().build(),
+            smtp_client: Arc::new(SmtpTransport::relay("email.example.com").unwrap().build()),
             sse_event_sender: broadcast::channel(LEADERBOARD_UPDATES_CHANNEL_CAPACITY as usize).0,
             points_cache: RwLock::new(None),
         }
