@@ -84,7 +84,7 @@ pub async fn send_informational(
         }),
         Some(model.meta.clone()),
     )
-    .send(&app_state.smtp_client)
+    .send(app_state.smtp_client.as_ref())
     .await?;
 
     Ok(SuccessResponse::default().http_response())

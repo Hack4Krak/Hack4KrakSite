@@ -1,5 +1,5 @@
+use crate::mocks::smtp_mock::MockSmtpClient;
 use crate::test_utils::TestApp;
-
 use crate::test_utils::database::TestDatabase;
 use actix_web::test;
 use actix_web::test::read_body_json;
@@ -141,7 +141,6 @@ async fn auth_flow() {
 
 #[actix_web::test]
 async fn email_confirmation_success() {
-    use crate::test_utils::verification_mock::MockVerificationEmailSender;
     use hack4krak_backend::services::auth::AuthService;
     use hack4krak_backend::utils::app_state::AppState;
 
@@ -168,17 +167,15 @@ async fn email_confirmation_success() {
         .await
         .unwrap();
 
-    let mut mock_sender = MockVerificationEmailSender::new();
-    mock_sender
-        .expect_send_verification_qr_email()
-        .times(1)
-        .returning(|_, _, _, _| Ok(()));
+    let mock_smtp_client = MockSmtpClient::default();
 
-    let app_state = AppState::with_database(test_database.database);
+    let app_state =
+        AppState::with_database_and_smtp_client(test_database.database, mock_smtp_client.clone());
 
-    let result = AuthService::confirm_email(&app_state, confirmation_code, &mock_sender).await;
+    let result = AuthService::confirm_email(&app_state, confirmation_code).await;
 
     assert!(result.is_ok());
+    assert_eq!(mock_smtp_client.send_count(), 1);
 }
 
 #[actix_web::test]

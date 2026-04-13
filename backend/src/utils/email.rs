@@ -28,11 +28,22 @@ impl Default for EmailMeta {
     }
 }
 
-impl<T: DynTemplate + Send + Sync> EmailTemplate for T {}
+impl<T: DynTemplate> EmailTemplate for T {}
 
-pub trait EmailTemplate: DynTemplate + Send + Sync {
+pub trait EmailTemplate: DynTemplate {
     fn id(&self) -> &str {
         type_name::<Self>().rsplit("::").next().unwrap()
+    }
+}
+
+pub trait SmtpClient: Send + Sync {
+    fn send(&self, email: &Message) -> Result<(), Error>;
+}
+
+impl SmtpClient for SmtpTransport {
+    fn send(&self, email: &Message) -> Result<(), Error> {
+        Transport::send(self, email).map_err(Error::FailedToSendEmail)?;
+        Ok(())
     }
 }
 
@@ -75,9 +86,9 @@ impl Email {
         }
     }
 
-    pub async fn send(&self, smtp_client: &SmtpTransport) -> Result<(), Error> {
+    pub async fn send(&self, smtp_client: &dyn SmtpClient) -> Result<(), Error> {
         let email = self.build_email()?;
-        smtp_client.send(&email).map_err(Error::FailedToSendEmail)?;
+        smtp_client.send(&email)?;
 
         Ok(())
     }
