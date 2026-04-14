@@ -30,9 +30,10 @@ pub async fn confirm_email(
 
             Ok(response.body("Email successfully confirmed. Redirecting..."))
         }
-        Err(error) => {
+        Err(Error::EmailConfirmationCodeExpired) => {
             let url = EnvConfig::get().frontend_url.join("/panel")?;
-            Ok(create_temporary_redirect_response(url, error)?.finish())
+            Ok(create_temporary_redirect_response(url, Error::EmailConfirmationCodeExpired)?.finish())
         }
+        Err(error) => Err(error)
     }
 }

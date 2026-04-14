@@ -32,6 +32,7 @@ pub struct TeamPointsTimeSeries {
 pub struct TeamRanking {
     pub team_id: Uuid,
     pub team_name: String,
+    #[serde(rename = "points")]
     pub current_points: usize,
     pub captured_flags: usize,
     pub color: String,

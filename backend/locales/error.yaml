@@ -58,7 +58,7 @@ FlagError:
   TeamNotConfirmed: "Ten punkt końcowy jest dostępny tylko dla potwierdzonych drużyn"
 
 TeamError:
-  AlreadyExists: "Zespół o nazwie \"{team_name}\" już istnieje"
+  AlreadyExists: 'Zespół o nazwie "{team_name}" już istnieje'
   UserAlreadyBelongsToTeam: "Użytkownik już należy do zespołu: {team_name}"
   TeamNotFound: "Zespół nie został znaleziony"
   InvalidRegistrationPeriod: "Rejestracja jest niedostępna poza wyznaczonym okresem"
@@ -74,9 +74,10 @@ TeamError:
   TeamIsFull: "Zespół jest pełny. Maksymalna liczba członków to {max_size}"
   TeamLeaderNotFound: "Lider zespołu nie został znaleziony"
   InvalidNumberOfTeams: "Nieprawidłowa liczba zespołów. Maksymalna liczba zespołów to {max_teams}"
+  CannotChangeLeaderToSelf: "Nie możesz zmienić lidera na siebie"
 
 TaskError:
   InvalidTaskId: "Identyfikator zadania może zawierać tylko znaki a-Z, A-Z, 0-9, - oraz _"
-  CouldNotLoadTaskAsset: "Nie udało się załadować zasobu zadania \"{id}\""
-  MissingTask: "Zadanie \"{id}\" nie istnieje"
+  CouldNotLoadTaskAsset: 'Nie udało się załadować zasobu zadania "{id}"'
+  MissingTask: 'Zadanie "{id}" nie istnieje'
   ErrorWhileReadingDescription: "Błąd podczas odczytu opisu zadania: {0}"

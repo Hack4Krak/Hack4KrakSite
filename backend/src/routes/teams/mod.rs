@@ -50,6 +50,7 @@ pub enum TeamError {
     TeamIsFull { max_size: u16 },
     TeamLeaderNotFound,
     InvalidNumberOfTeams { max_teams: usize },
+    CannotChangeLeaderToSelf,
 }
 
 impl error::ResponseError for TeamError {
@@ -57,6 +58,7 @@ impl error::ResponseError for TeamError {
         match self {
             TeamError::InvalidRegistrationPeriod
             | TeamError::CannotRegisterInInternalMode
+            | TeamError::CannotChangeLeaderToSelf
             | TeamError::InvalidNumberOfTeams { .. } => StatusCode::BAD_REQUEST,
             TeamError::AlreadyExists { .. }
             | TeamError::UserCantRemoveYourself

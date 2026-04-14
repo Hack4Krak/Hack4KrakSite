@@ -1,4 +1,4 @@
-use chrono::{DateTime, Duration, FixedOffset, Utc};
+use chrono::{Duration, Utc};
 use hack4krak_backend::models::event_config::{EventConfig, EventStage, EventStageType};
 
 fn make_config(start_offset: Duration, end_offset: Duration) -> EventConfig {

@@ -1,4 +1,5 @@
 use crate::entities::{teams, users};
+use crate::routes::teams::TeamError;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::success_response::SuccessResponse;
@@ -34,6 +35,10 @@ pub async fn change_leader(
         users::Model::find_by_username(&app_state.database, &model.new_leader_username)
             .await?
             .ok_or(Error::UserNotFound)?;
+
+    if new_leader.id == user.id {
+        return Err(Error::Team(TeamError::CannotChangeLeaderToSelf));
+    }
 
     teams::Model::change_leader(&app_state.database, new_leader, user).await?;
 

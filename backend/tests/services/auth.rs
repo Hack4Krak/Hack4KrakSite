@@ -47,7 +47,7 @@ fn assert_password_is_valid_succeeds_with_correct_password() {
         id: Uuid::new_v4(),
         is_leader: false,
         team: None,
-        roles: UserRoles::User,
+        roles: UserRoles::Default,
         personal_info: None,
     };
 
@@ -68,7 +68,7 @@ fn assert_password_is_valid_fails_with_wrong_password() {
         id: Uuid::new_v4(),
         is_leader: false,
         team: None,
-        roles: UserRoles::User,
+        roles: UserRoles::Default,
         personal_info: None,
     };
 
@@ -87,7 +87,7 @@ fn assert_password_is_valid_fails_when_user_has_no_password() {
         id: Uuid::new_v4(),
         is_leader: false,
         team: None,
-        roles: UserRoles::User,
+        roles: UserRoles::Default,
         personal_info: None,
     };
 

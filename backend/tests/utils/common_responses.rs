@@ -10,7 +10,7 @@ fn create_redirect_response_sets_refresh_header() {
     EnvConfig::load_test_config();
 
     let url = Url::parse("https://example.com/callback").unwrap();
-    let response = create_redirect_response(url.clone()).unwrap();
+    let mut response = create_redirect_response(url.clone()).unwrap();
     let response = response.finish();
 
     assert_eq!(response.status(), 200);
@@ -29,7 +29,7 @@ fn create_redirect_response_contains_url() {
     EnvConfig::load_test_config();
 
     let url = Url::parse("https://example.com/path?key=value").unwrap();
-    let response = create_redirect_response(url).unwrap();
+    let mut response = create_redirect_response(url).unwrap();
     let response = response.finish();
 
     let header = response.headers().get("Refresh").unwrap().to_str().unwrap();
@@ -43,7 +43,7 @@ fn create_temporary_redirect_response_returns_307() {
 
     let url = Url::parse("https://example.com/error").unwrap();
     let error = Error::Unauthorized;
-    let response = create_temporary_redirect_response(url, error).unwrap();
+    let mut response = create_temporary_redirect_response(url, error).unwrap();
     let response = response.finish();
 
     assert_eq!(response.status(), 307);
@@ -55,7 +55,7 @@ fn create_temporary_redirect_response_sets_location_header() {
 
     let url = Url::parse("https://example.com/error").unwrap();
     let error = Error::Unauthorized;
-    let response = create_temporary_redirect_response(url, error).unwrap();
+    let mut response = create_temporary_redirect_response(url, error).unwrap();
     let response = response.finish();
 
     let location = response
@@ -73,7 +73,7 @@ fn create_temporary_redirect_response_includes_error_as_query_param() {
 
     let url = Url::parse("https://example.com/error").unwrap();
     let error = Error::Unauthorized;
-    let response = create_temporary_redirect_response(url, error).unwrap();
+    let mut response = create_temporary_redirect_response(url, error).unwrap();
     let response = response.finish();
 
     let location = response

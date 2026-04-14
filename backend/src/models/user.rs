@@ -275,7 +275,7 @@ pub fn validate_name_chars(username: &str) -> Result<(), ValidationError> {
     if username.chars().all(|char| {
         char.is_ascii_alphanumeric()
             || ('\u{00C0}'..='\u{024F}').contains(&char) // Latin-1 + Extended-A + B
-            || char.is_ascii_punctuation() || char == ' '
+            || matches!(char, '-' | '_' | '.' | ' ')
     }) {
         return Ok(());
     }
