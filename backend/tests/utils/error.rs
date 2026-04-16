@@ -2,8 +2,7 @@ use crate::test_utils::TestApp;
 use actix_http::body::MessageBody;
 use actix_web::error::ResponseError;
 use actix_web::http::StatusCode;
-use actix_web::test;
-use actix_web::test::read_body_json;
+use actix_web::test::{self, read_body_json};
 use hack4krak_backend::entities::sea_orm_active_enums::UserRoles;
 use hack4krak_backend::routes::account::AccountError;
 use hack4krak_backend::routes::auth::AuthError;
@@ -32,6 +31,7 @@ async fn assert_correct_error_format<B: MessageBody + 'static>(
     );
 }
 
+
 #[actix_web::test]
 async fn correct_uuid_error_format() {
     let app = TestApp::default().build_app().await;
@@ -43,6 +43,7 @@ async fn correct_uuid_error_format() {
     let response = test::call_service(&app, request).await;
     assert_correct_error_format(response).await;
 }
+
 
 #[actix_web::test]
 async fn correct_json_error_format() {
@@ -57,6 +58,7 @@ async fn correct_json_error_format() {
     let response = test::call_service(&app, request).await;
     assert_correct_error_format(response).await;
 }
+
 
 #[actix_web::test]
 async fn correct_validation_error_format() {
@@ -76,12 +78,12 @@ async fn correct_validation_error_format() {
 }
 
 #[test]
-async fn unauthorized_returns_401() {
+fn unauthorized_returns_401() {
     assert_eq!(Error::Unauthorized.status_code(), StatusCode::UNAUTHORIZED);
 }
 
 #[test]
-async fn invalid_jwt_returns_401() {
+fn invalid_jwt_returns_401() {
     assert_eq!(
         Error::InvalidJsonWebToken.status_code(),
         StatusCode::UNAUTHORIZED
@@ -89,7 +91,7 @@ async fn invalid_jwt_returns_401() {
 }
 
 #[test]
-async fn forbidden_returns_403() {
+fn forbidden_returns_403() {
     assert_eq!(
         Error::Forbidden {
             required_role: UserRoles::Admin
@@ -100,17 +102,17 @@ async fn forbidden_returns_403() {
 }
 
 #[test]
-async fn user_not_found_returns_404() {
+fn user_not_found_returns_404() {
     assert_eq!(Error::UserNotFound.status_code(), StatusCode::NOT_FOUND);
 }
 
 #[test]
-async fn route_not_found_returns_404() {
+fn route_not_found_returns_404() {
     assert_eq!(Error::RouteNotFound.status_code(), StatusCode::NOT_FOUND);
 }
 
 #[test]
-async fn recipient_not_found_returns_404() {
+fn recipient_not_found_returns_404() {
     assert_eq!(
         Error::RecipientNotFound {
             username: "test".to_string()
@@ -121,12 +123,12 @@ async fn recipient_not_found_returns_404() {
 }
 
 #[test]
-async fn invalid_uuid_returns_400() {
+fn invalid_uuid_returns_400() {
     assert_eq!(Error::InvalidUuid.status_code(), StatusCode::BAD_REQUEST);
 }
 
 #[test]
-async fn json_deserialization_error_returns_400() {
+fn json_deserialization_error_returns_400() {
     assert_eq!(
         Error::JsonDeserializationError.status_code(),
         StatusCode::BAD_REQUEST
@@ -134,7 +136,7 @@ async fn json_deserialization_error_returns_400() {
 }
 
 #[test]
-async fn placeholders_required_returns_400() {
+fn placeholders_required_returns_400() {
     assert_eq!(
         Error::PlaceholdersRequired.status_code(),
         StatusCode::BAD_REQUEST
@@ -142,7 +144,7 @@ async fn placeholders_required_returns_400() {
 }
 
 #[test]
-async fn missing_extension_returns_400() {
+fn missing_extension_returns_400() {
     assert_eq!(
         Error::MissingExtension {
             name: "test".to_string()
@@ -153,7 +155,7 @@ async fn missing_extension_returns_400() {
 }
 
 #[test]
-async fn invalid_email_confirmation_code_returns_400() {
+fn invalid_email_confirmation_code_returns_400() {
     assert_eq!(
         Error::InvalidEmailConfirmationCode.status_code(),
         StatusCode::BAD_REQUEST
@@ -161,7 +163,7 @@ async fn invalid_email_confirmation_code_returns_400() {
 }
 
 #[test]
-async fn email_confirmation_code_expired_returns_400() {
+fn email_confirmation_code_expired_returns_400() {
     assert_eq!(
         Error::EmailConfirmationCodeExpired.status_code(),
         StatusCode::BAD_REQUEST
@@ -169,7 +171,7 @@ async fn email_confirmation_code_expired_returns_400() {
 }
 
 #[test]
-async fn user_with_email_or_username_already_exists_returns_409() {
+fn user_with_email_or_username_already_exists_returns_409() {
     assert_eq!(
         Error::UserWithEmailOrUsernameAlreadyExists.status_code(),
         StatusCode::CONFLICT
@@ -177,7 +179,7 @@ async fn user_with_email_or_username_already_exists_returns_409() {
 }
 
 #[test]
-async fn access_before_stage_returns_403() {
+fn access_before_stage_returns_403() {
     assert_eq!(
         Error::AccessBeforeStage {
             stage_start_date: "2025-01-01".to_string()
@@ -188,7 +190,7 @@ async fn access_before_stage_returns_403() {
 }
 
 #[test]
-async fn access_after_stage_returns_410() {
+fn access_after_stage_returns_410() {
     assert_eq!(
         Error::AccessAfterStage {
             stage_end_date: "2025-01-01".to_string()
@@ -199,7 +201,7 @@ async fn access_after_stage_returns_410() {
 }
 
 #[test]
-async fn access_during_stage_returns_403() {
+fn access_during_stage_returns_403() {
     assert_eq!(
         Error::AccessDuringStage.status_code(),
         StatusCode::FORBIDDEN
@@ -207,7 +209,7 @@ async fn access_during_stage_returns_403() {
 }
 
 #[test]
-async fn failed_to_parse_stage_returns_500() {
+fn failed_to_parse_stage_returns_500() {
     assert_eq!(
         Error::FailedToParseStage {
             stage_identifier: "test".to_string()
@@ -218,7 +220,7 @@ async fn failed_to_parse_stage_returns_500() {
 }
 
 #[test]
-async fn user_must_have_higher_role_returns_403() {
+fn user_must_have_higher_role_returns_403() {
     assert_eq!(
         Error::UserMustHaveHigherRoleThanAffectedUser.status_code(),
         StatusCode::FORBIDDEN
@@ -226,7 +228,7 @@ async fn user_must_have_higher_role_returns_403() {
 }
 
 #[test]
-async fn user_must_be_owner_to_update_roles_returns_403() {
+fn user_must_be_owner_to_update_roles_returns_403() {
     assert_eq!(
         Error::UserMustBeOwnerToUpdateRoles.status_code(),
         StatusCode::FORBIDDEN
@@ -234,7 +236,7 @@ async fn user_must_be_owner_to_update_roles_returns_403() {
 }
 
 #[test]
-async fn conflict_in_database_returns_500() {
+fn conflict_in_database_returns_500() {
     assert_eq!(
         Error::ConflictInDatabase.status_code(),
         StatusCode::INTERNAL_SERVER_ERROR
@@ -242,7 +244,7 @@ async fn conflict_in_database_returns_500() {
 }
 
 #[test]
-async fn invalid_color_format_returns_400() {
+fn invalid_color_format_returns_400() {
     assert_eq!(
         Error::InvalidColorFormat.status_code(),
         StatusCode::BAD_REQUEST
@@ -250,7 +252,7 @@ async fn invalid_color_format_returns_400() {
 }
 
 #[test]
-async fn auth_error_user_already_exists_returns_409() {
+fn auth_error_user_already_exists_returns_409() {
     assert_eq!(
         AuthError::UserAlreadyExists.status_code(),
         StatusCode::CONFLICT
@@ -258,7 +260,7 @@ async fn auth_error_user_already_exists_returns_409() {
 }
 
 #[test]
-async fn auth_error_invalid_credentials_returns_401() {
+fn auth_error_invalid_credentials_returns_401() {
     assert_eq!(
         AuthError::InvalidCredentials.status_code(),
         StatusCode::UNAUTHORIZED
@@ -266,7 +268,7 @@ async fn auth_error_invalid_credentials_returns_401() {
 }
 
 #[test]
-async fn auth_error_invalid_email_returns_401() {
+fn auth_error_invalid_email_returns_401() {
     assert_eq!(
         AuthError::InvalidEmailAddress.status_code(),
         StatusCode::UNAUTHORIZED
@@ -274,7 +276,7 @@ async fn auth_error_invalid_email_returns_401() {
 }
 
 #[test]
-async fn auth_error_password_auth_not_available_returns_401() {
+fn auth_error_password_auth_not_available_returns_401() {
     assert_eq!(
         AuthError::PasswordAuthNotAvailable.status_code(),
         StatusCode::UNAUTHORIZED
@@ -282,7 +284,7 @@ async fn auth_error_password_auth_not_available_returns_401() {
 }
 
 #[test]
-async fn team_error_already_exists_returns_409() {
+fn team_error_already_exists_returns_409() {
     assert_eq!(
         TeamError::AlreadyExists {
             team_name: "test".to_string()
@@ -298,7 +300,7 @@ fn team_error_not_found_returns_404() {
 }
 
 #[test]
-async fn team_error_user_doesnt_belong_returns_403() {
+fn team_error_user_doesnt_belong_returns_403() {
     assert_eq!(
         TeamError::UserDoesntBelongToAnyTeam {
             username: "test".to_string()
@@ -309,7 +311,7 @@ async fn team_error_user_doesnt_belong_returns_403() {
 }
 
 #[test]
-async fn team_error_user_is_not_leader_returns_403() {
+fn team_error_user_is_not_leader_returns_403() {
     assert_eq!(
         TeamError::UserIsNotTeamLeader.status_code(),
         StatusCode::FORBIDDEN
@@ -317,7 +319,7 @@ async fn team_error_user_is_not_leader_returns_403() {
 }
 
 #[test]
-async fn team_error_team_is_full_returns_409() {
+fn team_error_team_is_full_returns_409() {
     assert_eq!(
         TeamError::TeamIsFull { max_size: 5 }.status_code(),
         StatusCode::CONFLICT
@@ -325,7 +327,7 @@ async fn team_error_team_is_full_returns_409() {
 }
 
 #[test]
-async fn team_error_invalid_registration_period_returns_400() {
+fn team_error_invalid_registration_period_returns_400() {
     assert_eq!(
         TeamError::InvalidRegistrationPeriod.status_code(),
         StatusCode::BAD_REQUEST
@@ -333,7 +335,7 @@ async fn team_error_invalid_registration_period_returns_400() {
 }
 
 #[test]
-async fn flag_error_invalid_format_returns_400() {
+fn flag_error_invalid_format_returns_400() {
     assert_eq!(
         FlagError::InvalidFlagFormat.status_code(),
         StatusCode::BAD_REQUEST
@@ -341,7 +343,7 @@ async fn flag_error_invalid_format_returns_400() {
 }
 
 #[test]
-async fn flag_error_invalid_flag_returns_400() {
+fn flag_error_invalid_flag_returns_400() {
     assert_eq!(
         FlagError::InvalidFlag.status_code(),
         StatusCode::BAD_REQUEST
@@ -349,7 +351,7 @@ async fn flag_error_invalid_flag_returns_400() {
 }
 
 #[test]
-async fn flag_error_already_submitted_returns_409() {
+fn flag_error_already_submitted_returns_409() {
     assert_eq!(
         FlagError::AlreadySubmittedFlag.status_code(),
         StatusCode::CONFLICT
@@ -357,7 +359,7 @@ async fn flag_error_already_submitted_returns_409() {
 }
 
 #[test]
-async fn flag_error_team_not_confirmed_returns_403() {
+fn flag_error_team_not_confirmed_returns_403() {
     assert_eq!(
         FlagError::TeamNotConfirmed.status_code(),
         StatusCode::FORBIDDEN
@@ -365,7 +367,7 @@ async fn flag_error_team_not_confirmed_returns_403() {
 }
 
 #[test]
-async fn account_error_birth_year_not_in_range_returns_400() {
+fn account_error_birth_year_not_in_range_returns_400() {
     assert_eq!(
         AccountError::BirthYearNotInRange {
             min: 1900,
@@ -377,7 +379,7 @@ async fn account_error_birth_year_not_in_range_returns_400() {
 }
 
 #[test]
-async fn account_error_invalid_referral_source_returns_400() {
+fn account_error_invalid_referral_source_returns_400() {
     assert_eq!(
         AccountError::InvalidReferralSource.status_code(),
         StatusCode::BAD_REQUEST
@@ -385,7 +387,7 @@ async fn account_error_invalid_referral_source_returns_400() {
 }
 
 #[test]
-async fn task_error_invalid_id_returns_400() {
+fn task_error_invalid_id_returns_400() {
     assert_eq!(
         TaskError::InvalidTaskId.status_code(),
         StatusCode::BAD_REQUEST
@@ -393,7 +395,7 @@ async fn task_error_invalid_id_returns_400() {
 }
 
 #[test]
-async fn task_error_missing_task_returns_404() {
+fn task_error_missing_task_returns_404() {
     assert_eq!(
         TaskError::MissingTask {
             id: "test".to_string()
@@ -404,7 +406,7 @@ async fn task_error_missing_task_returns_404() {
 }
 
 #[test]
-async fn task_error_could_not_load_asset_returns_500() {
+fn task_error_could_not_load_asset_returns_500() {
     assert_eq!(
         TaskError::CouldNotLoadTaskAsset {
             id: "test".to_string()
@@ -415,14 +417,14 @@ async fn task_error_could_not_load_asset_returns_500() {
 }
 
 #[test]
-async fn error_response_contains_correct_status() {
+fn error_response_contains_correct_status() {
     let error = Error::Unauthorized;
     let response = error.error_response();
     assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
 }
 
 #[test]
-async fn forbidden_error_response_has_correct_status() {
+fn forbidden_error_response_has_correct_status() {
     let error = Error::Forbidden {
         required_role: UserRoles::Admin,
     };
@@ -431,31 +433,31 @@ async fn forbidden_error_response_has_correct_status() {
 }
 
 #[test]
-async fn nested_team_error_maps_to_correct_status() {
+fn nested_team_error_maps_to_correct_status() {
     let error: Error = TeamError::TeamNotFound.into();
     assert_eq!(error.status_code(), StatusCode::NOT_FOUND);
 }
 
 #[test]
-async fn nested_auth_error_maps_to_correct_status() {
+fn nested_auth_error_maps_to_correct_status() {
     let error: Error = AuthError::InvalidCredentials.into();
     assert_eq!(error.status_code(), StatusCode::UNAUTHORIZED);
 }
 
 #[test]
-async fn nested_flag_error_maps_to_correct_status() {
+fn nested_flag_error_maps_to_correct_status() {
     let error: Error = FlagError::AlreadySubmittedFlag.into();
     assert_eq!(error.status_code(), StatusCode::CONFLICT);
 }
 
 #[test]
-async fn nested_account_error_maps_to_correct_status() {
+fn nested_account_error_maps_to_correct_status() {
     let error: Error = AccountError::InvalidReferralSource.into();
     assert_eq!(error.status_code(), StatusCode::BAD_REQUEST);
 }
 
 #[test]
-async fn nested_task_error_maps_to_correct_status() {
+fn nested_task_error_maps_to_correct_status() {
     let error: Error = TaskError::InvalidTaskId.into();
     assert_eq!(error.status_code(), StatusCode::BAD_REQUEST);
 }
