@@ -3,16 +3,10 @@ import { NAVBAR_ITEMS } from '~~/content/navbar'
 
 const { $auth } = useNuxtApp()
 
-const { data: user, refresh: refreshUser } = useAuth('/account/', {
+const { data: user } = useAuth('/account/', {
   redirect: 'error',
   onResponseError: undefined,
 })
-
-const route = useRoute()
-watch(
-  () => route.fullPath,
-  () => refreshUser(),
-)
 
 const navigationMenuProperties = computed(() => ({
   'content-orientation': 'vertical' as const,
