@@ -67,6 +67,18 @@ jobs:
       - name: Run e2e tests
         run: bun frontend:e2e
 
+      - name: Run preview server
+        run: |
+          cd frontend
+          bun preview -- --port 3000 &
+          until curl -s http://localhost:3000 > /dev/null; do
+            echo "Waiting for preview server to be ready..."
+            sleep 1
+          done
+
+      - name: Run unlighthouse
+        run: cd frontend && bun lighthouse
+
   backend:
     runs-on: blacksmith-4vcpu-ubuntu-2404
     steps:
