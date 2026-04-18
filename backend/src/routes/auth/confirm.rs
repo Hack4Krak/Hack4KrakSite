@@ -1,4 +1,4 @@
-use crate::services::auth::AuthService;
+use crate::services::authentication::AuthenticationService;
 use crate::services::env::EnvConfig;
 use crate::utils::app_state;
 use crate::utils::common_responses;
@@ -20,7 +20,7 @@ pub async fn confirm_email(
     app_state: web::Data<app_state::AppState>,
     confirmation_code: web::Path<Uuid>,
 ) -> Result<HttpResponse, Error> {
-    match AuthService::confirm_email(&app_state, confirmation_code.into_inner()).await {
+    match AuthenticationService::confirm_email(&app_state, confirmation_code.into_inner()).await {
         Ok(()) => {
             let url = EnvConfig::get()
                 .frontend_url
