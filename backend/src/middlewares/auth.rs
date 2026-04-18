@@ -1,6 +1,7 @@
 use crate::entities::sea_orm_active_enums::UserRoles;
 use crate::entities::{teams, users};
 use crate::routes::teams::TeamError;
+use crate::services::authorization::AuthorizationService;
 use crate::utils::app_state::AppState;
 use crate::utils::cookies::ACCESS_TOKEN_COOKIE;
 use crate::utils::error::Error;
@@ -177,19 +178,8 @@ impl<S> AuthMiddlewareService<S> {
 
         match config.role_requirement {
             UserRoles::Default => (),
-            UserRoles::Admin => {
-                if user.roles < UserRoles::Admin {
-                    return Err(Error::Forbidden {
-                        required_role: UserRoles::Admin,
-                    });
-                }
-            }
-            UserRoles::Owner => {
-                if user.roles < UserRoles::Owner {
-                    return Err(Error::Forbidden {
-                        required_role: UserRoles::Owner,
-                    });
-                }
+            UserRoles::Admin | UserRoles::Owner => {
+                AuthorizationService::assert_user_has_role(&user, config.role_requirement)?;
             }
         }
 

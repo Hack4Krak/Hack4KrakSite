@@ -1,4 +1,4 @@
-use crate::services::auth::AuthService;
+use crate::services::authentication::AuthenticationService;
 use crate::utils::error::Error;
 use actix_web::{HttpResponse, post};
 
@@ -10,5 +10,5 @@ use actix_web::{HttpResponse, post};
 )]
 #[post("/logout")]
 pub async fn logout() -> Result<HttpResponse, Error> {
-    Ok(AuthService::reset_cookies_response())
+    Ok(AuthenticationService::reset_cookies_response())
 }
