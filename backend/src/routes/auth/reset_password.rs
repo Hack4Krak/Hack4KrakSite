@@ -1,5 +1,5 @@
 use crate::models::user::Password;
-use crate::services::auth::AuthService;
+use crate::services::authentication::AuthenticationService;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::success_response::SuccessResponse;
@@ -32,7 +32,9 @@ pub async fn request_reset_password(
     let email = model.into_inner().email;
 
     actix_web::rt::spawn(async move {
-        if let Err(error) = AuthService::request_password_reset(&app_state, email.clone()).await {
+        if let Err(error) =
+            AuthenticationService::request_password_reset(&app_state, email.clone()).await
+        {
             error!("Failed to process password reset request: {error}");
         } else {
             info!("Password reset request processed successfully for email: {email}");
@@ -63,7 +65,7 @@ pub async fn reset_password(
     app_state: Data<app_state::AppState>,
     Validated(model): Validated<Json<ResetPasswordModel>>,
 ) -> Result<HttpResponse, Error> {
-    AuthService::reset_password(&app_state, model.into_inner()).await?;
+    AuthenticationService::reset_password(&app_state, model.into_inner()).await?;
 
     Ok(SuccessResponse::default().http_response())
 }

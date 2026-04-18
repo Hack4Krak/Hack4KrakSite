@@ -134,7 +134,7 @@ async fn auth_flow() {
 
 #[actix_web::test]
 async fn email_confirmation_success() {
-    use hack4krak_backend::services::auth::AuthService;
+    use hack4krak_backend::services::authentication::AuthenticationService;
     use hack4krak_backend::utils::app_state::AppState;
 
     let test_database = TestDatabase::new().await;
@@ -149,7 +149,7 @@ async fn email_confirmation_success() {
     let app_state =
         AppState::with_database_and_smtp_client(test_database.database, mock_smtp_client.clone());
 
-    let result = AuthService::confirm_email(&app_state, confirmation_code).await;
+    let result = AuthenticationService::confirm_email(&app_state, confirmation_code).await;
 
     assert!(result.is_ok());
     assert_eq!(mock_smtp_client.send_count(), 1);

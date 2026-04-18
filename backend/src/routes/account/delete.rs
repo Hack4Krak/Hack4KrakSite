@@ -1,5 +1,5 @@
 use crate::entities::users;
-use crate::services::auth::AuthService;
+use crate::services::authentication::AuthenticationService;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use actix_web::web::Data;
@@ -23,5 +23,5 @@ pub async fn delete(
 ) -> Result<HttpResponse, Error> {
     user.delete(&app_state.database).await?;
 
-    Ok(AuthService::reset_cookies_response())
+    Ok(AuthenticationService::reset_cookies_response())
 }

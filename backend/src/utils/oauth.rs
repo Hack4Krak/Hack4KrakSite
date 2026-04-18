@@ -1,5 +1,5 @@
 use crate::entities::users;
-use crate::services::auth::AuthService;
+use crate::services::authentication::AuthenticationService;
 use crate::services::env::EnvConfig;
 use crate::utils::error::Error;
 use crate::utils::error::Error::OAuth as OAuthError;
@@ -83,7 +83,7 @@ impl OAuthProvider {
 
         let mut response = actix_web::HttpResponse::Ok();
         response.append_header(("Refresh", format!("0; {url}")));
-        AuthService::append_tokens_as_cookies(user.id, user.email, &mut response)?;
+        AuthenticationService::append_tokens_as_cookies(user.id, user.email, &mut response)?;
         Ok(response.body("Redirecting..."))
     }
 }

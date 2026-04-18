@@ -4,13 +4,13 @@ use crate::test_utils::header::TestAuthHeader;
 use crate::test_utils::task_manager::create_default_test_task_manager;
 use actix_web::test;
 use actix_web::test::read_body_json;
-use sea_orm::EntityTrait;
 use hack4krak_backend::entities::sea_orm_active_enums::{TeamStatus, UserRoles};
 use hack4krak_backend::entities::{teams, users};
+use hack4krak_backend::routes::teams::MyTeamWithMembers;
 use hack4krak_backend::services::identification::IdentifiedUserInfo;
+use sea_orm::EntityTrait;
 use serde_json::json;
 use uuid::Uuid;
-use hack4krak_backend::routes::teams::MyTeamWithMembers;
 
 #[actix_web::test]
 async fn identify_user_success() {

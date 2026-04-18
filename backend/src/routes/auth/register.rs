@@ -1,6 +1,6 @@
 use crate::models::user::Password;
 use crate::models::user::validate_name_chars;
-use crate::services::auth::AuthService;
+use crate::services::authentication::AuthenticationService;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use actix_web::web::Json;
@@ -34,5 +34,5 @@ pub async fn register(
     app_state: web::Data<app_state::AppState>,
     Validated(model): Validated<Json<RegisterModel>>,
 ) -> Result<HttpResponse, Error> {
-    AuthService::register_with_password(&app_state, model.into_inner()).await
+    AuthenticationService::register_with_password(&app_state, model.into_inner()).await
 }

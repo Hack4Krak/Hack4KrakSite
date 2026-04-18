@@ -3,7 +3,7 @@ use crate::entities::users::{ActiveModel, UpdatableModel};
 use crate::entities::{teams, users};
 use crate::routes::auth::AuthError::UserAlreadyExists;
 use crate::routes::auth::RegisterModel;
-use crate::services::auth::AuthService;
+use crate::services::authentication::AuthenticationService;
 use crate::utils::error::Error;
 use crate::utils::handle_database_error::handle_database_error;
 use actix_web::dev::Payload;
@@ -221,8 +221,9 @@ impl users::Model {
         }
 
         if let Some(Some(password)) = updatable_user_model.password {
-            updatable_user_model.password =
-                Some(Some(AuthService::hash_password(Password(password))?));
+            updatable_user_model.password = Some(Some(AuthenticationService::hash_password(
+                Password(password),
+            )?));
         }
 
         let active_user = updatable_user_model.update(updated_user);

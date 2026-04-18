@@ -1,5 +1,5 @@
-use crate::entities::{teams, user_participant_tags, users};
-use crate::models::task_manager::participant_tags_config::ParticipantTag;
+use crate::entities::users;
+use crate::services::authorization::{AuthorizationService, UserIdentificationInfo};
 use crate::services::emails::IdentificationQrCode;
 use crate::services::task_manager::TaskManager;
 use crate::utils::app_state::AppState;
@@ -18,16 +18,10 @@ pub struct IdentifiedUserInfo {
     pub team_name: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, ToSchema, Debug)]
-pub struct UserIdentificationInfo {
-    pub identification_code: Uuid,
-    pub applied_tags: Vec<ParticipantTag>,
-}
-
 pub struct IdentificationService;
 
 impl IdentificationService {
-    pub async fn send_identification_qr_email(
+    pub async fn send_identification_code_email(
         app_state: &AppState,
         username: &str,
         email: &str,
@@ -67,69 +61,12 @@ impl IdentificationService {
         })
     }
 
-    pub async fn apply_tag(
-        database: &DatabaseConnection,
-        task_manager: &TaskManager,
-        verification_id: Uuid,
-        tag_id: &str,
-    ) -> Result<(), Error> {
-        let participant_tags_config = task_manager.participant_tags_config.read().await;
-        let is_presence_verification_tag =
-            participant_tags_config.is_presence_verification_tag(tag_id)?;
-
-        let user = users::Entity::find()
-            .filter(users::Column::IdentificationCode.eq(verification_id))
-            .one(database)
-            .await?
-            .ok_or(Error::InvalidIdentificationId)?;
-
-        let participant_tags_list =
-            user_participant_tags::Model::get_or_create(database, user.id).await?;
-
-        if participant_tags_list.has_tag(tag_id) {
-            return Err(Error::TagAlreadyApplied {
-                tag_id: tag_id.to_string(),
-            });
-        }
-
-        if is_presence_verification_tag && let Some(team_id) = user.team {
-            teams::Model::confirm(database, team_id).await?;
-        }
-
-        participant_tags_list.add_tag(database, tag_id).await?;
-
-        Ok(())
-    }
-
-    async fn user_tags(
-        database: &DatabaseConnection,
-        task_manager: &TaskManager,
-        user_id: Uuid,
-    ) -> Result<Vec<ParticipantTag>, Error> {
-        let tags = user_participant_tags::Model::get_or_create(database, user_id).await?;
-
-        let tags_config = task_manager.participant_tags_config.read().await;
-
-        let applied_tags = tags
-            .tags
-            .into_iter()
-            .map(|tag| {
-                tags_config
-                    .tag_by_id(&tag)
-                    .cloned()
-                    .ok_or(Error::InvalidTagId { tag_id: tag })
-            })
-            .collect::<Result<Vec<_>, _>>()?;
-
-        Ok(applied_tags)
-    }
-
     pub async fn user_identification_info(
         database: &DatabaseConnection,
         task_manager: &TaskManager,
         user: &users::Model,
     ) -> Result<UserIdentificationInfo, Error> {
-        let applied_tags = Self::user_tags(database, task_manager, user.id).await?;
+        let applied_tags = AuthorizationService::user_tags(database, task_manager, user.id).await?;
 
         Ok(UserIdentificationInfo {
             identification_code: user.identification_code,
@@ -161,7 +98,7 @@ impl IdentificationService {
         )
         .await?;
 
-        Self::send_identification_qr_email(app_state, &username, &user_email, new_uuid).await?;
+        Self::send_identification_code_email(app_state, &username, &user_email, new_uuid).await?;
 
         Ok(())
     }
