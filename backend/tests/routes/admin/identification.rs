@@ -246,7 +246,7 @@ async fn reset_uuid_user_not_found() {
 #[actix_web::test]
 async fn full_identity_identification_flow() {
     use crate::test_utils::mail::SmtpTestClient;
-    use hack4krak_backend::services::identification::UserIdentificationInfo;
+    use hack4krak_backend::services::authorization::UserIdentificationInfo;
 
     let test_database = TestDatabase::new().await;
     let mock_smtp_client = SmtpTestClient::new().await;

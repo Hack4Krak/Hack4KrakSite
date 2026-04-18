@@ -1,4 +1,4 @@
-use crate::services::identification::IdentificationService;
+use crate::services::authorization::AuthorizationService;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use crate::utils::success_response::SuccessResponse;
@@ -30,7 +30,7 @@ pub async fn apply_tag(
     body: Json<ApplyTagRequest>,
     id: web::Path<Uuid>,
 ) -> Result<HttpResponse, Error> {
-    IdentificationService::apply_tag(
+    AuthorizationService::apply_tag(
         &app_state.database,
         &app_state.task_manager,
         id.into_inner(),

@@ -1,4 +1,5 @@
-pub mod auth;
+pub mod authentication;
+pub mod authorization;
 pub mod emails;
 pub mod env;
 pub mod identification;

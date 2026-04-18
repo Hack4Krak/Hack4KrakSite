@@ -28,9 +28,9 @@ use chrono::Duration;
 use uuid::Uuid;
 use validator::ValidateEmail;
 
-pub struct AuthService;
+pub struct AuthenticationService;
 
-impl AuthService {
+impl AuthenticationService {
     pub async fn register_with_password(
         app_state: &app_state::AppState,
         credentials: RegisterModel,
@@ -137,7 +137,7 @@ impl AuthService {
 
         email_confirmation.delete(&app_state.database).await?;
 
-        IdentificationService::send_identification_qr_email(
+        IdentificationService::send_identification_code_email(
             app_state,
             &user.username,
             &user.email,

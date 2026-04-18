@@ -1,5 +1,6 @@
 use crate::entities::users;
-use crate::services::identification::{IdentificationService, UserIdentificationInfo};
+use crate::services::authorization::UserIdentificationInfo;
+use crate::services::identification::IdentificationService;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::web::Data;
