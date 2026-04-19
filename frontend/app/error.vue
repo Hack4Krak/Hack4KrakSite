@@ -27,9 +27,9 @@ watchEffect(() => {
   if (!error)
     return
 
-  const customErrorId = errorData.value.response?.error
-  if (customErrorId === 'AccessBeforeEventStart') {
-    eventStartDate.value = new Date(errorData.value?.response.details.event_start_date)
+  const customErrorId = errorData.value?.error
+  if (customErrorId === 'AccessBeforeStage') {
+    eventStartDate.value = new Date(errorData.value?.details?.stage_start_date)
     errorTitle.value = {
       title: 'Skąd ten pośpiech?',
       message: 'CTF jeszcze się nie rozpoczął!\n Czas do początku wydarzenia:',
@@ -38,17 +38,19 @@ watchEffect(() => {
     return
   }
 
-  const message = error.message?.toString().toLowerCase() || ''
+  const nuxtErrorMessage = error.message?.toString().toLowerCase() || ''
   const status = error.status
   errorTitle.value.title = String(status ?? 'Błąd')
 
   if (error.status === 404) {
-    if (message.includes('page not found')) {
+    if (nuxtErrorMessage.includes('page not found')) {
       errorTitle.value.message
         = 'Uwaga rycerzu,\n ta strona zniknęła jak zamek w chmurach.\n Wróć na właściwą drogę!'
     }
   } else if (error.status === 500) {
     errorTitle.value.message = 'Rycerz napotkał przeszkodę\n Na swojej drodze.\n Spróbuj ponownie później.'
+  } else if (errorData.value.message) {
+    errorTitle.value.message = errorData.value.message
   }
 })
 
