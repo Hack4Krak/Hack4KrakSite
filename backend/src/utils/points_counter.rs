@@ -50,6 +50,18 @@ pub struct PointsCounter {
     team_time_series: HashMap<Uuid, TeamTimeSeriesData>,
 }
 
+#[derive(Serialize, Deserialize, ToSchema, Default, Debug)]
+pub struct CaptureLogEvent {
+    pub id: i32,
+    pub time: Option<i64>,
+    pub r#type: Option<String>,
+    pub team: String,
+    pub victim: Option<String>,
+    pub task: Option<String>,
+    #[serde(rename = "pointsDelta")]
+    pub points_delta: Option<usize>,
+}
+
 /// Team Standings for https://ctftime.org/json-scoreboard-feed
 #[derive(Serialize, Deserialize, ToSchema, Default, Debug, PartialEq)]
 pub struct TeamStandings {
@@ -169,7 +181,7 @@ impl PointsCounter {
 
     /// Calculates point value for a task based on solve count using linear decay.
     /// Points range from 500 (max) to 100 (min), decreasing linearly as more teams solve it.
-    fn calculate_task_value(solve_count: usize, total_teams: usize) -> usize {
+    pub fn calculate_task_value(solve_count: usize, total_teams: usize) -> usize {
         const MAX_POINTS: f64 = 500f64;
         const MIN_POINTS: f64 = 100f64;
         const DECAY_RANGE: f64 = MAX_POINTS - MIN_POINTS;
