@@ -179,7 +179,7 @@ export default defineNuxtConfig({
     runOnBuild: false,
   },
   robots: {
-    disallow: ['/admin'],
+    disallow: ['/admin', '/panel', '/account'],
   },
   // https://nuxtseo.com/docs/site-config/guides/setting-site-config
   site: {
