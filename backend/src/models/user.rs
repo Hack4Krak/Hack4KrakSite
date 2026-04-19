@@ -171,7 +171,7 @@ impl users::Model {
             created_at: Set(Utc::now().naive_utc()),
             is_leader: Set(false),
             roles: Set(UserRoles::Default),
-            verification_id: Set(uuid_gen::new_v4()),
+            identification_code: Set(uuid_gen::new_v4()),
             ..Default::default()
         }
         .insert(database)

@@ -33,7 +33,7 @@ Error:
   RecipientNotFound: "Nie ma użytkownika o nazwie: {username}"
   AccessDuringStage: "Nie możesz uzyskać dostępu do tego punktu w trakcie etapu"
   FailedToParseStage: "Nie udało się znaleźć etapu o identyfikatorze {stage_identifier}"
-  InvalidVerificationId: "Nieprawidłowy kod weryfikacyjny UUID"
+  InvalidIdentificationCode: "Nieprawidłowy kod identyfikacyjny"
   InvalidTagId: "Nieprawidłowy identyfikator tagu: {tag_id}"
   TagAlreadyApplied: "Użytkownik ma już przypisany tag: {tag_id}"
   FailedToParseUrl: "Nie udało się sparsować URL {0}"

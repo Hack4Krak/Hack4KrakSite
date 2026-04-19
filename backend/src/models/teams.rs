@@ -332,6 +332,24 @@ impl teams::Model {
 
         Ok(())
     }
+
+    pub async fn confirm(
+        database_connection: &DatabaseConnection,
+        team_id: Uuid,
+    ) -> Result<(), Error> {
+        let team = teams::Entity::find_by_id(team_id)
+            .one(database_connection)
+            .await?
+            .ok_or(Error::Team(TeamNotFound))?;
+
+        if team.status != TeamStatus::Confirmed {
+            let mut team: teams::ActiveModel = team.into();
+            team.status = Set(TeamStatus::Confirmed);
+            team.update(database_connection).await?;
+        };
+
+        Ok(())
+    }
 }
 
 impl FromRequest for teams::Model {
