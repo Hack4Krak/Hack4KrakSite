@@ -18,11 +18,10 @@ const targetTimezone = 'Europe/Warsaw'
 const { data: chartData } = useLazyApi('/leaderboard/chart')
 const { data: eventInformation } = useLazyApi('/event/info')
 
-const adjustedTimestamps = computed(
-  () =>
-    chartData.value?.event_timestamps?.map((ts: string) =>
-      dayjs.utc(ts).tz(targetTimezone).format('YYYY-MM-DDTHH:mm:ss'),
-    ) ?? [],
+const adjustedTimestamps = computed(() =>
+  chartData.value?.event_timestamps?.map((ts: string) =>
+    dayjs.utc(ts).tz(targetTimezone).format('YYYY-MM-DDTHH:mm:ss'),
+  ) ?? [],
 )
 
 const chartOption = computed<EChartsOption>(() => {
@@ -96,13 +95,13 @@ const chartOption = computed<EChartsOption>(() => {
         type: 'inside',
         xAxisIndex: 0,
         filterMode: 'none',
-        minSpan: 10,
+        minSpan: 25,
       },
       {
         type: 'inside',
         yAxisIndex: 0,
         filterMode: 'none',
-        minSpan: 10,
+        minSpan: 25,
       },
     ],
 

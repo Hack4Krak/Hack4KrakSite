@@ -37,7 +37,7 @@ const { content } = defineProps<{
              lg:group-hover:translate-y-0"
     >
       <div class="w-full">
-        <div class="text-sm text-center mb-2 opacity-70 hidden lg:block" :style="{ color: content.color }">
+        <div class="text-sm text-center mb-2 opacity-70 leading-tight hidden lg:block" :style="{ color: content.color }">
           <MarkdownContent :prose="false" :text="content.front" />
         </div>
         <div class="text-[1rem] text-pretty text-left lg:px-12">
