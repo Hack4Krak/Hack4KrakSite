@@ -51,6 +51,18 @@ pub struct PointsCounter {
     team_time_series: HashMap<Uuid, TeamTimeSeriesData>,
 }
 
+#[derive(Serialize, Deserialize, ToSchema, Default, Debug)]
+pub struct CaptureLogEvent {
+    pub id: i32,
+    pub time: Option<i64>,
+    pub r#type: Option<String>,
+    pub team: String,
+    pub victim: Option<String>,
+    pub task: Option<String>,
+    #[serde(rename = "pointsDelta")]
+    pub points_delta: Option<usize>,
+}
+
 /// Team Standings for https://ctftime.org/json-scoreboard-feed
 #[derive(Serialize, Deserialize, ToSchema, Default, Debug, PartialEq)]
 pub struct TeamStandings {
