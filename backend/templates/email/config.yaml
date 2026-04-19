@@ -14,6 +14,6 @@ Informational:
   subject: Informacje o Hack4Krak
   sender_name: Kontakt Hack4Krak
 
-VerificationQrCode:
-  subject: Twój kod weryfikacyjny
+IdentificationQrCode:
+  subject: Twój kod identyfikacyjny
   sender_name: Autoryzacja Hack4Krak

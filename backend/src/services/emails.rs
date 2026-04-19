@@ -30,8 +30,8 @@ pub struct ExternalRegistrationForm {
 }
 
 #[derive(Template, Serialize, Deserialize, ToSchema)]
-#[template(path = "email/verification_qr_code.html")]
-pub struct VerificationQrCode {
+#[template(path = "email/identification_qr_code.html")]
+pub struct IdentificationQrCode {
     pub user: String,
-    pub verification_id: String,
+    pub identification_code: String,
 }

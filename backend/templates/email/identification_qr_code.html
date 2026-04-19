@@ -1,23 +1,23 @@
 {% extends "base.html" %}
 
-{% block title %}Twój kod weryfikacyjny{% endblock %}
+{% block title %}Twój kod identyfikacyjny{% endblock %}
 
 {% block content %}
 <h1 style="margin: 0 0 24px; font-size: 24px; line-height: 32px; font-weight: 600; color: #0f172a">
     Cześć, {{ user }}!
 </h1>
 <p style="margin: 0 0 24px; font-size: 16px; line-height: 24px; color: #475569">
-    Poniżej znajduje się Twój unikalny kod weryfikacyjny. Pokaż go organizatorom wydarzenia, aby potwierdzić swoją tożsamość.
+    Poniżej znajduje się Twój unikalny kod identyfikacyjny. Pokaż go organizatorom wydarzenia, aby potwierdzić swoją tożsamość.
 </p>
 
 <div style="text-align: center; margin: 24px 0;">
-    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ verification_id }}"
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ identification_code }}"
          alt="Kod QR" 
          style="max-width: 200px; height: auto; border: 1px solid #e2e8f0; border-radius: 8px;">
 </div>
 
 <p style="margin: 0 0 24px; font-size: 14px; line-height: 20px; color: #64748b; text-align: center;">
-    Twój kod weryfikacyjny: <strong style="color: #0f172a;">{{ verification_id }}</strong>
+    Twój kod identyfikacyjny: <strong style="color: #0f172a;">{{ identification_code }}</strong>
 </p>
 
 <p style="margin: 0; font-size: 14px; line-height: 20px; color: #64748b;">

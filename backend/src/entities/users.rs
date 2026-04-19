@@ -29,7 +29,7 @@ pub struct Model {
     pub roles: UserRoles,
     pub personal_info: Option<Uuid>,
     #[sea_orm(unique)]
-    pub verification_id: Uuid,
+    pub identification_code: Uuid,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

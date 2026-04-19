@@ -1,5 +1,5 @@
 use crate::entities::users;
-use crate::services::verification::{UserVerificationInfo, VerificationService};
+use crate::services::identification::{IdentificationService, UserIdentificationInfo};
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::web::Data;
@@ -7,27 +7,27 @@ use actix_web::{HttpResponse, get};
 
 #[utoipa::path(
     responses(
-        (status = 200, description = "Verification information received.", body = UserVerificationInfo),
+        (status = 200, description = "Identification information received.", body = UserIdentificationInfo),
         (status = 401, description = "Unauthorized."),
         (status = 500, description = "Internal server error.")
     ),
     security(
         ("access_token" = [])
     ),
-    operation_id = "account_verification",
+    operation_id = "account_identification",
     tag = "account"
 )]
-#[get("/verification")]
-pub async fn verification(
+#[get("/identification")]
+pub async fn identification(
     app_state: Data<AppState>,
     user: users::Model,
 ) -> Result<HttpResponse, Error> {
-    let verification_info = VerificationService::user_verification_info(
+    let identification_info = IdentificationService::user_identification_info(
         &app_state.database,
         &app_state.task_manager,
         &user,
     )
     .await?;
 
-    Ok(HttpResponse::Ok().json(verification_info))
+    Ok(HttpResponse::Ok().json(identification_info))
 }

@@ -1,6 +1,6 @@
-use crate::entities::{user_participant_tags, users};
+use crate::entities::{teams, user_participant_tags, users};
 use crate::models::task_manager::participant_tags_config::ParticipantTag;
-use crate::services::emails::VerificationQrCode;
+use crate::services::emails::IdentificationQrCode;
 use crate::services::task_manager::TaskManager;
 use crate::utils::app_state::AppState;
 use crate::utils::email::Email;
@@ -11,7 +11,7 @@ use utoipa::ToSchema;
 use uuid::Uuid;
 
 #[derive(Serialize, Deserialize, ToSchema, Debug)]
-pub struct VerifiedUserInfo {
+pub struct IdentifiedUserInfo {
     pub user_id: Uuid,
     pub username: String,
     pub email: String,
@@ -19,26 +19,26 @@ pub struct VerifiedUserInfo {
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Debug)]
-pub struct UserVerificationInfo {
-    pub verification_id: Uuid,
+pub struct UserIdentificationInfo {
+    pub identification_code: Uuid,
     pub applied_tags: Vec<ParticipantTag>,
 }
 
-pub struct VerificationService;
+pub struct IdentificationService;
 
-impl VerificationService {
-    pub async fn send_verification_qr_email(
+impl IdentificationService {
+    pub async fn send_identification_qr_email(
         app_state: &AppState,
         username: &str,
         email: &str,
-        verification_id: Uuid,
+        identification_code: Uuid,
     ) -> Result<(), Error> {
         Email::new(
-            "verification",
+            "identification",
             vec![email.to_string()],
-            Box::new(VerificationQrCode {
+            Box::new(IdentificationQrCode {
                 user: username.to_string(),
-                verification_id: verification_id.to_string(),
+                identification_code: identification_code.to_string(),
             }),
         )
         .send(app_state.smtp_client.as_ref())
@@ -49,17 +49,17 @@ impl VerificationService {
 
     pub async fn identify_user(
         database: &DatabaseConnection,
-        verification_id: Uuid,
-    ) -> Result<VerifiedUserInfo, Error> {
+        identification_code: Uuid,
+    ) -> Result<IdentifiedUserInfo, Error> {
         let user = users::Entity::find()
-            .filter(users::Column::VerificationId.eq(verification_id))
+            .filter(users::Column::IdentificationCode.eq(identification_code))
             .one(database)
             .await?
-            .ok_or(Error::InvalidVerificationId)?;
+            .ok_or(Error::InvalidIdentificationCode)?;
 
         let team_name = user.get_team(database).await?.map(|team| team.name);
 
-        Ok(VerifiedUserInfo {
+        Ok(IdentifiedUserInfo {
             user_id: user.id,
             username: user.username,
             email: user.email,
@@ -74,17 +74,14 @@ impl VerificationService {
         tag_id: &str,
     ) -> Result<(), Error> {
         let participant_tags_config = task_manager.participant_tags_config.read().await;
-        if !participant_tags_config.tag_exists(tag_id) {
-            return Err(Error::InvalidTagId {
-                tag_id: tag_id.to_string(),
-            });
-        }
+        let is_presence_verification_tag =
+            participant_tags_config.is_presence_verification_tag(tag_id)?;
 
         let user = users::Entity::find()
-            .filter(users::Column::VerificationId.eq(verification_id))
+            .filter(users::Column::IdentificationCode.eq(verification_id))
             .one(database)
             .await?
-            .ok_or(Error::InvalidVerificationId)?;
+            .ok_or(Error::InvalidIdentificationId)?;
 
         let participant_tags_list =
             user_participant_tags::Model::get_or_create(database, user.id).await?;
@@ -93,6 +90,10 @@ impl VerificationService {
             return Err(Error::TagAlreadyApplied {
                 tag_id: tag_id.to_string(),
             });
+        }
+
+        if is_presence_verification_tag && let Some(team_id) = user.team {
+            teams::Model::confirm(database, team_id).await?;
         }
 
         participant_tags_list.add_tag(database, tag_id).await?;
@@ -123,20 +124,23 @@ impl VerificationService {
         Ok(applied_tags)
     }
 
-    pub async fn user_verification_info(
+    pub async fn user_identification_info(
         database: &DatabaseConnection,
         task_manager: &TaskManager,
         user: &users::Model,
-    ) -> Result<UserVerificationInfo, Error> {
+    ) -> Result<UserIdentificationInfo, Error> {
         let applied_tags = Self::user_tags(database, task_manager, user.id).await?;
 
-        Ok(UserVerificationInfo {
-            verification_id: user.verification_id,
+        Ok(UserIdentificationInfo {
+            identification_code: user.identification_code,
             applied_tags,
         })
     }
 
-    pub async fn reset_verification_id(app_state: &AppState, user_id: Uuid) -> Result<(), Error> {
+    pub async fn reset_identification_code(
+        app_state: &AppState,
+        user_id: Uuid,
+    ) -> Result<(), Error> {
         let user = users::Entity::find_by_id(user_id)
             .one(&app_state.database)
             .await?
@@ -151,13 +155,13 @@ impl VerificationService {
             &app_state.database,
             user,
             users::UpdatableModel {
-                verification_id: Some(new_uuid),
+                identification_code: Some(new_uuid),
                 ..Default::default()
             },
         )
         .await?;
 
-        Self::send_verification_qr_email(app_state, &username, &user_email, new_uuid).await?;
+        Self::send_identification_qr_email(app_state, &username, &user_email, new_uuid).await?;
 
         Ok(())
     }

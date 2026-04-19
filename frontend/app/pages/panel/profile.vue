@@ -2,7 +2,7 @@
 const { $api } = useNuxtApp()
 
 const { data: user } = await useAuth('/account/')
-const { data: verification } = await useAuth('/account/verification')
+const { data: identification } = await useAuth('/account/identification')
 
 const joinExternalTeamModal = ref(false)
 const updateAccountModal = ref(false)
@@ -35,7 +35,7 @@ async function logout() {
     redirect-to="/"
     hydrate-on-idle
   />
-  <LazyPanelModalQRCode v-model="qrCodeModal" :verification-id="verification?.verification_id" hydrate-on-idle />
+  <LazyPanelModalQRCode v-model="qrCodeModal" :identification-id="identification?.identification_code" hydrate-on-idle />
 
   <div class="grid grid-cols-[400px_1fr] divide-x m-10 border min-w-fit flex-1">
     <div class="h-full flex flex-col divide-y">
@@ -46,13 +46,13 @@ async function logout() {
         <span>Przesłane flagi: 0</span>
       </div>
 
-      <div v-if="verification?.applied_tags && verification.applied_tags.length > 0" class="p-5">
+      <div v-if="identification?.applied_tags && identification.applied_tags.length > 0" class="p-5">
         <h1 class="font-bold text-xl mb-3">
           Przypisane tagi
         </h1>
         <div class="flex flex-col gap-2">
           <div
-            v-for="tag in verification.applied_tags"
+            v-for="tag in identification.applied_tags"
             :key="tag.id"
             class="p-2 rounded bg-elevated border border-accented"
           >

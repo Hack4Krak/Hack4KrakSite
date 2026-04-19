@@ -6,8 +6,8 @@ definePageMeta({
   middleware: 'admin',
 })
 
-type VerifiedUserInfo
-  = components['schemas']['VerifiedUserInfo']
+type IdentifiedUserInfo
+  = components['schemas']['IdentifiedUserInfo']
 
 const { $auth } = useNuxtApp()
 
@@ -16,12 +16,12 @@ const { data: availableTags } = await useApi('/event/participant-tags')
 const selectionState = ref<{
   mode: 'identify' | 'apply-tag'
   selectedTagId: string
-  verificationId: string
-  userInfo: VerifiedUserInfo | null
+  identificationId: string
+  userInfo: IdentifiedUserInfo | null
 }>({
   mode: 'identify',
   selectedTagId: '',
-  verificationId: '',
+  identificationId: '',
   userInfo: null,
 })
 
@@ -32,22 +32,22 @@ function resetState() {
   selectionState.value = {
     mode: selectionState.value.mode,
     selectedTagId: selectionState.value.selectedTagId,
-    verificationId: '',
+    identificationId: '',
     userInfo: null,
   }
 }
 
 function onCodeScanned(code: string) {
-  selectionState.value.verificationId = code
+  selectionState.value.identificationId = code
   showScanner.value = false
   handleSubmit()
 }
 
 async function handleSubmit() {
-  if (!selectionState.value.verificationId) {
+  if (!selectionState.value.identificationId) {
     useToast().add({
       title: 'Błąd',
-      description: 'Wprowadź kod weryfikacyjny UUID',
+      description: 'Wprowadź kod identyfikacyjny UUID',
       color: 'error',
     })
     return
@@ -56,10 +56,9 @@ async function handleSubmit() {
   isLoading.value = true
 
   try {
-    const response = await $auth('/admin/verification/identify', {
-      method: 'POST',
-      body: {
-        verification_id: selectionState.value.verificationId,
+    const response = await $auth('/admin/identification/identify/{id}', {
+      path: {
+        id: selectionState.value.identificationId,
       },
       ignoreResponseError: false,
     })
@@ -92,11 +91,13 @@ async function confirmTagApplication() {
   isLoading.value = true
 
   try {
-    await $auth('/admin/verification/apply-tag', {
+    await $auth('/admin/identification/apply-tag/{id}', {
       method: 'POST',
       body: {
-        verification_id: selectionState.value.verificationId,
         tag_id: selectionState.value.selectedTagId,
+      },
+      path: {
+        id: selectionState.value.identificationId,
       },
       ignoreResponseError: false,
     })
@@ -122,7 +123,7 @@ async function confirmTagApplication() {
 <template>
   <div class="md:w-2xl md:min-w-2xl w-screen mx-auto p-6">
     <h1 class="text-2xl font-bold mb-6">
-      Weryfikacja uczestników
+      Identyfikacja uczestników
     </h1>
 
     <div class="mb-6">
@@ -157,10 +158,10 @@ async function confirmTagApplication() {
     </div>
 
     <div class="mb-6">
-      <label class="block text-sm font-medium mb-2">Kod weryfikacyjny UUID</label>
+      <label class="block text-sm font-medium mb-2">Kod identyfikacyjny UUID</label>
       <div class="flex gap-2">
         <UInput
-          v-model="selectionState.verificationId"
+          v-model="selectionState.identificationId"
           placeholder="Wpisz lub zeskanuj UUID..."
           class="flex-1"
           @keyup.enter="handleSubmit"
