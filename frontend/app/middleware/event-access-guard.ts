@@ -7,11 +7,12 @@ export default defineNuxtRouteMiddleware(async () => {
     return
 
   if (error.value.status === 403) {
+    const responseData = (error.value.data ?? {}) as Record<string, any>
+
     return showError({
       status: 403,
-      data: {
-        response: error.value.data,
-      },
+      message: responseData.message,
+      data: responseData,
     })
   }
 
