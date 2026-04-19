@@ -6,10 +6,10 @@ use utoipa_actix_web::service_config::ServiceConfig;
 
 mod delete;
 mod get_onboarding;
+mod identification;
 pub mod index;
 mod submit_onboarding;
 pub mod update;
-mod verification;
 
 pub use submit_onboarding::UserOnboardingSubmissionRequest;
 
@@ -20,7 +20,7 @@ pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(update::change_password);
     cfg.service(submit_onboarding::submit_onboarding);
     cfg.service(get_onboarding::get_onboarding);
-    cfg.service(verification::verification);
+    cfg.service(identification::identification);
 }
 
 #[error_with_messages]

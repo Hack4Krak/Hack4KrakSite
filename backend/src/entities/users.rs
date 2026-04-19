@@ -30,7 +30,7 @@ pub struct Model {
     pub onboarding: Option<Uuid>,
     pub first_name: Option<String>,
     #[sea_orm(unique)]
-    pub verification_id: Uuid,
+    pub identification_code: Uuid,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

@@ -6,7 +6,7 @@ const emit = defineEmits<{
 const open = defineModel<boolean>()
 
 const schema = z.object({
-  code: z.string().meta({ title: 'Kod QR' }),
+  code: z.string().meta({ title: 'Kod identyfikacyjny QR' }),
 })
 
 function onDetect(detectedCodes: DetectedBarcode[]) {
@@ -19,7 +19,7 @@ function onError(error: Error) {
   open.value = false
 
   useToast().add({
-    title: `Nie udało się zeskanować kodu QR`,
+    title: `Nie udało się zeskanować kodu identyfikacyjnego QR`,
     description: error.message ?? 'Nieznany błąd',
     color: 'error',
   })
@@ -29,7 +29,7 @@ function onError(error: Error) {
 <template>
   <AutoFormModal
     v-model:open="open"
-    title="Zeskanuj kod QR"
+    title="Zeskanuj kod identyfikacyjny QR"
     :schema="schema"
     @submit="open = false"
   >

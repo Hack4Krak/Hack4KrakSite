@@ -10,6 +10,8 @@ mod invitations;
 mod management;
 mod membership;
 
+pub use membership::MyTeamWithMembers;
+
 pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(create::create);
     config.service(scope("/external_invitations").configure(external_invitations::config));

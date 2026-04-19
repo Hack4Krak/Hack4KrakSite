@@ -98,7 +98,7 @@ pub enum Error {
     FailedToParseStage {
         stage_identifier: String,
     },
-    InvalidVerificationId,
+    InvalidIdentificationCode,
     InvalidTagId {
         tag_id: String,
     },
@@ -161,7 +161,7 @@ impl error::ResponseError for Error {
             Error::UserNotFound | Error::RouteNotFound | Error::RecipientNotFound { .. } => {
                 StatusCode::NOT_FOUND
             }
-            Error::InvalidVerificationId | Error::InvalidTagId { .. } => StatusCode::NOT_FOUND,
+            Error::InvalidIdentificationCode | Error::InvalidTagId { .. } => StatusCode::NOT_FOUND,
             Error::TagAlreadyApplied { .. } => StatusCode::CONFLICT,
             Error::Forbidden { .. }
             | Error::UserMustHaveHigherRoleThanAffectedUser

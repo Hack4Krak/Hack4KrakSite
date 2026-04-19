@@ -9,7 +9,7 @@ use crate::routes::auth::reset_password::ResetPasswordModel;
 use crate::services::emails;
 use crate::services::emails::EmailConfirmation;
 use crate::services::env::EnvConfig;
-use crate::services::verification::VerificationService;
+use crate::services::identification::IdentificationService;
 use crate::utils::app_state;
 use crate::utils::cookies::{
     ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE, create_cookie, reset_cookie,
@@ -137,11 +137,11 @@ impl AuthService {
 
         email_confirmation.delete(&app_state.database).await?;
 
-        VerificationService::send_verification_qr_email(
+        IdentificationService::send_identification_qr_email(
             app_state,
             &user.username,
             &user.email,
-            user.verification_id,
+            user.identification_code,
         )
         .await?;
 

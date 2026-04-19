@@ -12,7 +12,7 @@ impl MigrationTrait for Migration {
                 Table::alter()
                     .table(Users::Table)
                     .add_column(
-                        ColumnDef::new(Users::VerificationId)
+                        ColumnDef::new(Users::IdentificationCode)
                             .uuid()
                             .unique_key()
                             .not_null()
@@ -69,7 +69,7 @@ impl MigrationTrait for Migration {
             .alter_table(
                 Table::alter()
                     .table(Users::Table)
-                    .drop_column(Users::VerificationId)
+                    .drop_column(Users::IdentificationCode)
                     .to_owned(),
             )
             .await
@@ -80,7 +80,7 @@ impl MigrationTrait for Migration {
 enum Users {
     Table,
     Id,
-    VerificationId,
+    IdentificationCode,
 }
 
 #[derive(DeriveIden)]
