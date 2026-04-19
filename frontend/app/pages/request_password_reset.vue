@@ -14,33 +14,36 @@ const schema = z.object({
 })
 
 async function onSubmit(data: zInfer<typeof schema>) {
-  toast.add({ title: 'Oczekiwanie', description: 'Wysyłanie emaila…', color: 'info' })
-
   await useNuxtApp().$api('/auth/request_reset_password', {
     method: 'POST',
     credentials: 'include',
     body: data,
   })
 
-  toast.add({ title: 'Sukces', description: 'Pomyślnie wysłano link do resetowania hasła', color: 'success' })
+  toast.add({ title: 'Sukces', description: 'Jeśli podany adres email jest powiązany z kontem, wkrótce otrzymasz link do zresetowania hasła.', color: 'success' })
+  await navigateTo('/login')
 }
 </script>
 
 <template>
-  <div>
+  <div class="space-y-4">
     <h1 class="text-2xl font-medium">
       Zresetuj hasło
     </h1>
 
-    <div class="flex-col gap-3 text-sm">
-      <p>
-        Bardzo nam przykro, że straciłeś dostęp do swojego konta :c
-      </p>
-      <p>
-        Podaj swój adres, na który wyślemy wiadomość do potwierdzenia maila
-      </p>
-    </div>
+    <p class="text-sm">
+      Podaj swój adres email, a jeśli istnieje powiązane z nim konto, wyślemy link do zresetowania hasła.
+    </p>
 
     <AutoForm :schema="schema" @submit="onSubmit" />
+
+    <div class="w-full text-center">
+      <span class="text-sm text-neutral-400">
+        Pamiętasz hasło?
+        <NuxtLink class="link" to="/login">
+          Zaloguj się
+        </NuxtLink>
+      </span>
+    </div>
   </div>
 </template>
