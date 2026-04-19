@@ -2,7 +2,7 @@
 import type { AuthResponse } from '#open-fetch'
 
 defineProps<{
-  tags: AuthResponse<'account_verification'>['applied_tags']
+  tags: AuthResponse<'account_identification'>['applied_tags']
 }>()
 </script>
 

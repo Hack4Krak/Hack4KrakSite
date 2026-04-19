@@ -4,7 +4,7 @@ definePageMeta({
 })
 
 const { data: user } = await useAuth('/account/')
-const { data: verification_data } = await useAuth('/account/verification')
+const { data: identification_data } = await useAuth('/account/identification')
 
 const updateAccountModal = ref(false)
 const changePasswordModal = ref(false)
@@ -30,7 +30,7 @@ useSeoMeta({
     redirect-to="/"
     hydrate-on-idle
   />
-  <LazyPanelModalQRCode v-model="qrCodeModal" :verification-id="verification_data?.verification_id" hydrate-on-idle />
+  <LazyPanelModalQRCode v-model="qrCodeModal" :identification-code="identification_data?.identification_code" hydrate-on-idle />
 
   <div class="space-y-8 w-full">
     <header>
@@ -62,14 +62,14 @@ useSeoMeta({
           </UButton>
         </PanelTileSettingsRow>
 
-        <PanelTileSettingsRow label="Identyfikacyjny kod QR" :value="verification_data?.verification_id ?? ''">
+        <PanelTileSettingsRow label="Identyfikacyjny kod QR" :value="identification_data?.identification_code ?? ''">
           <UButton variant="ghost" color="neutral" size="sm" icon="mdi:qrcode" @click="qrCodeModal = true">
             Wyświetl
           </UButton>
         </PanelTileSettingsRow>
       </div>
 
-      <PanelTileParticipantTags v-if="verification_data" :tags="verification_data?.applied_tags ?? []" class="max-w-2xl" />
+      <PanelTileParticipantTags v-if="identification_data" :tags="identification_data?.applied_tags ?? []" class="max-w-2xl" />
     </div>
 
     <PanelTileSettingsRow danger label="Strefa zagrożenia" value="Operacja nieodwracalna. Usuniemy konto i powiązane dane." class="max-w-2xl">

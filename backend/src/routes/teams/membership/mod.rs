@@ -5,6 +5,8 @@ mod leave_team;
 mod my_team;
 mod stats;
 
+pub use my_team::MyTeamWithMembers;
+
 pub fn config(config: &mut ServiceConfig) {
     config
         .service(leave_team::leave_team)
