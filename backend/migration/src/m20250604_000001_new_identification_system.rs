@@ -1,5 +1,5 @@
 use sea_orm_migration::prelude::*;
-use sea_orm_migration::schema::{array, pk_uuid};
+use sea_orm_migration::schema::{string, uuid};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -27,13 +27,13 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(UserParticipantTags::Table)
                     .if_not_exists()
-                    .col(pk_uuid(UserParticipantTags::UserId))
-                    .col(
-                        array(
-                            UserParticipantTags::Tags,
-                            ColumnType::String(Default::default()),
-                        )
-                        .not_null(),
+                    .col(uuid(UserParticipantTags::UserId).not_null())
+                    .col(string(UserParticipantTags::TagId).not_null())
+                    .primary_key(
+                        Index::create()
+                            .name("pk-user_participant_tags-user_id-tag_id")
+                            .col(UserParticipantTags::UserId)
+                            .col(UserParticipantTags::TagId),
                     )
                     .to_owned(),
             )
@@ -87,5 +87,5 @@ enum Users {
 enum UserParticipantTags {
     Table,
     UserId,
-    Tags,
+    TagId,
 }

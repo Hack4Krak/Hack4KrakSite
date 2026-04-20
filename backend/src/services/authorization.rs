@@ -44,10 +44,7 @@ impl AuthorizationService {
             .await?
             .ok_or(Error::InvalidIdentificationCode)?;
 
-        let participant_tags_list =
-            user_participant_tags::Model::get_or_create(database, user.id).await?;
-
-        if participant_tags_list.has_tag(tag_id) {
+        if user_participant_tags::Model::has_tag(database, user.id, tag_id).await? {
             return Err(Error::TagAlreadyApplied {
                 tag_id: tag_id.to_string(),
             });
@@ -57,7 +54,7 @@ impl AuthorizationService {
             teams::Model::confirm(database, team_id).await?;
         }
 
-        participant_tags_list.add_tag(database, tag_id).await?;
+        user_participant_tags::Model::add_tag(database, user.id, tag_id).await?;
 
         Ok(())
     }
@@ -66,12 +63,11 @@ impl AuthorizationService {
         task_manager: &TaskManager,
         user_id: Uuid,
     ) -> Result<Vec<ParticipantTag>, Error> {
-        let tags = user_participant_tags::Model::get_or_create(database, user_id).await?;
+        let tag_ids = user_participant_tags::Model::tag_ids_for_user(database, user_id).await?;
 
         let tags_config = task_manager.participant_tags_config.read().await;
 
-        let applied_tags = tags
-            .tags
+        let applied_tags = tag_ids
             .into_iter()
             .map(|tag| {
                 tags_config
