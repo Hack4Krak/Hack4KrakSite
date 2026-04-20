@@ -42,12 +42,7 @@ pub async fn setup_database_with_schema() -> DatabaseConnection {
     setup_schema(&database, external_team_invitation::Entity).await;
     setup_schema(&database, flag_capture::Entity).await;
 
-    database
-        .execute_unprepared(
-            "CREATE TABLE user_participant_tags (user_id text PRIMARY KEY NOT NULL, tags text NOT NULL);",
-        )
-        .await
-        .unwrap();
+    setup_schema(&database, user_participant_tags::Entity).await;
 
     // We have to manually create all indexes
     database

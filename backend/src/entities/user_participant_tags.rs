@@ -19,7 +19,8 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub user_id: Uuid,
-    pub tags: Vec<String>,
+    #[sea_orm(primary_key, auto_increment = false)]
+    pub tag_id: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
