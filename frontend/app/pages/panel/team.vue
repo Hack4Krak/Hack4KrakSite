@@ -6,6 +6,8 @@ useSeoMeta({
   description: 'Zarządzaj swoją drużyną, zapraszaj nowych członków i sprawdzaj postępy!',
 })
 
+defineOgImage('DefaultOgImage', { bg: '/img/our-team.webp' })
+
 const { data: team } = await useAuth('/teams/membership/my_team')
 
 const { data: invitedUsers } = await useAuth('/teams/management/invited_users', {

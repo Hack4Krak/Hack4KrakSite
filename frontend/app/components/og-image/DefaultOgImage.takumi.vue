@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-
 const props = withDefaults(defineProps<{
   title?: string
   description?: string
-  icon?: string
-}>(), {})
-
-const icon = computed(() => props.icon || '/img/logo-light.png')
+  bg?: string
+}>(), {
+  bg: '/img/landing_background.webp',
+})
 
 const siteConfig = useSiteConfig()
 </script>
@@ -17,9 +15,9 @@ const siteConfig = useSiteConfig()
     class="w-full h-full flex flex-col items-center justify-between"
     style="background-color: #1e1e24; color: #ffffff; padding: 72px 60px 56px; position: relative;"
   >
-    <img src="/img/landing_background.webp" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.3;" alt="">
+    <img :src="bg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.3;" alt="">
     <div class="flex flex-col items-center" style="margin-top: auto; margin-bottom: auto; z-index: 1;">
-      <img v-if="icon" :src="icon" style="height: 80px; object-fit: contain;" alt="">
+      <img src="/img/logo-light.png" style="height: 80px; object-fit: contain;" alt="">
       <h1 style="font-size: 48px; font-weight: 700; margin: 0; margin-top: 28px; line-height: 1.2; letter-spacing: -0.5px; text-align: center; color: #ffffff;">
         {{ title || siteConfig.name }}
       </h1>
