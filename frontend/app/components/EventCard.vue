@@ -60,8 +60,9 @@ const {
       content: content(),
     }"
   >
-    <div
+    <button
       :class="root()"
+      class="text-left appearance-none"
       @mouseenter="isHoverMode && (open = true)"
       @mouseleave="isHoverMode && (open = false)"
     >
@@ -100,7 +101,7 @@ const {
           </transition>
         </div>
       </div>
-    </div>
+    </button>
     <template #content>
       <div class="md:max-w-90 max-w-75">
         <span>
