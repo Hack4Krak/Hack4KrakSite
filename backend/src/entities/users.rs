@@ -45,7 +45,7 @@ pub enum Relation {
         on_delete = "SetNull"
     )]
     Teams,
-    #[sea_orm(has_one = "super::user_participant_tags::Entity")]
+    #[sea_orm(has_many = "super::user_participant_tags::Entity")]
     UserParticipantTags,
     #[sea_orm(
         belongs_to = "super::user_onboarding::Entity",

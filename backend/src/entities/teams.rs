@@ -23,9 +23,9 @@ pub struct Model {
     pub created_at: DateTime,
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
+    pub status: TeamStatus,
     pub color: String,
     pub organization: Option<String>,
-    pub status: TeamStatus,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
