@@ -1,10 +1,12 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{
+const _props = withDefaults(defineProps<{
   title?: string
   description?: string
+  icon?: string
   bg?: string
 }>(), {
   bg: '/img/landing_background.webp',
+  icon: '/img/logo-light.png',
 })
 
 const siteConfig = useSiteConfig()
@@ -17,7 +19,7 @@ const siteConfig = useSiteConfig()
   >
     <img :src="bg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.3;" alt="">
     <div class="flex flex-col items-center" style="margin-top: auto; margin-bottom: auto; z-index: 1;">
-      <img src="/img/logo-light.png" style="height: 80px; object-fit: contain;" alt="">
+      <img :src="icon" style="height: 80px; object-fit: contain;" alt="">
       <h1 style="font-size: 48px; font-weight: 700; margin: 0; margin-top: 28px; line-height: 1.2; letter-spacing: -0.5px; text-align: center; color: #ffffff;">
         {{ title || siteConfig.name }}
       </h1>

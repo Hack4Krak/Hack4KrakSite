@@ -15,7 +15,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/image',
     '@nuxtjs/seo',
-    '@nuxt/content',
+    '@nuxt/content', // Must be after @nuxtjs/seo
     '@nuxt/test-utils/module',
     '@nuxtjs/mdc',
     '@formkit/auto-animate/nuxt',
