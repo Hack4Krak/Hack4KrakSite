@@ -4,7 +4,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
       redirect: 'error',
     })
     if (!user.error.value && user.data.value) {
-      return (to.query.callback as string) || '/panel'
+      return to.query.callback?.toString() || '/panel'
     }
   } catch (error) {
     console.error(error)
