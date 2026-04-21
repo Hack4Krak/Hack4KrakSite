@@ -115,16 +115,7 @@ function openLightbox(index: number) {
       </UContainer>
     </section>
 
-    <UModal v-model:open="lightboxOpen" :ui="{ content: 'max-w-7xl bg-transparent shadow-none ring-0' }">
-      <template #content>
-        <div class="flex items-center justify-center" @click="lightboxOpen = false">
-          <NuxtImg
-            :src="allGalleryImages[lightboxIndex]"
-            class="max-h-[90vh] max-w-full object-contain rounded cursor-pointer"
-          />
-        </div>
-      </template>
-    </UModal>
+    <ImageLightbox v-model:open="lightboxOpen" :src="allGalleryImages[lightboxIndex]!" />
 
     <Footer />
   </div>

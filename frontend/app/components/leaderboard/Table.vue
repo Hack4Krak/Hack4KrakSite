@@ -16,11 +16,10 @@ const top3PerTask = computed(() => {
     return {} as Record<string, string[]>
 
   return tasks.value.reduce<Record<string, string[]>>((acc, task) => {
-    const solves = teams.value
-      ?.map((team) => {
-        const solvedAt = team.tasks?.[task.id]
-        return solvedAt ? { teamId: team.team_id, time: new Date(solvedAt).getTime() } : null
-      })
+    const solves = teams.value?.map((team) => {
+      const solvedAt = team.tasks?.[task.id]
+      return solvedAt ? { teamId: team.team_id, time: new Date(solvedAt).getTime() } : null
+    })
       .filter(Boolean) as { teamId: string, time: number }[]
 
     solves.sort((a, b) => a.time - b.time)
@@ -30,22 +29,19 @@ const top3PerTask = computed(() => {
   }, {})
 })
 
-const taskColumns = computed<TableColumn<Team>[]>(
-  () =>
-    tasks.value?.map((task) => {
-      return {
-        accessorFn: (row: Team) => row.tasks?.[task.id],
-        id: task.id,
-        header: task.name,
-        meta: {
-          class: {
-            th: 'w-10 px-1',
-            td: 'w-10 px-1',
-          },
-        },
-      }
-    }) ?? [],
-)
+const taskColumns = computed<TableColumn<Team>[]>(() => tasks.value?.map((task) => {
+  return {
+    accessorFn: (row: Team) => row.tasks?.[task.id],
+    id: task.id,
+    header: task.name,
+    meta: {
+      class: {
+        th: 'w-10 px-1',
+        td: 'w-10 px-1',
+      },
+    },
+  }
+}) ?? [])
 
 const defaultHeaderMeta = {
   class: {

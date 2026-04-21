@@ -13,7 +13,7 @@ const contentMarkdown = await parseMarkdown(props.description)
 
 const card = tv({
   slots: {
-    root: 'sm:w-90 w-80 border-2 flex flex-col bg-default',
+    root: 'sm:w-90 w-80 border-2 flex flex-col bg-default cursor-pointer transition-shadow duration-200 hover:shadow-lg',
     imgWrapper: 'h-40 border-b-2',
     contentWrapper: 'border-b-2 flex-1 flex flex-col justify-center p-8',
     button: 'flex-1 flex items-center justify-center',

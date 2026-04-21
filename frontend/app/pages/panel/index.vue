@@ -39,7 +39,7 @@ useRafFn(() => updateDate())
         {{ team?.team_name }}
       </span>
       <span class="px-5 h-full flex items-center">
-        Hack4Krak CTF - Edycja dla szkół podstawowych
+        Hack4Krak CTF - Edycja dla szkół średnich
       </span>
       <span class="px-5 h-full flex items-center justify-end flex-1 text-xl">
         {{ now }}
