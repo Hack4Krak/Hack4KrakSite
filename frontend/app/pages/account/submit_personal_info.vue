@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const callback = useRoute().query.callback as string | undefined
+const callback = useRoute().query.callback?.toString()
 
 const REFERRAL_SOURCES = [
   'Linkedin',
