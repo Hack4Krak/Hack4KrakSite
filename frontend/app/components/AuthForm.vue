@@ -18,7 +18,7 @@ const toast = useToast()
 const OAuthBaseUrl = `${useRuntimeConfig().public.openFetch.api.baseURL}/auth/oauth`
 
 const route = useRoute()
-const callback = route.query.callback as string | undefined
+const callback = route.query.callback?.toString()
 
 if (route.query.redirect_from_confirmation === 'true' && import.meta.client) {
   toast.add({
