@@ -2,11 +2,15 @@
 import useEventStartAndEnd from '~/composables/useEventStartAndEnd'
 import { dayjs, humanizeDifference } from '~/utils/duration'
 
+const [eventStart, eventEnd] = await useEventStartAndEnd()
 const { data: timeLeft, refresh: updateTimeLeft } = useAsyncData('timeLeft', async () => getEventState())
 
 function getEventState() {
   const now = dayjs()
-  const [eventStart, eventEnd] = useEventStartAndEnd()
+
+  if (!eventStart || !eventEnd) {
+    return null
+  }
 
   if (now.isBetween(eventStart, eventEnd)) {
     const totalDuration = dayjs(eventEnd).diff(eventStart)

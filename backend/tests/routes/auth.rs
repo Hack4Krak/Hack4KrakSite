@@ -232,7 +232,7 @@ async fn reset_password_flow() {
     let response = test::call_service(&app, request).await;
     assert_eq!(response.status(), 200);
 
-    let email_body = &smtp_client.get_emails().await.items[0].content.body;
+    let email_body = &smtp_client.wait_for_emails(1).await.items[0].content.body;
     let reset_code = regex.find(email_body).unwrap().as_str();
 
     let request = test::TestRequest::patch()

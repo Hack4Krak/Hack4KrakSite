@@ -5,6 +5,7 @@ use serde::{Deserialize, Deserializer, Serialize};
 use testcontainers::core::{IntoContainerPort, WaitFor};
 use testcontainers::runners::AsyncRunner;
 use testcontainers::{ContainerAsync, GenericImage};
+use tokio::time::{Duration, Instant, sleep};
 use url::Host;
 
 pub struct SmtpTestClient {
@@ -52,8 +53,28 @@ impl SmtpTestClient {
             .expect("Failed to parse API response")
     }
 
+    pub async fn wait_for_emails(&self, expected_count: usize) -> MailhogResponse {
+        let deadline = Instant::now() + Duration::from_secs(5);
+
+        loop {
+            let emails = self.get_emails().await;
+
+            if emails.items.len() >= expected_count {
+                return emails;
+            }
+
+            assert!(
+                Instant::now() < deadline,
+                "Timed out waiting for {expected_count} email(s), got {}",
+                emails.items.len()
+            );
+
+            sleep(Duration::from_millis(50)).await;
+        }
+    }
+
     pub async fn find_uuid_in_first_email(&self) -> String {
-        self.get_emails().await.items[0].find_uuid()
+        self.wait_for_emails(1).await.items[0].find_uuid()
     }
 }
 

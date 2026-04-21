@@ -27,9 +27,9 @@ watchEffect(() => {
   if (!error)
     return
 
-  const customErrorId = errorData.value.response?.error
-  if (customErrorId === 'AccessBeforeEventStart') {
-    eventStartDate.value = new Date(errorData.value?.response.details.event_start_date)
+  const customErrorId = errorData.value?.error
+  if (customErrorId === 'AccessBeforeStage') {
+    eventStartDate.value = new Date(errorData.value?.details?.stage_start_date)
     errorTitle.value = {
       title: 'Skąd ten pośpiech?',
       message: 'CTF jeszcze się nie rozpoczął!\n Czas do początku wydarzenia:',
@@ -38,17 +38,21 @@ watchEffect(() => {
     return
   }
 
-  const message = error.message?.toString().toLowerCase() || ''
+  const nuxtErrorMessage = error.message?.toString().toLowerCase() || ''
   const status = error.status
   errorTitle.value.title = String(status ?? 'Błąd')
 
   if (error.status === 404) {
-    if (message.includes('page not found')) {
+    if (nuxtErrorMessage.includes('page not found')) {
       errorTitle.value.message
         = 'Uwaga rycerzu,\n ta strona zniknęła jak zamek w chmurach.\n Wróć na właściwą drogę!'
     }
+  } else if (error.status === 403) {
+    errorTitle.value.message = 'Nie masz uprawnień,\n aby zobaczyć tę stronę.'
   } else if (error.status === 500) {
     errorTitle.value.message = 'Rycerz napotkał przeszkodę\n Na swojej drodze.\n Spróbuj ponownie później.'
+  } else if (errorData.value.message) {
+    errorTitle.value.message = errorData.value.message
   }
 })
 
@@ -76,22 +80,25 @@ async function finishTimer() {
 
         <LazyTimer v-if="eventStartDate" class="mt-10" :target="eventStartDate" @complete="finishTimer()" />
 
-        <LazyUModal v-else title="Więcej informacji o błędzie:" hydrate-on-visible>
-          <UButton label="Więcej informacji..." variant="outline" class="w-fit mt-4" />
-          <template #body>
-            <section class="flex flex-col text-lg space-y-5">
-              <div
-                v-for="(element, i) in [['Kod', error?.status], ['Wiadomość', error?.statusText], ['Dane', error?.data]]"
-                :key="i"
-              >
-                <h2 class="text-xl font-bold text-primary">
-                  {{ element[0] }}:
-                </h2>
-                <pre class="font-light font-mono">{{ element[1] }}</pre>
-              </div>
-            </section>
-          </template>
-        </LazyUModal>
+        <div v-else class="flex flex-wrap gap-3 mt-4">
+          <UButton label="Wróć na stronę główną" to="/" />
+          <LazyUModal title="Więcej informacji o błędzie:" hydrate-on-visible>
+            <UButton label="Więcej informacji..." variant="outline" />
+            <template #body>
+              <section class="flex flex-col text-lg space-y-5">
+                <div
+                  v-for="(element, i) in [['Kod', error?.status], ['Wiadomość', error?.statusText], ['Dane', error?.data]]"
+                  :key="i"
+                >
+                  <h2 class="text-xl font-bold text-primary">
+                    {{ element[0] }}:
+                  </h2>
+                  <pre class="font-light font-mono">{{ element[1] }}</pre>
+                </div>
+              </section>
+            </template>
+          </LazyUModal>
+        </div>
       </div>
 
       <div class="w-3/4 mb-10 md:w-150 md:mb-0 md:ml-10">
