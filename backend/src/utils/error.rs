@@ -105,6 +105,7 @@ pub enum Error {
     TagAlreadyApplied {
         tag_id: String,
     },
+    FailedToGenerateQrCode(String),
 
     #[serde(skip)]
     FailedToParseUrl(#[from] url::ParseError),
@@ -150,6 +151,7 @@ impl error::ResponseError for Error {
             | Error::FailedToParseUrl(_)
             | Error::ConflictInDatabase
             | Error::Metrics(_)
+            | Error::FailedToGenerateQrCode(_)
             | Error::FailedToRenderTemplate(_)
             | Error::ServerEventSendingError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Unauthorized => StatusCode::UNAUTHORIZED,
