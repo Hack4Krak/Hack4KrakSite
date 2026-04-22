@@ -59,7 +59,7 @@ Przygotowaliśmy dla Was atrakcyjne i wartościowe nagrody rzeczowe! Zwycięzcy 
 ::
 
 ::faq-accordion{question="Jakie edycje odbyły się do tej pory?"}
-Do tej pory odbyły się dwie edycje. Pierwsza skierowana była do uczniów XXXI Liceum Ogólnokształcącego w Krakowie, a druga do uczniów krakowskich szkół podstawowych. Aby dowiedzieć się więcej o poprzednich wydarzeniach sprawdź zakładkę [O nas](/about_us) lub odwiedź nasze social media.
+Do tej pory odbyły się dwie edycje. Pierwsza skierowana była do uczniów XXXI Liceum Ogólnokształcącego w Krakowie, a druga do uczniów krakowskich szkół średnich. Aby dowiedzieć się więcej o poprzednich wydarzeniach sprawdź zakładkę [O nas](/about_us) lub odwiedź nasze social media.
 ::
 
 ::faq-accordion{question="Kto może wziąć udział w Hack4Krak CTF?"}

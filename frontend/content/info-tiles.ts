@@ -7,7 +7,7 @@ export const INFO_TILES_CONTENT = [
   },
   {
     front: '**Kto** może wziąć udział?',
-    back: 'W wydarzeniu mogą wziąć udział **uczniowie szkół ponadpodstawowych**, którzy chcą spróbować swoich sił w świecie cyberbezpieczeństwa.',
+    back: 'W wydarzeniu mogą wziąć udział **uczniowie szkół średnich**, którzy chcą spróbować swoich sił w świecie cyberbezpieczeństwa.',
     color: '#dab2ff', // purple-300
     image: '/img/character/witch_tower.png',
   },

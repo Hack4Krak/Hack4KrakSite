@@ -130,20 +130,10 @@ const chartOption = computed<EChartsOption>(() => {
 
 <template>
   <div class="h-full w-full">
-<<<<<<< feat/misc-tweaks
     <p class="text-center text-xs text-neutral-500 mb-1 flex items-center justify-center gap-1">
       <UIcon name="pixelarticons:zap" />
       Użyj scrolla, aby przybliżyć wykres
     </p>
-    <VChart v-if="chartData && eventInformation" :option="chartOption" autoresize class="h-full w-full" />
-=======
-    <VChart
-      v-if="chartData && start && end"
-      :option="chartOption"
-      autoresize
-      :init-options="initOptions"
-      class="h-full w-full"
-    />
->>>>>>> master
+    <VChart v-if="chartData && start && end" :option="chartOption" autoresize class="h-full w-full" />
   </div>
 </template>
