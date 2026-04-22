@@ -33,7 +33,7 @@ async fn identify_user_success() {
         .set_json(json!({
             "verification_id": verification_id
         }))
-        .insert_header(TestAuthHeader::new(admin))
+        .insert_header(TestAuthHeader::new(admin.id.clone(), admin.email.clone()))
         .to_request();
 
     let response = test::call_service(&app, request).await;
@@ -67,7 +67,7 @@ async fn identify_user_invalid_uuid() {
         .set_json(json!({
             "verification_id": invalid_uuid
         }))
-        .insert_header(TestAuthHeader::new(admin))
+        .insert_header(TestAuthHeader::new(admin.id.clone(), admin.email.clone()))
         .to_request();
 
     let response = test::call_service(&app, request).await;
@@ -99,7 +99,7 @@ async fn apply_tag_invalid_tag_id() {
             "verification_id": user.verification_id,
             "tag_id": "nonexistent_tag"
         }))
-        .insert_header(TestAuthHeader::new(admin))
+        .insert_header(TestAuthHeader::new(admin.id.clone(), admin.email.clone()))
         .to_request();
 
     let response = test::call_service(&app, request).await;
@@ -130,7 +130,7 @@ async fn reset_uuid_success() {
 
     let request = test::TestRequest::post()
         .uri(&format!("/admin/verification/reset/{}", user.id))
-        .insert_header(TestAuthHeader::new(admin))
+        .insert_header(TestAuthHeader::new(admin.id.clone(), admin.email.clone()))
         .to_request();
 
     let response = test::call_service(&app, request).await;
@@ -164,7 +164,7 @@ async fn reset_uuid_user_not_found() {
             "/admin/verification/reset/{}",
             nonexistent_user_id
         ))
-        .insert_header(TestAuthHeader::new(admin))
+        .insert_header(TestAuthHeader::new(admin.id.clone(), admin.email.clone()))
         .to_request();
 
     let response = test::call_service(&app, request).await;

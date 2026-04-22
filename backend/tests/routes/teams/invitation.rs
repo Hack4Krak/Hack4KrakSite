@@ -21,7 +21,7 @@ async fn assert_correct_team_size() {
 
     let request = test::TestRequest::post()
         .uri("/teams/invitations/accept_invitation/dziengiel")
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
         .to_request();
     let response = test::call_service(&app, request).await;
     assert_eq!(response.status(), 200);
@@ -46,7 +46,7 @@ async fn assert_incorrect_team_size() {
 
     let request = test::TestRequest::post()
         .uri("/teams/invitations/accept_invitation/dziengiel")
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
         .to_request();
     let response = test::call_service(&app, request).await;
     assert_eq!(response.status(), 409);
