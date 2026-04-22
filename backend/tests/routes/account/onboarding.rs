@@ -16,7 +16,7 @@ async fn submit_onboarding_request(
 ) -> actix_web::dev::ServiceResponse<impl actix_web::body::MessageBody> {
     let request = test::TestRequest::post()
         .uri("/account/onboarding")
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
         .set_json(payload)
         .to_request();
     test::call_service(app, request).await
@@ -32,7 +32,7 @@ async fn get_onboarding(
 ) -> Option<user_onboarding::Model> {
     let request = test::TestRequest::get()
         .uri("/account/onboarding")
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
         .to_request();
     test::call_and_read_body_json(app, request).await
 }
@@ -49,14 +49,14 @@ async fn account_delete() {
 
     let request = test::TestRequest::delete()
         .uri("/account/delete")
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
         .to_request();
     let response = test::call_service(&app, request).await;
     assert!(response.status().is_success());
 
     let request = test::TestRequest::get()
         .uri("/account/")
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
         .to_request();
     let response = test::call_service(&app, request).await;
     assert!(response.status().is_client_error());
@@ -74,7 +74,7 @@ async fn account_update() {
 
     let request = test::TestRequest::patch()
         .uri("/account/update")
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
         .set_json(serde_json::json!({
             "username": "Salieri",
         }))
@@ -84,7 +84,7 @@ async fn account_update() {
 
     let request = test::TestRequest::get()
         .uri("/account/")
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
         .to_request();
     let response = test::call_and_read_body(&app, request).await;
     assert_eq!(
@@ -94,7 +94,7 @@ async fn account_update() {
 
     let request = test::TestRequest::patch()
         .uri("/account/update/password")
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
         .set_json(serde_json::json!({
             "old_password": "Dziengiel",
             "new_password": "Dziengiel2"
@@ -128,7 +128,7 @@ async fn submit_onboarding() {
 
     let request = test::TestRequest::post()
         .uri("/account/onboarding")
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
         .set_json(serde_json::json!({
           "organization": "Antonio School",
           "location": "Włochy",
@@ -151,7 +151,7 @@ async fn submit_onboarding() {
 
     let request = test::TestRequest::get()
         .uri("/account/")
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
         .to_request();
 
     let response = test::call_and_read_body(&app, request).await;
@@ -162,7 +162,7 @@ async fn submit_onboarding() {
 
     let request = test::TestRequest::get()
         .uri("/account/onboarding")
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
         .to_request();
 
     let response = test::call_service(&app, request).await;
@@ -181,7 +181,7 @@ async fn submit_onboarding_invalid_referral_source() {
 
     let request = test::TestRequest::post()
         .uri("/account/onboarding")
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
         .set_json(serde_json::json!({
           "organization": "Antonio School",
           "location": "Włochy",
@@ -209,7 +209,7 @@ async fn submit_onboarding_invalid_ctf_experience() {
 
     let request = test::TestRequest::post()
         .uri("/account/onboarding")
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
         .set_json(serde_json::json!({
           "organization": "Antonio School",
           "location": "Włochy",

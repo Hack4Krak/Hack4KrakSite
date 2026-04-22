@@ -29,7 +29,7 @@ async fn create_team_user_already_belongs_to_team() {
         .set_json(json!({
             "team_name": "team1".to_string(),
         }))
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
         .to_request();
     let response = test::call_service(&app, request).await;
     assert_eq!(response.status(), 403);
@@ -51,7 +51,7 @@ async fn create_duplicate_team() {
         .set_json(json!({
             "team_name": "Dziengiel".to_string(),
         }))
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
         .to_request();
     let response = test::call_service(&app, request).await;
     assert_eq!(response.status(), 409);
@@ -72,7 +72,7 @@ async fn create_team_success() {
         .set_json(json!({
             "team_name": "Dziengiel".to_string(),
         }))
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
         .to_request();
     let response = test::call_service(&app, request).await;
     assert!(response.status().is_success());
@@ -98,7 +98,7 @@ async fn create_team_invalid_period() {
         .set_json(json!({
             "team_name": "Dziengiel".to_string(),
         }))
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
         .to_request();
     let response: Value = test::call_and_read_body_json(&app, request).await;
     assert_eq!(response["error"].as_str().unwrap(), "Team");
@@ -127,7 +127,7 @@ async fn create_team_external_registration_mode() {
         .set_json(json!({
             "team_name": "Dziengiel".to_string(),
         }))
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
         .to_request();
     let response: Value = test::call_and_read_body_json(&app, request).await;
     assert_eq!(response["error"].as_str().unwrap(), "Team");

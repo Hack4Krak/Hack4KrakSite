@@ -33,7 +33,7 @@ async fn external_invitations_flow() {
             "organization": "School for Silly Crabs".to_string(),
             "email_address": "crab@norbiros.dev".to_string(),
         }))
-        .insert_header(TestAuthHeader::new(admin.clone()))
+        .insert_header(TestAuthHeader::new(admin.id.clone(), admin.email.clone()))
         .to_request();
     let response = test::call_service(&app, request).await;
     assert_eq!(response.status(), 200);
@@ -48,7 +48,7 @@ async fn external_invitations_flow() {
             // Testing maximum, average, and minimum team sizes
             "teams": [["Duże Kotki", 5], ["Kotki", 5], ["Kraby", 1]]
         }))
-        .insert_header(TestAuthHeader::new(admin.clone()))
+        .insert_header(TestAuthHeader::new(admin.id.clone(), admin.email.clone()))
         .to_request();
     let response: Vec<Vec<String>> = test::call_and_read_body_json(&app, request).await;
     assert_eq!(response.len(), 3);
@@ -59,7 +59,7 @@ async fn external_invitations_flow() {
         .set_json(json!({
             "code": response[0][0].clone()
         }))
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
         .to_request();
     let response = test::call_service(&app, request).await;
     assert_eq!(response.status(), 200);
@@ -69,7 +69,7 @@ async fn external_invitations_flow() {
         .uri(&format!(
             "/teams/external_invitations/info/{confirmation_code}"
         ))
-        .insert_header(TestAuthHeader::new(admin.clone()))
+        .insert_header(TestAuthHeader::new(admin.id.clone(), admin.email.clone()))
         .to_request();
     let response = test::call_service(&app, request).await;
     assert_eq!(response.status(), 200);

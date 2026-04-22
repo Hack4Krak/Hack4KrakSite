@@ -14,7 +14,7 @@ use serde_json::json;
 async fn submit_flag(user: users::Model, flag: &str) -> TestRequest {
     TestRequest::post()
         .uri("/flag/submit")
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
         .set_json(json!({ "flag": flag }))
 }
 
