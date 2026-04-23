@@ -3,6 +3,7 @@ use crate::models::user::validate_name_chars;
 use crate::services::auth::AuthService;
 use crate::utils::app_state;
 use crate::utils::error::Error;
+use crate::utils::validation::validate_callback;
 use actix_web::web::Json;
 use actix_web::{HttpResponse, post, web};
 use actix_web_validation::Validated;
@@ -18,6 +19,8 @@ pub struct RegisterModel {
     pub email: String,
     #[validate(length(min = 8, max = 32))]
     pub password: Password,
+    #[validate(length(max = 256), custom(function = "validate_callback"))]
+    pub callback: Option<String>,
 }
 
 #[utoipa::path(
