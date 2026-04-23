@@ -1,8 +1,9 @@
 use crate::test_utils;
 use chrono::Utc;
 use hack4krak_backend::entities::sea_orm_active_enums::{TeamStatus, UserRoles};
-use hack4krak_backend::entities::{teams, users};
-use sea_orm::{DatabaseConnection, EntityTrait};
+use hack4krak_backend::entities::teams::Model;
+use hack4krak_backend::entities::{flag_capture, teams, users};
+use sea_orm::{DatabaseConnection, EntityTrait, QueryOrder, Set};
 use uuid::Uuid;
 
 #[derive(Default)]
@@ -72,6 +73,25 @@ impl TestDatabase {
             .unwrap();
 
         teams::Entity::find_by_id(team_uuid)
+            .one(&self.database)
+            .await
+            .unwrap()
+            .unwrap()
+    }
+
+    pub async fn with_flag_capture(&self, team: &Model, task: String) -> flag_capture::Model {
+        flag_capture::Entity::insert(flag_capture::ActiveModel {
+            team: Set(team.id),
+            task: Set(task),
+            submitted_at: Set(Utc::now().naive_utc()),
+            ..Default::default()
+        })
+        .exec(&self.database)
+        .await
+        .unwrap();
+
+        flag_capture::Entity::find()
+            .order_by_desc(flag_capture::Column::Id)
             .one(&self.database)
             .await
             .unwrap()
