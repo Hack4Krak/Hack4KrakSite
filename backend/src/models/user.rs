@@ -3,7 +3,7 @@ use crate::entities::users::{ActiveModel, UpdatableModel};
 use crate::entities::{teams, users};
 use crate::routes::auth::AuthError::UserAlreadyExists;
 use crate::routes::auth::RegisterModel;
-use crate::services::auth::AuthService;
+use crate::services::authentication::AuthenticationService;
 use crate::utils::error::Error;
 use crate::utils::handle_database_error::handle_database_error;
 use actix_web::dev::Payload;
@@ -155,10 +155,10 @@ impl users::Model {
     pub async fn create_from_user_info(
         database: &DatabaseConnection,
         user_info: UserInformation,
-    ) -> Result<(), Error> {
+    ) -> Result<Self, Error> {
         users::Model::assert_is_unique(database, &user_info.email, &user_info.name, None).await?;
 
-        users::ActiveModel {
+        let user = users::ActiveModel {
             id: Set(uuid_gen::new_v4()),
             username: Set(user_info.name.clone()),
             email: Set(user_info.email.clone()),
@@ -166,12 +166,13 @@ impl users::Model {
             created_at: Set(Utc::now().naive_utc()),
             is_leader: Set(false),
             roles: Set(UserRoles::Default),
+            identification_code: Set(uuid_gen::new_v4()),
             ..Default::default()
         }
         .insert(database)
         .await?;
 
-        Ok(())
+        Ok(user)
     }
 
     pub async fn delete(
@@ -220,8 +221,9 @@ impl users::Model {
         }
 
         if let Some(Some(password)) = updatable_user_model.password {
-            updatable_user_model.password =
-                Some(Some(AuthService::hash_password(Password(password))?));
+            updatable_user_model.password = Some(Some(AuthenticationService::hash_password(
+                Password(password),
+            )?));
         }
 
         let active_user = updatable_user_model.update(updated_user);

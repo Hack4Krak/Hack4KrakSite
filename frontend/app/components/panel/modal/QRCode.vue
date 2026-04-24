@@ -1,46 +1,41 @@
 <script setup lang="ts">
-const emit = defineEmits<{
-  (e: 'codeScanned', code: string): void
+defineProps<{
+  identificationId: string | undefined
 }>()
-
 const open = defineModel<boolean>()
-
-const schema = z.object({
-  code: z.string().meta({ title: 'Kod QR' }),
-})
-
-function onDetect(detectedCodes: DetectedBarcode[]) {
-  emit('codeScanned', detectedCodes[0]!.rawValue)
-  open.value = false
-}
-
-function onError(error: Error) {
-  console.error(error)
-  open.value = false
-
-  useToast().add({
-    title: `Nie udało się zeskanować kodu QR`,
-    description: error.message ?? 'Nieznany błąd',
-    color: 'error',
-  })
-}
 </script>
 
 <template>
-  <AutoFormModal
-    v-model:open="open"
-    title="Zeskanuj kod QR"
-    :schema="schema"
-    @submit="open = false"
-  >
-    <template #code>
-      <QrcodeStream
-        @detect="onDetect"
-        @error="onError"
-      />
+  <UModal v-model:open="open">
+    <template #content>
+      <UCard>
+        <template #header>
+          <div class="flex justify-between items-center">
+            <h3 class="text-lg font-semibold">
+              Twój kod identyfikacyjny
+            </h3>
+            <UButton
+              icon="i-heroicons-x-mark"
+              color="neutral"
+              variant="ghost"
+              size="sm"
+              @click="open = false"
+            />
+          </div>
+        </template>
+        <div v-if="identificationId" class="flex flex-col items-center gap-4">
+          <Qrcode :value="identificationId" class="w-48 h-48" />
+          <p class="text-sm text-gray-400 text-center break-all">
+            {{ identificationId }}
+          </p>
+          <p class="text-xs text-gray-500 text-center">
+            Pokaż ten kod organizatorom, aby potwierdzić swoją tożsamość
+          </p>
+        </div>
+        <div v-else class="text-center text-gray-400">
+          Brak kodu identyfikacyjnego
+        </div>
+      </UCard>
     </template>
-    <template #footer="{ close }">
-      <UButton label="Zamknij" color="neutral" variant="outline" @click="close" />
-    </template>
-  </AutoFormModal>
+  </UModal>
 </template>

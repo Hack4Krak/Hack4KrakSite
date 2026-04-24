@@ -98,6 +98,14 @@ pub enum Error {
     FailedToParseStage {
         stage_identifier: String,
     },
+    InvalidIdentificationCode,
+    InvalidTagId {
+        tag_id: String,
+    },
+    TagAlreadyApplied {
+        tag_id: String,
+    },
+    FailedToGenerateQrCode(String),
 
     #[serde(skip)]
     FailedToParseUrl(#[from] url::ParseError),
@@ -143,6 +151,7 @@ impl error::ResponseError for Error {
             | Error::FailedToParseUrl(_)
             | Error::ConflictInDatabase
             | Error::Metrics(_)
+            | Error::FailedToGenerateQrCode(_)
             | Error::FailedToRenderTemplate(_)
             | Error::ServerEventSendingError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Unauthorized => StatusCode::UNAUTHORIZED,
@@ -154,6 +163,8 @@ impl error::ResponseError for Error {
             Error::UserNotFound | Error::RouteNotFound | Error::RecipientNotFound { .. } => {
                 StatusCode::NOT_FOUND
             }
+            Error::InvalidIdentificationCode | Error::InvalidTagId { .. } => StatusCode::NOT_FOUND,
+            Error::TagAlreadyApplied { .. } => StatusCode::CONFLICT,
             Error::Forbidden { .. }
             | Error::UserMustHaveHigherRoleThanAffectedUser
             | Error::AccessDuringStage

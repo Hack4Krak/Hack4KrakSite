@@ -68,6 +68,8 @@ async-stream = "0.3.6"
 rand = "0.10.1"
 prometheus = "0.14.0"
 askama = "0.15.6"
+qrcode = { version = "0.14.1", default-features = false, features = ["image"] }
+image = { version = "0.25.9", default-features = false, features = ["png"] }
 
 [dev-dependencies]
 quoted_printable = "0.5.2"

@@ -21,7 +21,7 @@ async fn assert_correct_team_size() {
 
     let request = test::TestRequest::post()
         .uri("/teams/invitations/accept_invitation/dziengiel")
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
         .to_request();
     let response = test::call_service(&app, request).await;
     assert_eq!(response.status(), 200);
@@ -46,7 +46,7 @@ async fn assert_incorrect_team_size() {
 
     let request = test::TestRequest::post()
         .uri("/teams/invitations/accept_invitation/dziengiel")
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
         .to_request();
     let response = test::call_service(&app, request).await;
     assert_eq!(response.status(), 409);
@@ -62,7 +62,6 @@ async fn init_database_with_teams(
         id: Set(team_uuid),
         name: Set("dziengiel".to_string()),
         created_at: Set(Utc::now().naive_utc()),
-        confirmation_code: Set(Some(team_uuid)),
         status: Set(TeamStatus::Absent),
         organization: Set(Some("Hack4Krak".to_string())),
         color: Set("#000000".to_string()),
@@ -92,6 +91,7 @@ async fn init_database_with_teams(
             is_leader: Set(false),
             roles: Set(UserRoles::Default),
             team: Set(Some(team_uuid)),
+            identification_code: Set(uuid),
             ..Default::default()
         }
         .insert(database)

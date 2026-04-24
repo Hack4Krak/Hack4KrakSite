@@ -1,6 +1,7 @@
 use crate::entities::sea_orm_active_enums::UserRoles;
 use crate::entities::{teams, users};
 use crate::routes::teams::TeamError;
+use crate::services::authorization::AuthorizationService;
 use crate::utils::app_state::AppState;
 use crate::utils::cookies::ACCESS_TOKEN_COOKIE;
 use crate::utils::error::Error;
@@ -23,7 +24,6 @@ use std::rc::Rc;
 pub struct AuthMiddleware {
     insert_user_extension: bool,
     insert_team_extension: bool,
-    require_confirmed_team: bool,
     team_requirement: TeamRequirement,
     role_requirement: UserRoles,
 }
@@ -58,16 +58,6 @@ impl AuthMiddleware {
             insert_user_extension: true,
             insert_team_extension: true,
             team_requirement: TeamRequirement::Leader,
-            ..Default::default()
-        }
-    }
-
-    pub fn with_confirmed_team_as_member() -> Self {
-        AuthMiddleware {
-            insert_user_extension: true,
-            insert_team_extension: true,
-            team_requirement: TeamRequirement::Member,
-            require_confirmed_team: true,
             ..Default::default()
         }
     }
@@ -180,9 +170,6 @@ impl<S> AuthMiddlewareService<S> {
                     .one(database)
                     .await?
                     .ok_or(Error::Team(TeamError::TeamNotFound))?;
-                if config.require_confirmed_team {
-                    team.assert_is_confirmed()?;
-                }
                 if config.insert_team_extension {
                     request.extensions_mut().insert(team);
                 }
@@ -191,19 +178,8 @@ impl<S> AuthMiddlewareService<S> {
 
         match config.role_requirement {
             UserRoles::Default => (),
-            UserRoles::Admin => {
-                if user.roles < UserRoles::Admin {
-                    return Err(Error::Forbidden {
-                        required_role: UserRoles::Admin,
-                    });
-                }
-            }
-            UserRoles::Owner => {
-                if user.roles < UserRoles::Owner {
-                    return Err(Error::Forbidden {
-                        required_role: UserRoles::Owner,
-                    });
-                }
+            UserRoles::Admin | UserRoles::Owner => {
+                AuthorizationService::assert_user_has_role(&user, config.role_requirement)?;
             }
         }
 

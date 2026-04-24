@@ -6,15 +6,15 @@ use actix_web::test::TestRequest;
 use chrono::{DateTime, Duration, FixedOffset, Utc};
 use hack4krak_backend::entities::sea_orm_active_enums::TeamStatus;
 use hack4krak_backend::entities::{teams, users};
-use hack4krak_backend::models::event_config::{EventStage, EventStageType};
-use hack4krak_backend::models::task::TaskConfig;
+use hack4krak_backend::models::task_manager::event_config::{EventStage, EventStageType};
+use hack4krak_backend::models::task_manager::task_config::TaskConfig;
 use hack4krak_backend::services::task_manager::TaskManager;
 use serde_json::json;
 
 async fn submit_flag(user: users::Model, flag: &str) -> TestRequest {
     TestRequest::post()
         .uri("/flag/submit")
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
         .set_json(json!({ "flag": flag }))
 }
 
@@ -36,6 +36,7 @@ async fn setup_app_with_task_manager(
             ..Default::default()
         })
         .await;
+
     let unconfirmed_team = test_database.with_default_team().await;
     let absent_user = test_database
         .with_user(users::UpdatableModel {
@@ -45,6 +46,7 @@ async fn setup_app_with_task_manager(
         .await;
 
     let task_manager = TaskManager::default();
+
     task_manager.tasks.insert(
         "test-task".to_string(),
         TaskConfig {

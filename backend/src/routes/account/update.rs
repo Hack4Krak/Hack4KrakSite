@@ -2,7 +2,7 @@ use crate::entities::users;
 use crate::entities::users::UpdatableModel;
 use crate::models::user::Password;
 use crate::models::user::validate_name_chars;
-use crate::services::auth::AuthService;
+use crate::services::authentication::AuthenticationService;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::success_response::SuccessResponse;
@@ -75,9 +75,9 @@ pub async fn change_password(
 ) -> Result<HttpResponse, Error> {
     let model = model.into_inner();
 
-    AuthService::assert_password_is_valid(&user, &model.old_password)?;
+    AuthenticationService::assert_password_is_valid(&user, &model.old_password)?;
 
-    let hashed_password = AuthService::hash_password(model.new_password.clone())?;
+    let hashed_password = AuthenticationService::hash_password(model.new_password.clone())?;
 
     let updatable_model = UpdatableModel {
         password: Some(Some(hashed_password)),

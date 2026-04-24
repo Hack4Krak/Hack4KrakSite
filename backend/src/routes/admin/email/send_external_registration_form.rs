@@ -56,7 +56,7 @@ pub async fn send_external_registration_form(
             organization: payload.organization.clone(),
         }),
     )
-    .send(&app_state.smtp_client)
+    .send(app_state.smtp_client.as_ref())
     .await?;
 
     Ok(SuccessResponse::default().http_response())

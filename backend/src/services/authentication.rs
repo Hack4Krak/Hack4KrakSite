@@ -9,6 +9,7 @@ use crate::routes::auth::reset_password::ResetPasswordModel;
 use crate::services::emails;
 use crate::services::emails::EmailConfirmation;
 use crate::services::env::EnvConfig;
+use crate::services::identification::IdentificationService;
 use crate::utils::app_state;
 use crate::utils::cookies::{
     ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE, create_cookie, reset_cookie,
@@ -27,9 +28,9 @@ use chrono::Duration;
 use uuid::Uuid;
 use validator::ValidateEmail;
 
-pub struct AuthService;
+pub struct AuthenticationService;
 
-impl AuthService {
+impl AuthenticationService {
     pub async fn register_with_password(
         app_state: &app_state::AppState,
         credentials: RegisterModel,
@@ -60,7 +61,7 @@ impl AuthService {
                 user: credentials.name,
             }),
         )
-        .send(&app_state.smtp_client)
+        .send(app_state.smtp_client.as_ref())
         .await?;
 
         Ok(SuccessResponse::default().http_response())
@@ -131,9 +132,18 @@ impl AuthService {
             return Err(Error::InvalidEmailConfirmationCode);
         };
 
-        users::Model::create_from_user_info(&app_state.database, user_information).await?;
+        let user =
+            users::Model::create_from_user_info(&app_state.database, user_information).await?;
 
         email_confirmation.delete(&app_state.database).await?;
+
+        IdentificationService::send_identification_code_email(
+            app_state,
+            &user.username,
+            &user.email,
+            user.identification_code,
+        )
+        .await?;
 
         Ok(())
     }
@@ -186,7 +196,7 @@ impl AuthService {
                 link: reset_password_link.to_string(),
             }),
         )
-        .send(&app_state.smtp_client)
+        .send(app_state.smtp_client.as_ref())
         .await?;
 
         Ok(())

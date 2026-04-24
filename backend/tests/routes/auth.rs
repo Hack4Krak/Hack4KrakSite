@@ -1,13 +1,10 @@
+use crate::mocks::smtp_mock::MockSmtpClient;
 use crate::test_utils::TestApp;
-
 use crate::test_utils::database::TestDatabase;
 use actix_web::test;
 use actix_web::test::read_body_json;
-use chrono::Utc;
-use hack4krak_backend::entities::email_verification_request;
-use sea_orm::{EntityTrait, Set};
+use hack4krak_backend::entities::email_verification_request::UpdatableModel;
 use serde_json::json;
-use uuid::Uuid;
 
 #[cfg(feature = "full-test-suite")]
 #[actix_web::test]
@@ -137,61 +134,35 @@ async fn auth_flow() {
 
 #[actix_web::test]
 async fn email_confirmation_success() {
+    use hack4krak_backend::services::authentication::AuthenticationService;
+    use hack4krak_backend::utils::app_state::AppState;
+
     let test_database = TestDatabase::new().await;
 
-    let confirmation_code = Uuid::new_v4();
-    let email_confirmation = email_verification_request::ActiveModel {
-        id: Set(confirmation_code),
-        email: Set("".to_string()),
-        action_type: Set("confirm_email_address".to_string()),
-        additional_data: Set(Some(json![{
-            "user_information": {
-                "name": "test_user",
-                "email": "example@gmail.com",
-                "password_hash": "$argon2id$v=19$m=19456,t=2,p=1$nTzWdmrtGEOnwCocrg76xg$yv16FfDT5+meKwPmSiV+MF9kP8Man6bXZs+BloFTKIk".to_string(),
-            }
-        }])),
-        expiration_time: Set(Some(Utc::now().naive_utc() + chrono::Duration::minutes(30))),
-        created_at: Set(Utc::now().naive_utc()),
-    };
-    email_verification_request::Entity::insert(email_confirmation)
-        .exec(&test_database.database)
-        .await
-        .unwrap();
-
-    let app = TestApp::default()
-        .with_database(test_database)
-        .build_app()
+    let email_confirmation = test_database
+        .with_email_verification_request(UpdatableModel::default())
         .await;
+    let confirmation_code = email_confirmation.id;
 
-    let path = format!("/auth/confirm/{confirmation_code}");
-    let request = test::TestRequest::get().uri(&path).to_request();
-    let response = test::call_service(&app, request).await;
-    assert!(response.status().is_success());
+    let mock_smtp_client = MockSmtpClient::default();
+
+    let app_state =
+        AppState::with_database_and_smtp_client(test_database.database, mock_smtp_client.clone());
+
+    let result = AuthenticationService::confirm_email(&app_state, confirmation_code).await;
+
+    assert!(result.is_ok());
+    assert_eq!(mock_smtp_client.send_count(), 1);
 }
 
 #[actix_web::test]
 async fn email_confirmation_expired() {
     let test_database = TestDatabase::new().await;
 
-    // todo: move it to proper place
-    let confirmation_code = Uuid::new_v4();
-    let email_confirmation = email_verification_request::ActiveModel {
-        id: Set(confirmation_code),
-        email: Set("".to_string()),
-        action_type: Set("confirm_email_address".to_string()),
-        additional_data: Set(Some(json![{
-            "name": "test_user",
-            "email": "example@gmail.com",
-            "password_hash": "$argon2id$v=19$m=19456,t=2,p=1$nTzWdmrtGEOnwCocrg76xg$yv16FfDT5+meKwPmSiV+MF9kP8Man6bXZs+BloFTKIk".to_string(),
-        }])),
-        expiration_time: Set(Some(Utc::now().naive_utc())),
-        created_at: Set(Utc::now().naive_utc()),
-    };
-    email_verification_request::Entity::insert(email_confirmation)
-        .exec(&test_database.database)
-        .await
-        .unwrap();
+    let email_confirmation = test_database
+        .with_email_verification_request(UpdatableModel::default())
+        .await;
+    let confirmation_code = email_confirmation.id;
 
     let app = TestApp::default()
         .with_database(test_database)

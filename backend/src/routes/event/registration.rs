@@ -1,4 +1,4 @@
-use crate::models::task::RegistrationConfig;
+use crate::models::task_manager::registration_config::RegistrationConfig;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::web::Data;
