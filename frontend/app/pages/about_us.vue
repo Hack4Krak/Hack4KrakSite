@@ -6,6 +6,8 @@ useSeoMeta({
   title: aboutUsContent.meta.title,
   description: aboutUsContent.hero.description,
 })
+
+defineOgImage('DefaultOgImage', { bg: '/img/about-us/gallery1.webp' })
 </script>
 
 <template>

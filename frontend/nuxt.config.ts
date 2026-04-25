@@ -14,9 +14,9 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxt/eslint',
     '@nuxt/image',
-    '@nuxt/content',
-    '@nuxt/test-utils/module',
     '@nuxtjs/seo',
+    '@nuxt/content', // Must be after @nuxtjs/seo
+    '@nuxt/test-utils/module',
     '@nuxtjs/mdc',
     '@formkit/auto-animate/nuxt',
     'nuxt-echarts',
@@ -174,6 +174,9 @@ export default defineNuxtConfig({
   // https://nuxtseo.com/docs/schema-org/getting-started/introduction
   schemaOrg: {
     enabled: false,
+  },
+  ogImage: {
+    zeroRuntime: true,
   },
   linkChecker: {
     runOnBuild: false,

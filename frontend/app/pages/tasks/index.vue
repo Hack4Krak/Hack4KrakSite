@@ -13,6 +13,8 @@ useSeoMeta({
   description: 'Zobacz listę zadań na naszym CTF-ie!',
 })
 
+defineOgImage('DefaultOgImage', { bg: '/img/flag_n_clouds.webp' })
+
 const { data } = await useApi('/tasks/list')
 
 const { data: completedTasksRaw } = await useAuth('/teams/membership/completed_tasks', {
