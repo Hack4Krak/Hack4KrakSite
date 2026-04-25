@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { NAVBAR_ITEMS } from '~~/content/navbar'
 
-const { data: isLoggedIn } = useAuth('/auth/status', {
+const { $auth } = useNuxtApp()
+
+const { data: user } = useAuth('/account/', {
   redirect: 'error',
   onResponseError: undefined,
 })
@@ -18,6 +20,44 @@ const navigationMenuProperties = computed(() => ({
     list: 'gap-8',
   },
 }))
+
+async function logout() {
+  await $auth('/auth/logout', {
+    method: 'POST',
+  })
+
+  await refreshNuxtData()
+  await navigateTo('/login')
+}
+
+const userMenuItems = computed(() => [
+  [
+    {
+      label: user.value?.username ?? 'Użytkownik',
+      type: 'label' as const,
+    },
+  ],
+  [
+    {
+      label: 'Panel',
+      icon: 'pixelarticons:dashboard',
+      onSelect: () => navigateTo('/panel'),
+    },
+    {
+      label: 'Profil',
+      icon: 'pixelarticons:user',
+      onSelect: () => navigateTo('/panel/profile'),
+    },
+  ],
+  [
+    {
+      label: 'Wyloguj się',
+      icon: 'pixelarticons:logout',
+      color: 'error' as const,
+      onSelect: logout,
+    },
+  ],
+])
 </script>
 
 <template>
@@ -29,12 +69,22 @@ const navigationMenuProperties = computed(() => ({
     <UNavigationMenu v-bind="navigationMenuProperties" />
 
     <template #right>
-      <NuxtLink to="/login" class="text-md font-semibold flex grow-0" :aria-label="isLoggedIn ? 'Otwórz panel' : 'Zaloguj się'">
-        <UIcon :name="isLoggedIn ? 'pixelarticons:user' : 'pixelarticons:login'" class="icon-md lg:hidden" />
+      <template v-if="user">
+        <UDropdownMenu
+          :items="userMenuItems"
+          :content="{ align: 'end', sideOffset: 8 }"
+          :ui="{ content: 'w-48', item: 'cursor-pointer' }"
+        >
+          <button class="flex items-center gap-2 cursor-pointer font-semibold text-md" aria-label="Menu użytkownika">
+            <UIcon name="pixelarticons:user" class="icon-md" />
+            <span class="hidden lg:inline">{{ user.username }}</span>
+          </button>
+        </UDropdownMenu>
+      </template>
 
-        <span class="hidden lg:inline">
-          {{ isLoggedIn ? "Otwórz panel" : "Zaloguj się" }}
-        </span>
+      <NuxtLink v-else to="/login" class="text-md font-semibold flex grow-0" aria-label="Zaloguj się">
+        <UIcon name="pixelarticons:login" class="icon-md lg:hidden" />
+        <span class="hidden lg:inline">Zaloguj się</span>
       </NuxtLink>
     </template>
 

@@ -70,6 +70,10 @@ export default defineNuxtPlugin((nuxtApp) => {
           if (import.meta.server) {
             nuxtApp.ssrContext?.event.node.res.setHeader('Set-Cookie', cookies)
           }
+
+          if (import.meta.client) {
+            nuxtApp.runWithContext(() => refreshNuxtData()).catch(() => { })
+          }
         },
         onResponseError(context) {
           const data = context.response._data
