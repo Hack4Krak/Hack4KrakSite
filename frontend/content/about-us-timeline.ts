@@ -30,7 +30,7 @@ export const aboutUsTimeline: EventCardProps[] = [
   },
   {
     title: 'Przygotowania do największej edycji Hack4Krak CTF',
-    subtitle: 'Marzec 2026',
+    subtitle: 'Maj 2026',
     participants: '150+',
     description: 'Trzecia edycja **Hack4Krak CTF** będzie stacjonarnym wydarzeniem dla uczniów szkół średnich. \n\n'
       + 'Planujemy przyciągnąć ponad setkę uczestników, oferując angażujące zadania i rozwijając kluczowe umiejętności. '
