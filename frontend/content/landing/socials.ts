@@ -1,8 +1,10 @@
+export const DISCORD_URL = 'https://discord.gg/ASPqckzEd8'
+
 export const LANDING_SOCIALS = [
   {
     label: 'Discord',
     icon: 'ic:baseline-discord',
-    to: 'https://discord.gg/ASPqckzEd8',
+    to: DISCORD_URL,
     target: '_blank',
   },
   {

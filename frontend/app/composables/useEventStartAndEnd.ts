@@ -1,11 +1,16 @@
-export default async function useEventStartAndEnd() {
-  const { data: eventInformation } = await useApi('/event/info')
+import type { Ref } from 'vue'
+import { toDate } from '~/utils/date'
 
-  const stages = eventInformation.value?.stages
-  const eventStartStage = stages?.find(s => s.stage_type === 'event-start')
-  const eventEndStage = stages?.find(s => s.stage_type === 'event-end')
-  const start = eventStartStage?.start_date ? new Date(eventStartStage.start_date) : undefined
-  const end = eventEndStage?.start_date ? new Date(eventEndStage.start_date) : undefined
+interface EventInformationDates {
+  start_date?: string | null
+  end_date?: string | null
+}
+
+export default async function useEventStartAndEnd(eventInformation?: Ref<EventInformationDates | null | undefined>) {
+  const eventInfo = eventInformation ?? (await useApi('/event/info')).data
+
+  const start = toDate(eventInfo.value?.start_date)
+  const end = toDate(eventInfo.value?.end_date)
 
   return [start, end] as const
 }

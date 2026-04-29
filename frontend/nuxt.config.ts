@@ -92,7 +92,7 @@ export default defineNuxtConfig({
     '/docs/faq': { prerender: true },
     '/docs/rules': { prerender: true },
     '/docs/privacy-policy': { prerender: true },
-    '/': { prerender: true },
+    '/': { swr: 60 * 5 },
     '/about_us': { prerender: true },
     '/faq': { redirect: '/docs/faq' },
     '/rules': { redirect: '/docs/rules' },
