@@ -23,7 +23,7 @@ pub struct EventStage {
     pub end_date: Option<DateTime<FixedOffset>>,
 }
 
-#[derive(Serialize, Deserialize, ToSchema, Debug)]
+#[derive(Serialize, Deserialize, ToSchema, Debug, Clone)]
 #[serde(rename_all(deserialize = "kebab-case"))]
 pub struct EventConfig {
     pub id: String,

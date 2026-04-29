@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import LANDING_CONTENT from '~~/content/landing-page.json'
+import LANDING_CONTENT from '~~/content/landing/page'
 
 useSeoMeta({
   title: 'Strona Główna',
@@ -15,13 +15,36 @@ useSeoMeta({
       {{ LANDING_CONTENT.subTitle }}
     </template>
   </HeroSection>
+
   <UContainer class="w-full mb-2">
-    <section class="my-8">
-      <SectionInfoBox />
-    </section>
-    <section class="my-8">
-      <SectionInfoTiles />
-    </section>
+    <LandingSection compact>
+      <SectionEventBanner />
+    </LandingSection>
+
+    <LandingSection
+      id="jak-wziac-udzial"
+      subtitle="Krok po kroku"
+      title="Jak wziąć udział?"
+      section-class="scroll-mt-[15vh]"
+    >
+      <SectionHowToParticipate />
+    </LandingSection>
+
+    <LandingSection subtitle="Gdzie i kiedy" title="Lokalizacja i harmonogram">
+      <SectionEventDetails />
+    </LandingSection>
+
+    <LandingSection
+      subtitle="Edycja 2026"
+      title="Co na Was czeka?"
+    >
+      <SectionHighlights />
+    </LandingSection>
+
+    <LandingSection subtitle="Partnerzy i Sponsorzy" title="Wspierają nas" :separator="false">
+      <SectionPartners />
+    </LandingSection>
+
     <Footer class="mt-8 lg:mt-12" />
   </UContainer>
 </template>

@@ -4,7 +4,7 @@ use chrono::{DateTime, Duration, FixedOffset, Utc};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
-#[derive(Serialize, Deserialize, ToSchema, Debug)]
+#[derive(Serialize, Deserialize, ToSchema, Debug, Clone)]
 #[serde(rename_all(deserialize = "kebab-case"))]
 pub struct RegistrationConfig {
     pub start_date: DateTime<FixedOffset>,
@@ -29,7 +29,7 @@ pub struct Label {
     pub description: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, ToSchema)]
+#[derive(Debug, Serialize, Deserialize, ToSchema, Clone)]
 #[serde(rename_all = "kebab-case")]
 pub enum RegistrationMode {
     /// The users register teams themselves
@@ -47,6 +47,11 @@ impl RegistrationConfig {
         }
 
         Ok(())
+    }
+
+    pub fn is_open(&self) -> bool {
+        let now = Utc::now();
+        now >= self.start_date && now <= self.end_date
     }
 }
 
