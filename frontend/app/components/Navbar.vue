@@ -6,6 +6,12 @@ const { data: user } = useAuth('/account/', {
   onResponseError: undefined,
 })
 
+const { data: registrationInformation } = await useApi('/event/registration', {
+  key: 'landing-registration-info',
+})
+
+const registrationOpen = computed(() => registrationInformation.value?.is_open ?? false)
+
 const navigationMenuProperties = computed(() => ({
   'content-orientation': 'vertical' as const,
   'items': NAVBAR_ITEMS,
@@ -58,31 +64,46 @@ const userMenuItems = computed(() => [
     <UNavigationMenu v-bind="navigationMenuProperties" />
 
     <template #right>
-      <template v-if="user">
-        <NuxtLink
-          to="/panel/profile"
-          class="flex items-center gap-2 cursor-pointer font-semibold text-md lg:hidden"
-          aria-label="Profil użytkownika"
-        >
-          <UIcon name="pixelarticons:user" class="icon-md" />
-        </NuxtLink>
+      <div class="flex items-center gap-3 lg:gap-4">
+        <template v-if="registrationOpen && !user">
+          <NuxtLink
+            to="/register"
+            class="hidden lg:inline-flex items-center gap-2 text-md font-semibold text-primary hover:text-primary/85 transition-colors"
+            aria-label="Zapisz drużynę na Hack4Krak CTF"
+          >
+            <UIcon name="pixelarticons:users" class="size-4.5" />
+            <span>Zapisy otwarte</span>
+          </NuxtLink>
 
-        <UDropdownMenu
-          :items="userMenuItems"
-          :content="{ align: 'end', sideOffset: 8 }"
-          :ui="{ content: 'w-48', item: 'cursor-pointer' }"
-        >
-          <button class="hidden lg:flex items-center gap-2 cursor-pointer font-semibold text-md" aria-label="Menu użytkownika">
+          <div class="h-5 w-px bg-white/25" />
+        </template>
+
+        <template v-if="user">
+          <NuxtLink
+            to="/panel/profile"
+            class="flex items-center gap-2 cursor-pointer font-semibold text-md lg:hidden"
+            aria-label="Profil użytkownika"
+          >
             <UIcon name="pixelarticons:user" class="icon-md" />
-            <span class="hidden lg:inline">{{ user.username }}</span>
-          </button>
-        </UDropdownMenu>
-      </template>
+          </NuxtLink>
 
-      <NuxtLink v-else to="/login" class="text-md font-semibold flex grow-0" aria-label="Zaloguj się">
-        <UIcon name="pixelarticons:login" class="icon-md lg:hidden" />
-        <span class="hidden lg:inline">Zaloguj się</span>
-      </NuxtLink>
+          <UDropdownMenu
+            :items="userMenuItems"
+            :content="{ align: 'end', sideOffset: 8 }"
+            :ui="{ content: 'w-48', item: 'cursor-pointer' }"
+          >
+            <button class="hidden lg:flex items-center gap-2 cursor-pointer font-semibold text-md" aria-label="Menu użytkownika">
+              <UIcon name="pixelarticons:user" class="icon-md" />
+              <span class="hidden lg:inline">{{ user.username }}</span>
+            </button>
+          </UDropdownMenu>
+        </template>
+
+        <NuxtLink v-else to="/login" class="text-md font-semibold flex grow-0 items-center" aria-label="Zaloguj się">
+          <UIcon name="pixelarticons:login" class="icon-md lg:hidden" />
+          <span class="hidden lg:inline">Zaloguj się</span>
+        </NuxtLink>
+      </div>
     </template>
 
     <template #toggle="{ open, toggle }">
