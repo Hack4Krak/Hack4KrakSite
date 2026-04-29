@@ -1,4 +1,4 @@
-import { LANDING_SOCIALS } from '~~/content/landing-socials'
+import { LANDING_SOCIALS } from './landing/socials'
 
 export const FOOTER_SOCIALS = [
   ...LANDING_SOCIALS,
