@@ -1,5 +1,16 @@
 {
   "title": "Hack4Krak",
   "subTitle": "Największy w Małopolsce konkurs CTF \n dla uczniów szkół ponadpodstawowych!",
-  "infoBox": "Dziękujemy za udział w ostatniej edycji, kolejna tuż za rogiem!"
+  "event": {
+    "dateDisplay": "23-24 maja 2026",
+    "venue": {
+      "name": "Uniwersytet Komisji Edukacji Narodowej w Krakowie",
+      "building": "UKEN",
+      "address": "ul. Podchorążych 2, 30-084 Kraków",
+      "city": "Kraków",
+      "mapsUrl": "https://www.openstreetmap.org/?mlat=50.073806556912345&mlon=19.908402799575054#map=17/50.073806556912345/19.908402799575054",
+      "lat": 50.073806556912345,
+      "lon": 19.908402799575054
+    }
+  }
 }

@@ -1,11 +1,8 @@
 export default async function useEventStartAndEnd() {
   const { data: eventInformation } = await useApi('/event/info')
 
-  const stages = eventInformation.value?.stages
-  const eventStartStage = stages?.find(s => s.stage_type === 'event-start')
-  const eventEndStage = stages?.find(s => s.stage_type === 'event-end')
-  const start = eventStartStage?.start_date ? new Date(eventStartStage.start_date) : undefined
-  const end = eventEndStage?.start_date ? new Date(eventEndStage.start_date) : undefined
+  const start = eventInformation.value?.start_date ? new Date(eventInformation.value.start_date) : undefined
+  const end = eventInformation.value?.end_date ? new Date(eventInformation.value.end_date) : undefined
 
   return [start, end] as const
 }

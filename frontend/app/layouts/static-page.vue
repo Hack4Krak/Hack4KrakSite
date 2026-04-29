@@ -4,8 +4,8 @@
     <UContainer class="flex flex-col justify-center items-center mt-10 lg:mt-30 bg-default rounded-t-2xl">
       <slot />
     </UContainer>
-    <UContainer>
-      <Footer class="mt-8 lg:mt-12" />
-    </UContainer>
+    <div class="w-full">
+      <Footer class="mt-8 lg:mt-12 bg-default" />
+    </div>
   </NuxtLayout>
 </template>

@@ -4,7 +4,7 @@
       class="flex flex-col justify-center items-center w-full flex-1
         bg-[url(assets/img/background.webp)] bg-cover rendering-pixelated"
     >
-      <div class="my-5 p-8 rounded-2xl space-y-4 sm:min-w-90 min-w-70 bg-default">
+      <div class="my-8 p-8 sm:min-w-96 min-w-72 bg-default border-2 border-surface-muted shadow-[4px_4px_0_var(--color-primary)]">
         <slot />
       </div>
     </div>
