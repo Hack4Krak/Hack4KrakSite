@@ -1,4 +1,5 @@
 import dotenv from 'dotenv'
+import { defineOrganization } from 'nuxt-schema-org/schema'
 import { shikiLangNames, shikiTheme } from './app/utils/shiki'
 import { getNodeTransforms } from './app/utils/vite-node-transforms'
 
@@ -173,13 +174,33 @@ export default defineNuxtConfig({
   },
   // https://nuxtseo.com/docs/schema-org/getting-started/introduction
   schemaOrg: {
-    enabled: false,
+    identity: defineOrganization({
+      name: 'Hack4Krak',
+      description: 'Inicjatywa młodych liderów cyberbezpieczeństwa, których połączyła pasja do technologii, wyzwań i ciągłego rozwoju. Tworzymy wydarzenia, które uczą, inspirują i integrują młodzież zainteresowaną światem IT i bezpieczeństwa cyfrowego.',
+      url: 'https://hack4krak.pl',
+      logo: '/img/logo.png',
+
+      email: 'kontakt@hack4krak.pl',
+      foundingDate: '2024-10-14',
+      numberOfEmployees: {
+        '@type': 'QuantitativeValue',
+        'minValue': 10,
+        'maxValue': 25,
+      },
+
+      sameAs: [
+        'https://www.instagram.com/hack4krak/',
+        'https://www.linkedin.com/company/hack4krak/',
+        'https://www.facebook.com/profile.php?id=61573226541589',
+        'https://github.com/Hack4Krak',
+      ],
+    }),
   },
   linkChecker: {
     runOnBuild: false,
   },
   robots: {
-    disallow: ['/admin'],
+    disallow: ['/admin', '/panel', '/account'],
   },
   // https://nuxtseo.com/docs/site-config/guides/setting-site-config
   site: {
