@@ -26,9 +26,9 @@ export const aboutUsContent = {
     ],
     smallGalleryImages: [
       { path: '/img/about-us/gallery1.webp', alt: 'Photo of people from our team' },
-      { path: '/img/about-us/gallery2.webp', alt: 'Photo of people from our team' },
-      { path: '/img/about-us/gallery3.webp', alt: 'Photo of primary school students during 2. edition of Hack4Krack' },
+      { path: '/img/about-us/gallery2.webp', alt: 'Three members of our team posing together' },
+      { path: '/img/about-us/gallery3.webp', alt: 'Photo of primary school students during 2nd edition of Hack4Krack' },
     ],
-    mainGalleryImage: { path: '/img/our-team.webp', alt: 'Photo of people from our team' },
+    mainGalleryImage: { path: '/img/our-team.webp', alt: 'Group photo of all organizers together' },
   },
 }

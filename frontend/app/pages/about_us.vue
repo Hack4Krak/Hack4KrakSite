@@ -67,7 +67,7 @@ useSeoMeta({
           </p>
         </div>
         <div class="flex-1 justify-center items-center hidden sm:flex">
-          <NuxtImg class="w-full px-6 sm:px-0" src="/img/flag_n_clouds.webp" alt="image of flag in clouds" />
+          <NuxtImg class="w-full px-6 sm:px-0" src="/img/flag_n_clouds.webp" alt="" />
         </div>
       </UContainer>
     </section>
