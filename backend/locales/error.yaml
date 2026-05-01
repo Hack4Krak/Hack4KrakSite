@@ -42,7 +42,6 @@ Error:
   EmailConfirmationCodeExpired: "Kod z tego e-mail wygasł. Spróbuj ponownie!"
 
 AccountError:
-  BirthYearNotInRange: "Rok urodzenia musi być pomiędzy {min} a {max}"
   InvalidReferralSource: "Nieprawidłowe źródło polecenia"
 
 AuthError:

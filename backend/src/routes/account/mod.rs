@@ -23,16 +23,13 @@ pub fn config(cfg: &mut ServiceConfig) {
 
 #[error_with_messages]
 pub enum AccountError {
-    BirthYearNotInRange { min: i32, max: i32 },
     InvalidReferralSource,
 }
 
 impl error::ResponseError for AccountError {
     fn status_code(&self) -> StatusCode {
         match self {
-            AccountError::BirthYearNotInRange { .. } | AccountError::InvalidReferralSource => {
-                StatusCode::BAD_REQUEST
-            }
+            AccountError::InvalidReferralSource => StatusCode::BAD_REQUEST,
         }
     }
 
