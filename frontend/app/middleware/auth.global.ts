@@ -12,6 +12,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
           return '/account/submit_personal_info'
         }
       }
+      if (to.path === '/account/submit_personal_info') {
+        if (data.value.has_personal_information === true) {
+          return '/panel'
+        }
+      }
     } catch {
       return '/login'
     }

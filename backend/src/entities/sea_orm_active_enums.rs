@@ -4,6 +4,40 @@ use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
+#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "ctf_experience")]
+pub enum CtfExperience {
+    #[sea_orm(string_value = "never")]
+    Never,
+    #[sea_orm(string_value = "beginner")]
+    Beginner,
+    #[sea_orm(string_value = "intermediate")]
+    Intermediate,
+    #[sea_orm(string_value = "advanced")]
+    Advanced,
+    #[sea_orm(string_value = "expert")]
+    Expert,
+}
+#[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
+#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "school_grade")]
+pub enum SchoolGrade {
+    #[sea_orm(string_value = "not_studying")]
+    NotStudying,
+    #[sea_orm(string_value = "primary_school")]
+    PrimarySchool,
+    #[sea_orm(string_value = "class_1")]
+    Class1,
+    #[sea_orm(string_value = "class_2")]
+    Class2,
+    #[sea_orm(string_value = "class_3")]
+    Class3,
+    #[sea_orm(string_value = "class_4")]
+    Class4,
+    #[sea_orm(string_value = "class_5")]
+    Class5,
+    #[sea_orm(string_value = "university")]
+    University,
+}
+#[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "team_status")]
 pub enum TeamStatus {
     #[sea_orm(string_value = "confirmed")]

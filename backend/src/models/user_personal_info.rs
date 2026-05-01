@@ -6,16 +6,16 @@ use migration::OnConflict;
 use sea_orm::{ActiveModelTrait, DatabaseConnection, EntityTrait, Set, TransactionTrait};
 use serde_json::to_value;
 
-pub const ALLOWED_REFERRAL_SOURCES: [&str; 6] = [
+pub const ALLOWED_REFERRAL_SOURCES: [&str; 8] = [
+    "Instagram",
     "Linkedin",
     "Facebook",
-    "Instagram",
-    "Znajomy",
+    "Discord",
+    "Friend",
+    "School",
     "Internet",
-    "Inne",
+    "Other",
 ];
-
-pub const MAX_AGE: i32 = 120;
 
 impl Model {
     pub async fn create(
@@ -30,27 +30,27 @@ impl Model {
         user_personal_info::Entity::insert(user_personal_info::ActiveModel {
             id: Set(personal_info_id),
             first_name: Set(request_body.first_name),
-            birth_year: Set(request_body.birth_year),
             location: Set(request_body.location),
-            organization: Set(request_body.organization),
-            is_vegetarian: Set(request_body.is_vegetarian),
+            ctf_experience: Set(request_body.ctf_experience),
+            school_grade: Set(request_body.school_grade),
+            collab_interest: Set(request_body.collab_interest),
             marketing_consent: Set(request_body.marketing_consent),
             marketing_consent_accepted_at: Set(chrono::Utc::now().naive_utc()),
             marketing_consent_updated_at: Set(chrono::Utc::now().naive_utc()),
-            referral_source: Set(request_body.referral_source.map(to_value).transpose()?),
+            referral_sources: Set(Some(to_value(request_body.referral_sources)?)),
         })
         .on_conflict(
             OnConflict::columns(vec![Column::Id])
                 .update_columns(vec![
                     Column::FirstName,
-                    Column::BirthYear,
                     Column::Location,
-                    Column::Organization,
-                    Column::IsVegetarian,
+                    Column::CtfExperience,
+                    Column::SchoolGrade,
+                    Column::CollabInterest,
                     Column::MarketingConsent,
                     Column::MarketingConsentAcceptedAt,
                     Column::MarketingConsentUpdatedAt,
-                    Column::ReferralSource,
+                    Column::ReferralSources,
                 ])
                 .to_owned(),
         )
