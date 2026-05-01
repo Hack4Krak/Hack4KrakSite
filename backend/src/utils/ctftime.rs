@@ -1,29 +1,34 @@
 use crate::entities::{flag_capture, teams};
+use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
-use crate::utils::points_counter::{CaptureLogEvent, PointsCounter, TeamStandings};
-use actix_web::web::Data;
-use actix_web::{HttpResponse, get};
+use crate::utils::points_counter::SingleTeamStanding;
+use actix_web::web::{Data, Query};
 use sea_orm::ColumnTrait;
 use sea_orm::EntityTrait;
 use sea_orm::{QueryFilter, QueryOrder};
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
+use utoipa::ToSchema;
 use uuid::Uuid;
 
-#[utoipa::path(
-    responses(
-        (status = 200, description = "Successfully retrieved information.", body = TeamStandings),
-        (status = 500, description = "Internal server error"),
-    ),
-    tag = "leaderboard"
-)]
-#[get("/ctftime-team-standings")]
-pub async fn team_standings(
-    app_state: Data<crate::utils::app_state::AppState>,
-) -> Result<HttpResponse, Error> {
-    let points_counter = PointsCounter::calculate(&app_state).await?;
+#[derive(Serialize, Deserialize, ToSchema, Default, Debug)]
+pub struct CaptureLogEvent {
+    pub id: i32,
+    pub time: Option<i64>,
+    pub r#type: Option<String>,
+    pub team: String,
+    pub victim: Option<String>,
+    pub task: Option<String>,
+    #[serde(rename = "pointsDelta")]
+    pub points_delta: Option<usize>,
+}
 
-    Ok(HttpResponse::Ok().json(points_counter.to_standings(&app_state).await?))
+/// Team Standings for https://ctftime.org/json-scoreboard-feed
+#[derive(Serialize, Deserialize, ToSchema, Default, Debug, PartialEq)]
+pub struct TeamStandings {
+    pub tasks: Vec<String>,
+    pub standings: Vec<SingleTeamStanding>,
 }
 
 #[derive(serde::Deserialize, utoipa::ToSchema)]
@@ -33,21 +38,10 @@ pub struct CaptureLogQuery {
     pub last_id: Option<i32>,
 }
 
-#[utoipa::path(
-    params(
-        ("lastId" = Option<i32>, Query, description = "ID of the last event received")
-    ),
-    responses(
-        (status = 200, description = "Successfully retrieved capture log.", body = [CaptureLogEvent]),
-        (status = 500, description = "Internal server error"),
-    ),
-    tag = "leaderboard"
-)]
-#[get("/ctftime-capture-log")]
-pub async fn capture_log(
-    app_state: Data<crate::utils::app_state::AppState>,
-    query: actix_web::web::Query<CaptureLogQuery>,
-) -> Result<HttpResponse, Error> {
+pub async fn get_capture_log(
+    app_state: Data<AppState>,
+    query: Query<CaptureLogQuery>,
+) -> Result<Vec<CaptureLogEvent>, Error> {
     let last_id = query.last_id.unwrap_or(0);
     let app_state = Arc::new(app_state.into_inner());
 
@@ -64,7 +58,7 @@ pub async fn capture_log(
         .map(|t| (t.id, t.name))
         .collect();
 
-    let events: Vec<CaptureLogEvent> = captures
+    Ok(captures
         .into_iter()
         .map(|capture| CaptureLogEvent {
             id: capture.id,
@@ -75,7 +69,5 @@ pub async fn capture_log(
             points_delta: None,
             ..Default::default()
         })
-        .collect();
-
-    Ok(HttpResponse::Ok().json(events))
+        .collect())
 }

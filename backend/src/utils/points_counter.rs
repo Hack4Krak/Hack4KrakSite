@@ -1,6 +1,7 @@
 use crate::entities::{flag_capture, teams};
 use crate::models::event_config::EventStageType;
 use crate::utils::app_state::AppState;
+use crate::utils::ctftime::TeamStandings;
 use crate::utils::error::Error;
 use chrono::NaiveDateTime;
 use sea_orm::{EntityTrait, QueryOrder};
@@ -48,25 +49,6 @@ pub struct LeaderboardChart {
 pub struct PointsCounter {
     event_timestamps: Vec<NaiveDateTime>,
     team_time_series: HashMap<Uuid, TeamTimeSeriesData>,
-}
-
-#[derive(Serialize, Deserialize, ToSchema, Default, Debug)]
-pub struct CaptureLogEvent {
-    pub id: i32,
-    pub time: Option<i64>,
-    pub r#type: Option<String>,
-    pub team: String,
-    pub victim: Option<String>,
-    pub task: Option<String>,
-    #[serde(rename = "pointsDelta")]
-    pub points_delta: Option<usize>,
-}
-
-/// Team Standings for https://ctftime.org/json-scoreboard-feed
-#[derive(Serialize, Deserialize, ToSchema, Default, Debug, PartialEq)]
-pub struct TeamStandings {
-    tasks: Vec<String>,
-    standings: Vec<SingleTeamStanding>,
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Default, Debug, PartialEq)]
@@ -258,7 +240,10 @@ impl PointsCounter {
         }
     }
 
-    pub async fn to_standings(self, app_state: &Arc<AppState>) -> Result<TeamStandings, Error> {
+    pub async fn to_ctftime_standings(
+        self,
+        app_state: &Arc<AppState>,
+    ) -> Result<TeamStandings, Error> {
         let tasks_by_team = teams::Model::get_tasks_by_team(
             &app_state.database,
             self.team_time_series.keys().copied().collect(),

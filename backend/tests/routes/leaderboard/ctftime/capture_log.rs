@@ -2,7 +2,7 @@ use crate::test_utils::TestApp;
 use crate::test_utils::database::TestDatabase;
 use actix_web::test;
 use hack4krak_backend::entities::teams::UpdatableModel;
-use hack4krak_backend::utils::points_counter::CaptureLogEvent;
+use hack4krak_backend::utils::ctftime::CaptureLogEvent;
 
 #[actix_web::test]
 async fn capture_log() {
@@ -39,14 +39,14 @@ async fn capture_log() {
         .await;
 
     let request = test::TestRequest::get()
-        .uri("/leaderboard/ctftime-capture-log?lastId=2147483647")
+        .uri("/leaderboard/ctftime/capture-log?lastId=2147483647")
         .to_request();
     let response = test::call_service(&app, request).await;
     assert!(response.status().is_success());
     assert_eq!(test::read_body(response).await, "[]");
 
     let request = test::TestRequest::get()
-        .uri("/leaderboard/ctftime-capture-log?lastId=0")
+        .uri("/leaderboard/ctftime/capture-log?lastId=0")
         .to_request();
     let response = test::call_service(&app, request).await;
     assert!(response.status().is_success());
