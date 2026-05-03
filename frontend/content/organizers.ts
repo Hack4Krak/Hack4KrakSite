@@ -1,12 +1,20 @@
-export const organizers = {
-  team: [
+export const ORGANIZERS = [
+  { sectionName: 'zarząd', members: [
     {
       name: 'Adam Nowak',
       email: 'testmail@hack4krak.pl',
       role: 'jakas fajna rola',
       github: 'https://github.com/Hack4Krak/Hack4KrakSite',
       linkedin: 'https://pl.linkedin.com/company/hack4krak',
-      section: 'zarząd',
+    },
+  ] },
+  { sectionName: 'sekcja techniczna', members: [
+    {
+      name: 'Adam Nowak',
+      email: 'testmail@hack4krak.pl',
+      role: 'jakas fajna rola',
+      github: 'https://github.com/Hack4Krak/Hack4KrakSite',
+      linkedin: 'https://pl.linkedin.com/company/hack4krak',
     },
     {
       name: 'Adam Nowak',
@@ -14,7 +22,6 @@ export const organizers = {
       role: 'jakas fajna rola',
       github: 'https://github.com/Hack4Krak/Hack4KrakSite',
       linkedin: 'https://pl.linkedin.com/company/hack4krak',
-      section: 'zarząd',
     },
     {
       name: 'Adam Nowak',
@@ -22,7 +29,15 @@ export const organizers = {
       role: 'jakas fajna rola',
       github: 'https://github.com/Hack4Krak/Hack4KrakSite',
       linkedin: 'https://pl.linkedin.com/company/hack4krak',
-      section: 'zarząd',
+    },
+  ] },
+  { sectionName: 'graficy', members: [
+    {
+      name: 'Adam Nowak',
+      email: 'testmail@hack4krak.pl',
+      role: 'jakas fajna rola',
+      github: 'https://github.com/Hack4Krak/Hack4KrakSite',
+      linkedin: 'https://pl.linkedin.com/company/hack4krak',
     },
     {
       name: 'Adam Nowak',
@@ -30,7 +45,6 @@ export const organizers = {
       role: 'jakas fajna rola',
       github: 'https://github.com/Hack4Krak/Hack4KrakSite',
       linkedin: 'https://pl.linkedin.com/company/hack4krak',
-      section: 'zarząd',
     },
     {
       name: 'Adam Nowak',
@@ -38,7 +52,6 @@ export const organizers = {
       role: 'jakas fajna rola',
       github: 'https://github.com/Hack4Krak/Hack4KrakSite',
       linkedin: 'https://pl.linkedin.com/company/hack4krak',
-      section: 'sekcja techniczna',
     },
     {
       name: 'Adam Nowak',
@@ -46,40 +59,6 @@ export const organizers = {
       role: 'jakas fajna rola',
       github: 'https://github.com/Hack4Krak/Hack4KrakSite',
       linkedin: 'https://pl.linkedin.com/company/hack4krak',
-      section: 'sekcja techniczna',
     },
-    {
-      name: 'Adam Nowak',
-      email: 'testmail@hack4krak.pl',
-      role: 'jakas fajna rola',
-      github: 'https://github.com/Hack4Krak/Hack4KrakSite',
-      linkedin: 'https://pl.linkedin.com/company/hack4krak',
-      section: 'sekcja techniczna',
-    },
-    {
-      name: 'Adam Nowak',
-      email: 'testmail@hack4krak.pl',
-      role: 'jakas fajna rola',
-      github: 'https://github.com/Hack4Krak/Hack4KrakSite',
-      linkedin: 'https://pl.linkedin.com/company/hack4krak',
-      section: 'sekcja techniczna',
-    },
-    {
-      name: 'Adam Nowak',
-      email: 'testmail@hack4krak.pl',
-      role: 'jakas fajna rola',
-      github: 'https://github.com/Hack4Krak/Hack4KrakSite',
-      linkedin: 'https://pl.linkedin.com/company/hack4krak',
-      section: 'graficy',
-    },
-    {
-      name: 'Adam Nowak',
-      email: 'testmail@hack4krak.pl',
-      role: 'jakas fajna rola',
-      github: 'https://github.com/Hack4Krak/Hack4KrakSite',
-      linkedin: 'https://pl.linkedin.com/company/hack4krak',
-      section: 'graficy',
-    },
-  ],
-  hierarchy: ['zarząd', 'sekcja techniczna', 'graficy'],
-}
+  ] },
+]
