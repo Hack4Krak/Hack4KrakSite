@@ -136,6 +136,9 @@ export default defineNuxtConfig({
   // https://nuxt-open-fetch.norbiros.dev/setup/configuration
   openFetch: {
     disableNuxtPlugin: true,
+    openAPITS: {
+      rootTypes: true,
+    },
     clients: {
       api: {
         baseURL: backendAddress,
