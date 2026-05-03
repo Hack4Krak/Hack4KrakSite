@@ -9,8 +9,8 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div class="flex flex-col gap-1 border border-primary text-center w-80">
-    <div class="flex justify-center items-center font-semibold">
+  <div class="flex flex-col gap-1 transition duration-200 border-2 border-muted hover:border-primary text-center min-w-60 w-80">
+    <div class="flex justify-center items-center">
       {{ props.name }}
       <a
         v-if="props.linkedin"
