@@ -27,7 +27,7 @@ const models = { marketingConsent, collabInterest }
 <template>
   <section class="space-y-5">
     <div>
-      <h2 class="text-2xl font-semibold mb-1">
+      <h2 class="text-lg font-semibold sm:text-xl">
         Ostatnie dwie rzeczy
       </h2>
       <p class="text-sm text-muted">
@@ -48,7 +48,7 @@ const models = { marketingConsent, collabInterest }
           @update:model-value="(val) => (models[item.key].value = val)"
         />
         <div class="flex-1">
-          <p class="font-medium leading-snug">
+          <p class="text-sm font-medium leading-snug sm:text-base">
             {{ item.title }}
           </p>
           <p class="text-sm text-muted mt-1">

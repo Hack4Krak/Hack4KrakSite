@@ -3,16 +3,16 @@ import type { AuthRequestBody } from '#open-fetch'
 import type { SchemaCtfExperience, SchemaSchoolGrade } from '#open-fetch-schemas/api'
 import { FetchError } from 'ofetch'
 
-type FormState = NonNullable<AuthRequestBody<'submit_personal_information'>>
+type FormState = NonNullable<AuthRequestBody<'submit_onboarding'>>
 
-const STEP_TITLES = ['Powitanie', 'O Tobie', 'Jak nas znalazłeś?', 'Na koniec']
+const STEP_TITLES = ['Powitanie', 'Pytania profilujące', 'Jak nas znalazłeś?', 'Na koniec']
 
 const stepIndex = ref(0)
 const direction = ref<'forward' | 'backward'>('forward')
 const submitting = ref(false)
 
 const form = reactive<FormState>({
-  first_name: '',
+  organization: '',
   location: '',
   ctf_experience: 'Never' as SchemaCtfExperience,
   school_grade: 'NotStudying' as SchemaSchoolGrade,
@@ -21,25 +21,9 @@ const form = reactive<FormState>({
   collab_interest: false,
 })
 
-const { data: existing } = await useAuth('/account/get_personal_information', {
-  onResponseError: undefined,
-})
-
-if (existing.value) {
-  Object.assign(form, {
-    first_name: existing.value.first_name ?? '',
-    location: existing.value.location ?? '',
-    ctf_experience: existing.value.ctf_experience ?? 'Never',
-    school_grade: existing.value.school_grade ?? 'NotStudying',
-    referral_sources: (existing.value.referral_sources as string[] | null) ?? [],
-    marketing_consent: existing.value.marketing_consent ?? false,
-    collab_interest: existing.value.collab_interest ?? false,
-  })
-}
-
 const stepValidations = computed(() => [
   true,
-  form.first_name.trim().length > 0 && form.location.trim().length > 0,
+  form.organization.trim().length > 0 && form.location.trim().length > 0,
   form.referral_sources.length > 0,
   true,
 ])
@@ -66,7 +50,7 @@ function prev() {
 async function onSubmit() {
   submitting.value = true
   try {
-    await useNuxtApp().$auth('/account/submit_personal_information', {
+    await useNuxtApp().$auth('/account/onboarding', {
       method: 'POST',
       credentials: 'include',
       body: { ...form },
@@ -93,7 +77,7 @@ useHead({ title: 'Witaj w Hack4Krak' })
 </script>
 
 <template>
-  <div class="md:w-[40rem] sm:w-96 w-72">
+  <div class="w-full sm:w-96 md:w-[40rem]">
     <div class="mb-6 space-y-2">
       <div class="flex items-center justify-between text-sm text-muted">
         <span class="font-pixelify uppercase tracking-wider">
@@ -117,7 +101,7 @@ useHead({ title: 'Witaj w Hack4Krak' })
         <OnboardingStageAbout
           v-else-if="stepIndex === 1"
           key="about"
-          v-model:first-name="form.first_name"
+          v-model:organization="form.organization"
           v-model:location="form.location"
           v-model:ctf-experience="form.ctf_experience"
           v-model:school-grade="form.school_grade"

@@ -1,5 +1,5 @@
 <template>
-  <section class="min-h-[22rem] flex flex-col items-center justify-center text-center gap-4">
+  <section class="flex min-h-[20rem] flex-col items-center justify-center gap-4 text-center sm:min-h-[22rem]">
     <div class="w-32 md:w-36">
       <img
         src="~/assets/img/error_dragon.webp"
@@ -8,10 +8,10 @@
         draggable="false"
       >
     </div>
-    <h1 class="text-3xl md:text-4xl font-bold leading-tight">
+    <h1 class="text-2xl font-bold leading-tight sm:text-3xl">
       Witaj w <span class="text-primary">Hack4Krak</span>
     </h1>
-    <p class="text-muted max-w-md">
+    <p class="max-w-md text-sm text-muted sm:text-base">
       Zanim ruszą zawody, poznajmy się trochę — kilka pytań zajmie chwilę.
     </p>
     <p class="text-muted max-w-md text-sm">

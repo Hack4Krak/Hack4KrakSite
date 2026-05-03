@@ -17,12 +17,12 @@ use serde::{Deserialize, Serialize};
     utoipa :: ToSchema,
     Default,
 )]
-#[sea_orm(table_name = "user_personal_info")]
+#[sea_orm(table_name = "user_onboarding")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
-    pub first_name: String,
     pub location: String,
+    pub organization: String,
     pub marketing_consent: bool,
     pub marketing_consent_accepted_at: DateTime,
     pub marketing_consent_updated_at: DateTime,

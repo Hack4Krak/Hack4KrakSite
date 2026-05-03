@@ -1,4 +1,4 @@
-use crate::entities::{user_personal_info, users};
+use crate::entities::{user_onboarding, users};
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use actix_web::web::{Data, Path};
@@ -8,17 +8,17 @@ use uuid::Uuid;
 
 #[utoipa::path(
     responses(
-        (status = 200, description = "User personal information received.", body = Option<user_personal_info::Model>),
+        (status = 200, description = "User onboarding answers received.", body = Option<user_onboarding::Model>),
         (status = 500, description = "Internal server error.")
     ),
     security(
         ("access_token" = [])
     ),
-    operation_id = "admin_get_personal_information",
+    operation_id = "admin_get_onboarding",
     tag = "admin/users"
 )]
-#[get("/get_personal_information/{id}")]
-pub async fn get_personal_information(
+#[get("/onboarding/{id}")]
+pub async fn get_onboarding(
     app_state: Data<app_state::AppState>,
     user_uuid: Path<Uuid>,
 ) -> Result<HttpResponse, Error> {
@@ -27,13 +27,13 @@ pub async fn get_personal_information(
         .await?
         .ok_or(Error::UserNotFound)?;
 
-    if let Some(personal_info_id) = user_model.personal_info {
-        let personal_info = user_personal_info::Entity::find_by_id(personal_info_id)
+    if let Some(onboarding_id) = user_model.onboarding {
+        let onboarding = user_onboarding::Entity::find_by_id(onboarding_id)
             .one(&app_state.database)
             .await?;
 
-        return Ok(HttpResponse::Ok().json(personal_info));
+        return Ok(HttpResponse::Ok().json(onboarding));
     }
 
-    Ok(HttpResponse::Ok().json(None::<user_personal_info::Model>))
+    Ok(HttpResponse::Ok().json(None::<user_onboarding::Model>))
 }

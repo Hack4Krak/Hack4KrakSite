@@ -26,7 +26,7 @@ function isSelected(value: string) {
 <template>
   <section class="space-y-5">
     <div>
-      <h2 class="text-2xl font-semibold mb-1">
+      <h2 class="text-lg font-semibold sm:text-xl">
         Jak nas znalazłeś?
       </h2>
       <p class="text-sm text-muted">

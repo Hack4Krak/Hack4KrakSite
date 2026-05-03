@@ -1,5 +1,5 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  if (to.path.startsWith('/panel') || to.path === '/account/submit_personal_info') {
+  if (to.path.startsWith('/panel') || to.path === '/account/onboarding') {
     try {
       const { data, error } = await useAuth('/account/', {
         redirect: 'error',
@@ -8,12 +8,12 @@ export default defineNuxtRouteMiddleware(async (to) => {
         return '/login'
       }
       if (to.path.startsWith('/panel')) {
-        if (data.value.has_personal_information === false) {
-          return '/account/submit_personal_info'
+        if (data.value.has_completed_onboarding === false) {
+          return '/account/onboarding'
         }
       }
-      if (to.path === '/account/submit_personal_info') {
-        if (data.value.has_personal_information === true) {
+      if (to.path === '/account/onboarding') {
+        if (data.value.has_completed_onboarding === true) {
           return '/panel'
         }
       }

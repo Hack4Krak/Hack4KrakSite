@@ -2,20 +2,10 @@ use crate::test_utils::TestApp;
 use crate::test_utils::database::TestDatabase;
 use crate::test_utils::header::TestAuthHeader;
 use actix_web::test;
-use serde::Deserialize;
+use hack4krak_backend::entities::sea_orm_active_enums::{CtfExperience, SchoolGrade};
+use hack4krak_backend::entities::user_onboarding;
 
-#[derive(Deserialize)]
-struct PersonalInfoResponse {
-    first_name: String,
-    location: String,
-    ctf_experience: String,
-    school_grade: String,
-    collab_interest: bool,
-    marketing_consent: bool,
-    referral_sources: Option<serde_json::Value>,
-}
-
-async fn submit_personal_info_request(
+async fn submit_onboarding_request(
     app: &impl actix_web::dev::Service<
         actix_http::Request,
         Response = actix_web::dev::ServiceResponse<impl actix_web::body::MessageBody>,
@@ -25,23 +15,23 @@ async fn submit_personal_info_request(
     payload: serde_json::Value,
 ) -> actix_web::dev::ServiceResponse<impl actix_web::body::MessageBody> {
     let request = test::TestRequest::post()
-        .uri("/account/submit_personal_information")
+        .uri("/account/onboarding")
         .insert_header(TestAuthHeader::new(user.clone()))
         .set_json(payload)
         .to_request();
     test::call_service(app, request).await
 }
 
-async fn get_personal_info(
+async fn get_onboarding(
     app: &impl actix_web::dev::Service<
         actix_http::Request,
         Response = actix_web::dev::ServiceResponse<impl actix_web::body::MessageBody>,
         Error = actix_web::Error,
     >,
     user: &hack4krak_backend::entities::users::Model,
-) -> PersonalInfoResponse {
+) -> Option<user_onboarding::Model> {
     let request = test::TestRequest::get()
-        .uri("/account/get_personal_information")
+        .uri("/account/onboarding")
         .insert_header(TestAuthHeader::new(user.clone()))
         .to_request();
     test::call_and_read_body_json(app, request).await
@@ -99,7 +89,7 @@ async fn account_update() {
     let response = test::call_and_read_body(&app, request).await;
     assert_eq!(
         response,
-        r#"{"username":"Salieri","email":"example@gmail.com","has_personal_information":false}"#
+        r#"{"username":"Salieri","first_name":null,"email":"example@gmail.com","has_completed_onboarding":false}"#
     );
 
     let request = test::TestRequest::patch()
@@ -127,7 +117,7 @@ async fn account_update() {
 }
 
 #[actix_web::test]
-async fn submit_personal_info() {
+async fn submit_onboarding() {
     let test_database = TestDatabase::new().await;
     let user = test_database.with_default_user().await;
 
@@ -137,10 +127,10 @@ async fn submit_personal_info() {
         .await;
 
     let request = test::TestRequest::post()
-        .uri("/account/submit_personal_information")
+        .uri("/account/onboarding")
         .insert_header(TestAuthHeader::new(user.clone()))
         .set_json(serde_json::json!({
-          "first_name": "Antonio",
+          "organization": "Antonio School",
           "location": "Włochy",
           "ctf_experience": "Intermediate",
           "referral_sources": ["Linkedin"],
@@ -167,11 +157,11 @@ async fn submit_personal_info() {
     let response = test::call_and_read_body(&app, request).await;
     assert_eq!(
         response,
-        r#"{"username":"test_user","email":"example@gmail.com","has_personal_information":true}"#
+        r#"{"username":"test_user","first_name":null,"email":"example@gmail.com","has_completed_onboarding":true}"#
     );
 
     let request = test::TestRequest::get()
-        .uri("/account/get_personal_information")
+        .uri("/account/onboarding")
         .insert_header(TestAuthHeader::new(user.clone()))
         .to_request();
 
@@ -180,7 +170,7 @@ async fn submit_personal_info() {
 }
 
 #[actix_web::test]
-async fn submit_personal_info_invalid_referral_source() {
+async fn submit_onboarding_invalid_referral_source() {
     let test_database = TestDatabase::new().await;
     let user = test_database.with_default_user().await;
 
@@ -190,10 +180,10 @@ async fn submit_personal_info_invalid_referral_source() {
         .await;
 
     let request = test::TestRequest::post()
-        .uri("/account/submit_personal_information")
+        .uri("/account/onboarding")
         .insert_header(TestAuthHeader::new(user.clone()))
         .set_json(serde_json::json!({
-          "first_name": "Antonio",
+          "organization": "Antonio School",
           "location": "Włochy",
           "ctf_experience": "Beginner",
           "referral_sources": ["Linkedin", "Invalid"],
@@ -208,7 +198,7 @@ async fn submit_personal_info_invalid_referral_source() {
 }
 
 #[actix_web::test]
-async fn submit_personal_info_invalid_ctf_experience() {
+async fn submit_onboarding_invalid_ctf_experience() {
     let test_database = TestDatabase::new().await;
     let user = test_database.with_default_user().await;
 
@@ -218,10 +208,10 @@ async fn submit_personal_info_invalid_ctf_experience() {
         .await;
 
     let request = test::TestRequest::post()
-        .uri("/account/submit_personal_information")
+        .uri("/account/onboarding")
         .insert_header(TestAuthHeader::new(user.clone()))
         .set_json(serde_json::json!({
-          "first_name": "Antonio",
+          "organization": "Antonio School",
           "location": "Włochy",
           "ctf_experience": "invalid_level",
           "referral_sources": ["Linkedin"],
@@ -236,7 +226,7 @@ async fn submit_personal_info_invalid_ctf_experience() {
 }
 
 #[actix_web::test]
-async fn submit_personal_info_stores_correct_data() {
+async fn submit_onboarding_stores_correct_data() {
     let test_database = TestDatabase::new().await;
     let user = test_database.with_default_user().await;
     let app = TestApp::default()
@@ -244,11 +234,11 @@ async fn submit_personal_info_stores_correct_data() {
         .build_app()
         .await;
 
-    let response = submit_personal_info_request(
+    let response = submit_onboarding_request(
         &app,
         &user,
         serde_json::json!({
-            "first_name": "Katarzyna",
+            "organization": "31 LO",
             "location": "Kraków",
             "ctf_experience": "Advanced",
             "school_grade": "University",
@@ -264,24 +254,25 @@ async fn submit_personal_info_stores_correct_data() {
         response.status()
     );
 
-    let info = get_personal_info(&app, &user).await;
+    let info = get_onboarding(&app, &user)
+        .await
+        .expect("onboarding should exist after submit");
 
-    assert_eq!(info.first_name, "Katarzyna");
+    assert_eq!(info.organization, "31 LO");
     assert_eq!(info.location, "Kraków");
-    assert_eq!(info.ctf_experience, "Advanced");
-    assert_eq!(info.school_grade, "University");
+    assert_eq!(info.ctf_experience, CtfExperience::Advanced);
+    assert_eq!(info.school_grade, SchoolGrade::University);
     assert!(info.marketing_consent);
     assert!(info.collab_interest);
 
-    let sources: Vec<String> =
-        serde_json::from_value(info.referral_sources.unwrap()).unwrap();
+    let sources: Vec<String> = serde_json::from_value(info.referral_sources.unwrap()).unwrap();
     assert!(sources.contains(&"Discord".to_string()));
     assert!(sources.contains(&"Friend".to_string()));
     assert_eq!(sources.len(), 2);
 }
 
 #[actix_web::test]
-async fn resubmit_updates_existing_data() {
+async fn resubmit_onboarding_returns_conflict() {
     let test_database = TestDatabase::new().await;
     let user = test_database.with_default_user().await;
     let app = TestApp::default()
@@ -289,11 +280,11 @@ async fn resubmit_updates_existing_data() {
         .build_app()
         .await;
 
-    let response = submit_personal_info_request(
+    let response = submit_onboarding_request(
         &app,
         &user,
         serde_json::json!({
-            "first_name": "Piotr",
+            "organization": "Warsaw High School",
             "location": "Warszawa",
             "ctf_experience": "Never",
             "school_grade": "Class1",
@@ -305,11 +296,11 @@ async fn resubmit_updates_existing_data() {
     .await;
     assert!(response.status().is_success());
 
-    let response = submit_personal_info_request(
+    let response = submit_onboarding_request(
         &app,
         &user,
         serde_json::json!({
-            "first_name": "Piotr",
+            "organization": "31 LO",
             "location": "Kraków",
             "ctf_experience": "Expert",
             "school_grade": "University",
@@ -319,17 +310,19 @@ async fn resubmit_updates_existing_data() {
         }),
     )
     .await;
-    assert!(response.status().is_success());
+    assert_eq!(response.status(), actix_http::StatusCode::CONFLICT);
 
-    let info = get_personal_info(&app, &user).await;
+    let info = get_onboarding(&app, &user)
+        .await
+        .expect("onboarding should remain available");
 
-    assert_eq!(info.location, "Kraków");
-    assert_eq!(info.ctf_experience, "Expert");
-    assert_eq!(info.school_grade, "University");
-    assert!(info.marketing_consent);
-    assert!(info.collab_interest);
+    assert_eq!(info.organization, "Warsaw High School");
+    assert_eq!(info.location, "Warszawa");
+    assert_eq!(info.ctf_experience, CtfExperience::Never);
+    assert_eq!(info.school_grade, SchoolGrade::Class1);
+    assert!(!info.marketing_consent);
+    assert!(!info.collab_interest);
 
-    let sources: Vec<String> =
-        serde_json::from_value(info.referral_sources.unwrap()).unwrap();
-    assert_eq!(sources, vec!["Discord"]);
+    let sources: Vec<String> = serde_json::from_value(info.referral_sources.unwrap()).unwrap();
+    assert_eq!(sources, vec!["Instagram"]);
 }

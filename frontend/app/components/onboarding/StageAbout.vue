@@ -12,7 +12,7 @@ type CtfLevelOption = SelectOption<SchemaCtfExperience> & {
   hint: string
 }
 
-const firstName = defineModel<string>('firstName', { required: true })
+const organization = defineModel<string>('organization', { required: true })
 const location = defineModel<string>('location', { required: true })
 const ctfExperience = defineModel<SchemaCtfExperience>('ctfExperience', { required: true })
 const schoolGrade = defineModel<SchemaSchoolGrade>('schoolGrade', { required: true })
@@ -70,24 +70,25 @@ const ctfHint = computed(() => CTF_LEVELS[sliderIndex.value]?.hint ?? '')
 <template>
   <section class="space-y-6">
     <div>
-      <h2 class="text-2xl font-semibold mb-1">
-        Jak mamy się do Ciebie zwracać?
+      <h2 class="mb-1 text-lg font-semibold sm:text-xl">
+        Z jakiej organizacji jesteś?
       </h2>
       <p class="text-sm text-muted mb-3">
-        Tak, jak zwracają się do Ciebie znajomi.
+        Może to być szkoła, uczelnia, firma albo inna społeczność.
       </p>
       <UInput
-        v-model="firstName"
+        v-model="organization"
         size="lg"
-        placeholder="Twoje imię"
-        :ui="{ base: 'text-lg' }"
+        placeholder="np. 31 LO Kraków, Hack4Krak, Zerya"
+        icon="lucide:building-2"
+        :ui="{ base: 'text-sm sm:text-base' }"
         autofocus
         @keyup.enter="emit('submit')"
       />
     </div>
 
     <div>
-      <h2 class="text-xl font-semibold mb-1">
+      <h2 class="text-base font-semibold sm:text-lg">
         Z jakiej miejscowości do nas zaglądasz?
       </h2>
       <UInput
@@ -95,13 +96,13 @@ const ctfHint = computed(() => CTF_LEVELS[sliderIndex.value]?.hint ?? '')
         size="lg"
         placeholder="np. Kraków"
         icon="lucide:map-pin"
-        :ui="{ base: 'text-lg' }"
+        :ui="{ base: 'text-sm sm:text-base' }"
         @keyup.enter="emit('submit')"
       />
     </div>
 
     <div>
-      <h2 class="text-xl font-semibold mb-1">
+      <h2 class="mb-1 text-base font-semibold sm:text-lg">
         Na jakim etapie nauki jesteś?
       </h2>
       <USelect
@@ -113,13 +114,13 @@ const ctfHint = computed(() => CTF_LEVELS[sliderIndex.value]?.hint ?? '')
     </div>
 
     <div>
-      <h2 class="text-xl font-semibold mb-1">
+      <h2 class="mb-1 text-base font-semibold sm:text-lg">
         Twoje doświadczenie z CTF
       </h2>
       <p class="text-sm text-muted mb-5">
         Przesuń, żeby pokazać, ile zawodów masz już za sobą.
       </p>
-      <div class="bg-elevated/40 p-4 space-y-4">
+      <div class="space-y-4 bg-elevated/40 p-3 sm:p-4">
         <USlider
           v-model="sliderIndex"
           :min="0"
@@ -132,11 +133,11 @@ const ctfHint = computed(() => CTF_LEVELS[sliderIndex.value]?.hint ?? '')
             thumb: 'block w-4 h-4 bg-primary border-2 border-default rounded-none ring-0 shadow-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-default transition-transform hover:scale-110 active:scale-95 cursor-pointer',
           }"
         />
-        <div class="flex items-baseline gap-3 min-h-12">
-          <span class="font-pixelify text-primary text-lg shrink-0 leading-none lowercase tracking-wide">
+        <div class="flex items-start gap-3 min-h-20 sm:min-h-16">
+          <span class="font-pixelify text-primary text-sm sm:text-base shrink-0 leading-none lowercase tracking-wide">
             lvl {{ sliderIndex + 1 }}
           </span>
-          <div class="flex-1 min-w-0">
+          <div class="min-w-0 flex-1">
             <p class="font-semibold leading-tight">
               {{ ctfLabel }}
             </p>

@@ -1,6 +1,6 @@
 mod delete;
 mod email_verification_request_list;
-mod get_personal_information;
+mod get_onboarding;
 mod list;
 mod update;
 
@@ -9,5 +9,5 @@ pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(update::update);
     config.service(delete::delete);
     config.service(email_verification_request_list::email_confirmations_list);
-    config.service(get_personal_information::get_personal_information);
+    config.service(get_onboarding::get_onboarding);
 }

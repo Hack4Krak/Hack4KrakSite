@@ -109,4 +109,3 @@ pub async fn github(app_state: web::Data<AppState>) -> Result<HttpResponse, Erro
         .github_oauth_provider
         .redirect_response(vec!["user:email".to_string()]))
 }
-

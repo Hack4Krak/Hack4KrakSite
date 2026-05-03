@@ -1,4 +1,4 @@
-use crate::entities::{external_team_invitation, flag_capture, teams, user_personal_info, users};
+use crate::entities::{external_team_invitation, flag_capture, teams, user_onboarding, users};
 use crate::services::env::EnvConfig;
 use crate::utils::app_state::AppState;
 use crate::utils::bearer::verify_bearer_token;
@@ -30,8 +30,7 @@ pub async fn metrics(
         add_metric("app_count_users_in_teams", *users_in_teams).await?,
         add_metric("app_count_tasks", tasks as u64).await?,
         add_simple_metric::<teams::Entity>("app_count_teams", &app_state).await?,
-        add_simple_metric::<user_personal_info::Entity>("app_count_personal_info", &app_state)
-            .await?,
+        add_simple_metric::<user_onboarding::Entity>("app_count_onboarding", &app_state).await?,
         add_simple_metric::<flag_capture::Entity>("app_count_flag_capture", &app_state).await?,
         add_simple_metric::<external_team_invitation::Entity>(
             "app_count_external_team_invitation",

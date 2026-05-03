@@ -27,7 +27,7 @@ pub struct Model {
     pub is_leader: bool,
     pub team: Option<Uuid>,
     pub roles: UserRoles,
-    pub personal_info: Option<Uuid>,
+    pub onboarding: Option<Uuid>,
     pub first_name: Option<String>,
 }
 
@@ -44,13 +44,13 @@ pub enum Relation {
     )]
     Teams,
     #[sea_orm(
-        belongs_to = "super::user_personal_info::Entity",
-        from = "Column::PersonalInfo",
-        to = "super::user_personal_info::Column::Id",
+        belongs_to = "super::user_onboarding::Entity",
+        from = "Column::Onboarding",
+        to = "super::user_onboarding::Column::Id",
         on_update = "NoAction",
         on_delete = "SetNull"
     )]
-    UserPersonalInfo,
+    UserOnboarding,
 }
 
 impl Related<super::team_invites::Entity> for Entity {
@@ -65,9 +65,9 @@ impl Related<super::teams::Entity> for Entity {
     }
 }
 
-impl Related<super::user_personal_info::Entity> for Entity {
+impl Related<super::user_onboarding::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::UserPersonalInfo.def()
+        Relation::UserOnboarding.def()
     }
 }
 
