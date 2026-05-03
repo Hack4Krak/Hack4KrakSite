@@ -27,6 +27,7 @@ impl TestDatabase {
         let updated = updatable_model.update(users::Model {
             id: uuid,
             username: "test_user".to_string(),
+            first_name: None,
             email: "example@gmail.com".to_string(),
             created_at: Utc::now().naive_utc(),
             team: None,

@@ -14,6 +14,8 @@ use validator::Validate;
 pub struct RegisterModel {
     #[validate(length(min = 3, max = 32), custom(function = "validate_name_chars"))]
     pub name: String,
+    #[validate(length(min = 1, max = 64))]
+    pub first_name: String,
     #[validate(email)]
     pub email: String,
     #[validate(length(min = 8, max = 32))]

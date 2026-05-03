@@ -28,6 +28,7 @@ pub struct Model {
     pub team: Option<Uuid>,
     pub roles: UserRoles,
     pub personal_info: Option<Uuid>,
+    pub first_name: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
