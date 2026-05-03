@@ -39,6 +39,8 @@ impl fmt::Debug for Password {
 #[derive(Serialize, Deserialize, Debug, Default)]
 pub struct UserInformation {
     pub name: String,
+    #[serde(default)]
+    pub first_name: String,
     pub email: String,
     pub password_hash: String,
 }
@@ -54,6 +56,7 @@ impl UserInformation {
 
         let user_info = UserInformation {
             name: credentials.name.clone(),
+            first_name: credentials.first_name.clone(),
             email: credentials.email.clone(),
             password_hash: password_hash.clone(),
         };
@@ -141,6 +144,7 @@ impl users::Model {
                     id: Set(uuid_gen::new_v4()),
                     username: Set(username),
                     email: Set(email.clone()),
+                    first_name: Set(None),
                     password: Set(None),
                     ..Default::default()
                 }
@@ -161,6 +165,7 @@ impl users::Model {
         users::ActiveModel {
             id: Set(uuid_gen::new_v4()),
             username: Set(user_info.name.clone()),
+            first_name: Set(Some(user_info.first_name.clone())),
             email: Set(user_info.email.clone()),
             password: Set(Some(user_info.password_hash.clone())),
             created_at: Set(Utc::now().naive_utc()),

@@ -27,6 +27,7 @@ async fn register() {
         .set_json(json!({
             "email": "test@example.com",
             "name": "test_user",
+            "first_name": "Test",
             "password": "password123"
         }))
         .to_request();
@@ -46,6 +47,7 @@ async fn register_invalid_email() {
         .set_json(json!({
             "email": "this_!isn'taemaill",
             "name": "test_user",
+            "first_name": "Test",
             "password": "password123"
         }))
         .to_request();
@@ -65,6 +67,7 @@ async fn register_invalid_username() {
         .set_json(json!({
             "email": "email@example.com",
             "name": "test ﷽ user",
+            "first_name": "Test",
             "password": "password123"
         }))
         .to_request();
@@ -93,6 +96,7 @@ async fn auth_flow() {
         .set_json(json!({
             "email": "test@example.com",
             "name": "test_user",
+            "first_name": "Test",
             "password": "password123"
         }))
         .to_request();
@@ -147,6 +151,7 @@ async fn email_confirmation_success() {
         additional_data: Set(Some(json![{
             "user_information": {
                 "name": "test_user",
+                "first_name": "Test",
                 "email": "example@gmail.com",
                 "password_hash": "$argon2id$v=19$m=19456,t=2,p=1$nTzWdmrtGEOnwCocrg76xg$yv16FfDT5+meKwPmSiV+MF9kP8Man6bXZs+BloFTKIk".to_string(),
             }
@@ -182,6 +187,7 @@ async fn email_confirmation_expired() {
         action_type: Set("confirm_email_address".to_string()),
         additional_data: Set(Some(json![{
             "name": "test_user",
+            "first_name": "Test",
             "email": "example@gmail.com",
             "password_hash": "$argon2id$v=19$m=19456,t=2,p=1$nTzWdmrtGEOnwCocrg76xg$yv16FfDT5+meKwPmSiV+MF9kP8Man6bXZs+BloFTKIk".to_string(),
         }])),

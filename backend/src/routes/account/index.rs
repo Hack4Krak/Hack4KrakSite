@@ -11,6 +11,7 @@ use utoipa::ToSchema;
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct UserInformationResponse {
     pub username: String,
+    pub first_name: Option<String>,
     pub email: String,
     pub has_personal_information: bool,
 }
@@ -39,6 +40,7 @@ pub async fn index(
     Ok(HttpResponse::Ok().json(UserInformationResponse {
         email: user_model.email,
         username: user_model.username,
+        first_name: user_model.first_name,
         has_personal_information: user_model.personal_info.is_some(),
     }))
 }
