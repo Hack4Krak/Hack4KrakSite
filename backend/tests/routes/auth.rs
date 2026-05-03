@@ -144,13 +144,13 @@ async fn email_confirmation_success() {
         id: Set(confirmation_code),
         email: Set("".to_string()),
         action_type: Set("confirm_email_address".to_string()),
-        additional_data: Set(Some(json![{
+        additional_data: Set(Some(json!({
             "user_information": {
                 "name": "test_user",
                 "email": "example@gmail.com",
-                "password_hash": "$argon2id$v=19$m=19456,t=2,p=1$nTzWdmrtGEOnwCocrg76xg$yv16FfDT5+meKwPmSiV+MF9kP8Man6bXZs+BloFTKIk".to_string(),
+                "password_hash": "$argon2id$v=19$m=19456,t=2,p=1$nTzWdmrtGEOnwCocrg76xg$yv16FfDT5+meKwPmSiV+MF9kP8Man6bXZs+BloFTKIk"
             }
-        }])),
+        }))),
         expiration_time: Set(Some(Utc::now().naive_utc() + chrono::Duration::minutes(30))),
         created_at: Set(Utc::now().naive_utc()),
     };
@@ -168,6 +168,18 @@ async fn email_confirmation_success() {
     let request = test::TestRequest::get().uri(&path).to_request();
     let response = test::call_service(&app, request).await;
     assert!(response.status().is_success());
+
+    let refresh_header = response
+        .headers()
+        .get("Refresh")
+        .unwrap()
+        .to_str()
+        .unwrap()
+        .to_string();
+    assert!(
+        !refresh_header.contains("callback"),
+        "Redirect should NOT contain callback parameter, got: {refresh_header}"
+    );
 }
 
 #[actix_web::test]
@@ -244,4 +256,117 @@ async fn reset_password_flow() {
         .to_request();
     let response = test::call_service(&app, request).await;
     assert_eq!(response.status(), 200);
+}
+
+#[actix_web::test]
+async fn email_confirmation_with_callback() {
+    let test_database = TestDatabase::new().await;
+
+    let confirmation_code = Uuid::new_v4();
+    let email_confirmation = email_verification_request::ActiveModel {
+        id: Set(confirmation_code),
+        email: Set("".to_string()),
+        action_type: Set("confirm_email_address".to_string()),
+        additional_data: Set(Some(json!({
+            "user_information": {
+                "name": "test_user",
+                "email": "example@gmail.com",
+                "password_hash": "$argon2id$v=19$m=19456,t=2,p=1$nTzWdmrtGEOnwCocrg76xg$yv16FfDT5+meKwPmSiV+MF9kP8Man6bXZs+BloFTKIk"
+            },
+            "callback": "/tasks"
+        }))),
+        expiration_time: Set(Some(Utc::now().naive_utc() + chrono::Duration::minutes(30))),
+        created_at: Set(Utc::now().naive_utc()),
+    };
+    email_verification_request::Entity::insert(email_confirmation)
+        .exec(&test_database.database)
+        .await
+        .unwrap();
+
+    let app = TestApp::default()
+        .with_database(test_database)
+        .build_app()
+        .await;
+
+    let path = format!("/auth/confirm/{confirmation_code}");
+    let request = test::TestRequest::get().uri(&path).to_request();
+    let response = test::call_service(&app, request).await;
+    assert!(response.status().is_success());
+
+    let refresh_header = response
+        .headers()
+        .get("Refresh")
+        .unwrap()
+        .to_str()
+        .unwrap()
+        .to_string();
+    assert!(
+        refresh_header.contains("callback=%2Ftasks"),
+        "Redirect should contain callback parameter, got: {refresh_header}"
+    );
+}
+
+#[cfg(feature = "full-test-suite")]
+#[actix_web::test]
+async fn register_with_callback_persists_to_confirmation() {
+    use crate::test_utils::mail::SmtpTestClient;
+
+    let test_database = TestDatabase::new().await;
+    let smtp_client = SmtpTestClient::new().await;
+    let app = TestApp::default()
+        .with_database(test_database)
+        .with_smtp_client(smtp_client.smtp_client.clone())
+        .build_app()
+        .await;
+
+    let request = test::TestRequest::post()
+        .uri("/auth/register")
+        .set_json(json!({
+            "email": "test@example.com",
+            "name": "test_user",
+            "password": "password123",
+            "callback": "/panel/tasks"
+        }))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert!(response.status().is_success());
+
+    let confirmation_code = smtp_client.find_uuid_in_first_email().await;
+    let request = test::TestRequest::get()
+        .uri(&format!("/auth/confirm/{confirmation_code}"))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert!(response.status().is_success());
+
+    let refresh_header = response
+        .headers()
+        .get("Refresh")
+        .unwrap()
+        .to_str()
+        .unwrap()
+        .to_string();
+    assert!(
+        refresh_header.contains("callback=%2Fpanel%2Ftasks"),
+        "Callback should persist from registration to confirmation redirect, got: {refresh_header}"
+    );
+}
+
+#[actix_web::test]
+async fn register_with_invalid_callback_rejected() {
+    let app = TestApp::default().build_app().await;
+
+    let request = test::TestRequest::post()
+        .uri("/auth/register")
+        .set_json(json!({
+            "email": "test@example.com",
+            "name": "test_user",
+            "password": "password123",
+            "callback": "https://evil.com"
+        }))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert!(
+        response.status().is_client_error(),
+        "Callback with absolute URL should be rejected"
+    );
 }
