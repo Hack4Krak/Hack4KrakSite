@@ -43,6 +43,7 @@ Error:
 
 AccountError:
   InvalidReferralSource: "Nieprawidłowe źródło polecenia"
+  OnboardingAlreadySubmitted: "Pytania onboardingowe zostały już wysłane"
 
 AuthError:
   UserAlreadyExists: "Użytkownik już istnieje"

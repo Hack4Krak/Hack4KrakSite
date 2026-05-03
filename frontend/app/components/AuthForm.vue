@@ -73,11 +73,11 @@ async function onSubmit(event: Schema) {
 
 <template>
   <div class="space-y-4">
-    <h1 class="text-2xl font-medium">
+    <h1 class="text-xl font-medium sm:text-2xl">
       {{ isLogin ? 'Zaloguj się' : 'Zarejestruj się' }}
     </h1>
 
-    <AutoForm :schema="schema" class="text-center" :config="{ submit: { props: { label: isLogin ? 'Zaloguj' : 'Zarejestruj' } } }" @submit="onSubmit">
+    <AutoForm :schema="schema" class="text-center text-sm sm:text-base" :config="{ submit: { props: { label: isLogin ? 'Zaloguj' : 'Zarejestruj' } } }" @submit="onSubmit">
       <template #email-hint>
         <NuxtLink v-if="isLogin" class="link-without-underline" to="/request_password_reset" tabindex="-1">
           Zresetuj hasło

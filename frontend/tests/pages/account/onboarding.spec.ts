@@ -1,14 +1,14 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vitest'
-import SubmitPersonalInfoPage from '@/pages/account/submit_personal_info.vue'
+import OnboardingPage from '@/pages/account/onboarding.vue'
 
 vi.mock('@/composables/useAuth', () => ({
   useAuth: vi.fn().mockResolvedValue({ data: { value: null } }),
 }))
 
 async function mountPage() {
-  return mountSuspended(SubmitPersonalInfoPage)
+  return mountSuspended(OnboardingPage)
 }
 
 async function clickButton(wrapper: Awaited<ReturnType<typeof mountPage>>, text: string) {
@@ -23,7 +23,7 @@ async function navigateToAboutStep(wrapper: Awaited<ReturnType<typeof mountPage>
 
 async function navigateToSourceStep(wrapper: Awaited<ReturnType<typeof mountPage>>) {
   await navigateToAboutStep(wrapper)
-  await wrapper.find('input[placeholder="Twoje imię"]').setValue('Jan')
+  await wrapper.find('input[placeholder="np. 31 LO Kraków, Hack4Krak, Zerya"]').setValue('31 LO')
   await wrapper.find('input[placeholder="np. Kraków"]').setValue('Kraków')
   await flushPromises()
   await clickButton(wrapper, 'Dalej')
@@ -36,7 +36,7 @@ async function navigateToConsentsStep(wrapper: Awaited<ReturnType<typeof mountPa
   await clickButton(wrapper, 'Dalej')
 }
 
-describe('SubmitPersonalInfoPage', () => {
+describe('onboardingPage', () => {
   it('renders welcome step by default', async () => {
     const wrapper = await mountPage()
     expect(wrapper.text()).toContain('Krok 1 z 4')
@@ -52,7 +52,7 @@ describe('SubmitPersonalInfoPage', () => {
     const wrapper = await mountPage()
     await navigateToAboutStep(wrapper)
     expect(wrapper.text()).toContain('Krok 2 z 4')
-    expect(wrapper.text()).toContain('O Tobie')
+    expect(wrapper.text()).toContain('Pytania profilujące')
   })
 
   it('shows "Wstecz" button from step 2 onwards', async () => {
@@ -61,23 +61,23 @@ describe('SubmitPersonalInfoPage', () => {
     expect(wrapper.findAll('button').find(b => b.text().includes('Wstecz'))).toBeTruthy()
   })
 
-  it('does not advance from about step without name and location', async () => {
+  it('does not advance from about step without organization and location', async () => {
     const wrapper = await mountPage()
     await navigateToAboutStep(wrapper)
     await clickButton(wrapper, 'Dalej')
     expect(wrapper.text()).toContain('Krok 2 z 4')
   })
 
-  it('does not advance from about step with only name filled', async () => {
+  it('does not advance from about step with only organization filled', async () => {
     const wrapper = await mountPage()
     await navigateToAboutStep(wrapper)
-    await wrapper.find('input[placeholder="Twoje imię"]').setValue('Jan')
+    await wrapper.find('input[placeholder="np. 31 LO Kraków, Hack4Krak, Zerya"]').setValue('31 LO')
     await flushPromises()
     await clickButton(wrapper, 'Dalej')
     expect(wrapper.text()).toContain('Krok 2 z 4')
   })
 
-  it('advances to source step after filling name and location', async () => {
+  it('advances to source step after filling organization and location', async () => {
     const wrapper = await mountPage()
     await navigateToSourceStep(wrapper)
     expect(wrapper.text()).toContain('Krok 3 z 4')
@@ -130,12 +130,12 @@ describe('SubmitPersonalInfoPage', () => {
   it('preserves form data when navigating back and forward', async () => {
     const wrapper = await mountPage()
     await navigateToAboutStep(wrapper)
-    await wrapper.find('input[placeholder="Twoje imię"]').setValue('Anna')
+    await wrapper.find('input[placeholder="np. 31 LO Kraków, Hack4Krak, Zerya"]').setValue('31 LO')
     await wrapper.find('input[placeholder="np. Kraków"]').setValue('Gdańsk')
     await flushPromises()
     await clickButton(wrapper, 'Dalej')
     await clickButton(wrapper, 'Wstecz')
-    expect(wrapper.find('input[placeholder="Twoje imię"]').element.value).toBe('Anna')
+    expect(wrapper.find('input[placeholder="np. 31 LO Kraków, Hack4Krak, Zerya"]').element.value).toBe('31 LO')
     expect(wrapper.find('input[placeholder="np. Kraków"]').element.value).toBe('Gdańsk')
   })
 })

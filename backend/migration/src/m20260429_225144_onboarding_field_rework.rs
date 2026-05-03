@@ -41,26 +41,60 @@ impl MigrationTrait for Migration {
             .await?;
 
         manager
+            .drop_foreign_key(
+                ForeignKey::drop()
+                    .name("fk-user_personal_info-user_personal_info_id")
+                    .table(Users::Table)
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
             .alter_table(
                 Table::alter()
-                    .table(UserPersonalInfo::Table)
-                    .drop_column(UserPersonalInfo::BirthYear)
-                    .drop_column(UserPersonalInfo::Organization)
-                    .drop_column(UserPersonalInfo::IsVegetarian)
+                    .table(Users::Table)
+                    .rename_column(Users::PersonalInfo, Users::Onboarding)
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .get_connection()
+            .execute_unprepared("ALTER TABLE user_personal_info RENAME TO user_onboarding;")
+            .await?;
+
+        manager
+            .create_foreign_key(
+                ForeignKey::create()
+                    .name("fk-users-onboarding")
+                    .from(Users::Table, Users::Onboarding)
+                    .to(UserOnboarding::Table, UserOnboarding::Id)
+                    .on_delete(ForeignKeyAction::SetNull)
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .alter_table(
+                Table::alter()
+                    .table(UserOnboarding::Table)
+                    .drop_column(UserOnboarding::FirstName)
+                    .drop_column(UserOnboarding::BirthYear)
+                    .drop_column(UserOnboarding::IsVegetarian)
                     .add_column(
-                        ColumnDef::new(UserPersonalInfo::CtfExperience)
+                        ColumnDef::new(UserOnboarding::CtfExperience)
                             .custom(CtfExperience::Enum)
                             .not_null()
                             .extra("DEFAULT 'never'"),
                     )
                     .add_column(
-                        ColumnDef::new(UserPersonalInfo::SchoolGrade)
+                        ColumnDef::new(UserOnboarding::SchoolGrade)
                             .custom(SchoolGrade::Enum)
                             .not_null()
                             .extra("DEFAULT 'not_studying'"),
                     )
                     .add_column(
-                        ColumnDef::new(UserPersonalInfo::CollabInterest)
+                        ColumnDef::new(UserOnboarding::CollabInterest)
                             .boolean()
                             .not_null()
                             .default(false),
@@ -72,10 +106,10 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 Table::alter()
-                    .table(UserPersonalInfo::Table)
+                    .table(UserOnboarding::Table)
                     .rename_column(
-                        UserPersonalInfo::ReferralSource,
-                        UserPersonalInfo::ReferralSources,
+                        UserOnboarding::ReferralSource,
+                        UserOnboarding::ReferralSources,
                     )
                     .to_owned(),
             )
@@ -85,7 +119,7 @@ impl MigrationTrait for Migration {
             .get_connection()
             .execute_unprepared(
                 r#"
-                UPDATE user_personal_info
+                UPDATE user_onboarding
                 SET referral_sources = COALESCE(
                     (
                         SELECT json_agg(
@@ -111,10 +145,10 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 Table::alter()
-                    .table(UserPersonalInfo::Table)
+                    .table(UserOnboarding::Table)
                     .rename_column(
-                        UserPersonalInfo::ReferralSources,
-                        UserPersonalInfo::ReferralSource,
+                        UserOnboarding::ReferralSources,
+                        UserOnboarding::ReferralSource,
                     )
                     .to_owned(),
             )
@@ -123,10 +157,75 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 Table::alter()
-                    .table(UserPersonalInfo::Table)
-                    .drop_column(UserPersonalInfo::CtfExperience)
-                    .drop_column(UserPersonalInfo::SchoolGrade)
-                    .drop_column(UserPersonalInfo::CollabInterest)
+                    .table(UserOnboarding::Table)
+                    .drop_column(UserOnboarding::CtfExperience)
+                    .drop_column(UserOnboarding::SchoolGrade)
+                    .drop_column(UserOnboarding::CollabInterest)
+                    .add_column(
+                        ColumnDef::new(UserOnboarding::FirstName)
+                            .string()
+                            .not_null()
+                            .default(""),
+                    )
+                    .add_column(
+                        ColumnDef::new(UserOnboarding::BirthYear)
+                            .integer()
+                            .not_null()
+                            .default(0),
+                    )
+                    .add_column(
+                        ColumnDef::new(UserOnboarding::IsVegetarian)
+                            .boolean()
+                            .not_null()
+                            .default(false),
+                    )
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .get_connection()
+            .execute_unprepared(
+                r#"
+                UPDATE user_onboarding
+                SET first_name = users.first_name
+                FROM users
+                WHERE users.onboarding = user_onboarding.id
+                    AND users.first_name IS NOT NULL;
+                "#,
+            )
+            .await?;
+
+        manager
+            .drop_foreign_key(
+                ForeignKey::drop()
+                    .name("fk-users-onboarding")
+                    .table(Users::Table)
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .alter_table(
+                Table::alter()
+                    .table(Users::Table)
+                    .rename_column(Users::Onboarding, Users::PersonalInfo)
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .get_connection()
+            .execute_unprepared("ALTER TABLE user_onboarding RENAME TO user_personal_info;")
+            .await?;
+
+        manager
+            .create_foreign_key(
+                ForeignKey::create()
+                    .name("fk-user_personal_info-user_personal_info_id")
+                    .from(Users::Table, Users::PersonalInfo)
+                    .to(UserPersonalInfo::Table, UserPersonalInfo::Id)
+                    .on_delete(ForeignKeyAction::SetNull)
                     .to_owned(),
             )
             .await?;
@@ -144,16 +243,30 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum UserPersonalInfo {
+enum UserOnboarding {
     Table,
+    Id,
+    FirstName,
     BirthYear,
-    Organization,
     IsVegetarian,
     CtfExperience,
     SchoolGrade,
     CollabInterest,
     ReferralSource,
     ReferralSources,
+}
+
+#[derive(DeriveIden)]
+enum Users {
+    Table,
+    PersonalInfo,
+    Onboarding,
+}
+
+#[derive(DeriveIden)]
+enum UserPersonalInfo {
+    Table,
+    Id,
 }
 
 #[derive(DeriveIden)]

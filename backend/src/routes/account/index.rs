@@ -13,7 +13,7 @@ pub struct UserInformationResponse {
     pub username: String,
     pub first_name: Option<String>,
     pub email: String,
-    pub has_personal_information: bool,
+    pub has_completed_onboarding: bool,
 }
 
 #[utoipa::path(
@@ -41,6 +41,6 @@ pub async fn index(
         email: user_model.email,
         username: user_model.username,
         first_name: user_model.first_name,
-        has_personal_information: user_model.personal_info.is_some(),
+        has_completed_onboarding: user_model.onboarding.is_some(),
     }))
 }
