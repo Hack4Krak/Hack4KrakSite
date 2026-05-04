@@ -2,11 +2,6 @@
 import LANDING_CONTENT from '~~/content/landing/page'
 
 const event = LANDING_CONTENT.event
-
-const { data: eventInformation } = await useApi('/event/info')
-const [eventStart] = await useEventStartAndEnd(eventInformation)
-
-const eventStarted = computed(() => eventInformation.value?.is_started ?? false)
 </script>
 
 <template>
@@ -38,22 +33,7 @@ const eventStarted = computed(() => eventInformation.value?.is_started ?? false)
       </div>
 
       <div class="flex items-center justify-center px-6 py-6 lg:px-12 lg:py-8 bg-primary/5">
-        <Timer v-if="eventStart && !eventStarted" :target="eventStart">
-          <template #default="{ allUnits, padded }">
-            <div class="flex gap-5 lg:gap-6 items-end">
-              <div v-for="unit in allUnits" :key="unit.key" class="flex flex-col items-center gap-1">
-                <span class="font-pixelify text-4xl lg:text-5xl text-primary font-bold leading-none w-[2.6ch] text-center tabular-nums">
-                  {{ padded(unit.value) }}
-                </span>
-                <span class="text-[10px] uppercase tracking-widest text-muted w-[2.6ch] text-center">{{ unit.shortLabel }}</span>
-              </div>
-            </div>
-          </template>
-        </Timer>
-        <div v-else-if="eventStarted" class="font-pixelify text-2xl text-primary text-center">
-          W trakcie! <br>
-          Trzymamy za Was kciuki
-        </div>
+        <EventCountdown :show-fallback-date="false" />
       </div>
 
       <div class="flex flex-col items-center justify-center gap-3 px-6 py-6 lg:px-8 lg:py-8">

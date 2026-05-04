@@ -2,7 +2,7 @@
 const LINKS = [
   { to: '/tasks', label: 'Zadania', background: '#6EEB8359' },
   { to: '/leaderboard', label: 'Ranking', background: '#F6B21670' },
-  { to: '/panel/profile', label: 'Moje konto', background: '#7FDBFF70' },
+  { to: '/account/events', label: 'Moje konto', background: '#7FDBFF70' },
 ]
 </script>
 
