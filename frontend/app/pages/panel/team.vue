@@ -1,144 +1,37 @@
 <script setup lang="ts">
-import type { ApiResponse } from '#open-fetch'
+definePageMeta({
+  middleware: ['event-registration-guard'],
+})
 
 useSeoMeta({
   title: 'Panel drużyny',
   description: 'Zarządzaj swoją drużyną, zapraszaj nowych członków i sprawdzaj postępy!',
 })
-
-const { data: team } = await useAuth('/teams/membership/my_team')
-
-const { data: invitedUsers } = await useAuth('/teams/management/invited_users', {
-  onResponseError: undefined,
-})
-
-if (!team.value) {
-  await navigateTo('/panel/')
-}
-
-const { error } = await useAuth('/teams/management/', {
-  onResponseError: undefined,
-})
-
-const is_user_leader = error.value === undefined
-
-const inviteUserModal = ref(false)
-const leaveTeamModal = ref(false)
-const deleteTeamModal = ref(false)
-const kickUserModal = ref(false)
-const kickedUser = ref('')
-const revokeInvitationModal = ref(false)
-const revokedInvitation = ref('')
-
-type Members = ApiResponse<'my_team'>['members']
-
-const members = computed<Members | null>(() => {
-  const teamMembers = (team?.value?.members as Members) || []
-  return [...teamMembers, ...Array.from({ length: 5 }).fill(null) as Members].slice(0, 5)
-})
 </script>
 
 <template>
-  <div>
-    <LazyPanelModalInviteUser v-model="inviteUserModal" hydrate-on-idle />
-    <LazyPanelModalConfirmDeleteModal
-      v-model="deleteTeamModal"
-      url="/teams/management/delete"
-      modal-title="Usuwanie drużyny"
-      modal-description="Czy na pewno chcesz usunąć drużynę? Ta operacja jest nieodwracalna."
-      toast-success-message="Pomyślnie usunięto drużynę"
-      :request-body="undefined"
-      redirect-to="/panel/"
-      hydrate-on-idle
-    />
-    <LazyPanelModalConfirmDeleteModal
-      v-model="leaveTeamModal"
-      url="/teams/membership/leave_team"
-      modal-title="Opuść drużynę"
-      modal-description="Czy na pewno chcesz opuścić drużynę? Ta operacja jest nieodwracalna."
-      toast-success-message="Pomyślnie opuściłeś drużynę"
-      :request-body="undefined"
-      redirect-to="/panel/"
-      hydrate-on-idle
-    />
-    <LazyPanelModalConfirmDeleteModal
-      v-model="kickUserModal"
-      url="/teams/management/kick_user"
-      modal-title="Wyrzucenie użytkownika"
-      modal-description="Czy na pewno chcesz wyrzucić użytkownika z drużyny?"
-      toast-success-message="Pomyślnie wyrzucono użytkownika"
-      :request-body="{ username: kickedUser }"
-      redirect-to="/panel/team"
-      hydrate-on-idle
-    />
-    <LazyPanelModalConfirmDeleteModal
-      v-model="revokeInvitationModal"
-      :url="`/teams/management/revoke_invitation/${revokedInvitation}` as any"
-      modal-title="Cofnięcie zaproszenia"
-      modal-description="Czy na pewno chcesz cofnąć zaproszenie?"
-      toast-success-message="Pomyślnie cofnięto zaproszenie"
-      :request-body="undefined"
-      redirect-to="/panel/team"
-      hydrate-on-idle
-    />
-
-    <NuxtLink to="/panel/" class="flex items-center gap-3 font-900 pt-5 pl-5">
-      <Icon name="mdi:arrow-left" class="text-2xl" />
-      Powrót
-    </NuxtLink>
-    <div class="flex flex-col md:flex-row md:mx-20 mx-10 gap-20 mt-10">
-      <div class="border-2 border-neutral-600 p-5 min-w-70 rounded-2xl flex flex-col h-40">
-        <h1 class="flex-grow text-3xl font-bold">
-          {{ team?.team_name }}
+  <div class="panel-page">
+    <UContainer class="w-full py-8 lg:py-10 space-y-8">
+      <header class="panel-hero">
+        <NuxtLink
+          to="/panel/event"
+          class="text-xs uppercase tracking-wider text-muted hover:text-default flex items-center gap-1.5 mb-4 transition-colors"
+        >
+          <UIcon name="pixelarticons:arrow-left" class="size-4" />
+          Wróć do panelu wydarzenia
+        </NuxtLink>
+        <p class="panel-hero-kicker">
+          Hack4Krak 2026
+        </p>
+        <h1 class="panel-title">
+          Twoja drużyna
         </h1>
-        <UButton v-if="is_user_leader" class="w-full" @click="deleteTeamModal = true">
-          <p class="text-center w-full">
-            Usuń drużynę
-          </p>
-        </UButton>
-        <UButton v-else class="w-full" @click="leaveTeamModal = true">
-          <p class="text-center w-full">
-            Opuść zespół
-          </p>
-        </UButton>
-      </div>
-      <div class="flex flex-col w-full gap-5">
-        <div class="border-2 border-neutral-600 flex-grow rounded-2xl">
-          <div
-            v-for="(user, index) in members" :key="index"
-            class="border-b-1 border-neutral-600 last-of-type:border-0 p-5"
-          >
-            <div v-if="user" class="flex justify-between items-center">
-              <div>
-                <UIcon v-if="user.is_leader" name="mdi:crown" class="text-yellow-400" />
-                {{ user.name }}
-              </div>
-              <UButton v-if="is_user_leader" @click="kickUserModal = true; kickedUser = user.name">
-                Wyrzuć
-              </UButton>
-            </div>
-            <div v-else class="text-gray-400">
-              <div v-if="is_user_leader" class="flex gap-5 items-center cursor-pointer" @click="inviteUserModal = true">
-                <Icon name="mdi:account-plus" class="text-2xl" />
-                Dodaj do zespołu
-              </div>
-            </div>
-          </div>
-        </div>
-        <div v-if="(invitedUsers ?? []).length > 0" class="border-2 border-neutral-600 flex-grow rounded-2xl">
-          <div
-            v-for="(user) in invitedUsers" :key="user"
-            class="border-b-1 border-neutral-600 last-of-type:border-0 p-5"
-          >
-            <div class="flex justify-between items-center">
-              {{ user }}
-              <UButton v-if="is_user_leader" @click="revokeInvitationModal = true; revokedInvitation = user">
-                Cofnij zaproszenie
-              </UButton>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+        <p class="panel-copy">
+          W jednym miejscu utworzysz drużynę, dołączysz do istniejącej i zarządzisz składem.
+        </p>
+      </header>
+
+      <PanelTeamManagementWorkspace redirect-to="/panel/team" />
+    </UContainer>
   </div>
 </template>

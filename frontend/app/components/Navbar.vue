@@ -41,7 +41,7 @@ const userMenuItems = computed(() => [
     {
       label: 'Profil',
       icon: 'pixelarticons:user',
-      onSelect: () => navigateTo('/panel/profile'),
+      onSelect: () => navigateTo('/account'),
     },
   ],
   [
@@ -65,9 +65,9 @@ const userMenuItems = computed(() => [
 
     <template #right>
       <div class="flex items-center gap-3 lg:gap-4">
-        <template v-if="registrationOpen && !user">
+        <template v-if="registrationOpen">
           <NuxtLink
-            to="/register"
+            to="/panel/event/register"
             class="hidden lg:inline-flex items-center gap-2 text-md font-semibold text-primary hover:text-primary/85 transition-colors"
             aria-label="Zapisz drużynę na Hack4Krak CTF"
           >
@@ -75,7 +75,7 @@ const userMenuItems = computed(() => [
             <span>Zapisy otwarte</span>
           </NuxtLink>
 
-          <div class="h-5 w-px bg-white/25" />
+          <div class="hidden lg:block h-5 w-px bg-white/25" />
         </template>
 
         <template v-if="user">
@@ -99,7 +99,12 @@ const userMenuItems = computed(() => [
           </UDropdownMenu>
         </template>
 
-        <NuxtLink v-else to="/login" class="text-md font-semibold flex grow-0 items-center" aria-label="Zaloguj się">
+        <NuxtLink
+          v-else
+          to="/login"
+          class="text-md font-semibold flex grow-0 items-center"
+          aria-label="Zaloguj się"
+        >
           <UIcon name="pixelarticons:login" class="icon-md lg:hidden" />
           <span class="hidden lg:inline">Zaloguj się</span>
         </NuxtLink>

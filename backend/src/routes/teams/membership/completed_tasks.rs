@@ -1,4 +1,5 @@
 use crate::entities::teams;
+use crate::middlewares::auth::AuthMiddleware;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use actix_web::web::Data;
@@ -7,6 +8,7 @@ use actix_web::{HttpResponse, get};
 #[utoipa::path(
     responses(
         (status = 200, description = "Successfully retrieved completed tasks.", body = Vec<String>),
+        (status = 403, description = "User doesn't belong to any team."),
         (status = 500, description = "Internal server error.")
     ),
     security(
@@ -14,7 +16,7 @@ use actix_web::{HttpResponse, get};
     ),
     tag = "teams/membership",
 )]
-#[get("/completed_tasks")]
+#[get("/completed_tasks", wrap = "AuthMiddleware::with_team_as_member()")]
 pub async fn completed_tasks(
     app_state: Data<app_state::AppState>,
     team: teams::Model,

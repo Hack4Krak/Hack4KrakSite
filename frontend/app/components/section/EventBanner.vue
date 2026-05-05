@@ -33,7 +33,7 @@ const event = LANDING_CONTENT.event
       </div>
 
       <div class="flex items-center justify-center px-6 py-6 lg:px-12 lg:py-8 bg-primary/5">
-        <EventCountdown :show-fallback-date="false" />
+        <EventCountdown size="lg" :show-fallback-date="false" />
       </div>
 
       <div class="flex flex-col items-center justify-center gap-3 px-6 py-6 lg:px-8 lg:py-8">

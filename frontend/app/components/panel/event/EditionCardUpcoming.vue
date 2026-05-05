@@ -3,11 +3,11 @@ import LANDING_CONTENT from '~~/content/landing/page'
 
 const event = LANDING_CONTENT.event
 
-const { isRegistered } = await useEventRegistration()
+const { isRegistered } = useEventRegistration()
 </script>
 
 <template>
-  <article class="border-2 border-surface-muted bg-default p-6 lg:p-7">
+  <article class="panel-card p-6 lg:p-7">
     <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 lg:gap-10 items-center">
       <div class="space-y-5">
         <div>
@@ -61,8 +61,8 @@ const { isRegistered } = await useEventRegistration()
         </div>
       </div>
 
-      <div class="flex flex-col justify-center gap-3 border border-surface-muted/60 bg-surface-muted/20 px-6 py-5 lg:min-w-[19rem]">
-        <p class="text-[10px] uppercase tracking-widest text-muted text-center lg:text-left">
+      <div class="lg:pl-10 lg:border-l-2 lg:border-surface-muted lg:min-w-72">
+        <p class="text-[10px] uppercase tracking-widest text-muted mb-3">
           Do startu
         </p>
         <EventCountdown size="sm" />
