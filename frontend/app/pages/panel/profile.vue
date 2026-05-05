@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { $api } = useNuxtApp()
+const { logout } = useLogout()
 
 const { data: user } = await useAuth('/account/')
 
@@ -7,16 +7,6 @@ const joinExternalTeamModal = ref(false)
 const updateAccountModal = ref(false)
 const changePasswordModal = ref(false)
 const deleteAccountModal = ref(false)
-
-async function logout() {
-  await $api('/auth/logout', {
-    method: 'POST',
-    credentials: 'include',
-  })
-
-  await refreshNuxtData()
-  await navigateTo('/login')
-}
 </script>
 
 <template>
