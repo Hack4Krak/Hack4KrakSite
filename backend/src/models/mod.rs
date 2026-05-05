@@ -1,4 +1,5 @@
 pub mod ctf_experience;
+pub mod event_registration;
 pub mod email_verification_request;
 pub mod event_config;
 pub mod external_team_invitation;

@@ -33,6 +33,8 @@ pub struct Model {
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
+    #[sea_orm(has_one = "super::event_registration::Entity")]
+    EventRegistration,
     #[sea_orm(has_many = "super::team_invites::Entity")]
     TeamInvites,
     #[sea_orm(
@@ -51,6 +53,12 @@ pub enum Relation {
         on_delete = "SetNull"
     )]
     UserOnboarding,
+}
+
+impl Related<super::event_registration::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::EventRegistration.def()
+    }
 }
 
 impl Related<super::team_invites::Entity> for Entity {

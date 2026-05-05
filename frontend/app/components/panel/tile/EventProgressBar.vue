@@ -29,12 +29,12 @@ useRafFn(() => updateTimeLeft())
 
 <template>
   <div
-    class="col-span-2 justify-center items-center flex-col flex font-pixelify py-3"
+    class="panel-subcard justify-center items-center flex-col flex font-pixelify py-4 px-3 text-center"
     :style="{
       background: `linear-gradient(to right, ${timeLeft?.color} ${timeLeft?.percentage}%, transparent ${timeLeft?.percentage}%)`,
     }"
   >
-    <span class="text-5xl">{{ timeLeft?.diff }}</span>
-    <span v-if="!timeLeft?.hidePercentage">{{ timeLeft?.percentage }}%</span>
+    <span class="text-3xl lg:text-4xl tabular-nums">{{ timeLeft?.diff }}</span>
+    <span v-if="!timeLeft?.hidePercentage" class="text-xs uppercase tracking-wider text-muted mt-1 tabular-nums">{{ timeLeft?.percentage }}%</span>
   </div>
 </template>

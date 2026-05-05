@@ -3,6 +3,10 @@ import type { AuthRequestBody } from '#open-fetch'
 import type { SchemaCtfExperience, SchemaSchoolGrade } from '#open-fetch-schemas/api'
 import { FetchError } from 'ofetch'
 
+definePageMeta({
+  layout: 'centered',
+})
+
 type FormState = NonNullable<AuthRequestBody<'submit_onboarding'>>
 
 const STEP_TITLES = ['Powitanie', 'Pytania profilujące', 'Jak nas znalazłeś?', 'Na koniec']

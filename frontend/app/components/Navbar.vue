@@ -6,11 +6,7 @@ const { data: isLoggedIn } = useAuth('/auth/status', {
   onResponseError: undefined,
 })
 
-const { data: registrationInformation } = await useApi('/event/registration', {
-  key: 'landing-registration-info',
-})
-
-const registrationOpen = computed(() => registrationInformation.value?.is_open ?? false)
+// const { isRegistered } = useEventRegistration()
 
 const navigationMenuProperties = computed(() => ({
   'content-orientation': 'vertical' as const,
@@ -36,24 +32,22 @@ const navigationMenuProperties = computed(() => ({
 
     <template #right>
       <div class="flex items-center gap-3 lg:gap-4">
-        <template v-if="registrationOpen && !isLoggedIn">
-          <NuxtLink
-            to="/register"
-            class="hidden lg:inline-flex items-center gap-2 text-md font-semibold text-primary hover:text-primary/85 transition-colors"
-            aria-label="Zapisz drużynę na Hack4Krak CTF"
-          >
-            <UIcon name="pixelarticons:users" class="size-4.5" />
-            <span>Zapisy otwarte</span>
-          </NuxtLink>
+        <NuxtLink
+          to="/register"
+          class="hidden lg:inline-flex items-center gap-2 text-md font-semibold text-primary hover:text-primary/85 transition-colors"
+          aria-label="Zapisz drużynę na Hack4Krak CTF"
+        >
+          <UIcon name="pixelarticons:users" class="size-4.5" />
+          <span>{{ isRegistered ? 'Już zapisano!' : 'Zapisy otwarte' }} </span>
+        </NuxtLink>
 
-          <div class="h-5 w-px bg-white/25" />
-        </template>
+        <div class="hidden lg:block h-5 w-px bg-white/25" />
 
-        <NuxtLink to="/login" class="text-md font-semibold flex grow-0 items-center" :aria-label="isLoggedIn ? 'Otwórz panel' : 'Zaloguj się'">
+        <NuxtLink :to="isLoggedIn ? '/panel/event' : '/login'" class="text-md font-semibold flex grow-0 items-center" :aria-label="isLoggedIn ? 'Otwórz panel wydarzenia' : 'Zaloguj się'">
           <UIcon :name="isLoggedIn ? 'pixelarticons:user' : 'pixelarticons:login'" class="icon-md lg:hidden" />
 
           <span class="hidden lg:inline">
-            {{ isLoggedIn ? "Otwórz panel" : "Zaloguj się" }}
+            {{ isLoggedIn ? "Panel wydarzenia" : "Zaloguj się" }}
           </span>
         </NuxtLink>
       </div>

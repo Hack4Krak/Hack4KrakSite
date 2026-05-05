@@ -1,6 +1,7 @@
 use crate::entities::sea_orm_active_enums::UserRoles;
 use crate::routes::account::AccountError;
 use crate::routes::auth::AuthError;
+use crate::routes::event::EventError;
 use crate::routes::flag::FlagError;
 use crate::routes::task::TaskError;
 use crate::routes::teams::TeamError;
@@ -120,6 +121,8 @@ pub enum Error {
     Task(#[from] TaskError),
     #[error(transparent)]
     Flag(#[from] FlagError),
+    #[error(transparent)]
+    Event(#[from] EventError),
 }
 
 impl error::ResponseError for Error {
@@ -167,6 +170,7 @@ impl error::ResponseError for Error {
             Error::Auth(auth_err) => auth_err.status_code(),
             Error::Task(error) => error.status_code(),
             Error::Flag(error) => error.status_code(),
+            Error::Event(error) => error.status_code(),
         }
     }
 

@@ -23,13 +23,13 @@ pub fn config(cfg: &mut ServiceConfig) {
 
 #[error_with_messages]
 pub enum AccountError {
-    OnboardingAlreadySubmitted,
+    InvalidReferralSource,
 }
 
 impl error::ResponseError for AccountError {
     fn status_code(&self) -> StatusCode {
         match self {
-            AccountError::OnboardingAlreadySubmitted => StatusCode::CONFLICT,
+            AccountError::InvalidReferralSource => StatusCode::BAD_REQUEST,
         }
     }
 

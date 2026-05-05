@@ -39,6 +39,7 @@ pub async fn setup_database_with_schema() -> DatabaseConnection {
     setup_schema(&database, email_verification_request::Entity).await;
     setup_schema(&database, external_team_invitation::Entity).await;
     setup_schema(&database, flag_capture::Entity).await;
+    setup_schema(&database, event_registration::Entity).await;
 
     // We have to manually create all indexes
     database

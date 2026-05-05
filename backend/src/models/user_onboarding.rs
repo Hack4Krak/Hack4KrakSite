@@ -24,7 +24,8 @@ impl Model {
         request_body: UserOnboardingSubmissionRequest,
     ) -> Result<(), Error> {
         if user.onboarding.is_some() {
-            return Err(AccountError::OnboardingAlreadySubmitted.into());
+            panic!();
+            // return Err(AccountError::OnboardingAlreadySubmitted.into());
         }
 
         let onboarding_id = uuid::Uuid::new_v4();

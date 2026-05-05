@@ -124,3 +124,59 @@
     color: var(--ui-primary);
   }
 }
+
+@layer components {
+  .panel-page {
+    @apply flex-1 bg-default;
+  }
+
+  .panel-hero {
+    @apply border-2 border-surface-muted bg-default p-5 lg:p-7;
+    box-shadow: inset 0 0 0 1px rgb(250 250 250 / 0.025);
+  }
+
+  .panel-hero-kicker {
+    @apply text-xs uppercase tracking-wider text-primary mb-2 font-bold;
+  }
+
+  .panel-title {
+    @apply font-pixelify text-4xl lg:text-5xl leading-none;
+  }
+
+  .panel-copy {
+    @apply text-sm text-muted mt-3 max-w-2xl leading-relaxed;
+  }
+
+  .panel-card {
+    @apply border-2 border-surface-muted bg-default;
+    box-shadow: inset 0 0 0 1px rgb(250 250 250 / 0.025);
+  }
+
+  .panel-card-accent {
+    @apply border-primary bg-primary/5;
+  }
+
+  .panel-card-danger {
+    @apply border-error/40 bg-error/5;
+  }
+
+  .panel-card-header {
+    @apply px-5 py-3 flex items-center justify-between gap-4;
+  }
+
+  .panel-card-title {
+    @apply text-sm font-bold uppercase tracking-wider text-primary;
+  }
+
+  .panel-card-body {
+    @apply p-5 lg:p-6;
+  }
+
+  .panel-subcard {
+    @apply border-2 border-surface-muted bg-surface-muted/20 p-4;
+  }
+
+  .panel-action-link {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 border-2 border-surface-muted hover:border-primary text-sm font-bold transition-colors;
+  }
+}
