@@ -4,6 +4,8 @@ useSeoMeta({
   description: 'Zarządzaj swoim kontem i drużyną w naszym CTF-ie! Sprawdź swoje zadania i postępy!',
 })
 
+defineOgImage('DefaultOgImage', { bg: '/img/our-team.webp' })
+
 const { data: team } = await useAuth('/teams/membership/my_team', {
   onResponseError: () => {
     throw new Error('Response error')
