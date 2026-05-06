@@ -1,22 +1,10 @@
 <script setup lang="ts">
-const { $api } = useNuxtApp()
-
 const { data: user } = await useAuth('/account/')
 
 const joinExternalTeamModal = ref(false)
 const updateAccountModal = ref(false)
 const changePasswordModal = ref(false)
 const deleteAccountModal = ref(false)
-
-async function logout() {
-  await $api('/auth/logout', {
-    method: 'POST',
-    credentials: 'include',
-  })
-
-  await refreshNuxtData()
-  await navigateTo('/login')
-}
 </script>
 
 <template>
@@ -56,7 +44,7 @@ async function logout() {
           <UButton icon="mdi:account-remove" variant="ghost" color="neutral" @click="deleteAccountModal = true">
             Usuń konto
           </UButton>
-          <UButton icon="mdi:logout" variant="ghost" color="neutral" @click="logout">
+          <UButton icon="mdi:logout" variant="ghost" color="neutral" @click="useSession().logout">
             Wyloguj się
           </UButton>
         </div>
