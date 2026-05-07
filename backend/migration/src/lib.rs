@@ -22,10 +22,10 @@ impl MigratorTrait for Migrator {
             Box::new(m20250503_182326_create_external_team_invitation::Migration),
             Box::new(m20250526_105526_add_team_color_field::Migration),
             Box::new(m20250526_172108_add_organization_column_to_team::Migration),
-            Box::new(m20260429_225143_add_first_name_to_users::Migration),
-            Box::new(m20260429_225144_onboarding_field_rework::Migration),
             Box::new(m20250604_000001_new_identification_system::Migration),
             Box::new(m20260412_000001_remove_team_confirmation_fields::Migration),
+            Box::new(m20260429_225143_add_first_name_to_users::Migration),
+            Box::new(m20260429_225144_onboarding_field_rework::Migration),
         ]
     }
 }
