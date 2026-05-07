@@ -53,8 +53,7 @@ async fn capture_log() {
     let body = test::read_body(response).await;
     assert!(!body.is_empty());
     let events: Vec<CaptureLogEvent> = serde_json::from_slice(&body).unwrap();
-    println!("{:?}", events);
-    assert_eq!(events.len(), 4);
+    assert_eq!(events.len(), 4, "There should be four events: {:?}", events);
 
     let event = &events[0];
     assert_eq!(event.r#type, Some("taskCorrect".to_string()));

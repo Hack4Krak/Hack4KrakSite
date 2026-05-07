@@ -2,8 +2,10 @@ use crate::test_utils;
 use chrono::Utc;
 use hack4krak_backend::entities::sea_orm_active_enums::{TeamStatus, UserRoles};
 use hack4krak_backend::entities::teams::Model;
+use hack4krak_backend::entities::{
+    email_verification_request, flag_capture, team_invites, teams, users,
+};
 use sea_orm::{DatabaseConnection, EntityTrait, QueryOrder, Set};
-use hack4krak_backend::entities::{email_verification_request, flag_capture, team_invites, teams, users};
 use serde_json::json;
 use uuid::Uuid;
 
