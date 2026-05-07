@@ -12,6 +12,7 @@ use std::sync::Arc;
 use utoipa::ToSchema;
 use uuid::Uuid;
 
+/// Capture log event for https://ctftime.org/json-scoreboard-feed
 #[derive(Serialize, Deserialize, ToSchema, Default, Debug)]
 pub struct CaptureLogEvent {
     pub id: i32,
@@ -31,6 +32,7 @@ pub struct TeamStandings {
     pub standings: Vec<SingleTeamStanding>,
 }
 
+/// Capture log request params for https://ctftime.org/json-scoreboard-feed
 #[derive(serde::Deserialize, utoipa::ToSchema)]
 #[allow(dead_code)]
 pub struct CaptureLogQuery {
