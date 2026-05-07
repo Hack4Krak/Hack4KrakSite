@@ -23,7 +23,7 @@ const open = defineModel<boolean>()
             />
           </div>
         </template>
-        <div v-if="identificationCode " class="flex flex-col items-center gap-4">
+        <div v-if="identificationCode" class="flex flex-col items-center gap-4">
           <Qrcode :value="identificationCode" class="w-48 h-48" />
           <p class="text-sm text-gray-400 text-center break-all">
             {{ identificationCode }}
