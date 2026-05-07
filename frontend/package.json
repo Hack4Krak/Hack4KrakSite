@@ -51,7 +51,7 @@
     "@iconify-json/pixelarticons": "~1.2.2",
     "@nuxt/devtools": "3.0.1",
     "@nuxt/eslint": "1.15.2",
-    "@nuxt/test-utils": "4.0.0",
+    "@nuxt/test-utils": "4.0.3",
     "@playwright/test": "1.58.2",
     "@tailwindcss/typography": "0.5.19",
     "@vue/test-utils": "2.4.6",
