@@ -1,6 +1,7 @@
 use crate::entities::{flag_capture, teams};
 use crate::models::event_config::EventStageType;
 use crate::utils::app_state::AppState;
+use crate::utils::ctftime::TeamStandings;
 use crate::utils::error::Error;
 use chrono::NaiveDateTime;
 use sea_orm::{EntityTrait, QueryOrder};
@@ -9,6 +10,7 @@ use serde::{Deserialize, Serialize, Serializer};
 use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
+use std::vec;
 use utoipa::ToSchema;
 use uuid::Uuid;
 
@@ -47,6 +49,22 @@ pub struct LeaderboardChart {
 pub struct PointsCounter {
     event_timestamps: Vec<NaiveDateTime>,
     team_time_series: HashMap<Uuid, TeamTimeSeriesData>,
+}
+
+#[derive(Serialize, Deserialize, ToSchema, Default, Debug, PartialEq)]
+pub struct SingleTeamStanding {
+    team: String,
+    score: usize,
+    #[serde(rename = "taskStats")]
+    task_stats: HashMap<String, TaskTeamStat>,
+    #[serde(rename = "lastAccept")]
+    last_accept: i64,
+}
+
+#[derive(Serialize, Deserialize, ToSchema, Default, Debug, PartialEq)]
+pub struct TaskTeamStat {
+    points: usize,
+    time: i64,
 }
 
 impl PointsCounter {
@@ -220,6 +238,79 @@ impl PointsCounter {
             event_timestamps: self.event_timestamps,
             team_points_over_time,
         }
+    }
+
+    pub async fn to_ctftime_standings(
+        self,
+        app_state: &Arc<AppState>,
+    ) -> Result<TeamStandings, Error> {
+        let tasks_by_team = teams::Model::get_tasks_by_team(
+            &app_state.database,
+            self.team_time_series.keys().copied().collect(),
+        )
+        .await?;
+
+        let mut task_solve_counts: HashMap<String, usize> = HashMap::new();
+        let mut task_points: HashMap<String, usize> = HashMap::new();
+        let total_teams = self.team_time_series.len();
+        for task_map in tasks_by_team.values() {
+            for task_name in task_map.keys() {
+                *task_solve_counts.entry(task_name.clone()).or_default() += 1;
+            }
+        }
+        for task in app_state.task_manager.tasks.iter() {
+            let solves = *task_solve_counts.get(task.key()).unwrap_or(&0);
+            task_points.insert(
+                task.key().clone(),
+                Self::calculate_task_value(solves, total_teams),
+            );
+        }
+
+        let standings = self
+            .team_time_series
+            .iter()
+            .map(|(uuid, data)| {
+                let mut last_accept = 0;
+                let task_stats = tasks_by_team
+                    .get(uuid)
+                    .map(|task_map| {
+                        task_map
+                            .iter()
+                            .map(|(task_name, submitted_at)| {
+                                let time = submitted_at.and_utc().timestamp();
+                                if time > last_accept {
+                                    last_accept = time
+                                }
+                                (
+                                    task_name.clone(),
+                                    TaskTeamStat {
+                                        points: *task_points.get(&task_name.clone()).unwrap(),
+                                        time,
+                                    },
+                                )
+                            })
+                            .collect()
+                    })
+                    .unwrap_or_default();
+
+                SingleTeamStanding {
+                    team: data.name.clone(),
+                    score: *data.points.last().unwrap_or(&0),
+                    task_stats,
+                    last_accept,
+                }
+            })
+            .collect();
+
+        Ok(TeamStandings {
+            tasks: app_state
+                .task_manager
+                .tasks
+                .iter()
+                .map(|entry| entry.key().clone())
+                .collect(),
+            standings,
+        })
     }
 }
 
