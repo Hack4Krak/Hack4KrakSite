@@ -9,34 +9,34 @@ const stats = computed(() => [
   {
     label: 'Miejsce w rankingu',
     value: `${props.teamStats.rank?.[0]}/${props.teamStats.rank?.[1]}`,
-    class: '',
+    accent: 'text-primary',
   },
   {
     label: 'Zdobyte flagi',
     value: props.teamStats.captured_flags,
-    class: 'text-green-400',
+    accent: 'text-success',
   },
   {
     label: 'Pozostałe flagi',
     value: props.teamStats.remaining_flags,
-    class: 'text-yellow-400',
+    accent: 'text-default',
   },
 ])
 </script>
 
 <template>
-  <div class="flex divide-x font-pixelify text-center">
-    <div
-      v-for="(item, i) in stats"
-      :key="i"
-      class="flex-1 p-10"
+  <ul class="panel-card-body grid grid-cols-1 sm:grid-cols-3 gap-3">
+    <li
+      v-for="item in stats"
+      :key="item.label"
+      class="panel-subcard text-center"
     >
-      <div class="text-xl">
+      <p class="text-xs uppercase tracking-wider text-muted">
         {{ item.label }}
-      </div>
-      <div class="text-4xl font-bold" :class="item.class">
+      </p>
+      <p class="font-pixelify text-3xl lg:text-4xl mt-2 leading-none tabular-nums" :class="item.accent">
         {{ item.value }}
-      </div>
-    </div>
-  </div>
+      </p>
+    </li>
+  </ul>
 </template>

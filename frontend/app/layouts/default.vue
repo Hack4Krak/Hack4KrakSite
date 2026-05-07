@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import LANDING_CONTENT from '~~/content/landing/page'
+import useRegistrationOpen from '~/composables/useRegistrationOpen'
 
 const event = LANDING_CONTENT.event
 
@@ -7,7 +8,7 @@ const { data: registrationInformation } = await useApi('/event/registration', {
   key: 'landing-registration-info',
 })
 
-const registrationOpen = computed(() => registrationInformation.value?.is_open ?? false)
+const registrationOpen = useRegistrationOpen(registrationInformation)
 </script>
 
 <template>

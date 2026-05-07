@@ -1,37 +1,3 @@
-import type { FetchContext, FetchOptions } from 'ofetch'
-
-type NuxtAppWithContext = Pick<ReturnType<typeof useNuxtApp>, 'runWithContext'>
-type ResponseErrorContext = FetchContext & { response: NonNullable<FetchContext['response']> }
-
-async function handleResponseError(
-  nuxtApp: NuxtAppWithContext,
-  context: ResponseErrorContext,
-  localOptions: FetchOptions,
-) {
-  const hooks = localOptions.onResponseError
-  if (Array.isArray(hooks)) {
-    await Promise.all(hooks.map(hook => hook(context)))
-    return
-  } else if (typeof hooks === 'function') {
-    await hooks(context)
-    return
-  }
-
-  if (Object.hasOwn(localOptions, 'onResponseError')) {
-    return
-  }
-
-  const data = context.response._data
-  context.error = data.error
-
-  const description = `${context.response.status}: ${data.message ?? 'Nieznany błąd'}`
-  nuxtApp.runWithContext(() => useToast().add({
-    title: 'Błąd zapytania',
-    description,
-    color: 'error',
-  }))
-}
-
 export default defineNuxtPlugin((nuxtApp) => {
   const clients = useRuntimeConfig().public.openFetch
   const localFetch = useRequestFetch()
@@ -40,39 +6,40 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   return {
     provide: {
-      api: createOpenFetch((localOptions = {}) => ({
+      api: createOpenFetch(localOptions => ({
         ...clients.api,
         headers,
-        ...localOptions,
         async onResponseError(context) {
           const data = context.response._data
           if (!data.error) {
             return
           }
 
-          await handleResponseError(nuxtApp, context, localOptions)
+          const description = `${context.response.status}: ${data.message ?? 'Nieznany błąd'}`
+          nuxtApp.runWithContext(() => useToast().add({ title: 'Błąd zapytania', description, color: 'error' }))
+
+          context.error = data?.error
         },
+        ...localOptions,
       }), localFetch as typeof $fetch),
-      auth: createOpenFetch((localOptions = {}) => ({
+      auth: createOpenFetch(localOptions => ({
         ...clients.auth,
         retryStatusCodes: [401],
         retry: 1,
         credentials: 'include',
+        ignoreResponseError: true,
         headers,
-        ...localOptions,
-        async onResponseError(context) {
-          const data = context.response._data
-          const status = context.response.status
-          if (!data.error) {
-            return
+        async onResponse(context) {
+          if (context.response?._data.error && context.response?._data.error !== 'Unauthorized') {
+            const hooks = context.options.onResponseError
+            if (Array.isArray(hooks)) {
+              hooks.forEach(hook => hook(context))
+            } else if (typeof hooks === 'function') {
+              hooks(context)
+            }
           }
 
-          if (data.error !== 'Unauthorized' || status !== 401) {
-            await handleResponseError(nuxtApp, context, localOptions)
-            return
-          }
-
-          if (context.options.retry === 0 || context.options.retry === false) {
+          if (context.response.status !== 401) {
             return
           }
 
@@ -81,26 +48,49 @@ export default defineNuxtPlugin((nuxtApp) => {
             baseURL: clients.auth.baseURL,
             headers,
             credentials: 'include',
-            ignoreResponseError: true,
+            onResponseError() {
+              nuxtApp.runWithContext(() => {
+                if (context.options.redirect !== 'error') {
+                  navigateTo('/login')
+                }
+              })
+            },
           })
 
           if (!response.ok) {
-            context.options.retry = 0
             if (context.options.redirect !== 'error') {
               nuxtApp.runWithContext(() => navigateTo('/login'))
             }
             return
           }
 
+          const cookies = (response.headers.get('set-cookie') || '').split(',')
+          context.options.headers.set('cookie', cookies.map(c => c.split(';')[0]).join(';'))
+
           if (import.meta.server) {
-            const setCookie = response.headers.get('set-cookie')
-            if (setCookie) {
-              const cookies = setCookie.split(',')
-              context.options.headers.set('cookie', cookies.map(c => c.split(';')[0]).join(';'))
-              nuxtApp.ssrContext?.event.node.res.setHeader('Set-Cookie', cookies)
-            }
+            nuxtApp.ssrContext?.event.node.res.setHeader('Set-Cookie', cookies)
           }
         },
+        onResponseError(context) {
+          const data = context.response._data
+          const status = context.response.status
+          if (!data.error) {
+            return
+          }
+
+          // We sometimes get Unauthorized, but we handle it and refresh access token
+          if (data.error === 'Unauthorized') {
+            return
+          }
+          nuxtApp.runWithContext(() => useToast().add({
+            title: `Błąd ${status}`,
+            description: data.message ?? 'Nieznany błąd',
+            color: 'error',
+          }))
+
+          context.error = data.error
+        },
+        ...localOptions,
       }), localFetch as typeof $fetch),
     },
   }

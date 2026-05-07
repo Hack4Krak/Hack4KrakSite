@@ -79,6 +79,12 @@ TeamError:
   TeamLeaderNotFound: "Lider zespołu nie został znaleziony"
   InvalidNumberOfTeams: "Nieprawidłowa liczba zespołów. Maksymalna liczba zespołów to {max_teams}"
 
+EventError:
+  AlreadyRegistered: "Jesteś już zarejestrowany/a na to wydarzenie"
+  RegistrationNotOpen: "Rejestracja jest aktualnie zamknięta"
+  NotRegistered: "Nie jesteś zarejestrowany/a na to wydarzenie"
+  StillInTeam: "Przed wypisaniem się z wydarzenia opuść lub usuń drużynę"
+
 TaskError:
   InvalidTaskId: "Identyfikator zadania może zawierać tylko znaki a-Z, A-Z, 0-9, - oraz _"
   CouldNotLoadTaskAsset: "Nie udało się załadować zasobu zadania \"{id}\""
