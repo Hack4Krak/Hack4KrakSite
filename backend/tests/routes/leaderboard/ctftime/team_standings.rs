@@ -2,7 +2,7 @@ use crate::test_utils::TestApp;
 use crate::test_utils::database::TestDatabase;
 use actix_web::test;
 use hack4krak_backend::entities::teams::UpdatableModel;
-use hack4krak_backend::models::task::TaskConfig;
+use hack4krak_backend::models::task_manager::task_config::TaskConfig;
 use hack4krak_backend::services::task_manager::TaskManager;
 
 #[actix_web::test]
@@ -55,10 +55,7 @@ async fn team_standings() {
     let response = test::call_service(&app, request).await;
     let status = response.status();
     let body = test::read_body(response).await;
-    if !status.is_success() {
-        eprintln!("Response status: {}", status);
-        eprintln!("Response body: {:?}", String::from_utf8_lossy(&body));
-    }
+
     assert!(
         status.is_success(),
         "Expected success but got {}: {:?}",
@@ -76,13 +73,16 @@ async fn team_standings() {
             .unwrap()
             .is_empty()
     );
+
     let standings = standalone.get("standings").unwrap().as_array().unwrap();
+
     assert!(!standings.is_empty());
 
     let dziengiel_standing = standings
         .iter()
         .find(|s| s.get("team").unwrap().as_str().unwrap() == "Dziengiel")
         .expect("team should be in standings");
+
     assert!(dziengiel_standing.get("score").unwrap().as_u64().unwrap() > 0);
     assert!(
         !dziengiel_standing
