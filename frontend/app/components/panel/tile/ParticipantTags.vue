@@ -1,37 +1,47 @@
 <script setup lang="ts">
-import type { AuthResponse } from '#open-fetch'
+import type { SchemaParticipantTag } from '#open-fetch-schemas/api'
 
 defineProps<{
-  tags: AuthResponse<'account_identification'>['applied_tags']
+  tags: SchemaParticipantTag[]
+  selectedTagId?: string
 }>()
 </script>
 
 <template>
-  <div class="bg-surface-muted border-2 border-surface-muted max-w-xl">
-    <div class="px-4 py-3 border-b border-surface-muted">
+  <div class="bg-surface-muted border-2 border-surface-muted max-w-xl grow">
+    <div class="bg-default p-5 border-b border-surface-muted">
       <h2 class="font-bold text-lg">
-        Przypisane tagi
+        Przypisane atrybuty
       </h2>
     </div>
-    <div class="space-y-px">
+    <div
+      v-if="tags.length > 0"
+      class="space-y-px"
+    >
       <div
         v-for="tag in tags"
         :key="tag.id"
-        class="px-4 py-3 border-b border-surface-muted last:border-b-0 flex items-start justify-between"
+        class="bg-default p-5 flex items-start justify-between gap-4"
+        :class="tag.id === selectedTagId ? 'bg-primary/10' : ''"
       >
         <div class="flex-1">
-          <p class="font-semibold text-sm">
+          <p
+            class="font-semibold"
+            :class="tag.id === selectedTagId ? 'text-primary' : ''"
+          >
             {{ tag.name }}
           </p>
-          <p class="text-xs text-muted mt-1">
+          <p class="text-sm text-muted mt-1">
             {{ tag.description }}
           </p>
         </div>
       </div>
     </div>
+    <p
+      v-else
+      class="bg-default p-5 text-sm text-muted"
+    >
+      Brak przypisanych tagów
+    </p>
   </div>
 </template>
-
-<style scoped>
-
-</style>

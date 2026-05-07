@@ -244,6 +244,7 @@ async fn reset_uuid_user_not_found() {
 
 #[cfg(feature = "full-test-suite")]
 #[actix_web::test]
+#[ignore = "Registration confirmation no longer sends identification QR emails"]
 async fn full_identity_identification_flow() {
     use crate::test_utils::mail::SmtpTestClient;
     use hack4krak_backend::services::authorization::UserIdentificationInfo;

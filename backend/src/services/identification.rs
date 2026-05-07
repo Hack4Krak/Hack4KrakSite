@@ -1,4 +1,5 @@
 use crate::entities::users;
+use crate::models::task_manager::participant_tags_config::ParticipantTag;
 use crate::services::authorization::{AuthorizationService, UserIdentificationInfo};
 use crate::services::emails::IdentificationQrCode;
 use crate::services::task_manager::TaskManager;
@@ -18,6 +19,7 @@ pub struct IdentifiedUserInfo {
     pub username: String,
     pub email: String,
     pub team_name: Option<String>,
+    pub tags: Vec<ParticipantTag>,
 }
 
 pub struct IdentificationService;
@@ -54,6 +56,7 @@ impl IdentificationService {
 
     pub async fn identify_user(
         database: &DatabaseConnection,
+        task_manager: &TaskManager,
         identification_code: Uuid,
     ) -> Result<IdentifiedUserInfo, Error> {
         let user = users::Entity::find()
@@ -63,12 +66,14 @@ impl IdentificationService {
             .ok_or(Error::InvalidIdentificationCode)?;
 
         let team_name = user.get_team(database).await?.map(|team| team.name);
+        let tags = AuthorizationService::user_tags(database, task_manager, user.id).await?;
 
         Ok(IdentifiedUserInfo {
             user_id: user.id,
             username: user.username,
             email: user.email,
             team_name,
+            tags,
         })
     }
 

@@ -19,8 +19,12 @@ pub async fn identify(
     app_state: Data<AppState>,
     id: web::Path<Uuid>,
 ) -> Result<HttpResponse, Error> {
-    let user_info =
-        IdentificationService::identify_user(&app_state.database, id.into_inner()).await?;
+    let user_info = IdentificationService::identify_user(
+        &app_state.database,
+        &app_state.task_manager,
+        id.into_inner(),
+    )
+    .await?;
 
     Ok(HttpResponse::Ok().json(user_info))
 }
