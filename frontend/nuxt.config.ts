@@ -35,6 +35,7 @@ export default defineNuxtConfig({
       'TooltipComponent',
       'LegendComponent',
       'GridComponent',
+      'DataZoomComponent',
     ],
   },
   experimental: {

@@ -26,7 +26,13 @@ const runtimeConfig = useRuntimeConfig().public
           </div>
 
           <div v-if="runtimeConfig.gitCommit" class="hidden lg:block">
-            <span aria-hidden="true" class="text-xs text-dimmed">{{ runtimeConfig.gitBranch }}@{{ runtimeConfig.gitCommit }}</span>
+            <ULink
+              :to="`https://github.com/Hack4Krak/Hack4KrakSite/commit/${runtimeConfig.gitCommit}`"
+              target="_blank"
+              class="text-xs text-dimmed hover:text-default transition-colors duration-150"
+            >
+              {{ runtimeConfig.gitBranch }}@{{ runtimeConfig.gitCommit }}
+            </ULink>
           </div>
         </div>
       </template>
