@@ -4,6 +4,8 @@ import LANDING_CONTENT from '~~/content/landing-page.json'
 useSeoMeta({
   title: 'Strona Główna',
 })
+
+defineOgImage('DefaultOgImage', { bg: '/img/landing_background.webp' })
 </script>
 
 <template>

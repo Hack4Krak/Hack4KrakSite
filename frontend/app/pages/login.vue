@@ -9,6 +9,8 @@ useSeoMeta({
   description: 'Zaloguj się do swojego konta, aby móc brać udział w wydarzeniu!',
 })
 
+defineOgImage('DefaultOgImage', { bg: '/img/landing_background.webp' })
+
 const route = useRoute()
 
 if (route.query.error) {

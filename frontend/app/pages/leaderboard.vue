@@ -9,6 +9,8 @@ useSeoMeta({
   title: 'Ranking',
   description: 'Zobacz aktualny ranking drużyn i ich punkty w czasie rzeczywistym!',
 })
+
+defineOgImage('DefaultOgImage', { bg: '/img/map.png' })
 </script>
 
 <template>

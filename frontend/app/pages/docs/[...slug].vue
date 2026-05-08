@@ -13,6 +13,8 @@ useSeoMeta({
   title: page.value?.title,
   description: page.value?.description,
 })
+
+defineOgImage('DefaultOgImage', { bg: '/img/landing_background.webp' })
 </script>
 
 <template>
