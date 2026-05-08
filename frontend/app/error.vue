@@ -27,6 +27,8 @@ watchEffect(() => {
   if (!error)
     return
 
+  console.error(error)
+
   const customErrorId = errorData.value?.error
   if (customErrorId === 'AccessBeforeStage') {
     eventStartDate.value = new Date(errorData.value?.details?.stage_start_date)
@@ -51,6 +53,8 @@ watchEffect(() => {
     errorTitle.value.message = 'Rycerz napotkał przeszkodę\n Na swojej drodze.\n Spróbuj ponownie później.'
   } else if (errorData.value.message) {
     errorTitle.value.message = errorData.value.message
+  } else if (error.message) {
+    errorTitle.value.message = error.message
   }
 })
 
@@ -62,6 +66,13 @@ async function finishTimer() {
     description: 'Miłego rozwiązywania zadań :3',
     color: 'success',
   })
+}
+
+const rawErrorJson = computed(() => JSON.stringify(props.error, null, 2))
+
+async function copyRaw() {
+  await navigator.clipboard.writeText(rawErrorJson.value)
+  useToast().add({ title: 'Skopiowano', icon: 'i-lucide-check', color: 'success' })
 }
 </script>
 
@@ -78,20 +89,19 @@ async function finishTimer() {
 
         <LazyTimer v-if="eventStartDate" class="mt-10" :target="eventStartDate" @complete="finishTimer()" />
 
-        <LazyUModal v-else title="Więcej informacji o błędzie:" hydrate-on-visible>
+        <LazyUModal v-else hydrate-on-visible :ui="{ content: 'max-w-2xl' }">
           <UButton label="Więcej informacji..." variant="outline" class="w-fit mt-4" />
+          <template #title>
+            <span class="flex items-center gap-2 font-pixelify text-lg tracking-wide">
+              <UIcon name="pixelarticons:bug" class="size-5 text-primary" />
+              Szczegóły błędu
+            </span>
+          </template>
           <template #body>
-            <section class="flex flex-col text-lg space-y-5">
-              <div
-                v-for="(element, i) in [['Kod', error?.status], ['Wiadomość', error?.statusText], ['Dane', error?.data]]"
-                :key="i"
-              >
-                <h2 class="text-xl font-bold text-primary">
-                  {{ element[0] }}:
-                </h2>
-                <pre class="font-light font-mono">{{ element[1] }}</pre>
-              </div>
-            </section>
+            <div class="relative">
+              <pre class="font-mono text-xs bg-elevated p-3 overflow-auto max-h-96">{{ rawErrorJson }}</pre>
+              <UButton icon="i-lucide-copy" variant="ghost" size="xs" color="neutral" class="absolute top-2 right-2" @click="copyRaw" />
+            </div>
           </template>
         </LazyUModal>
       </div>
