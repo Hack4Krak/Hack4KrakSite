@@ -1,6 +1,5 @@
 use super::ParticipationError;
 use crate::entities::{event_registration, users};
-use crate::middlewares::auth::AuthMiddleware;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::success_response::SuccessResponse;
@@ -18,7 +17,7 @@ use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
     security(("access_token" = [])),
     tag = "event"
 )]
-#[delete("/participate", wrap = "AuthMiddleware::with_user()")]
+#[delete("")]
 pub async fn delete_participation(
     app_state: Data<app_state::AppState>,
     user: users::Model,

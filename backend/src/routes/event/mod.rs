@@ -1,3 +1,4 @@
+use utoipa_actix_web::scope;
 use utoipa_actix_web::service_config::ServiceConfig;
 
 mod info;
@@ -15,7 +16,5 @@ pub fn config(config: &mut ServiceConfig) {
     config.service(registration::registration);
     config.service(label::label);
     config.service(participant_tags::participant_tags);
-    config.service(participate::submit_participation);
-    config.service(participate::get_participation);
-    config.service(participate::delete_participation);
+    config.service(scope("/participate").configure(participate::config));
 }

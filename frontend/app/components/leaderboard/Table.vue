@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import type { ApiResponse } from '#open-fetch'
 import type { TableColumn } from '@nuxt/ui'
 import type { Row, TableMeta } from '@tanstack/vue-table'
-import type { ApiResponse } from '#open-fetch'
 import dayjs from 'dayjs'
 
 export type Team = ApiResponse<'teams_with_tasks'>[0]

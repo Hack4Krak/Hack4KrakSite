@@ -1,6 +1,5 @@
 use super::{FoodPreferenceInput, ParticipationError};
 use crate::entities::{event_registration, users};
-use crate::middlewares::auth::AuthMiddleware;
 use crate::middlewares::event::EventMiddleware;
 use crate::models::user::validate_name_chars;
 use crate::services::identification::IdentificationService;
@@ -49,11 +48,7 @@ struct ParticipateRequest {
     security(("access_token" = [])),
     tag = "event"
 )]
-#[post(
-    "/participate",
-    wrap = "AuthMiddleware::with_user()",
-    wrap = "EventMiddleware::require_open_registration()"
-)]
+#[post("", wrap = "EventMiddleware::require_open_registration()")]
 pub async fn submit_participation(
     app_state: Data<app_state::AppState>,
     user: users::Model,

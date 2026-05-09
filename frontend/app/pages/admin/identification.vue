@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { DetectedBarcode } from 'nuxt-qrcode'
 import type { SchemaIdentifiedUserInfo } from '#open-fetch-schemas/api'
+import type { DetectedBarcode } from 'nuxt-qrcode'
 import { FetchError } from 'ofetch'
 
 definePageMeta({
