@@ -1,25 +1,37 @@
 {% extends "base.html" %}
 
-{% block title %}Twój kod identyfikacyjny{% endblock %}
+{% block title %}Potwierdzenie zgłoszenia na Hack4Krak 2026{% endblock %}
 
 {% block content %}
 <h1 style="margin: 0 0 24px; font-size: 24px; line-height: 32px; font-weight: 600; color: #0f172a">
     Cześć, {{ user }}!
 </h1>
 <p style="margin: 0 0 24px; font-size: 16px; line-height: 24px; color: #475569">
-    Poniżej znajduje się Twój unikalny kod identyfikacyjny. Pokaż go organizatorom wydarzenia, aby potwierdzić swoją tożsamość.
+    Twoje zgłoszenie na <strong style="color: #0f172a;">Hack4Krak 2026</strong> zostało zapisane. Widzimy się
+    <strong style="color: #0f172a;">23-24 maja 2026</strong> na Uniwersytecie Komisji Edukacji Narodowej w Krakowie,
+    ul. Podchorążych 2.
+</p>
+
+<p style="margin: 0 0 24px; font-size: 16px; line-height: 24px; color: #475569">
+    Do tej wiadomości dołączyliśmy Twój indywidualny kod QR. Przygotuj go przy wejściu na wydarzenie - organizatorzy
+    zeskanują go, aby szybko potwierdzić Twoją tożsamość i zgłoszenie.
+</p>
+
+<p style="margin: 0 0 16px; font-size: 14px; line-height: 20px; color: #64748b;">
+    Załącznik z kodem QR: <strong style="color: #0f172a;">identification-qr.png</strong>
+</p>
+
+<!-- identification_code: {{ identification_code }} -->
+
+<p style="margin: 0 0 24px; font-size: 16px; line-height: 24px; color: #475569">
+    Przed przyjazdem sprawdź w panelu uczestnika, czy dane zgłoszenia i drużyna są poprawne. Jeśli jesteś osobą
+    niepełnoletnią, pamiętaj o wydrukowaniu i przyniesieniu podpisanej zgody rodzica/opiekuna. Każdy uczestnik powinien
+    mieć też przygotowaną zgodę RODO i wizerunkową.
 </p>
 
 <p style="margin: 0; font-size: 14px; line-height: 20px; color: #64748b;">
-    Kod QR znajdziesz w załączniku <strong style="color: #0f172a;">identification-qr.png</strong>.
-</p>
-
-<p style="margin: 0 0 24px; font-size: 14px; line-height: 20px; color: #64748b; text-align: center;">
-    Twój kod identyfikacyjny: <strong style="color: #0f172a;">{{ identification_code }}</strong>
-</p>
-
-<p style="margin: 0; font-size: 14px; line-height: 20px; color: #64748b;">
-    Ten kod jest unikalny i przypisany do Twojego konta. Nie udostępniaj go innym osobom.
+    Kod jest unikalny i przypisany do Twojego konta. Nie udostępniaj go innym osobom. W razie pytań napisz do nas na
+    <a href="mailto:kontakt@hack4krak.pl" style="color: #0f172a; font-weight: 600;">kontakt@hack4krak.pl</a>.
 </p>
 
 {% endblock %}

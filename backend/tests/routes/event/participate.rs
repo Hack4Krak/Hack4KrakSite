@@ -2,7 +2,6 @@ use crate::mocks::smtp_mock::MockSmtpClient;
 use crate::test_utils::TestApp;
 use crate::test_utils::database::TestDatabase;
 use crate::test_utils::header::TestAuthHeader;
-use crate::test_utils::mail::SmtpTestClient;
 use actix_web::test;
 use chrono::{DateTime, Duration, Utc};
 use hack4krak_backend::entities::users;
@@ -26,6 +25,8 @@ fn valid_payload() -> Value {
 #[actix_web::test]
 #[cfg(feature = "full-test-suite")]
 async fn participate_success_sends_registration_confirmation_email() {
+    use crate::test_utils::mail::SmtpTestClient;
+
     let test_database = TestDatabase::new().await;
     let user = test_database.with_default_user().await;
 
@@ -103,7 +104,7 @@ async fn participate_already_registered() {
     assert_eq!(response.status(), 409);
 
     let response: Value = test::read_body_json(response).await;
-    assert_eq!(response["error"].as_str().unwrap(), "SubmitParticipation");
+    assert_eq!(response["error"].as_str().unwrap(), "Participation");
 }
 
 #[actix_web::test]
@@ -130,7 +131,7 @@ async fn participate_registration_closed() {
     assert_eq!(response.status(), 400);
 
     let response: Value = test::read_body_json(response).await;
-    assert_eq!(response["error"].as_str().unwrap(), "SubmitParticipation");
+    assert_eq!(response["error"].as_str().unwrap(), "Participation");
 }
 
 #[actix_web::test]
@@ -151,7 +152,7 @@ async fn get_participation_not_registered() {
     assert_eq!(response.status(), 404);
 
     let response: Value = test::read_body_json(response).await;
-    assert_eq!(response["error"].as_str().unwrap(), "GetParticipation");
+    assert_eq!(response["error"].as_str().unwrap(), "Participation");
 }
 
 #[actix_web::test]
@@ -231,7 +232,7 @@ async fn delete_participation_success() {
     assert_eq!(response.status(), 404);
 
     let response: Value = test::read_body_json(response).await;
-    assert_eq!(response["error"].as_str().unwrap(), "GetParticipation");
+    assert_eq!(response["error"].as_str().unwrap(), "Participation");
 }
 
 #[actix_web::test]
@@ -267,7 +268,7 @@ async fn delete_participation_rejects_team_leader() {
     assert_eq!(response.status(), 409);
 
     let response: Value = test::read_body_json(response).await;
-    assert_eq!(response["error"].as_str().unwrap(), "DeleteParticipation");
+    assert_eq!(response["error"].as_str().unwrap(), "Participation");
 
     let request = test::TestRequest::get()
         .uri("/event/participate")
@@ -309,7 +310,7 @@ async fn delete_participation_rejects_team_member() {
     assert_eq!(response.status(), 409);
 
     let response: Value = test::read_body_json(response).await;
-    assert_eq!(response["error"].as_str().unwrap(), "DeleteParticipation");
+    assert_eq!(response["error"].as_str().unwrap(), "Participation");
 
     let request = test::TestRequest::get()
         .uri("/event/participate")

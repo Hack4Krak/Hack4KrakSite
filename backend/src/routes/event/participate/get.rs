@@ -1,6 +1,5 @@
 use super::{FoodPreferenceInput, ParticipationError};
 use crate::entities::{event_registration, users};
-use crate::middlewares::auth::AuthMiddleware;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use actix_web::web::Data;
@@ -54,7 +53,7 @@ impl From<event_registration::Model> for ParticipateResponse {
     security(("access_token" = [])),
     tag = "event"
 )]
-#[get("/participate", wrap = "AuthMiddleware::with_user()")]
+#[get("")]
 pub async fn get_participation(
     app_state: Data<app_state::AppState>,
     user: users::Model,

@@ -4,7 +4,7 @@ export default defineNuxtRouteMiddleware(async () => {
       redirect: 'error',
     })
     if (!user.error.value && user.data.value) {
-      return '/panel'
+      return '/account'
     }
   } catch (error) {
     console.error(error)

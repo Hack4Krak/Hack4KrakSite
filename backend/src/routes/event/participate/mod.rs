@@ -1,18 +1,26 @@
 use crate::entities::sea_orm_active_enums::FoodPreference;
+use crate::middlewares::auth::AuthMiddleware;
 use crate::utils::error::error_response_builder;
 use actix_http::StatusCode;
 use actix_web::error;
 use hack4krak_macros::error_with_messages;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
+use utoipa_actix_web::scope;
 
 mod delete;
 mod get;
 mod submit;
 
-pub use delete::delete_participation;
-pub use get::get_participation;
-pub use submit::submit_participation;
+pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
+    config.service(
+        scope("")
+            .wrap(AuthMiddleware::with_user())
+            .service(submit::submit_participation)
+            .service(get::get_participation)
+            .service(delete::delete_participation),
+    );
+}
 
 #[error_with_messages]
 pub enum ParticipationError {

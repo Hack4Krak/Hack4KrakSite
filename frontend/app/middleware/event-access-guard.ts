@@ -10,7 +10,7 @@ export default defineNuxtRouteMiddleware(async () => {
     return showError(error.value)
 
   return showError({
-    statusCode: 403,
+    status: 403,
     message: 'Panel CTF będzie dostępny podczas wydarzenia.',
     data: data.value,
   })
