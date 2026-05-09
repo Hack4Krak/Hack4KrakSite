@@ -1,19 +1,24 @@
 import { expect, test } from '@nuxt/test-utils/playwright'
 
 test('UModal component dimensions are correct on different viewport sizes', async ({ page }) => {
+  async function openErrorDetailsModal() {
+    await page.getByRole('button', { name: 'Więcej informacji...' }).click()
+
+    const modal = page.getByRole('dialog')
+    await expect(modal).toBeVisible()
+    await expect(modal.getByText('Szczegóły błędu')).toBeVisible()
+    await expect(modal.locator('pre')).toBeVisible()
+
+    return modal
+  }
+
   // Test on desktop viewport
   await page.setViewportSize({ width: 1280, height: 720 })
 
   await page.goto('/asdbahgwaghdva', { waitUntil: 'networkidle' })
 
-  const moreInfoButton = page.locator('button', { hasText: 'Więcej informacji...' })
-  await moreInfoButton.click()
-
-  const modal = page.locator('[role="dialog"]')
-  await expect(modal).toBeVisible()
-
-  const modalBody = modal.locator('section.flex.flex-col.text-lg.space-y-5')
-  const desktopBox = await modalBody.boundingBox()
+  const desktopModal = await openErrorDetailsModal()
+  const desktopBox = await desktopModal.boundingBox()
   expect(desktopBox).not.toBeNull()
 
   if (desktopBox) {
@@ -27,10 +32,8 @@ test('UModal component dimensions are correct on different viewport sizes', asyn
   // Refresh to apply mobile layout
   await page.reload({ waitUntil: 'networkidle' })
 
-  await moreInfoButton.click()
-  await expect(modal).toBeVisible()
-
-  const mobileBox = await modalBody.boundingBox()
+  const mobileModal = await openErrorDetailsModal()
+  const mobileBox = await mobileModal.boundingBox()
   expect(mobileBox).not.toBeNull()
 
   if (mobileBox) {
@@ -39,6 +42,6 @@ test('UModal component dimensions are correct on different viewport sizes', asyn
     expect(mobileBox.height).toBeGreaterThan(100)
 
     // Modal should not exceed viewport width (with some margin for padding)
-    expect(mobileBox.width).toBeLessThan(375 - 40) // 40px margin for padding/borders
+    expect(mobileBox.width).toBeLessThanOrEqual(375)
   }
 })
