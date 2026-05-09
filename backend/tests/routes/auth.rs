@@ -73,7 +73,6 @@ async fn register_invalid_username() {
 
 #[cfg(feature = "full-test-suite")]
 #[actix_web::test]
-#[ignore = "Registration confirmation no longer creates a login-ready user in this flow"]
 async fn auth_flow() {
     use crate::test_utils::mail::SmtpTestClient;
     use actix_http::header;
@@ -136,12 +135,13 @@ async fn auth_flow() {
 }
 
 #[actix_web::test]
-#[ignore = "Registration confirmation no longer sends identification QR emails"]
 async fn email_confirmation_success() {
     use crate::mocks::smtp_mock::MockSmtpClient;
     use hack4krak_backend::entities::email_verification_request::UpdatableModel;
+    use hack4krak_backend::entities::{email_verification_request, users};
     use hack4krak_backend::services::authentication::AuthenticationService;
     use hack4krak_backend::utils::app_state::AppState;
+    use sea_orm::EntityTrait;
 
     let test_database = TestDatabase::new().await;
 
@@ -158,18 +158,34 @@ async fn email_confirmation_success() {
     let result = AuthenticationService::confirm_email(&app_state, confirmation_code).await;
 
     assert!(result.is_ok());
-    assert_eq!(mock_smtp_client.send_count(), 1);
+    // Confirmation creates the user and consumes the verification request;
+    // it doesn't send emails (those are sent during registration / reset flows).
+    assert_eq!(mock_smtp_client.send_count(), 0);
+
+    let user = users::Model::find_by_email(&app_state.database, "example@gmail.com")
+        .await
+        .unwrap();
+    assert!(user.is_some());
+
+    let req = email_verification_request::Entity::find_by_id(confirmation_code)
+        .one(&app_state.database)
+        .await
+        .unwrap();
+    assert!(req.is_none());
 }
 
 #[actix_web::test]
-#[ignore = "Confirmation behavior changed while registration confirmation flow is paused"]
 async fn email_confirmation_expired() {
+    use chrono::Utc;
     use hack4krak_backend::entities::email_verification_request::UpdatableModel;
 
     let test_database = TestDatabase::new().await;
 
     let email_confirmation = test_database
-        .with_email_verification_request(UpdatableModel::default())
+        .with_email_verification_request(UpdatableModel {
+            expiration_time: Some(Some(Utc::now().naive_utc() - chrono::Duration::minutes(1))),
+            ..Default::default()
+        })
         .await;
     let confirmation_code = email_confirmation.id;
 

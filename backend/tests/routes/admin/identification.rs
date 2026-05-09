@@ -34,7 +34,7 @@ async fn identify_user_success() {
         .uri(&format!(
             "/admin/identification/identify/{identification_code}"
         ))
-        .insert_header(TestAuthHeader::new(admin.id.clone(), admin.email.clone()))
+        .insert_header(TestAuthHeader::new(admin.id, admin.email.clone()))
         .to_request();
 
     let response = test::call_service(&app, request).await;
@@ -68,7 +68,7 @@ async fn identify_user_invalid_uuid() {
         .set_json(json!({
             "identification_code": invalid_uuid
         }))
-        .insert_header(TestAuthHeader::new(admin.id.clone(), admin.email.clone()))
+        .insert_header(TestAuthHeader::new(admin.id, admin.email.clone()))
         .to_request();
 
     let response = test::call_service(&app, request).await;
@@ -100,7 +100,7 @@ async fn apply_tag_invalid_tag_id() {
             "identification_code": user.identification_code,
             "tag_id": "nonexistent_tag"
         }))
-        .insert_header(TestAuthHeader::new(admin.id.clone(), admin.email.clone()))
+        .insert_header(TestAuthHeader::new(admin.id, admin.email.clone()))
         .to_request();
 
     let response = test::call_service(&app, request).await;
@@ -201,7 +201,7 @@ async fn reset_uuid_success() {
 
     let request = test::TestRequest::post()
         .uri(&format!("/admin/identification/reset/{}", user.id))
-        .insert_header(TestAuthHeader::new(admin.id.clone(), admin.email.clone()))
+        .insert_header(TestAuthHeader::new(admin.id, admin.email.clone()))
         .to_request();
 
     let response = test::call_service(&app, request).await;
@@ -235,7 +235,7 @@ async fn reset_uuid_user_not_found() {
             "/admin/identification/reset/{}",
             nonexistent_user_id
         ))
-        .insert_header(TestAuthHeader::new(admin.id.clone(), admin.email.clone()))
+        .insert_header(TestAuthHeader::new(admin.id, admin.email.clone()))
         .to_request();
 
     let response = test::call_service(&app, request).await;
@@ -244,13 +244,13 @@ async fn reset_uuid_user_not_found() {
 
 #[cfg(feature = "full-test-suite")]
 #[actix_web::test]
-#[ignore = "Registration confirmation no longer sends identification QR emails"]
-async fn full_identity_identification_flow() {
+async fn full_participation_flow() {
     use crate::test_utils::mail::SmtpTestClient;
+    use actix_http::header;
+    use actix_web::cookie::Cookie;
     use hack4krak_backend::services::authorization::UserIdentificationInfo;
-
     let test_database = TestDatabase::new().await;
-    let mock_smtp_client = SmtpTestClient::new().await;
+    let smtp_client = SmtpTestClient::new().await;
     let task_manager = create_default_test_task_manager().await;
 
     let admin = test_database
@@ -262,29 +262,94 @@ async fn full_identity_identification_flow() {
         })
         .await;
 
-    let confirmation_code = test_database
-        .with_email_verification_request(Default::default())
-        .await
-        .id;
-
     let app = TestApp::default()
         .with_database(test_database)
-        .with_smtp_client(mock_smtp_client.smtp_client.clone())
+        .with_smtp_client(smtp_client.smtp_client.clone())
         .with_task_manager(task_manager)
         .build_app()
         .await;
 
+    let request = test::TestRequest::post()
+        .uri("/auth/register")
+        .set_json(json!({
+            "email": "test@example.com",
+            "name": "test_user",
+            "first_name": "Test",
+            "password": "password123"
+        }))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert!(response.status().is_success());
+
+    let confirmation_code = smtp_client.find_uuid_in_first_email().await;
     let request = test::TestRequest::get()
         .uri(&format!("/auth/confirm/{confirmation_code}"))
         .to_request();
+    let response = test::call_service(&app, request).await;
+    assert!(response.status().is_success());
 
-    test::call_service(&app, request).await;
+    let request = test::TestRequest::post()
+        .uri("/auth/login")
+        .set_json(json!({
+            "email": "test@example.com",
+            "password": "password123"
+        }))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert!(response.status().is_success());
 
-    let identification_code = mock_smtp_client.find_uuid_in_first_email().await;
+    let access_token = response
+        .headers()
+        .get_all(header::SET_COOKIE)
+        .map(|set_cookie| Cookie::parse(set_cookie.to_str().unwrap()).unwrap())
+        .find(|cookie| cookie.name() == "access_token")
+        .unwrap();
+
+    let request = test::TestRequest::get()
+        .uri("/account/identification")
+        .insert_header((
+            header::COOKIE,
+            format!("access_token={}", access_token.value()),
+        ))
+        .to_request();
+    let identification_info: UserIdentificationInfo =
+        test::call_and_read_body_json(&app, request).await;
+    let identification_code = identification_info.identification_code;
+
+    let request = test::TestRequest::post()
+        .uri("/event/participate")
+        .set_json(json!({
+            "full_name": "Jan Kowalski",
+            "school": "XIV Liceum Ogólnokształcące w Krakowie",
+            "birth_year": "2007",
+            "phone": "+48123456789",
+            "is_underage": false,
+            "emergency_contact_name": null,
+            "emergency_contact_phone": null,
+            "emergency_contact_email": null,
+            "food_preference": "standard",
+        }))
+        .insert_header((
+            header::COOKIE,
+            format!("access_token={}", access_token.value()),
+        ))
+        .to_request();
+    let response = test::call_service(&app, request).await;
+    assert!(response.status().is_success());
+
+    let emails = smtp_client.wait_for_emails(2).await;
+    let found_identification_email = emails
+        .items
+        .iter()
+        .any(|mail| mail.find_uuid() == identification_code.to_string());
+    assert!(
+        found_identification_email,
+        "Expected identification email with code {identification_code}"
+    );
 
     let request = test::TestRequest::get()
         .uri(format!("/admin/identification/identify/{identification_code}").as_str())
-        .insert_header(TestAuthHeader::new(admin.id.clone(), admin.email.clone()))
+        .insert_header(TestAuthHeader::new(admin.id, admin.email.clone()))
         .to_request();
 
     let response = test::call_service(&app, request).await;
@@ -296,7 +361,7 @@ async fn full_identity_identification_flow() {
         .set_json(json!({
             "tag_id": "present-on-event"
         }))
-        .insert_header(TestAuthHeader::new(admin.id.clone(), admin.email.clone()))
+        .insert_header(TestAuthHeader::new(admin.id, admin.email.clone()))
         .to_request();
     let response = test::call_service(&app, request).await;
     assert!(response.status().is_success(), "Apply tag should succeed");

@@ -49,7 +49,7 @@ const logoClass = computed(() =>
   >
     <span
       v-if="isFeatured"
-      class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-default text-[10px] font-bold tracking-widest uppercase px-4 py-1 font-pixelify whitespace-nowrap"
+      class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap bg-primary px-4 py-1 font-pixelify text-xs font-bold uppercase tracking-widest text-default"
     >
       {{ partner.tagline }}
     </span>

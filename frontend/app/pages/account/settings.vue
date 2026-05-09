@@ -4,7 +4,7 @@ definePageMeta({
 })
 
 const { data: user } = await useAuth('/account/')
-const { data: identification_data } = await useAuth('/account/identification')
+const { data: identification_data } = await useAuth('/account/identification', { onResponseError: undefined })
 
 const updateAccountModal = ref(false)
 const changePasswordModal = ref(false)
@@ -42,34 +42,30 @@ useSeoMeta({
       </p>
     </header>
 
-    <div class="flex gap-4 w-full">
-      <div class="space-y-px bg-surface-muted border-2 border-surface-muted max-w-2xl grow">
-        <PanelTileSettingsRow label="Email" :value="user?.email ?? ''">
-          <span class="text-[10px] font-pixelify uppercase tracking-widest text-success border border-success px-2 py-1">
-            zweryfikowany
-          </span>
-        </PanelTileSettingsRow>
+    <div class="space-y-px bg-surface-muted border-2 border-surface-muted max-w-2xl">
+      <PanelTileSettingsRow label="Email" :value="user?.email ?? ''">
+        <UBadge color="success" variant="outline" size="sm">
+          zweryfikowany
+        </UBadge>
+      </PanelTileSettingsRow>
 
-        <PanelTileSettingsRow label="Nazwa wyświetlana" :value="user?.username ?? ''">
-          <UButton variant="ghost" color="neutral" size="sm" icon="pixelarticons:edit" @click="updateAccountModal = true">
-            Edytuj
-          </UButton>
-        </PanelTileSettingsRow>
+      <PanelTileSettingsRow label="Nazwa wyświetlana" :value="user?.username ?? ''">
+        <UButton variant="ghost" color="neutral" size="sm" icon="pixelarticons:edit" @click="updateAccountModal = true">
+          Edytuj
+        </UButton>
+      </PanelTileSettingsRow>
 
-        <PanelTileSettingsRow label="Hasło" value="••••••••">
-          <UButton variant="ghost" color="neutral" size="sm" icon="pixelarticons:lock" @click="changePasswordModal = true">
-            Zmień
-          </UButton>
-        </PanelTileSettingsRow>
+      <PanelTileSettingsRow label="Hasło" value="••••••••">
+        <UButton variant="ghost" color="neutral" size="sm" icon="pixelarticons:lock" @click="changePasswordModal = true">
+          Zmień
+        </UButton>
+      </PanelTileSettingsRow>
 
-        <PanelTileSettingsRow label="Identyfikacyjny kod QR" :value="identification_data?.identification_code ?? ''">
-          <UButton variant="ghost" color="neutral" size="sm" icon="mdi:qrcode" @click="qrCodeModal = true">
-            Wyświetl
-          </UButton>
-        </PanelTileSettingsRow>
-      </div>
-
-      <PanelTileParticipantTags v-if="identification_data" :tags="identification_data?.applied_tags ?? []" class="max-w-2xl" />
+      <PanelTileSettingsRow label="Identyfikacyjny kod QR" :value="identification_data?.identification_code ?? ''">
+        <UButton variant="ghost" color="neutral" size="sm" icon="mdi:qrcode" @click="qrCodeModal = true">
+          Wyświetl
+        </UButton>
+      </PanelTileSettingsRow>
     </div>
 
     <PanelTileSettingsRow danger label="Strefa zagrożenia" value="Operacja nieodwracalna. Usuniemy konto i powiązane dane." class="max-w-2xl">

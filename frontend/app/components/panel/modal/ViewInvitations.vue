@@ -1,7 +1,5 @@
 <script setup lang="ts">
-const { data, refresh } = await useAuth('/teams/invitations/', {
-  key: 'teams-invitations',
-})
+const { data, refresh } = await useAuth('/teams/invitations/')
 
 const { $auth } = useNuxtApp()
 

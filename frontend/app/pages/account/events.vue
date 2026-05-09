@@ -7,6 +7,11 @@ useSeoMeta({
   title: 'Wydarzenia',
   description: 'Aktualne wydarzenie i rejestracja Hack4Krak.',
 })
+
+const { data: eventStatus } = await useApi('/event/status', {
+  onResponseError: undefined,
+})
+const isEventLive = computed(() => eventStatus.value?.is_live ?? false)
 </script>
 
 <template>
@@ -22,7 +27,7 @@ useSeoMeta({
       </div>
     </header>
 
-    <PanelEventEditionCardUpcoming />
+    <PanelEventEditionCardUpcoming :is-event-live="isEventLive" />
 
     <div class="border-2 border-surface-muted p-5">
       <h3 class="font-pixelify text-xl">

@@ -20,11 +20,7 @@ pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
             .wrap(AuthMiddleware::with_user())
             .configure(invitations::config),
     );
-    config.service(
-        scope("/membership")
-            .wrap(AuthMiddleware::with_team_as_member())
-            .configure(membership::config),
-    );
+    config.service(scope("/membership").configure(membership::config));
     config.service(
         scope("/management")
             .wrap(AuthMiddleware::with_team_as_leader())

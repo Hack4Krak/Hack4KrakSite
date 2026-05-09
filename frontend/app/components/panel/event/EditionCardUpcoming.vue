@@ -1,13 +1,24 @@
 <script setup lang="ts">
 import LANDING_CONTENT from '~~/content/landing/page'
 
+defineProps<{
+  isEventLive: boolean
+}>()
+
 const event = LANDING_CONTENT.event
 
-const { isRegistered } = await useEventRegistration()
+const { data: registrationInformation } = await useApi('/event/registration')
+const { isRegistered } = useEventRegistration()
+
+const registrationStarted = computed(() => {
+  const startDate = registrationInformation.value?.start_date
+  return startDate ? Date.now() >= new Date(startDate).getTime() : false
+})
+const canOpenSubmission = computed(() => isRegistered.value)
 </script>
 
 <template>
-  <article class="border-2 border-surface-muted bg-default p-6 lg:p-7">
+  <PanelCard class="p-6 lg:p-7">
     <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 lg:gap-10 items-center">
       <div class="space-y-5">
         <div>
@@ -41,32 +52,36 @@ const { isRegistered } = await useEventRegistration()
         </ul>
 
         <div class="flex flex-wrap gap-5 items-center pt-2">
-          <template v-if="!isRegistered">
-            <ElevatedButton to="/panel/event/register">
-              Zarejestruj się
-            </ElevatedButton>
-            <NuxtLink
-              to="/panel/event"
-              class="inline-flex items-center gap-2 px-5 py-2.5 border-2 border-surface-muted hover:border-primary text-sm font-bold transition-colors"
+          <template v-if="!canOpenSubmission">
+            <ElevatedButton
+              to="/panel/event/register"
+              :disabled="!registrationStarted"
             >
-              <UIcon name="pixelarticons:notes" class="size-4" />
-              Szczegóły
-            </NuxtLink>
+              Zarejestruj się na wydarzenie
+            </ElevatedButton>
           </template>
           <template v-else>
             <ElevatedButton to="/panel/event">
-              Otwórz panel wydarzenia
+              Otwórz swoje zgłoszenie
             </ElevatedButton>
+            <PanelActionButton
+              v-if="isEventLive"
+              to="/panel"
+              tone="neutral"
+              icon="pixelarticons:dashboard"
+            >
+              Otwórz panel CTFu
+            </PanelActionButton>
           </template>
         </div>
       </div>
 
-      <div class="flex flex-col justify-center gap-3 border border-surface-muted/60 bg-surface-muted/20 px-6 py-5 lg:min-w-[19rem]">
-        <p class="text-[10px] uppercase tracking-widest text-muted text-center lg:text-left">
+      <div class="lg:pl-10 lg:border-l-2 lg:border-surface-muted lg:min-w-72">
+        <PanelDataLabel class="mb-3 block">
           Do startu
-        </p>
+        </PanelDataLabel>
         <EventCountdown size="sm" />
       </div>
     </div>
-  </article>
+  </PanelCard>
 </template>

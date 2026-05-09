@@ -8,6 +8,10 @@ const props = defineProps<{
   toastSuccessMessage: string
   requestBody: object | undefined
   redirectTo: string
+  confirmLabel?: string
+}>()
+const emit = defineEmits<{
+  success: []
 }>()
 
 const toast = useToast()
@@ -27,6 +31,7 @@ async function onSubmit() {
 
   toast.add({ title: 'Sukces', description: props.toastSuccessMessage, color: 'success' })
   open.value = false
+  emit('success')
 
   await refreshNuxtData()
   await navigateTo(props.redirectTo)
@@ -37,7 +42,7 @@ async function onSubmit() {
   <UModal v-model:open="open" :title="modalTitle" :description="modalDescription" :ui="{ footer: 'justify-end' }">
     <template #footer>
       <UButton label="Anuluj" color="neutral" variant="outline" @click="open = false" />
-      <UButton label="Usuń" @click="onSubmit()" />
+      <UButton :label="confirmLabel ?? 'Usuń'" @click="onSubmit()" />
     </template>
   </UModal>
 </template>

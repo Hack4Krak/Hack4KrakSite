@@ -15,7 +15,7 @@ async fn account_delete() {
 
     let request = test::TestRequest::delete()
         .uri("/account/delete")
-        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
+        .insert_header(TestAuthHeader::new(user.id, user.email.clone()))
         .to_request();
     let response = test::call_service(&app, request).await;
     assert!(response.status().is_success());
@@ -40,7 +40,7 @@ async fn account_update() {
 
     let request = test::TestRequest::patch()
         .uri("/account/update")
-        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
+        .insert_header(TestAuthHeader::new(user.id, user.email.clone()))
         .set_json(serde_json::json!({
             "username": "Salieri",
         }))
@@ -50,7 +50,7 @@ async fn account_update() {
 
     let request = test::TestRequest::get()
         .uri("/account/")
-        .insert_header(TestAuthHeader::new(user.id.clone(), user.email.clone()))
+        .insert_header(TestAuthHeader::new(user.id, user.email.clone()))
         .to_request();
     let response = test::call_and_read_body(&app, request).await;
     assert_eq!(

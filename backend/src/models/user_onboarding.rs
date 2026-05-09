@@ -1,7 +1,6 @@
 use crate::entities::user_onboarding::Model;
 use crate::entities::{user_onboarding, users};
-use crate::routes::account::AccountError;
-use crate::routes::account::UserOnboardingSubmissionRequest;
+use crate::routes::account::{AccountError, UserOnboardingSubmissionRequest};
 use crate::utils::error::Error;
 use sea_orm::{ActiveModelTrait, DatabaseConnection, EntityTrait, Set, TransactionTrait};
 use serde_json::to_value;

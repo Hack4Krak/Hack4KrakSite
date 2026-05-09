@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { DetectedBarcode } from 'nuxt-qrcode'
 import type { SchemaIdentifiedUserInfo } from '#open-fetch-schemas/api'
 import { FetchError } from 'ofetch'
 
@@ -213,8 +214,8 @@ function onCameraError(error: Error) {
           </div>
 
           <PanelTileParticipantTags
-            :tags="userInfo.tags"
-            :selected-tag-id="selectedTagId"
+            :all-tags="availableTags ?? []"
+            :applied-tags="userInfo.tags"
           />
 
           <div

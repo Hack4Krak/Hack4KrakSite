@@ -18,6 +18,14 @@ pub enum CtfExperience {
     Expert,
 }
 #[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
+#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "food_preference")]
+pub enum FoodPreference {
+    #[sea_orm(string_value = "standard")]
+    Standard,
+    #[sea_orm(string_value = "vegetarian")]
+    Vegetarian,
+}
+#[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "school_grade")]
 pub enum SchoolGrade {
     #[sea_orm(string_value = "not_studying")]

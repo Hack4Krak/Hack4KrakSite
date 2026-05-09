@@ -1,8 +1,8 @@
 use crate::test_utils;
 use chrono::Utc;
 use hack4krak_backend::entities::sea_orm_active_enums::{TeamStatus, UserRoles};
-use hack4krak_backend::entities::{email_verification_request, teams, users};
-use sea_orm::{DatabaseConnection, EntityTrait};
+use hack4krak_backend::entities::{email_verification_request, team_invites, teams, users};
+use sea_orm::{DatabaseConnection, EntityTrait, Set};
 use serde_json::json;
 use uuid::Uuid;
 
@@ -54,6 +54,25 @@ impl TestDatabase {
 
     pub async fn with_default_team(&self) -> teams::Model {
         self.with_team(Default::default()).await
+    }
+
+    pub async fn with_team_invite(&self, user_id: Uuid, team_id: Uuid) -> team_invites::Model {
+        let invite_id = Uuid::new_v4();
+
+        team_invites::Entity::insert(team_invites::ActiveModel {
+            id: Set(invite_id),
+            user: Set(user_id),
+            team: Set(team_id),
+        })
+        .exec(&self.database)
+        .await
+        .unwrap();
+
+        team_invites::Entity::find_by_id(invite_id)
+            .one(&self.database)
+            .await
+            .unwrap()
+            .unwrap()
     }
 
     pub async fn with_team(&self, updatable_model: teams::UpdatableModel) -> teams::Model {

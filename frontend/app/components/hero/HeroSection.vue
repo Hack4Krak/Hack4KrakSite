@@ -2,6 +2,7 @@
 import type { ComponentExposed } from 'vue-component-type-helpers'
 import type HeroContent from './HeroContent.vue'
 import LANDING_CONTENT from '~~/content/landing/page'
+import useRegistrationOpen from '~/composables/useRegistrationOpen'
 
 defineSlots<ComponentExposed<typeof HeroContent>['$slots']>()
 
@@ -9,7 +10,7 @@ const event = LANDING_CONTENT.event
 
 const { data: registrationInformation } = await useApi('/event/registration')
 
-const registrationOpen = computed(() => registrationInformation.value?.is_open ?? false)
+const registrationOpen = useRegistrationOpen(registrationInformation)
 </script>
 
 <template>

@@ -3,11 +3,9 @@ import LANDING_CONTENT from '~~/content/landing/page'
 
 const event = LANDING_CONTENT.event
 
-const { data: registrationInformation } = await useApi('/event/registration', {
-  key: 'landing-registration-info',
-})
+const { data: registrationInformation } = await useApi('/event/registration')
 
-const registrationOpen = computed(() => registrationInformation.value?.is_open ?? false)
+const registrationOpen = useRegistrationOpen(registrationInformation)
 </script>
 
 <template>

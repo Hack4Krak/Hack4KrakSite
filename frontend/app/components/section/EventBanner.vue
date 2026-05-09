@@ -2,13 +2,19 @@
 import LANDING_CONTENT from '~~/content/landing/page'
 
 const event = LANDING_CONTENT.event
+
+const { data: registrationInformation } = await useApi('/event/registration')
+const registrationStarted = computed(() => {
+  const startDate = registrationInformation.value?.start_date
+  return startDate ? Date.now() >= new Date(startDate).getTime() : false
+})
 </script>
 
 <template>
   <div class="w-full border-2 border-primary overflow-hidden">
     <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-0 divide-y-2 lg:divide-y-0 lg:divide-x-2 divide-surface-muted">
       <div class="flex flex-col justify-center gap-4 px-6 py-6 lg:px-8 lg:py-8">
-        <p class="text-[10px] font-bold tracking-[0.3em] uppercase text-muted">
+        <p class="text-xs font-bold tracking-[0.3em] uppercase text-muted">
           Następna edycja
         </p>
 
@@ -33,11 +39,16 @@ const event = LANDING_CONTENT.event
       </div>
 
       <div class="flex items-center justify-center px-6 py-6 lg:px-12 lg:py-8 bg-primary/5">
-        <EventCountdown :show-fallback-date="false" />
+        <EventCountdown size="lg" :show-fallback-date="false" />
       </div>
 
       <div class="flex flex-col items-center justify-center gap-3 px-6 py-6 lg:px-8 lg:py-8">
-        <ElevatedButton to="/register" class="text-base">
+        <ElevatedButton
+          to="/register"
+          class="text-base"
+          :disabled="!registrationStarted"
+          :aria-label="registrationStarted ? 'Zapisz się teraz' : 'Rejestracja jeszcze się nie rozpoczęła'"
+        >
           Zapisz się teraz
         </ElevatedButton>
         <div class="flex items-center gap-4 text-xs text-muted">

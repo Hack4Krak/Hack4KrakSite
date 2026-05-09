@@ -55,7 +55,7 @@ async function onSubmit(event: Schema) {
 
     if (props.isLogin) {
       toast.add({ title: 'Sukces', description: 'Pomyślnie zalogowano!', color: 'success' })
-      await navigateTo('/panel/')
+      await navigateTo('/panel/event')
     } else {
       toast.add({ title: 'Sukces', description: 'Pomyślnie zarejestrowano! Wysłaliśmy Ci na podany adres email link do aktywacji konta', color: 'success' })
       await navigateTo('/login')

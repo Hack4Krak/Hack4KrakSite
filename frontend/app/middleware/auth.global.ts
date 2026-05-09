@@ -1,5 +1,5 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  if (to.path.startsWith('/panel') || to.path === '/account/onboarding') {
+  if (to.path.startsWith('/panel') || to.path.startsWith('/account')) {
     try {
       const { data, error } = await useAuth('/account/', {
         redirect: 'error',
