@@ -8,9 +8,9 @@ export default defineUnlighthouseConfig({
   ci: {
     budget: {
       'performance': 55,
-      'accessibility': 90,
-      'best-practices': 98,
-      'seo': 98,
+      'accessibility': 95,
+      'best-practices': 100,
+      'seo': 100,
     },
   },
 })
