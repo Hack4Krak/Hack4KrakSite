@@ -67,7 +67,7 @@ W III edycji Hack4Krak zapraszamy uczniów szkół średnich z całej Polski.
 ::
 
 ::faq-accordion{question="Kto organizuje to wydarzenie?"}
-Organizatorem Hack4Krak CTF jest Fundacja Ambasada Społeczności wKrakowie, przy wsparciu Samorządu Uczniowskiego z XXXI LO oraz zaangażowanego zespołu organizacyjnego Hack4Krak.
+Organizatorem Hack4Krak CTF jest Fundacja Ambasada Społeczności w Krakowie, przy wsparciu Samorządu Uczniowskiego z XXXI LO oraz zaangażowanego zespołu organizacyjnego Hack4Krak.
 ::
 
 ::faq-accordion{question="Jak mogę się skontaktować z organizatorami, jeżeli mam jakieś pytania?"}
