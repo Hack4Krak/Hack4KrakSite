@@ -18,6 +18,7 @@ const props = withDefaults(defineProps<{
 
 const attrs = useAttrs()
 
+const isDisabled = computed(() => attrs.disabled === '' || attrs.disabled === true)
 const buttonType = computed(() => (attrs.type as string | undefined) ?? 'button')
 const forwardedAttrs = computed(() => {
   const { type: _, ...rest } = attrs
@@ -27,11 +28,11 @@ const forwardedAttrs = computed(() => {
 
 <template>
   <component
-    :is="props.to ? NuxtLink : 'button'"
+    :is="props.to && !isDisabled ? NuxtLink : 'button'"
     v-bind="forwardedAttrs"
-    :to="props.to"
-    :target="props.to ? props.target : undefined"
-    :type="props.to ? undefined : buttonType"
+    :to="props.to && !isDisabled ? props.to : undefined"
+    :target="props.to && !isDisabled ? props.target : undefined"
+    :type="props.to && !isDisabled ? undefined : buttonType"
     class="inline-block bg-primary-500 text-white text-md font-bold"
     :style="{ backgroundColor: props.background }"
   >

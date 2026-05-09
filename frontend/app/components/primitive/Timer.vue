@@ -12,20 +12,28 @@ const props = defineProps<{
 
 const emit = defineEmits(['complete'])
 
-const { data: currentTime, refresh } = useAsyncData('currentTimeTimer', async () => {
-  const now = new Date()
-  return Math.max(0, props.target.getTime() - now.getTime())
-})
+const currentTime = ref(Math.max(0, props.target.getTime() - Date.now()))
+const completed = ref(false)
 
-const { pause } = useIntervalFn(refresh, 1000, { immediate: true })
+function refresh() {
+  currentTime.value = Math.max(0, props.target.getTime() - Date.now())
+}
+
+const { pause, resume } = useIntervalFn(refresh, 1000, { immediate: true })
+
+watch(
+  () => props.target.getTime(),
+  () => {
+    completed.value = false
+    refresh()
+    if (currentTime.value > 0) {
+      resume()
+    }
+  },
+)
 
 const timeLeft = computed(() => {
-  const diff = currentTime.value ?? 0
-  if (diff === 0) {
-    pause()
-    emit('complete')
-  }
-
+  const diff = currentTime.value
   return {
     seconds: Math.floor(diff / 1000) % 60,
     minutes: Math.floor(diff / (1000 * 60)) % 60,
@@ -33,6 +41,16 @@ const timeLeft = computed(() => {
     days: Math.floor(diff / (1000 * 60 * 60 * 24)),
   }
 })
+
+watch(currentTime, (diff) => {
+  if (diff !== 0 || completed.value) {
+    return
+  }
+
+  completed.value = true
+  pause()
+  emit('complete')
+}, { immediate: true })
 
 function padded(number: number): string {
   return String(number).padStart(2, '0')

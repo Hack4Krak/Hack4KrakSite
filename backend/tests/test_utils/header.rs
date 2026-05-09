@@ -2,6 +2,7 @@ use actix_http::header;
 use actix_http::header::{HeaderName, HeaderValue, TryIntoHeaderPair};
 use actix_web::error::HttpError;
 use chrono::Duration;
+use hack4krak_backend::entities::users;
 use hack4krak_backend::utils::jwt::encode_jwt;
 use uuid::Uuid;
 
@@ -16,6 +17,10 @@ impl TestAuthHeader {
             user_id,
             user_email,
         }
+    }
+
+    pub fn from_user(user: &users::Model) -> Self {
+        Self::new(user.id, user.email.clone())
     }
 }
 

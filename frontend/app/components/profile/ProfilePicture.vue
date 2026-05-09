@@ -1,7 +1,12 @@
 <script setup lang="ts">
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   username?: string | null
-}>()
+  size?: 'sm' | 'lg'
+  tone?: 'primary' | 'muted'
+}>(), {
+  size: 'lg',
+  tone: 'primary',
+})
 
 const NAME_SPLIT = /[\s_-]+/
 
@@ -19,12 +24,24 @@ const initials = computed(() => {
 
   return chars.join('').toUpperCase() || '?'
 })
+
+const pictureClass = computed(() => [
+  'border-2 font-sans font-semibold uppercase',
+  props.size === 'sm' ? 'size-9 text-sm' : 'mb-4 size-20 text-xl',
+  props.tone === 'primary'
+    ? 'border-primary text-primary'
+    : 'border-surface-muted text-muted',
+])
 </script>
 
 <template>
-  <div
-    class="size-20 bg-primary text-default font-pixelify text-2xl flex items-center justify-center mb-4"
-  >
-    {{ initials }}
-  </div>
+  <UAvatar
+    :text="initials"
+    color="neutral"
+    :class="pictureClass"
+    :ui="{
+      root: 'rounded-none bg-surface-muted/20',
+      fallback: 'font-sans font-semibold',
+    }"
+  />
 </template>

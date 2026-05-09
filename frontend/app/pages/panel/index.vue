@@ -1,7 +1,12 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: 'panel',
+  middleware: ['event-registration-guard', 'event-access-guard'],
+})
+
 useSeoMeta({
-  title: 'Panel użytkownika',
-  description: 'Zarządzaj swoim kontem i drużyną w naszym CTF-ie! Sprawdź swoje zadania i postępy!',
+  title: 'Panel CTF',
+  description: 'Sprawdź swoje zadania, flagi i postępy w Hack4Krak CTF!',
 })
 
 const { data: team } = await useAuth('/teams/membership/my_team', {

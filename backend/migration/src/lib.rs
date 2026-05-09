@@ -26,6 +26,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20260412_000001_remove_team_confirmation_fields::Migration),
             Box::new(m20260429_225143_add_first_name_to_users::Migration),
             Box::new(m20260429_225144_onboarding_field_rework::Migration),
+            Box::new(m20260505_000000_event_registration::Migration),
         ]
     }
 }
@@ -49,3 +50,4 @@ mod m20250604_000001_new_identification_system;
 mod m20260412_000001_remove_team_confirmation_fields;
 mod m20260429_225143_add_first_name_to_users;
 mod m20260429_225144_onboarding_field_rework;
+mod m20260505_000000_event_registration;

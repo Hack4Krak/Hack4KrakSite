@@ -1,7 +1,7 @@
 use crate::entities::users;
 use crate::models::task_manager::participant_tags_config::ParticipantTag;
 use crate::services::authorization::{AuthorizationService, UserIdentificationInfo};
-use crate::services::emails::IdentificationQrCode;
+use crate::services::emails::RegistrationConfirmation;
 use crate::services::task_manager::TaskManager;
 use crate::utils::app_state::AppState;
 use crate::utils::email::{Email, EmailAttachment};
@@ -37,7 +37,7 @@ impl IdentificationService {
         Email::new(
             "auth",
             vec![email.to_string()],
-            Box::new(IdentificationQrCode {
+            Box::new(RegistrationConfirmation {
                 user: username.to_string(),
                 identification_code: identification_code_string,
             }),

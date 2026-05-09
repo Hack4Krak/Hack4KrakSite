@@ -1,5 +1,8 @@
 <script setup lang="ts">
-const { data: user } = await useAuth('/account/')
+const { data: user } = await useAuth('/account/', {
+  redirect: 'error',
+  onResponseError: undefined,
+})
 
 const route = useRoute()
 

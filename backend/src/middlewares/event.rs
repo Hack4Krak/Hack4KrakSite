@@ -1,6 +1,7 @@
 use crate::entities::sea_orm_active_enums::UserRoles;
 use crate::entities::users;
 use crate::models::task_manager::event_config::{EventConfig, EventStage, EventStageType};
+use crate::routes::event::ParticipationError;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::body::{BoxBody, EitherBody};
@@ -53,6 +54,7 @@ enum EventMiddlewareMode {
         starting_stage: StageIdentifier,
         ending_stage: StageIdentifier,
     },
+    RegistrationOpen,
 }
 
 /// Restricts access to endpoints based on event stage status
@@ -85,6 +87,12 @@ impl EventMiddleware {
                 identifier: StageIdentifier::ByType(EventStageType::EventStart),
                 check: StageCheck::After,
             },
+        }
+    }
+
+    pub fn require_open_registration() -> Self {
+        Self {
+            mode: EventMiddlewareMode::RegistrationOpen,
         }
     }
 
@@ -199,14 +207,21 @@ impl<S> EventMiddlewareService<S> {
             .ok_or(Error::Unauthorized)?
             .task_manager;
 
-        let event_config = task_manager.event_config.read().await;
-        let now = Utc::now();
-
         match mode {
+            EventMiddlewareMode::RegistrationOpen => {
+                let registration_config = task_manager.registration_config.read().await;
+                if !registration_config.is_open() {
+                    return Err(ParticipationError::RegistrationNotOpen.into());
+                }
+
+                Ok(())
+            }
             EventMiddlewareMode::BetweenStages {
                 starting_stage,
                 ending_stage,
             } => {
+                let event_config = task_manager.event_config.read().await;
+                let now = Utc::now();
                 let starting_stage = starting_stage.get_stage(&event_config)?;
                 let end_date = ending_stage.get_stage(&event_config)?.start_date;
 
@@ -227,6 +242,8 @@ impl<S> EventMiddlewareService<S> {
                 Ok(())
             }
             EventMiddlewareMode::SingleStage { identifier, check } => {
+                let event_config = task_manager.event_config.read().await;
+                let now = Utc::now();
                 let stage = identifier.get_stage(&event_config)?;
                 let start = stage.start_date;
                 let end = stage.end_date;
