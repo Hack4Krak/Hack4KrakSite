@@ -125,11 +125,13 @@ impl AuthenticationService {
             confirmation_code,
         )
         .await?;
-        let EmailVerificationAction::ConfirmEmailAddress { .. } =
+        let EmailVerificationAction::ConfirmEmailAddress { user_information } =
             email_confirmation.get_action()?
         else {
             return Err(Error::InvalidEmailConfirmationCode);
         };
+
+        users::Model::create_from_user_info(&app_state.database, user_information).await?;
 
         email_confirmation.delete(&app_state.database).await?;
 
