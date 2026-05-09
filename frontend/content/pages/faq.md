@@ -11,7 +11,7 @@ Czyli najczęściej zadawane pytania:
 ::div{class="mt-8"}
 
 ::faq-accordion{question="Kiedy odbędzie się kolejna edycja Hack4Krak CTF?"}
-Kolejna edycja Hack4Krak CTF odbędzie się 23-24 maja.
+Kolejna edycja Hack4Krak CTF odbędzie się 23-24 maja 2026 roku.
 ::
 
 ::faq-accordion{question="Czym jest CTF?"}
