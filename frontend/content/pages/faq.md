@@ -11,7 +11,7 @@ Czyli najczęściej zadawane pytania:
 ::div{class="mt-8"}
 
 ::faq-accordion{question="Kiedy odbędzie się kolejna edycja Hack4Krak CTF?"}
-Na ten moment nie znamy jeszcze dokładnej daty. Planowany termin przypada na **2 kwartał 2026** roku. Szczegółowe informacje zostaną ogłoszone bliżej wydarzenia.
+Kolejna edycja Hack4Krak CTF odbędzie się 23-24 maja 2026 roku.
 ::
 
 ::faq-accordion{question="Czym jest CTF?"}
@@ -51,7 +51,7 @@ Tak, dbamy o Wasz komfort i energię! Podczas wydarzenia zapewnimy Wam przekąsk
 ::
 
 ::faq-accordion{question="Co powinienem zabrać ze sobą na wydarzenie?"}
-Koniecznie zabierz ze sobą laptopa lub inne urządzenie elektroniczne, które będzie potrzebne do rozwiązywania zadań. Jeśli nie masz własnego sprzętu, organizatorzy mogą zapewnić urządzenia na miejscu – ich liczba jest jednak ograniczona. Jeśli jesteś osobą niepełnoletnią, obowiązkowo przynieś podpisaną przez rodzica lub opiekuna prawnego zgodę na udział w wydarzeniu! Najważniejsze jednak, abyś zabrał ze sobą pozytywne nastawienie, chęć do współpracy i mnóstwo energii do rozwiązywania zadań!
+Koniecznie zabierz ze sobą laptopa lub inne urządzenie elektroniczne, które będzie potrzebne do rozwiązywania zadań. Jeśli jesteś osobą niepełnoletnią, obowiązkowo przynieś podpisaną przez rodzica lub opiekuna prawnego zgodę na udział w wydarzeniu! Najważniejsze jednak, abyś zabrał ze sobą pozytywne nastawienie, chęć do współpracy i mnóstwo energii do rozwiązywania zadań!
 ::
 
 ::faq-accordion{question="Jakie nagrody czekają na zwycięzców?"}
@@ -63,17 +63,17 @@ Do tej pory odbyły się dwie edycje. Pierwsza skierowana była do uczniów XXXI
 ::
 
 ::faq-accordion{question="Kto może wziąć udział w Hack4Krak CTF?"}
-W następnej edycji Hack4Krak zapraszamy uczniów szkół średnich z całej Polski.
+W III edycji Hack4Krak zapraszamy uczniów szkół średnich z całej Polski.
 ::
 
 ::faq-accordion{question="Kto organizuje to wydarzenie?"}
-Organizatorem Hack4Krak CTF jest XXXI Liceum Ogólnokształcące w Krakowie, przy wsparciu Samorządu Uczniowskiego oraz zaangażowanego zespołu organizacyjnego Hack4Krak.
+Organizatorem Hack4Krak CTF jest Fundacja Ambasada Społeczności w Krakowie, przy wsparciu Samorządu Uczniowskiego z XXXI LO oraz zaangażowanego zespołu organizacyjnego Hack4Krak.
 ::
 
 ::faq-accordion{question="Jak mogę się skontaktować z organizatorami, jeżeli mam jakieś pytania?"}
-Jeśli macie jakiekolwiek pytania, śmiało piszcie do nas na adres e-mail: kontakt@hack4krak.pl. Możecie również skontaktować się z naszymi koordynatorami: Jakub Starzyk (jakub.starzyk@lo31.krakow.pl, tel. +48 571 493 707) oraz Anna Ligas-Kowaluk (aligaskowaluk@lo31.krakow.pl).
+Jeśli macie jakiekolwiek pytania, śmiało piszcie do nas na adres e-mail: kontakt@hack4krak.pl. Możecie również skontaktować się z naszym koordynatorem: Jakub Starzyk (jakub.starzyk@lo31.krakow.pl, tel. +48 571 493 707).
 ::
 
 ::faq-accordion{question="Jak wygląda kwestia ochrony danych osobowych (RODO)?"}
-Administratorem Waszych danych jest XXXI Liceum Ogólnokształcące w Krakowie. Zgody RODO oraz zgody na uczestnictwo są podpisywane przez Waszych rodziców lub opiekunów prawnych i muszą zostać dostarczone organizatorom w dniu wydarzenia. Więcej informacji na ten temat znajdziecie w naszej [Polityce prywatności](/docs/privacy-policy).
+Administratorem Waszych danych jest Fundacja Ambasada Społeczności w Krakowie. Zgody RODO oraz zgody na uczestnictwo są podpisywane przez Waszych rodziców lub opiekunów prawnych i muszą zostać dostarczone organizatorom w dniu wydarzenia. Więcej informacji na ten temat znajdziecie w naszej [Polityce prywatności](/docs/privacy-policy).
 ::
