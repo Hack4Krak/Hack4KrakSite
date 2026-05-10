@@ -60,7 +60,7 @@ pub async fn my_team(
         .collect();
 
     let invited_users = if user.is_leader {
-        Some(team_invites::Model::get_invited_users(&app_state.database, team.clone()).await?)
+        Some(team_invites::Model::get_invited_users(&app_state.database, team.id).await?)
     } else {
         None
     };
