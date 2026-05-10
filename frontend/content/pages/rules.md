@@ -24,10 +24,10 @@ description: Regulamin Hack4Krak - edycja dla Szkół Średnich w Małopolsce
 5. W drugim etapie rejestracji wszyscy pozostali członkowie grupy zakładają konto na stronie [hack4krak.pl](https://hack4krak.pl), następnie lider drużyny zaprasza ich do drużyny, a pozostali członkowie drużyny akceptują zaproszenie.
 6. Warunkiem uczestnictwa drużyny w CTF jest: \
    `1)` Posiadanie przez wszystkich jej członków, w dniu wydarzenia należącej do nich legitymacji szkolnej wydanej przez szkołę średnią, do której uczęszczają\
-   `2)` Posiadanie przez wszystkich jej niepełnoletnich członków, w dniu wydarzenia, posiadali zgody rodzica lub opiekuna prawnego na udział w wydarzeniu, wyrażonej poprzez akceptację regulaminu oraz polityki prywatności. Wzór zgody znajduje się w dokumencie.
+   `2)` Posiadanie przez wszystkich jej niepełnoletnich członków, w dniu wydarzenia, zgody rodzica lub opiekuna prawnego na udział w wydarzeniu, wyrażonej poprzez akceptację regulaminu oraz polityki prywatności. Wzór zgody znajduje się w <a href="/documents/zgoda-rodzica-lub-opiekuna-prawnego-hack4krak.pdf" target="_blank">dokumencie</a>.
 7. Warunkiem uczestnictwa osoby w CTF jest, aby w dniu wydarzenia była członkiem drużyny, która została zarejestrowana zgodnie z powyższymi etapami rejestracji, oraz spełnia wymogi z punktu 6. tego rozdziału.
 8. Maksymalna liczba zarejestrowanych uczestników wynosi 150.
-9. Rejestracja trwa od 30.04.2026 do 20.05.2026 włącznie.
+9. Rejestracja trwa od 11.05.2026 do 21.05.2026 włącznie.
 10. W dniu następującym po zakończeniu rejestracji każda drużyna zobowiązana jest do potwierdzenia swojego udziału w CTF, poprzez odpowiedź na maila wysłanego przez organizatorów.
 
 ## 3. Przebieg CTF
@@ -35,15 +35,14 @@ description: Regulamin Hack4Krak - edycja dla Szkół Średnich w Małopolsce
 1. CTF odbywa się w dniach 23.05.2026-24.05.2026.
 2. Harmonogram wydarzenia:
    - Sobota, 23.05.2026 – pierwszy dzień zawodów:
-     - 08:00-09:30 – rejestracja uczestników
-     - 09:00-11:00 – śniadanie
+     - 08:30-09:30 – rejestracja uczestników
      - 09:30-10:00 – rozpoczęcie konkursu
      - 14:00-15:00 – przerwa obiadowa
      - 20:00-21:00 – przerwa na kolację
    - Niedziela, 24.05.2026 – drugi dzień zawodów:
      - 09:00-11:00 – śniadanie
      - 14:00-15:00 – obiad
-     - 16:00-16:30 – zakończenie konkursu
+     - 16:00-17:00 – zakończenie konkursu
 
 3. Uczestnicy otrzymają w dniu CTF dostęp do zadań i ich dokumentacji.
 4. Za wykonanie zadania i znalezienie flagi drużyna otrzymuje punkty. Liczba punktów za wykonanie zadania zależna jest od liczby zespołów, które rozwiązały zadanie, sposób liczenia punktów za zadanie opisany jest w [załączniku nr 2](#załącznik-nr-2).
@@ -57,7 +56,14 @@ description: Regulamin Hack4Krak - edycja dla Szkół Średnich w Małopolsce
    `2)` Drużyna, która rozwiązała ostatnie zadanie wcześniej, zajmuje wyższą pozycję w rankingu\
    `3)` Jeżeli drużyny rozwiązały ostatnie zadanie w tym samym czasie, organizatorzy porównują czas, który minął od rozpoczęcia wydarzenia do rozwiązania każdego następnego zadania, które rozwiązały drużyny, zaczynając od przedostatniego, w kolejności rosnącej liczby czasu od rozwiązania zadania, aż do momentu, w którym jedna z drużyn rozwiązała zadanie wcześniej niż druga drużyna
 
-## 5. Uprawnienia i obowiązki uczestników
+## 5. Nagrody
+
+1. Organizatorzy postanawiają wypłacić nagrody dla drużyn, które odniosły sukcesy w CTFie.
+2. Organizatorzy wypłacą nagrody po zakończeniu CTF.
+3. Wysokość nagród oraz liczbę nagrodzonych drużyn Organizatorzy podadzą tydzień przed zakończeniem rejestracji. Na podstawie rozdziału 7, punktu 9, organizatorzy w dniu ogłoszenia puli nagród dokonają zmiany regulaminu, w którym ją określą.
+4. Organizatorzy zastrzegają sobie prawo do wstrzymania wypłacenia nagród w przypadku podejrzenia złamania regulaminu.
+
+## 6. Uprawnienia i obowiązki uczestników
 
 1. Uczestnicy mają obowiązek przedstawiania organizatorom informacji zgodnych ze stanem rzeczywistym w trakcie rejestracji i podczas trwania CTF, a w szczególności informacji o uczęszczaniu do szkoły średniej.
 2. Uczestnicy mają prawo do wycofania się z udziału z CTF w każdym momencie, nie ponosząc przy tym żadnych konsekwencji, poprzez poinformowanie o tym organizatorów drogą mailową.
@@ -67,7 +73,7 @@ description: Regulamin Hack4Krak - edycja dla Szkół Średnich w Małopolsce
 6. Uczestnik ponosi odpowiedzialność za wszelkie szkody wyrządzone organizatorowi lub innym uczestnikom w wyniku naruszenia regulaminu.
 7. Uczestnik bierze udział w CTF na własną odpowiedzialność. Organizator nie ponosi odpowiedzialności za żadne szkody, obrażenia lub straty poniesione przez uczestników podczas trwania CTF, o ile nie wynikają one z rażącego niedbalstwa lub umyślnego działania organizatora.
 
-## 6. Uprawnienia i obowiązki organizatorów
+## 7. Uprawnienia i obowiązki organizatorów
 
 1. Organizator ma prawo do odwołania CTF w przypadku wystąpienia nieprzewidzianych okoliczności, które uniemożliwiają jego przeprowadzenie.
 2. Organizator zapewnia przestrzeń oraz infrastrukturę techniczną niezbędną do przeprowadzenia CTF.
@@ -78,7 +84,7 @@ description: Regulamin Hack4Krak - edycja dla Szkół Średnich w Małopolsce
 7. Organizator ma prawo do zażądania od uczestnika CTF-a okazania legitymacji szkolnej, w celu potwierdzenia spełnienia wymogów uczestnictwa w CTF.
 8. Organizator ma prawo do zmiany Regulaminu i Polityki prywatności, w przypadkach, w których jest to niezbędne do prawidłowego przebiegu CTF-a.
 9. Organizator ma obowiązek poinformować o zmianach Regulaminu w wiadomości email do wszystkich uczestników CTF. Zmiany Zasad Turnieju wchodzą w życie w dniu ich przekazania uczestnikom poprzez wiadomość email, z wyjątkiem zmian Polityki Prywatności, które wchodzą w życie po upłynięciu 14 dni od wiadomości email.
-10. Organizator ma prawo do dopuszczenia drużyny do udziału w CTF, w dniu 17.04.2026, w przypadku, w którym któraś z zapisanych drużyn nie potwierdzi swojej obecności, zostanie wykluczona z udziału w CTF lub zrezygnuje z udziału w CTF.
+10. Organizator ma prawo do dopuszczenia drużyny do udziału w CTF, w dniu 22.05.2026, w przypadku, w którym któraś z zapisanych drużyn nie potwierdzi swojej obecności, zostanie wykluczona z udziału w CTF lub zrezygnuje z udziału w CTF.
 11. Organizator ma prawo do dążenia do pociągnięcia do odpowiedzialności uczestnika, które działania naruszające regulamin, spowodowały szkodę organizatorowi lub innym uczestnikom, w szczególności szkodę materialną.
 
 ## 7. Postanowienia końcowe
@@ -88,13 +94,13 @@ description: Regulamin Hack4Krak - edycja dla Szkół Średnich w Małopolsce
 3. Uczestnicy CTF mogą odwołać się od decyzji organizatorów. Warunki odwołania od decyzji organizatora określa się w następujący sposób:
    - w przypadku złożenia odwołania od decyzji podjętej przed dniem, w którym odbywa się CTF, uczestnik ma tydzień na odwołanie się od decyzji, a organizator ma 3 dni robocze na rozpatrzenie odwołania,
    - w przypadku złożenia odwołania od decyzji podjętej w trakcie trwania CTF-a uczestnik ma czas do 15 minut przed czasem zakończenia CTF-a przewidzianym w harmonogramie na odwołanie się od decyzji, a organizator ma czas na rozpatrzenie odwołania do 30 minut po zakończeniu CTF-a,
-   - w przypadku złożenia odwołania od decyzji podjętej po dniu, w którym odbywa się CTF, uczestnik ma czas do 28.03.2026 na odwołanie się od decyzji, a organizator ma 5 dni roboczych na rozpatrzenie odwołania, jednak pozytywne rozpatrzenie tego odwołania, nie może być podstawą, do anulowania wyników wydarzenia i powtórzenia go, ani do przekazania nagród rzeczowych między drużynami.
+   - w przypadku złożenia odwołania od decyzji podjętej po dniu, w którym odbywa się CTF, uczestnik ma czas do 31.05.2026 na odwołanie się od decyzji, a organizator ma 5 dni roboczych na rozpatrzenie odwołania, jednak pozytywne rozpatrzenie tego odwołania, nie może być podstawą, do anulowania wyników wydarzenia i powtórzenia go, ani do przekazania nagród rzeczowych między drużynami.
    - w przypadku pozytywnego rozpatrzenia odwołania od decyzji organizator ma obowiązek wycofać swoją decyzję, a w przypadku, w którym decyzja jest kluczowa do przebiegu CTF-a, organizator ma obowiązek podjąć nową decyzję, uwzględniająca odwołanie uczestnika. O wycofaniu decyzji i podjęciu nowej decyzji organizator informuje wszystkich uczestników CTF, na których dana decyzja miała wpływ drogą mailową.
 
 4. Dane kontaktowe organizatorów:
    - email organizatorów: kontakt@hack4krak.pl,
    - Koordynator Główny: email: jakub.starzyk@hack4krak.pl, tel.: 571 493 707,
-   - Przedstawiciel prawny: email: wiktor.popiolek@hack4krak.pl, tel.: 731 486 620.
+   - Przedstawiciel prawny: email: tu@ambasadaspolecznosci.org,
 
 ## Załącznik nr 1
 

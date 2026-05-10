@@ -5,7 +5,7 @@ description: Polityka prywatności i plików cookies
 
 **Informacja administratora o przetwarzaniu danych osobowych**
 
-Administratorem danych osób biorących udział w konkursie **Hack4Krak – edycja dla szkół średnich** jest Fundacja Ambasada Społeczności z siedzibą przy ul. Zabłocie 20.22/207, 30-701 Kraków, wpisana do KRS pod numerem 0000764613, posiadająca osobowość prawną, email: tu@ambasadaspolecznosci.org.pl.
+Administratorem danych osób biorących udział w konkursie **Hack4Krak – edycja dla szkół średnich w Małopolsce** jest Fundacja Ambasada Społeczności z siedzibą przy ul. Zabłocie 20.22/207, 30-701 Kraków, wpisana do KRS pod numerem 0000764613, posiadająca osobowość prawną, email: tu@ambasadaspolecznosci.org.pl.
 Dane osobowe będą przetwarzane przez organizatorów w celu organizacji, przeprowadzenia i promocji konkursu, a także w działalności edukacyjnej.
 
 Informujemy, że:
