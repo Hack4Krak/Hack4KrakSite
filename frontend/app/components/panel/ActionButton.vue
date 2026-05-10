@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import type { ButtonProps } from '@nuxt/ui'
-
-interface Props extends Pick<ButtonProps, 'to' | 'href' | 'target' | 'download' | 'type' | 'icon' | 'disabled'> {
+interface Props {
+  to?: string | Record<string, unknown>
+  href?: string
+  target?: string
+  download?: boolean | string
+  type?: 'button' | 'submit' | 'reset'
+  icon?: string
+  disabled?: boolean
   tone?: 'primary' | 'neutral' | 'danger' | 'success'
   filled?: boolean
 }
