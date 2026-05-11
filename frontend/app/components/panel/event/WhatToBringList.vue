@@ -59,6 +59,7 @@ defineProps<{
               :key="link.href"
               :href="link.href"
               download
+              external
               icon="pixelarticons:download"
             >
               {{ link.label }}

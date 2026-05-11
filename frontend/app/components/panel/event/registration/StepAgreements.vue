@@ -91,11 +91,12 @@ defineExpose({ validate })
       </header>
 
       <div class="grid sm:grid-cols-2 gap-3">
-        <a
+        <NuxtLink
           v-for="document in EVENT_DOCUMENTS"
           :key="document.href"
           :href="document.href"
           download
+          external
           class="border-2 border-primary/70 px-4 py-3 hover:bg-primary/5 transition-colors flex items-start gap-3"
         >
           <UIcon name="pixelarticons:download" class="size-5 text-primary mt-0.5 shrink-0" />
@@ -103,7 +104,7 @@ defineExpose({ validate })
             <span class="block text-sm font-bold">{{ document.title }}</span>
             <span class="block text-xs text-muted mt-1 leading-snug">{{ document.description }}</span>
           </span>
-        </a>
+        </NuxtLink>
       </div>
 
       <ul class="space-y-3">

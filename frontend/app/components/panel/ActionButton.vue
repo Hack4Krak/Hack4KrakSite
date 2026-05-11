@@ -9,6 +9,7 @@ interface Props {
   disabled?: boolean
   tone?: 'primary' | 'neutral' | 'danger' | 'success'
   filled?: boolean
+  external?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -44,6 +45,7 @@ const actionClass = computed(() => [
     variant="ghost"
     :icon="icon"
     :class="actionClass"
+    :external="external"
     :ui="{ leadingIcon: 'size-4' }"
   >
     <slot />
