@@ -12,7 +12,7 @@ onMounted(() => {
   setFavicon()
 })
 
-const eventStartDate = ref<Date | null>(null)
+const eventStartDate = ref<Date | undefined>(undefined)
 const errorData = computed<Record<string, any>>(() => {
   return props.error?.data || {}
 })
@@ -22,7 +22,7 @@ const errorTitle = ref({
   titleClass: 'text-8xl',
 })
 
-watchEffect(() => {
+watchEffect(async () => {
   const error = props.error
   if (!error)
     return
@@ -30,8 +30,9 @@ watchEffect(() => {
   console.error(error)
 
   const customErrorId = errorData.value?.error
-  if (customErrorId === 'AccessBeforeStage') {
-    eventStartDate.value = new Date(errorData.value?.details?.stage_start_date)
+  if (customErrorId === 'AccessBeforeEventStart') {
+    const [eventStart, _] = await useEventStartAndEnd()
+    eventStartDate.value = eventStart
     errorTitle.value = {
       title: 'Skąd ten pośpiech?',
       message: 'CTF jeszcze się nie rozpoczął!\n Czas do początku wydarzenia:',
@@ -40,15 +41,12 @@ watchEffect(() => {
     return
   }
 
-  const nuxtErrorMessage = error.message?.toString().toLowerCase() || ''
   const status = error.status
   errorTitle.value.title = String(status ?? 'Błąd')
 
   if (error.status === 404) {
-    if (nuxtErrorMessage.includes('page not found')) {
-      errorTitle.value.message
-        = 'Uwaga rycerzu,\n ta strona zniknęła jak zamek w chmurach.\n Wróć na właściwą drogę!'
-    }
+    errorTitle.value.message
+      = 'Uwaga rycerzu,\n ta strona zniknęła jak zamek w chmurach.\n Wróć na właściwą drogę!'
   } else if (error.status === 500) {
     errorTitle.value.message = 'Rycerz napotkał przeszkodę\n Na swojej drodze.\n Spróbuj ponownie później.'
   } else if (errorData.value.message) {
