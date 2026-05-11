@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 use std::any::type_name;
 use std::collections::HashMap;
 use std::str::FromStr;
+use tracing::info;
 use utoipa::ToSchema;
 
 pub const UNDISCLOSED_RECIPIENTS: &str = "undisclosed-recipients:;";
@@ -116,8 +117,14 @@ impl Email {
 
     pub async fn send(&self, smtp_client: &dyn SmtpClient) -> Result<(), Error> {
         let email = self.build_email()?;
+        info!(
+            template = self.template.id(),
+            recipients = ?self.recipients,
+            bcc_count = self.bcc.len(),
+            "Sending email"
+        );
         smtp_client.send(&email)?;
-
+        info!(template = self.template.id(), "Email sent successfully");
         Ok(())
     }
 

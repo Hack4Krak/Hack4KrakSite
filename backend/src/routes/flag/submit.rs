@@ -10,6 +10,7 @@ use actix_web::{HttpResponse, post};
 use actix_web_validation::Validated;
 use sea_orm::EntityTrait;
 use serde::{Deserialize, Serialize};
+use tracing::error;
 use utoipa::ToSchema;
 use validator::Validate;
 
@@ -78,15 +79,15 @@ pub async fn submit(
 
         app_state.invalidate_points_cache().await;
 
-        let _ = app_state
-            .sse_event_sender
-            .send(SseEvent::LeaderboardUpdate {
-                task_id: task.key().to_string(),
-                task_name: task.value().meta.name.to_string(),
-                is_first_flag_submission: is_first_submission,
-                team_name: team.name,
-                username: user.username,
-            });
+        if let Err(err) = app_state.sse_event_sender.send(SseEvent::LeaderboardUpdate {
+            task_id: task.key().to_string(),
+            task_name: task.value().meta.name.to_string(),
+            is_first_flag_submission: is_first_submission,
+            team_name: team.name,
+            username: user.username,
+        }) {
+            error!("Failed to broadcast leaderboard update: {err}");
+        }
     }
 
     Ok(HttpResponse::Ok().json(SubmitModel {

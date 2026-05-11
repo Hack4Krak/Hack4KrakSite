@@ -73,21 +73,51 @@ impl TaskManager {
     }
 
     async fn load_tasks(tasks: &DashMap<String, TaskConfig>) {
-        let mut entries = fs::read_dir(&EnvConfig::get().tasks_base_path.join("tasks/"))
+        let tasks_dir = EnvConfig::get().tasks_base_path.join("tasks/");
+        let mut entries = fs::read_dir(&tasks_dir)
             .await
-            .unwrap();
+            .unwrap_or_else(|err| panic!("Failed to read tasks directory {tasks_dir:?}: {err}"));
 
-        while let Ok(Some(entry)) = entries.next_entry().await {
-            if !entry.metadata().await.unwrap().is_dir() {
+        loop {
+            let entry = match entries.next_entry().await {
+                Ok(Some(e)) => e,
+                Ok(None) => break,
+                Err(err) => {
+                    error!("Failed to read directory entry in {tasks_dir:?}: {err}");
+                    break;
+                }
+            };
+
+            let path = entry.path();
+
+            let metadata = match entry.metadata().await {
+                Ok(m) => m,
+                Err(err) => {
+                    error!("Failed to read metadata for {path:?}: {err}");
+                    continue;
+                }
+            };
+
+            if !metadata.is_dir() {
                 continue;
             }
-            let path = entry.path();
-            let file_content = fs::read_to_string(path.join("config.yaml")).await.unwrap();
 
-            if let Ok(task) = serde_norway::from_str::<TaskConfig>(&file_content) {
-                tasks.insert(task.meta.id.clone(), task);
-            } else {
-                error!("Failed to parse task config at {:?}", path);
+            let config_path = path.join("config.yaml");
+            let file_content = match fs::read_to_string(&config_path).await {
+                Ok(content) => content,
+                Err(err) => {
+                    error!("Failed to read task config at {config_path:?}: {err}");
+                    continue;
+                }
+            };
+
+            match serde_norway::from_str::<TaskConfig>(&file_content) {
+                Ok(task) => {
+                    tasks.insert(task.meta.id.clone(), task);
+                }
+                Err(err) => {
+                    error!("Failed to parse task config at {config_path:?}: {err}");
+                }
             }
         }
     }

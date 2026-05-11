@@ -2,6 +2,7 @@ use crate::entities::{flag_capture, teams};
 use crate::models::task_manager::event_config::EventStageType;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
+use tracing::error;
 use chrono::NaiveDateTime;
 use sea_orm::{EntityTrait, QueryOrder};
 use serde::ser::SerializeStruct;
@@ -130,7 +131,10 @@ impl PointsCounter {
 
                 let flags_count = solved_tasks.map(|s| s.len()).unwrap_or(0);
 
-                let team_data = self.team_time_series.get_mut(&team.id).unwrap();
+                let Some(team_data) = self.team_time_series.get_mut(&team.id) else {
+                    error!(team_id = %team.id, team_name = %team.name, "Team missing from time series during event processing — skipping");
+                    continue;
+                };
                 team_data.points.push(current_points);
                 team_data.current_flags = flags_count;
 
