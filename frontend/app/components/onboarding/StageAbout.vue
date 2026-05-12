@@ -17,6 +17,12 @@ const location = defineModel<string>('location', { required: true })
 const ctfExperience = defineModel<SchemaCtfExperience>('ctfExperience', { required: true })
 const schoolGrade = defineModel<SchemaSchoolGrade>('schoolGrade', { required: true })
 
+const schema = z.object({
+  organization: zOrganization(),
+  location: zLocation(),
+})
+const state = reactive({ organization, location })
+
 const SCHOOL_GRADE_OPTIONS: SelectOption<SchemaSchoolGrade>[] = [
   { value: 'NotStudying', label: 'Nie uczę się / inne' },
   { value: 'PrimarySchool', label: 'Szkoła podstawowa' },
@@ -68,7 +74,7 @@ const ctfHint = computed(() => CTF_LEVELS[sliderIndex.value]?.hint ?? '')
 </script>
 
 <template>
-  <section class="space-y-6">
+  <UForm :schema="schema" :state="state" :validate-on="['blur', 'change']" class="space-y-6" @submit="emit('submit')">
     <div>
       <h2 class="mb-1 text-lg font-semibold sm:text-xl">
         Z jakiej organizacji jesteś?
@@ -76,29 +82,35 @@ const ctfHint = computed(() => CTF_LEVELS[sliderIndex.value]?.hint ?? '')
       <p class="text-sm text-muted mb-3">
         Może to być szkoła, uczelnia, firma albo inna społeczność.
       </p>
-      <UInput
-        v-model="organization"
-        size="lg"
-        placeholder="np. 31 LO Kraków, Hack4Krak, Zerya"
-        icon="lucide:building-2"
-        :ui="{ base: 'text-sm sm:text-base' }"
-        autofocus
-        @keyup.enter="emit('submit')"
-      />
+      <UFormField name="organization">
+        <UInput
+          v-model="organization"
+          size="lg"
+          placeholder="np. 31 LO Kraków, Hack4Krak, Zerya"
+          icon="lucide:building-2"
+          maxlength="128"
+          :ui="{ base: 'text-sm sm:text-base' }"
+          autofocus
+          @keyup.enter="emit('submit')"
+        />
+      </UFormField>
     </div>
 
     <div>
       <h2 class="text-base font-semibold sm:text-lg">
         Z jakiej miejscowości do nas zaglądasz?
       </h2>
-      <UInput
-        v-model="location"
-        size="lg"
-        placeholder="np. Kraków"
-        icon="lucide:map-pin"
-        :ui="{ base: 'text-sm sm:text-base' }"
-        @keyup.enter="emit('submit')"
-      />
+      <UFormField name="location">
+        <UInput
+          v-model="location"
+          size="lg"
+          placeholder="np. Kraków"
+          icon="lucide:map-pin"
+          maxlength="128"
+          :ui="{ base: 'text-sm sm:text-base' }"
+          @keyup.enter="emit('submit')"
+        />
+      </UFormField>
     </div>
 
     <div>
@@ -148,5 +160,5 @@ const ctfHint = computed(() => CTF_LEVELS[sliderIndex.value]?.hint ?? '')
         </div>
       </div>
     </div>
-  </section>
+  </UForm>
 </template>
