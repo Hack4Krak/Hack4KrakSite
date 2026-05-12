@@ -20,6 +20,7 @@ use utoipa_scalar::{Scalar, Servable};
 
 pub mod entities;
 pub mod middlewares;
+pub use crate::middlewares::task::TaskReleasePhaseMiddleware;
 pub mod models;
 pub mod routes;
 pub mod services;

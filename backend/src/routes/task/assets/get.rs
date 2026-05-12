@@ -1,3 +1,4 @@
+use crate::TaskReleasePhaseMiddleware;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::http::header;
@@ -15,7 +16,7 @@ use actix_web::{HttpRequest, HttpResponse, get, web};
     ),
     tag = "task/assets"
 )]
-#[get("/get/{task_id}/{asset_path}")]
+#[get("/get/{task_id}/{asset_path}", wrap = "TaskReleasePhaseMiddleware")]
 pub async fn get(
     app_data: web::Data<AppState>,
     request: HttpRequest,

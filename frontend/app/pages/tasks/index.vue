@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import type { Tasks } from '~/components/Map.vue'
-import Map from '@/components/Map.vue'
+import type { ApiResponse } from '#open-fetch'
+
+type Tasks = ApiResponse<'task_list'>
 
 definePageMeta({
   middleware: [
@@ -20,7 +21,7 @@ const { data: completedTasksRaw } = await useAuth('/teams/membership/completed_t
   redirect: 'error',
 })
 
-const completedTasks = computed(() =>
+const completedTaskNames = computed(() =>
   Array.isArray(completedTasksRaw.value) ? completedTasksRaw.value : [],
 )
 
@@ -28,5 +29,5 @@ const elements = ref<Tasks>(data.value ?? [])
 </script>
 
 <template>
-  <Map :elements="elements" :completed-tasks="completedTasks" />
+  <Map :elements="elements" :completed-task-names="completedTaskNames" />
 </template>

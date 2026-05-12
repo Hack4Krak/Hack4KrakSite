@@ -29,6 +29,7 @@ export default defineNuxtConfig({
     '@compodium/nuxt',
     '@vueuse/nuxt',
     '@nuxt/hints',
+    'nuxt-maplibre',
   ],
   echarts: {
     charts: ['LineChart'],

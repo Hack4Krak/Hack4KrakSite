@@ -16,7 +16,7 @@ use actix_web::{HttpResponse, get};
 pub async fn list(app_state: Data<AppState>) -> Result<HttpResponse, Error> {
     let manager = &app_state.task_manager;
 
-    let tasks = manager.list_tasks(&app_state.database).await?;
+    let tasks = manager.available_tasks().await;
 
     Ok(HttpResponse::Ok().json(tasks))
 }

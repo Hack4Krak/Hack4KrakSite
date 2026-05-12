@@ -1,5 +1,6 @@
 use chrono::{DateTime, FixedOffset, Utc};
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, ToSchema, Debug, Clone, PartialEq, Eq)]
@@ -24,11 +25,11 @@ pub struct EventStage {
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Debug, Clone)]
-#[serde(rename_all(deserialize = "kebab-case"))]
 pub struct EventConfig {
     pub id: String,
     pub name: String,
     pub stages: Vec<EventStage>,
+    pub task_release_phases: HashMap<String, DateTime<FixedOffset>>,
 }
 
 impl EventConfig {
@@ -93,6 +94,7 @@ impl Default for EventConfig {
                     end_date: None,
                 },
             ],
+            task_release_phases: Default::default(),
         }
     }
 }

@@ -1,3 +1,4 @@
+use crate::TaskReleasePhaseMiddleware;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::web::{Data, Path};
@@ -11,7 +12,7 @@ use actix_web::{HttpResponse, get};
     ),
     tag = "tasks"
 )]
-#[get("/name/{task_id}")]
+#[get("/name/{task_id}", wrap = "TaskReleasePhaseMiddleware")]
 pub async fn name(app_state: Data<AppState>, task_id: Path<String>) -> Result<HttpResponse, Error> {
     let content = app_state.task_manager.get_task(&task_id)?.meta.name.clone();
 
