@@ -16,7 +16,7 @@ description: Regulamin Hack4Krak - edycja dla Szkół Średnich w Małopolsce
 ## 2. Rejestracja
 
 1. Rejestracja na CTF jest bezpłatna i odbywa się poprzez stronę internetową [hack4krak.pl](https://hack4krak.pl) (zwana dalej stroną CTF-a).
-2. Udział w CTF mogą brać osoby uczęszczające do szkół średnich na terenie Województwa małopolskiego.
+2. Udział w CTF mogą brać osoby uczęszczające do szkół średnich na terenie Rzeczypospolitej Polski.
 3. Rejestracja na CTF odbywa się w dwóch etapach: \
    `1)` Rejestracja drużyny, \
    `2)` Rejestracja członków drużyny.
