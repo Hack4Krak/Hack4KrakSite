@@ -24,6 +24,7 @@ pub struct EmailSendingModel {
 #[derive(Serialize, Deserialize, ToSchema)]
 pub enum EmailSendTarget {
     AllUsers,
+    UsersInTeams,
     SpecificUsernames(Vec<String>),
     SpecificEmails(Vec<String>),
 }
@@ -47,6 +48,15 @@ pub async fn send_informational(
     let mut recipients = match &model.send_target {
         EmailSendTarget::AllUsers => {
             users::Entity::find()
+                .select_only()
+                .column(users::Column::Email)
+                .into_tuple()
+                .all(&app_state.database)
+                .await?
+        }
+        EmailSendTarget::UsersInTeams => {
+            users::Entity::find()
+                .filter(users::Column::Team.is_not_null())
                 .select_only()
                 .column(users::Column::Email)
                 .into_tuple()
