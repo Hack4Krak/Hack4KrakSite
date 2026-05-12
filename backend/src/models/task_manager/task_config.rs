@@ -24,9 +24,10 @@ pub struct TaskConfig {
     #[serde(default)]
     pub assets: Vec<TaskAsset>,
     pub display: TaskDisplay,
+    pub task_release_phase: String,
 }
 
-#[derive(Serialize, Deserialize, ToSchema, Debug, Clone, Default)]
+#[derive(Serialize, Deserialize, ToSchema, Debug, Clone, Default, Eq, Ord, PartialEq, PartialOrd)]
 pub struct TaskMeta {
     pub id: String,
     pub name: String,
@@ -50,8 +51,10 @@ pub struct TaskDisplay {
 
 #[derive(Serialize, Deserialize, ToSchema, Debug, Clone, Default)]
 pub struct Coordinates {
-    pub x: f32,
-    pub y: f32,
+    #[serde(rename(deserialize = "x"))]
+    pub lng: f32,
+    #[serde(rename(deserialize = "y"))]
+    pub lat: f32,
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Debug)]

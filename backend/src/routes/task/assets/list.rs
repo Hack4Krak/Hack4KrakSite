@@ -1,3 +1,4 @@
+use crate::TaskReleasePhaseMiddleware;
 use crate::models::task_manager::task_config::TaskAsset;
 use crate::utils::app_state;
 use crate::utils::error::Error;
@@ -15,7 +16,7 @@ use actix_web::{HttpResponse, get, web};
     operation_id = "task_assets_list",
     tag = "task/assets"
 )]
-#[get("/list/{task_id}")]
+#[get("/list/{task_id}", wrap = "TaskReleasePhaseMiddleware")]
 pub async fn list(
     app_state: web::Data<app_state::AppState>,
     task_id: web::Path<String>,
