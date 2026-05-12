@@ -10,12 +10,9 @@ const schema = z.object({
   ...(props.isLogin
     ? {}
     : {
-        name: z.string({ error: 'Nazwa użytkownika jest wymagana' })
-          .min(3, 'Nazwa użytkownika musi mieć co najmniej 3 znaki')
+        name: zUsername()
           .meta({ title: 'Nazwa użytkownika', input: { props: { placeholder: 'lajkonik' } } }),
-        first_name: z.string({ error: 'Imię jest wymagane' })
-          .min(1, 'Podaj imię lub formę, której mamy używać')
-          .max(64, 'To pole może mieć maksymalnie 64 znaki')
+        first_name: zFirstName()
           .meta({ title: 'Jak mamy się do Ciebie zwracać?', input: { props: { placeholder: 'Lajkonik' } } }),
       }),
   email: z.email({ error: 'Niepoprawny adres e-mail' }).meta({ title: 'Adres e-mail', input: { props: { placeholder: 'lajkonik@hack4krak.pl' } } }),
@@ -67,6 +64,7 @@ async function onSubmit(event: Schema) {
     if (!(error instanceof FetchError)) {
       throw error
     }
+    toast.add({ title: 'Nie udało się wysłać formularza', description: error.data?.message, color: 'error' })
   } finally {
     loading.value = false
   }

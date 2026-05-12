@@ -25,9 +25,15 @@ const form = reactive<FormState>({
   collab_interest: false,
 })
 
+const aboutSchema = z.object({
+  organization: zOrganization(),
+  location: zLocation(),
+})
+const aboutValidation = computed(() => aboutSchema.safeParse({ organization: form.organization, location: form.location }))
+
 const stepValidations = computed(() => [
   true,
-  form.organization.trim().length > 0 && form.location.trim().length > 0,
+  aboutValidation.value.success,
   form.referral_sources.length > 0,
   true,
 ])
@@ -72,6 +78,7 @@ async function onSubmit() {
     if (!(error instanceof FetchError)) {
       throw error
     }
+    useToast().add({ title: 'Sprawdź formularz', description: error.data?.message, color: 'error' })
   } finally {
     submitting.value = false
   }
