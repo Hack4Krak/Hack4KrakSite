@@ -1,6 +1,9 @@
 use crate::services::env::EnvConfig;
 use crate::utils::cookies::ACCESS_TOKEN_COOKIE;
 use crate::utils::error::Error;
+use crate::utils::server_event::{
+    LeaderboardUpdateEvent, ServerEvent, ServerEventTopic, TeamFlagCaptureEvent,
+};
 use serde_json::to_string;
 use std::fs::File;
 use std::io::Write;
@@ -16,6 +19,12 @@ use utoipa::{Modify, OpenApi as _};
         version = env!("CARGO_PKG_VERSION")
     ),
     modifiers(&SecurityAddon),
+    components(schemas(
+        ServerEventTopic,
+        ServerEvent,
+        LeaderboardUpdateEvent,
+        TeamFlagCaptureEvent
+    )),
 )]
 pub struct ApiDoc;
 

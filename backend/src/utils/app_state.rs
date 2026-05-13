@@ -3,13 +3,13 @@ use crate::services::task_manager::TaskManager;
 use crate::utils::email::SmtpClient;
 use crate::utils::oauth::OAuthProvider;
 use crate::utils::points_counter::PointsCounter;
-use crate::utils::sse_event::SseEvent;
+use crate::utils::server_event::BroadcastEnvelope;
 use lettre::SmtpTransport;
 use sea_orm::DatabaseConnection;
 use std::sync::Arc;
 use tokio::sync::{RwLock, broadcast};
 
-const LEADERBOARD_UPDATES_CHANNEL_CAPACITY: i8 = 4;
+const SERVER_EVENTS_CHANNEL_CAPACITY: usize = 64;
 
 pub struct AppState {
     pub database: DatabaseConnection,
@@ -17,7 +17,7 @@ pub struct AppState {
     pub github_oauth_provider: OAuthProvider,
     pub google_oauth_provider: OAuthProvider,
     pub smtp_client: Arc<dyn SmtpClient>,
-    pub sse_event_sender: broadcast::Sender<SseEvent>,
+    pub server_event_sender: broadcast::Sender<BroadcastEnvelope>,
     pub points_cache: RwLock<Option<PointsCounter>>,
 }
 
@@ -55,8 +55,7 @@ impl AppState {
             .expect("Invalid SMTP connection URL")
             .build();
 
-        let (leaderboard_updates_transmitter, _) =
-            broadcast::channel(LEADERBOARD_UPDATES_CHANNEL_CAPACITY as usize);
+        let (server_event_sender, _) = broadcast::channel(SERVER_EVENTS_CHANNEL_CAPACITY);
 
         AppState {
             task_manager,
@@ -64,7 +63,7 @@ impl AppState {
             github_oauth_provider,
             google_oauth_provider,
             smtp_client: Arc::new(smtp_client),
-            sse_event_sender: leaderboard_updates_transmitter,
+            server_event_sender,
             points_cache: RwLock::new(None),
         }
     }
@@ -115,7 +114,7 @@ impl Default for AppState {
             github_oauth_provider: oauth_provider.clone(),
             google_oauth_provider: oauth_provider,
             smtp_client: Arc::new(SmtpTransport::relay("email.example.com").unwrap().build()),
-            sse_event_sender: broadcast::channel(LEADERBOARD_UPDATES_CHANNEL_CAPACITY as usize).0,
+            server_event_sender: broadcast::channel(SERVER_EVENTS_CHANNEL_CAPACITY).0,
             points_cache: RwLock::new(None),
         }
     }

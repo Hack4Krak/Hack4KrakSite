@@ -8,8 +8,10 @@ export type Team = ApiResponse<'teams_with_tasks'>[0]
 
 const UIcon = resolveComponent('UIcon')
 
-const { data: teams } = await useLazyApi('/leaderboard/teams_with_tasks')
+const { data: teams, refresh: refreshTeams } = await useLazyApi('/leaderboard/teams_with_tasks')
 const { data: tasks } = await useLazyApi('/tasks/list')
+
+useServerEvent('leaderboard_update', () => refreshTeams())
 
 const top3PerTask = computed(() => {
   if (!teams.value?.length || !tasks.value?.length)

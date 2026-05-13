@@ -4,7 +4,9 @@ use crate::routes::teams::TeamError;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use crate::utils::error::Error::{Flag, Team};
-use crate::utils::sse_event::SseEvent;
+use crate::utils::server_event::{
+    BroadcastEnvelope, LeaderboardUpdateEvent, ServerEvent, TeamFlagCaptureEvent,
+};
 use actix_web::web::{Data, Json};
 use actix_web::{HttpResponse, post};
 use actix_web_validation::Validated;
@@ -78,15 +80,28 @@ pub async fn submit(
 
         app_state.invalidate_points_cache().await;
 
-        let _ = app_state
-            .sse_event_sender
-            .send(SseEvent::LeaderboardUpdate {
-                task_id: task.key().to_string(),
-                task_name: task.value().meta.name.to_string(),
+        let task_id = task.key().to_string();
+        let task_name = task.value().meta.name.to_string();
+
+        let _ = app_state.server_event_sender.send(BroadcastEnvelope::public(
+            ServerEvent::LeaderboardUpdate(LeaderboardUpdateEvent {
+                task_id: task_id.clone(),
+                task_name: task_name.clone(),
                 is_first_flag_submission: is_first_submission,
                 team_name: team.name,
+                username: user.username.clone(),
+            }),
+        ));
+
+        let _ = app_state.server_event_sender.send(BroadcastEnvelope::team(
+            team.id,
+            ServerEvent::TeamFlagCapture(TeamFlagCaptureEvent {
+                task_id,
+                task_name,
                 username: user.username,
-            });
+                is_first_flag_submission: is_first_submission,
+            }),
+        ));
     }
 
     Ok(HttpResponse::Ok().json(SubmitModel {

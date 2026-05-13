@@ -22,8 +22,10 @@ interface TeamData {
 
 const targetTimezone = 'Europe/Warsaw'
 
-const { data: chartData } = useLazyApi('/leaderboard/chart')
+const { data: chartData, refresh: refreshChart } = useLazyApi('/leaderboard/chart')
 const [start, end] = await useEventStartAndEnd()
+
+useServerEvent('leaderboard_update', () => refreshChart())
 
 const adjustedTimestamps = computed(() =>
   chartData.value?.event_timestamps?.map((ts: string) =>

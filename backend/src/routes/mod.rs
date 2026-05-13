@@ -2,6 +2,7 @@ pub mod account;
 pub mod admin;
 pub mod auth;
 pub mod event;
+pub mod events;
 pub mod flag;
 pub mod index;
 pub mod leaderboard;

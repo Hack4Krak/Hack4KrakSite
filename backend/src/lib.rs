@@ -72,6 +72,7 @@ pub fn setup_actix_app(
                 .configure(routes::admin::config),
         )
         .service(scope("/event").configure(routes::event::config))
+        .service(scope("/events").configure(routes::events::config))
         .service(
             scope("/flag")
                 .wrap(AuthMiddleware::with_user())
