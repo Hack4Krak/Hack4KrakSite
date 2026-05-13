@@ -1,7 +1,7 @@
 use crate::test_utils::TestApp;
 use crate::test_utils::database::TestDatabase;
 use crate::test_utils::header::TestAuthHeader;
-use crate::test_utils::task_manager::create_default_test_task_manager;
+use crate::test_utils::task_manager::create_task_manager_with_participant_tags;
 use actix_web::test;
 use actix_web::test::read_body_json;
 use hack4krak_backend::entities::sea_orm_active_enums::{TeamStatus, UserRoles};
@@ -78,7 +78,7 @@ async fn identify_user_invalid_uuid() {
 #[actix_web::test]
 async fn apply_tag_invalid_tag_id() {
     let test_database = TestDatabase::new().await;
-    let task_manager = create_default_test_task_manager().await;
+    let task_manager = create_task_manager_with_participant_tags().await;
     let admin = test_database
         .with_user(users::UpdatableModel {
             roles: Some(UserRoles::Admin),
@@ -110,7 +110,7 @@ async fn apply_tag_invalid_tag_id() {
 #[actix_web::test]
 async fn apply_tag_first_verified_user_marks_team_as_confirmed() {
     let test_database = TestDatabase::new().await;
-    let task_manager = create_default_test_task_manager().await;
+    let task_manager = create_task_manager_with_participant_tags().await;
 
     let admin = test_database
         .with_user(users::UpdatableModel {
@@ -251,7 +251,7 @@ async fn full_participation_flow() {
     use hack4krak_backend::services::authorization::UserIdentificationInfo;
     let test_database = TestDatabase::new().await;
     let smtp_client = SmtpTestClient::new().await;
-    let task_manager = create_default_test_task_manager().await;
+    let task_manager = create_task_manager_with_participant_tags().await;
 
     let admin = test_database
         .with_user(users::UpdatableModel {

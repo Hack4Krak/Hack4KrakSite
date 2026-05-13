@@ -55,6 +55,10 @@ AuthError:
   InvalidEmailAddress: "Nieprawidłowy adres e-mail"
   PasswordAuthNotAvailable: "Uwierzytelnianie hasłem i e-mailem jest niedostępne dla tego konta"
 
+AnnouncementsError:
+  NoAnnouncementsFound: "Nie znaleziono żadnych ogłoszeń"
+  AnnouncementNotFound: "Nie znaleziono ogłoszenia"
+
 FlagError:
   InvalidFlagFormat: "Flaga musi być w określonym formacie: hack4KrakCTF{{...}}"
   InvalidFlag: "Ta flaga jest niepoprawna! Spróbuj ponownie..."

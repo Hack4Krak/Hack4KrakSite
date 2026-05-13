@@ -1,3 +1,4 @@
+pub mod announcement;
 pub mod ctf_experience;
 pub mod email_verification_request;
 pub mod event_registration;

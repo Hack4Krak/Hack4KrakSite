@@ -1,5 +1,6 @@
 use crate::entities::sea_orm_active_enums::UserRoles;
 use crate::routes::account::AccountError;
+use crate::routes::announcements::AnnouncementsError;
 use crate::routes::auth::AuthError;
 use crate::routes::event::ParticipationError;
 use crate::routes::flag::FlagError;
@@ -124,6 +125,8 @@ pub enum Error {
     #[error(transparent)]
     Auth(#[from] AuthError),
     #[error(transparent)]
+    Announcements(#[from] AnnouncementsError),
+    #[error(transparent)]
     Team(#[from] TeamError),
     #[error(transparent)]
     Task(#[from] TaskError),
@@ -177,6 +180,7 @@ impl error::ResponseError for Error {
             Error::AccessAfterStage { .. } => StatusCode::GONE,
             Error::FailedToParseStage { .. } => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Account(account_err) => account_err.status_code(),
+            Error::Announcements(announcements_err) => announcements_err.status_code(),
             Error::Team(team_err) => team_err.status_code(),
             Error::Auth(auth_err) => auth_err.status_code(),
             Error::Task(error) => error.status_code(),

@@ -1,5 +1,6 @@
 pub mod account;
 pub mod admin;
+pub mod announcements;
 pub mod auth;
 pub mod event;
 pub mod flag;
