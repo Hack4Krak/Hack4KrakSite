@@ -14,6 +14,7 @@ const {
   isRegistered,
   submitRegistration,
 } = useEventRegistration()
+const { proxy } = useScriptUmamiAnalytics()
 
 const STEPS = [
   { id: 'agreements', label: 'Zgody na udział', short: 'Zgody' },
@@ -67,6 +68,10 @@ async function next() {
     return
   if (stepIndex.value < STEPS.length - 1) {
     direction.value = 'forward'
+    proxy.track('event_registration_step_complete', {
+      step: currentStep.value,
+      step_number: stepIndex.value + 1,
+    })
     stepIndex.value++
   }
 }
@@ -107,6 +112,7 @@ async function onSubmit() {
 
     await navigateTo('/panel/event')
   } catch {
+    proxy.track('event_registration_error', {})
     // errors shown as toasts by the $auth plugin
   } finally {
     submitting.value = false

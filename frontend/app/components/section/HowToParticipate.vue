@@ -2,6 +2,14 @@
 import {
   LANDING_PARTICIPATION_STEPS,
 } from '~~/content/landing/participation'
+
+const { proxy } = useScriptUmamiAnalytics()
+
+function trackRegistrationCta() {
+  proxy.track('registration_cta_click', {
+    location: 'how_to_participate',
+  })
+}
 </script>
 
 <template>
@@ -77,6 +85,7 @@ import {
     <ElevatedButton
       to="/register"
       class="text-base lg:text-lg lg:scale-110"
+      @click="trackRegistrationCta"
     >
       Zarejestruj się
     </ElevatedButton>

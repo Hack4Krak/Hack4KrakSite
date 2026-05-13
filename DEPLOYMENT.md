@@ -59,7 +59,7 @@ the frontend app.
 
 - `NUXT_SITE_URL` - Frontend website URL
 - `BACKEND_ADDRESS` - address of the backend server (accessible from the frontend server and global network)
-- `NUXT_ERROR_API_TOKEN` - token used to report errors to the nuxterror.com
+- `NUXT_PUBLIC_SCRIPTS_UMAMI_ANALYTICS_WEBSITE_ID` - optional website id for analytics powered by Umami
 
 ## 🐋 Docker compose
 
