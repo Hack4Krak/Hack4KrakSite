@@ -130,21 +130,26 @@ const ctfHint = computed(() => CTF_LEVELS[sliderIndex.value]?.hint ?? '')
         Twoje doświadczenie z CTF
       </h2>
       <p class="text-sm text-muted mb-5">
-        Przesuń, żeby pokazać, ile zawodów masz już za sobą.
+        Ile zawodów CTF masz za sobą? Przesuń suwak, żeby wybrać poziom.
       </p>
       <div class="space-y-4 bg-elevated/40 p-3 sm:p-4">
-        <USlider
-          v-model="sliderIndex"
-          :min="0"
-          :max="CTF_LEVELS.length - 1"
-          :step="1"
-          :ui="{
-            root: 'h-4',
-            track: 'bg-default h-2 rounded-none',
-            range: 'bg-primary rounded-none',
-            thumb: 'block w-4 h-4 bg-primary border-2 border-default rounded-none ring-0 shadow-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-default transition-transform hover:scale-110 active:scale-95 cursor-pointer',
-          }"
-        />
+        <div class="flex items-center gap-3">
+          <UIcon name="lucide:chevron-left" class="text-muted shrink-0 size-4" />
+          <USlider
+            v-model="sliderIndex"
+            :min="0"
+            :max="CTF_LEVELS.length - 1"
+            :step="1"
+            class="flex-1"
+            :ui="{
+              root: 'h-4',
+              track: 'bg-default h-2 rounded-none',
+              range: 'bg-primary rounded-none',
+              thumb: 'block w-4 h-4 bg-primary border-2 border-default rounded-none ring-0 shadow-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-default transition-transform hover:scale-110 active:scale-95 cursor-pointer',
+            }"
+          />
+          <UIcon name="lucide:chevron-right" class="text-muted shrink-0 size-4" />
+        </div>
         <div class="flex items-start gap-3 min-h-20 sm:min-h-16">
           <span class="font-pixelify text-primary text-sm sm:text-base shrink-0 leading-none lowercase tracking-wide">
             lvl {{ sliderIndex + 1 }}
