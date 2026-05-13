@@ -51,9 +51,9 @@ useSeoMeta({
     <section id="mission">
       <UContainer class="flex lg:flex-row flex-col-reverse mx-auto gap-12">
         <div class="flex-1 flex flex-col gap-4 sm:px-0">
-          <h3 class="text-lg font-semibold">
+          <h1 class="text-lg font-semibold">
             {{ aboutUsContent.mission.title }}
-          </h3>
+          </h1>
           <p>
             {{ aboutUsContent.mission.description }}
           </p>
@@ -67,7 +67,7 @@ useSeoMeta({
           </p>
         </div>
         <div class="flex-1 justify-center items-center hidden sm:flex">
-          <NuxtImg class="w-full px-6 sm:px-0" src="/img/flag_n_clouds.webp" />
+          <NuxtImg class="w-full px-6 sm:px-0" src="/img/flag_n_clouds.webp" alt="" />
         </div>
       </UContainer>
     </section>
@@ -75,15 +75,16 @@ useSeoMeta({
       <UContainer class="grid lg:grid-cols-4 lg:grid-rows-[auto, auto] grid-cols-3 gap-4">
         <NuxtImg
           v-for="image in aboutUsContent.gallery.smallGalleryImages"
-          :key="image.split('/').pop()" height="130"
+          :key="image.path.split('/').pop()" height="130"
           width="300" class="hidden md:block size-full px-6 sm:px-0 object-cover border-2 border-muted
           [&:nth-child(3)]:!border-primary"
-          :src="image"
+          :src="image.path"
+          :alt="image.alt"
         />
         <div class="lg:row-span-2 lg:col-span-1 col-span-3 flex flex-col gap-2">
-          <h3 class="text-lg font-semibold">
+          <h1 class="text-lg font-semibold">
             {{ aboutUsContent.gallery.title }}
-          </h3>
+          </h1>
           <p v-for="paragraph in aboutUsContent.gallery.description" :key="paragraph">
             {{ paragraph }}
           </p>
@@ -95,7 +96,8 @@ useSeoMeta({
             fit: 'contain',
           }"
           class="col-span-3 w-full object-cover border-2 border-muted"
-          :src="aboutUsContent.gallery.mainGalleryImage"
+          :src="aboutUsContent.gallery.mainGalleryImage.path"
+          :alt="aboutUsContent.gallery.mainGalleryImage.alt"
         />
       </UContainer>
     </section>
