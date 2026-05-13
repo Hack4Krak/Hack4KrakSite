@@ -87,7 +87,7 @@ Organizatorem Hack4Krak CTF jest Fundacja Ambasada Społeczności w Krakowie, pr
 ::
 
 ::faq-accordion{question="Jak mogę się skontaktować z organizatorami, jeżeli mam jakieś pytania?"}
-Jeśli macie jakiekolwiek pytania, śmiało piszcie do nas na adres e-mail: kontakt@hack4krak.pl. Możecie również skontaktować się z naszym koordynatorem: Jakub Starzyk (jakub.starzyk@lo31.krakow.pl, tel. +48 571 493 707).
+Jeśli macie jakiekolwiek pytania, śmiało piszcie do nas na adres e-mail: kontakt@hack4krak.pl. Możecie również skontaktować się z naszym koordynatorem: Jakub Starzyk (jakub.starzyk@hack4krak.pl, tel. +48 571 493 707).
 ::
 
 ::faq-accordion{question="Jak wygląda kwestia ochrony danych osobowych (RODO)?"}
