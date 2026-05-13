@@ -2,12 +2,20 @@
 import LANDING_CONTENT from '~~/content/landing/page'
 
 const event = LANDING_CONTENT.event
+const { proxy } = useScriptUmamiAnalytics()
 
 const { data: registrationInformation } = await useApi('/event/registration')
 const registrationStarted = computed(() => {
   const startDate = registrationInformation.value?.start_date
   return startDate ? Date.now() >= new Date(startDate).getTime() : false
 })
+
+function trackRegistrationCta() {
+  proxy.track('registration_cta_click', {
+    location: 'event_banner',
+    registration_open: registrationStarted.value,
+  })
+}
 </script>
 
 <template>
@@ -48,6 +56,7 @@ const registrationStarted = computed(() => {
           class="text-base"
           :disabled="!registrationStarted"
           :aria-label="registrationStarted ? 'Zapisz się teraz' : 'Rejestracja jeszcze się nie rozpoczęła'"
+          @click="trackRegistrationCta"
         >
           Zapisz się teraz
         </ElevatedButton>

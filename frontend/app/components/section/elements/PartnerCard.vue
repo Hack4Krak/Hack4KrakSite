@@ -5,6 +5,8 @@ const props = defineProps<{
   partner: LandingPartner
 }>()
 
+const { proxy } = useScriptUmamiAnalytics()
+
 const isFeatured = computed(() => props.partner.variant === 'featured')
 const isPlaceholder = computed(() => props.partner.variant === 'placeholder')
 
@@ -35,6 +37,13 @@ const logoClass = computed(() =>
     ? 'max-h-24 max-w-60 w-auto h-auto object-contain transition-all duration-300'
     : 'max-h-20 max-w-[180px] w-auto h-auto object-contain transition-all duration-300',
 )
+
+function trackPartnerOpen() {
+  proxy.track('partner_open', {
+    partner: props.partner.name,
+    variant: props.partner.variant,
+  })
+}
 </script>
 
 <template>
@@ -46,6 +55,7 @@ const logoClass = computed(() =>
     :class="cardClass"
     :aria-label="ariaLabel"
     :data-partner-variant="partner.variant"
+    @click="trackPartnerOpen"
   >
     <span
       v-if="isFeatured"

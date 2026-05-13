@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxt/eslint',
     '@nuxt/image',
+    '@nuxt/scripts',
     '@nuxt/content',
     '@nuxt/test-utils/module',
     '@nuxtjs/seo',
@@ -79,6 +80,16 @@ export default defineNuxtConfig({
     public: {
       gitCommit: process.env.GIT_COMMIT,
       gitBranch: process.env.GIT_BRANCH,
+    },
+  },
+
+  $production: {
+    // https://scripts.nuxt.com/
+    scripts: {
+      registry: {
+        // https://scripts.nuxt.com/scripts/umami-analytics
+        umamiAnalytics: { trigger: 'onNuxtReady' },
+      },
     },
   },
 
