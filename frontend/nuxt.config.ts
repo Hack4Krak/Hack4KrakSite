@@ -212,6 +212,10 @@ export default defineNuxtConfig({
       ],
     }),
   },
+  // Temporarily disable nuxt-ogimage (#559)
+  ogImage: {
+    enabled: false,
+  },
   linkChecker: {
     runOnBuild: false,
   },
