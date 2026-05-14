@@ -91,6 +91,8 @@ export default defineNuxtConfig({
         umamiAnalytics: { trigger: 'onNuxtReady' },
       },
     },
+    // Send the real IP adress to get more detailed localization analytics
+    privacy: { ip: false },
   },
 
   routeRules: {
