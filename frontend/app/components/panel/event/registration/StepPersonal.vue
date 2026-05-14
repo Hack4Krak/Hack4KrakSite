@@ -114,13 +114,13 @@ defineExpose({ validate })
         </p>
         <div class="grid grid-cols-2 gap-2">
           <PanelOptionCard
-            title="Tak, mam mniej niż 18 lat"
+            title="Nie, mam mniej niż 18 lat"
             description="Kontakt do opiekuna jest wymagany."
             :selected="personal.isUnderage"
             @select="personal.isUnderage = true"
           />
           <PanelOptionCard
-            title="Nie, jestem pełnoletni/a"
+            title="Tak, jestem pełnoletni/a"
             description="Kontakt awaryjny opcjonalny."
             :selected="!personal.isUnderage"
             @select="personal.isUnderage = false"
