@@ -90,9 +90,9 @@ export default defineNuxtConfig({
         // https://scripts.nuxt.com/scripts/umami-analytics
         umamiAnalytics: { trigger: 'onNuxtReady' },
       },
+      // Send the real IP adress to get more detailed localization analytics
+      privacy: { ip: false },
     },
-    // Send the real IP adress to get more detailed localization analytics
-    privacy: { ip: false },
   },
 
   routeRules: {
