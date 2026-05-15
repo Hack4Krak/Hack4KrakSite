@@ -86,7 +86,7 @@ export const LANDING_PARTNERS: LandingPartner[] = [
   },
   {
     name: 'FABLAB Małopolska',
-    url: 'https://teachforpoland.org/',
+    url: 'https://www.fablabmalopolska.pl/',
     tagline: 'Patronat medialny',
     logo: '/img/partners/fablab.webp',
     logoAlt: 'FABLAB Małopolska',
