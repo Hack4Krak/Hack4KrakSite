@@ -96,7 +96,7 @@ export const LANDING_PARTNERS: LandingPartner[] = [
     name: 'Serwer Discord "Egzaminy zawodowe"',
     url: 'https://discord.com/invite/egzaminy-zawodowe-it-matury-studia-723560181996191914',
     tagline: 'Patronat medialny',
-    logo: '/img/partners/egzaminy-zawodowe.webp',
+    logo: '/img/partners/egzaminy-zawodowe.png',
     logoAlt: 'Serwer Discord "Egzaminy zawodowe"',
     variant: 'standard',
   },
