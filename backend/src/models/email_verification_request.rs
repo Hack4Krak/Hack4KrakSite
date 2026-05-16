@@ -18,8 +18,8 @@ pub enum EmailVerificationAction {
 
 impl EmailVerificationAction {
     pub fn get(&self) -> (String, Option<Value>) {
-        let value = serde_json::to_value(self)
-            .expect("EmailVerificationAction must be serializable");
+        let value =
+            serde_json::to_value(self).expect("EmailVerificationAction must be serializable");
         let name = value
             .get("name")
             .and_then(|v| v.as_str())

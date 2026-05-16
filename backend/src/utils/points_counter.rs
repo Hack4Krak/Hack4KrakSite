@@ -2,7 +2,6 @@ use crate::entities::{flag_capture, teams};
 use crate::models::task_manager::event_config::EventStageType;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
-use tracing::error;
 use chrono::NaiveDateTime;
 use sea_orm::{EntityTrait, QueryOrder};
 use serde::ser::SerializeStruct;
@@ -10,6 +9,7 @@ use serde::{Deserialize, Serialize, Serializer};
 use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
+use tracing::error;
 use utoipa::ToSchema;
 use uuid::Uuid;
 
