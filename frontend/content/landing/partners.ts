@@ -93,6 +93,14 @@ export const LANDING_PARTNERS: LandingPartner[] = [
     variant: 'standard',
   },
   {
+    name: 'Serwer Discord "Egzaminy zawodowe"',
+    url: 'https://discord.com/invite/egzaminy-zawodowe-it-matury-studia-723560181996191914',
+    tagline: 'Patronat medialny',
+    logo: '/img/partners/egzaminy-zawodowe.webp',
+    logoAlt: 'Serwer Discord "Egzaminy zawodowe"',
+    variant: 'standard',
+  },
+  {
     name: 'CERT Polska',
     url: 'https://cert.pl/',
     tagline: 'Patronat merytoryczny',
