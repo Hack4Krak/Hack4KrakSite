@@ -94,6 +94,19 @@ onMounted(() => {
                     {{ item.difficulty_estimate }}
                   </UBadge>
                 </p>
+                <p v-if="item.authors?.length" class="mt-1">
+                  Autorzy:
+                  <span v-for="(author, index) in item.authors" :key="`${item.id}-${author.name}-${index}`">
+                    <NuxtLink
+                      v-if="author.url"
+                      :to="author.url"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="link"
+                    >{{ author.name }}</NuxtLink>
+                    <span v-else>{{ author.name }}</span><span v-if="index < (item.authors?.length ?? 0) - 1">, </span>
+                  </span>
+                </p>
                 <ul>
                   <li v-for="label in item.labels" :key="label">
                     {{ label }}
