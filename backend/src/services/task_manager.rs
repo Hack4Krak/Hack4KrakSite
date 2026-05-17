@@ -59,7 +59,7 @@ pub struct TaskManager {
     pub labels_config: RwLock<LabelsConfig>,
     pub participant_tags_config: RwLock<ParticipantTagsConfig>,
     pub tasks: DashMap<String, TaskConfig>,
-    pub task_status_cache: RwLock<Option<Vec<TaskWithStatus>>>,
+    pub task_status_cache: RwLock<Option<HashMap<String, TaskStatus>>>,
 }
 
 impl LabelsConfig {
@@ -86,6 +86,7 @@ impl TaskManager {
         // todo: refreshconfigs
         self.tasks.clear();
         Self::load_tasks(&self.tasks).await;
+        self.invalidate_task_status_cache().await;
     }
 
     pub fn tasks(&self) -> Vec<SimpleTask> {
@@ -241,7 +242,7 @@ impl TaskManager {
         &self,
         database: &DatabaseConnection,
         action: &AnnouncementAction,
-    ) -> Result<(), Error> {
+    ) -> Result<announcement::Model, Error> {
         if let AnnouncementAction::TaskStatusUpdate { task_id, .. } = action {
             self.get_task(task_id)?;
         }
@@ -258,17 +259,21 @@ impl TaskManager {
         {
             let cache = self.task_status_cache.read().await;
             if let Some(cached) = cache.as_ref() {
-                return Ok(cached.clone());
+                return Ok(TaskWithStatus::merge_tasks_with_statuses(
+                    tasks_list,
+                    cached.clone(),
+                ));
             }
         }
 
         let statuses = announcement::Model::latest_task_updates(database).await?;
-        let tasks_with_statuses = TaskWithStatus::merge_tasks_with_statuses(tasks_list, statuses);
 
         let mut cache = self.task_status_cache.write().await;
-        *cache = Some(tasks_with_statuses.clone());
+        *cache = Some(statuses.clone());
 
-        Ok(tasks_with_statuses)
+        Ok(TaskWithStatus::merge_tasks_with_statuses(
+            tasks_list, statuses,
+        ))
     }
 
     pub async fn list_tasks(

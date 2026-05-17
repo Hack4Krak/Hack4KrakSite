@@ -1,4 +1,5 @@
 use crate::entities::announcement;
+use crate::models::announcement::AnnouncementResponse;
 use crate::routes::announcements::AnnouncementsError;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
@@ -8,7 +9,7 @@ use sea_orm::{EntityTrait, QueryOrder};
 
 #[utoipa::path(
     responses(
-        (status = 200, description = "The latest announcement.", body = announcement::Model),
+        (status = 200, description = "The latest announcement.", body = AnnouncementResponse),
         (status = 404, description = "No announcements found.")
     ),
     tag = "announcements"
@@ -21,5 +22,5 @@ pub async fn latest(app_state: Data<AppState>) -> Result<HttpResponse, Error> {
         .await?
         .ok_or(AnnouncementsError::NoAnnouncementsFound)?;
 
-    Ok(HttpResponse::Ok().json(model))
+    Ok(HttpResponse::Ok().json(model.response()?))
 }

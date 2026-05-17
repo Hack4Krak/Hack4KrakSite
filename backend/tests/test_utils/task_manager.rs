@@ -46,7 +46,8 @@ pub async fn create_task_manager_with_participant_tags() -> TaskManager {
 }
 
 pub fn create_task_manager_with_default_tasks() -> TaskManager {
-    let mut task_manager = TaskManager::default();
-    task_manager.tasks = default_tasks();
-    task_manager
+    TaskManager {
+        tasks: default_tasks(),
+        ..Default::default()
+    }
 }

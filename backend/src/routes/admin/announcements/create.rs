@@ -1,15 +1,14 @@
 use crate::entities::announcement;
-use crate::models::announcement::AnnouncementAction;
+use crate::models::announcement::{AnnouncementAction, AnnouncementResponse};
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
-use crate::utils::success_response::SuccessResponse;
 use actix_web::web::Data;
 use actix_web::{HttpResponse, post, web};
 
 #[utoipa::path(
     request_body = AnnouncementAction,
     responses(
-        (status = 200, description = "Announcement created successfully.", body = announcement::Model),
+        (status = 201, description = "Announcement created successfully.", body = AnnouncementResponse),
     ),
     security(
         ("access_token" = [])
@@ -24,13 +23,14 @@ pub async fn create(
 ) -> Result<HttpResponse, Error> {
     let action = action.into_inner();
 
-    if let AnnouncementAction::TaskStatusUpdate { .. } = action {
+    let model = if let AnnouncementAction::TaskStatusUpdate { .. } = action {
         app_state
             .task_manager
             .update_task_status(&app_state.database, &action)
-            .await?;
+            .await?
     } else {
-        announcement::Model::create(&app_state.database, &action).await?;
-    }
-    Ok(SuccessResponse::default().http_response())
+        announcement::Model::create(&app_state.database, &action).await?
+    };
+
+    Ok(HttpResponse::Created().json(model.response()?))
 }

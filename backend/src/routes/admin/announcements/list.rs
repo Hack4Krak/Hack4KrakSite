@@ -6,6 +6,8 @@ use actix_web::{HttpResponse, get, web};
 use serde::Deserialize;
 use utoipa::IntoParams;
 
+const MAX_LIMIT: u64 = 100;
+
 #[derive(Deserialize, IntoParams)]
 pub struct ListQuery {
     pub limit: Option<u64>,
@@ -29,7 +31,7 @@ pub async fn list(
     app_state: Data<AppState>,
     query: web::Query<ListQuery>,
 ) -> Result<HttpResponse, Error> {
-    let limit = query.limit.unwrap_or(20);
+    let limit = query.limit.unwrap_or(20).min(MAX_LIMIT);
     let offset = query.offset.unwrap_or(0);
     let action_type = query.action_type.as_deref();
     let models =

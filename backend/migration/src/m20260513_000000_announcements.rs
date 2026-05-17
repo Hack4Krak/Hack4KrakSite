@@ -20,10 +20,30 @@ impl MigrationTrait for Migration {
             )
             .await?;
 
+        manager
+            .create_index(
+                Index::create()
+                    .name("idx_announcement_action_type_created_at")
+                    .table(Announcement::Table)
+                    .col(Announcement::ActionType)
+                    .col(Announcement::CreatedAt)
+                    .to_owned(),
+            )
+            .await?;
+
         Ok(())
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        manager
+            .drop_index(
+                Index::drop()
+                    .name("idx_announcement_action_type_created_at")
+                    .table(Announcement::Table)
+                    .to_owned(),
+            )
+            .await?;
+
         manager
             .drop_table(Table::drop().table(Announcement::Table).to_owned())
             .await?;
