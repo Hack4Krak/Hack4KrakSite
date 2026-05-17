@@ -79,6 +79,7 @@ pub fn setup_actix_app(
                 .configure(routes::flag::config),
         )
         .service(scope("/leaderboard").configure(routes::leaderboard::config))
+        .service(scope("/announcements").configure(routes::announcements::config))
         .default_service(actix_web::web::route().to(|| async { RouteNotFound.error_response() }))
         .openapi_service(|api| Scalar::with_url("/docs", api));
 

@@ -1,6 +1,6 @@
 use crate::test_utils::TestApp;
 use crate::test_utils::database::TestDatabase;
-use crate::test_utils::task_manager::create_default_test_task_manager;
+use crate::test_utils::task_manager::create_task_manager_with_participant_tags;
 use actix_web::test;
 use actix_web::test::read_body_json;
 use hack4krak_backend::models::task_manager::participant_tags_config::ParticipantTag;
@@ -9,7 +9,7 @@ use hack4krak_backend::services::task_manager::TaskManager;
 #[actix_web::test]
 async fn get_participant_tags_success() {
     let test_database = TestDatabase::new().await;
-    let task_manager = create_default_test_task_manager().await;
+    let task_manager = create_task_manager_with_participant_tags().await;
 
     let app = TestApp::default()
         .with_database(test_database)

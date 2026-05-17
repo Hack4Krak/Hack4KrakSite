@@ -1,5 +1,6 @@
 use utoipa_actix_web::scope;
 
+mod announcements;
 mod email;
 mod identification;
 mod index;
@@ -13,5 +14,6 @@ pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(scope("/tasks").configure(tasks::config));
     config.service(scope("/email").configure(email::config));
     config.service(scope("/identification").configure(identification::config));
+    config.service(scope("/announcements").configure(announcements::config));
     config.service(index::index);
 }

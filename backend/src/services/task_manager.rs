@@ -1,3 +1,5 @@
+use crate::entities::announcement;
+use crate::models::announcement::{AnnouncementAction, TaskStatus};
 use crate::models::task_manager::event_config::EventConfig;
 use crate::models::task_manager::participant_tags_config::ParticipantTagsConfig;
 use crate::models::task_manager::registration_config::RegistrationConfig;
@@ -9,18 +11,45 @@ use actix_files::NamedFile;
 use dashmap::DashMap;
 use dashmap::mapref::multiple::RefMulti;
 use dashmap::mapref::one::Ref;
+use sea_orm::DatabaseConnection;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
+use std::collections::HashMap;
 use tokio::fs;
 use tokio::sync::RwLock;
 use tracing::error;
 use utoipa::ToSchema;
 
-#[derive(Serialize, Deserialize, ToSchema)]
+#[derive(Serialize, Deserialize, ToSchema, Clone)]
 pub struct SimpleTask {
     #[serde(flatten)]
     pub description: TaskMeta,
     pub display: TaskDisplay,
+}
+
+#[derive(Serialize, Deserialize, ToSchema, Clone)]
+pub struct TaskWithStatus {
+    #[serde(flatten)]
+    pub task: SimpleTask,
+    pub status: TaskStatus,
+}
+
+impl TaskWithStatus {
+    pub fn merge_tasks_with_statuses(
+        tasks: Vec<SimpleTask>,
+        statuses: HashMap<String, TaskStatus>,
+    ) -> Vec<TaskWithStatus> {
+        tasks
+            .into_iter()
+            .map(|task| {
+                let status = statuses
+                    .get(&task.description.id)
+                    .cloned()
+                    .unwrap_or(TaskStatus::Up);
+                TaskWithStatus { task, status }
+            })
+            .collect()
+    }
 }
 
 #[derive(Default)]
@@ -30,6 +59,7 @@ pub struct TaskManager {
     pub labels_config: RwLock<LabelsConfig>,
     pub participant_tags_config: RwLock<ParticipantTagsConfig>,
     pub tasks: DashMap<String, TaskConfig>,
+    pub task_status_cache: RwLock<Option<HashMap<String, TaskStatus>>>,
 }
 
 impl LabelsConfig {
@@ -56,10 +86,11 @@ impl TaskManager {
         // todo: refreshconfigs
         self.tasks.clear();
         Self::load_tasks(&self.tasks).await;
+        self.invalidate_task_status_cache().await;
     }
 
-    pub fn get_tasks_sorted(&self) -> Vec<SimpleTask> {
-        let mut tasks: Vec<SimpleTask> = self
+    pub fn tasks(&self) -> Vec<SimpleTask> {
+        let tasks: Vec<SimpleTask> = self
             .tasks
             .iter()
             .map(|task| SimpleTask {
@@ -67,6 +98,13 @@ impl TaskManager {
                 display: task.display.clone(),
             })
             .collect();
+
+        tasks
+    }
+
+    pub fn tasks_sorted(&self) -> Vec<SimpleTask> {
+        let mut tasks = self.tasks();
+
         tasks.sort_by(|a, b| a.description.id.cmp(&b.description.id));
 
         tasks
@@ -149,6 +187,7 @@ impl TaskManager {
             participant_tags_config: RwLock::new(participant_tags_config),
             registration_config: RwLock::new(registration_config),
             tasks,
+            task_status_cache: RwLock::new(None),
         }
     }
 
@@ -193,6 +232,56 @@ impl TaskManager {
         self.tasks
             .iter()
             .find(|task| task.flag_hash == hashed_flag_hex)
+    }
+
+    async fn invalidate_task_status_cache(&self) {
+        *self.task_status_cache.write().await = None;
+    }
+
+    pub async fn update_task_status(
+        &self,
+        database: &DatabaseConnection,
+        action: &AnnouncementAction,
+    ) -> Result<announcement::Model, Error> {
+        if let AnnouncementAction::TaskStatusUpdate { task_id, .. } = action {
+            self.get_task(task_id)?;
+        }
+        self.invalidate_task_status_cache().await;
+
+        announcement::Model::create(database, action).await
+    }
+
+    async fn tasks_with_statuses(
+        &self,
+        tasks_list: Vec<SimpleTask>,
+        database: &DatabaseConnection,
+    ) -> Result<Vec<TaskWithStatus>, Error> {
+        {
+            let cache = self.task_status_cache.read().await;
+            if let Some(cached) = cache.as_ref() {
+                return Ok(TaskWithStatus::merge_tasks_with_statuses(
+                    tasks_list,
+                    cached.clone(),
+                ));
+            }
+        }
+
+        let statuses = announcement::Model::latest_task_updates(database).await?;
+
+        let mut cache = self.task_status_cache.write().await;
+        *cache = Some(statuses.clone());
+
+        Ok(TaskWithStatus::merge_tasks_with_statuses(
+            tasks_list, statuses,
+        ))
+    }
+
+    pub async fn list_tasks(
+        &self,
+        database: &DatabaseConnection,
+    ) -> Result<Vec<TaskWithStatus>, Error> {
+        let tasks = self.tasks_sorted();
+        self.tasks_with_statuses(tasks, database).await
     }
 }
 

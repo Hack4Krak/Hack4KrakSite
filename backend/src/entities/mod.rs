@@ -2,6 +2,7 @@
 
 pub mod prelude;
 
+pub mod announcement;
 pub mod email_verification_request;
 pub mod event_registration;
 pub mod external_team_invitation;
