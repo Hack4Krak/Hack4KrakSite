@@ -32,6 +32,15 @@ pub struct TaskMeta {
     pub name: String,
     pub labels: Vec<String>,
     pub difficulty_estimate: String,
+    #[serde(default)]
+    pub authors: Vec<TaskAuthor>,
+}
+
+#[derive(Serialize, Deserialize, ToSchema, Debug, Clone, Default)]
+pub struct TaskAuthor {
+    pub name: String,
+    #[serde(default)]
+    pub url: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Debug, Clone, Default)]
