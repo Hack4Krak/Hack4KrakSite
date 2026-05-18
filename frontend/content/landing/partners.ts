@@ -101,6 +101,14 @@ export const LANDING_PARTNERS: LandingPartner[] = [
     variant: 'standard',
   },
   {
+    name: 'Serwer Discord "Programowanie"',
+    url: 'https://programowanie.org',
+    tagline: 'Patronat medialny',
+    logo: '/img/partners/programowanie.webp',
+    logoAlt: 'Serwer Discord "Programowanie"',
+    variant: 'standard',
+  },
+  {
     name: 'CERT Polska',
     url: 'https://cert.pl/',
     tagline: 'Patronat merytoryczny',
