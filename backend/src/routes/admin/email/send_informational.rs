@@ -1,4 +1,4 @@
-use crate::entities::users;
+use crate::entities::{event_registration, users};
 use crate::services::emails;
 use crate::utils::app_state;
 use crate::utils::email::{Email, EmailMeta, UNDISCLOSED_RECIPIENTS};
@@ -25,6 +25,7 @@ pub struct EmailSendingModel {
 pub enum EmailSendTarget {
     AllUsers,
     UsersInTeams,
+    UsersRegisteredOnEvent,
     SpecificUsernames(Vec<String>),
     SpecificEmails(Vec<String>),
 }
@@ -57,6 +58,15 @@ pub async fn send_informational(
         EmailSendTarget::UsersInTeams => {
             users::Entity::find()
                 .filter(users::Column::Team.is_not_null())
+                .select_only()
+                .column(users::Column::Email)
+                .into_tuple()
+                .all(&app_state.database)
+                .await?
+        }
+        EmailSendTarget::UsersRegisteredOnEvent => {
+            users::Entity::find()
+                .inner_join(event_registration::Entity)
                 .select_only()
                 .column(users::Column::Email)
                 .into_tuple()
