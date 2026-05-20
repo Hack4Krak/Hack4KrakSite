@@ -109,6 +109,14 @@ export const LANDING_PARTNERS: LandingPartner[] = [
     variant: 'standard',
   },
   {
+    name: 'INFOSEC',
+    url: 'https://infosec.info.pl',
+    tagline: 'Patronat medialny',
+    logo: '/img/partners/infosec.png',
+    logoAlt: 'Logo INFOSEC',
+    variant: 'standard',
+  },
+  {
     name: 'CERT Polska',
     url: 'https://cert.pl/',
     tagline: 'Patronat merytoryczny',
