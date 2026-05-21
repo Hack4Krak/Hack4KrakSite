@@ -4,11 +4,12 @@ use crate::routes::teams::TeamError;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use crate::utils::error::Error::{Flag, Team};
+use crate::utils::points_counter::PointsCounter;
 use crate::utils::sse_event::SseEvent;
 use actix_web::web::{Data, Json};
 use actix_web::{HttpResponse, post};
 use actix_web_validation::Validated;
-use sea_orm::EntityTrait;
+use sea_orm::{ColumnTrait, EntityTrait, PaginatorTrait, QueryFilter};
 use serde::{Deserialize, Serialize};
 use tracing::error;
 use utoipa::ToSchema;
@@ -23,6 +24,8 @@ struct SubmitModel {
 #[derive(Debug, Serialize, Deserialize, ToSchema, Validate)]
 struct SubmitResponse {
     pub task_id: String,
+    pub task_title: String,
+    pub points: usize,
 }
 
 #[utoipa::path(
@@ -77,6 +80,13 @@ pub async fn submit(
         )
         .await?;
 
+        let solve_count = flag_capture::Entity::find()
+            .filter(flag_capture::Column::Task.eq(task.key().to_string()))
+            .count(&app_state.database)
+            .await? as usize;
+        let team_count = teams::Entity::find().count(&app_state.database).await? as usize;
+        let points = PointsCounter::calculate_task_value(solve_count, team_count);
+
         app_state.invalidate_points_cache().await;
 
         if let Err(err) = app_state
@@ -91,9 +101,17 @@ pub async fn submit(
         {
             error!("Failed to broadcast leaderboard update: {err}");
         }
+
+        return Ok(HttpResponse::Ok().json(SubmitResponse {
+            task_id: task.key().clone(),
+            task_title: task.value().meta.name.clone(),
+            points,
+        }));
     }
 
-    Ok(HttpResponse::Ok().json(SubmitModel {
-        flag: task.key().clone(),
+    Ok(HttpResponse::Ok().json(SubmitResponse {
+        task_id: task.key().clone(),
+        task_title: task.value().meta.name.clone(),
+        points: 0,
     }))
 }

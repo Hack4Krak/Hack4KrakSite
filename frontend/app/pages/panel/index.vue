@@ -15,61 +15,101 @@ const { data: team } = await useAuth('/teams/membership/my_team', {
   },
 })
 
-const { data: team_stats } = await useAuth('/teams/membership/stats', {
+const { data: teamStats, refresh: refreshTeamStats } = await useAuth('/teams/membership/stats', {
   onResponseError: () => {
     throw new Error('Response error')
   },
 })
 
-const { data: now, refresh: updateDate } = useAsyncData('formattedNow', async () => {
-  const now = useNow()
-  const formatted = useDateFormat(now, 'HH:mm:ss')
-  return formatted.value
+const { data: chartData, refresh: refreshChart } = await useLazyApi('/leaderboard/chart')
+
+const rank = computed(() => teamStats.value?.rank?.[0] ?? undefined)
+const totalTeams = computed(() => teamStats.value?.rank?.[1] ?? undefined)
+const solved = computed(() => teamStats.value?.captured_flags ?? undefined)
+const remaining = computed(() => teamStats.value?.remaining_flags ?? undefined)
+const totalTasks = computed(() => {
+  if (solved.value == null || remaining.value == null)
+    return undefined
+  return solved.value + remaining.value
 })
 
-useRafFn(() => updateDate())
+const teamSeries = computed(() =>
+  chartData.value?.team_points_over_time?.find(item => item.name === team.value?.team_name),
+)
+
+const points = computed(() => teamSeries.value?.points.at(-1) ?? 0)
+const pointsHistory = computed(() => {
+  const timestamps = chartData.value?.event_timestamps ?? []
+  const values = teamSeries.value?.points ?? []
+  return values.map((value, index) => ({
+    t: new Date(timestamps[index] ?? Date.now()).toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' }),
+    v: value,
+  }))
+})
+
+async function refreshPanelStats() {
+  await Promise.allSettled([
+    refreshTeamStats(),
+    refreshChart(),
+  ])
+}
 </script>
 
 <template>
-  <div
-    class="grid grid-rows-[auto_auto_1fr_auto] divide-x m-10 outline min-w-fit flex-1"
-    :class="{ 'grid-cols-[300px_1fr]': team }"
-  >
-    <!-- Top full-width bar -->
-    <div class="col-span-2 border-b h-15 flex items-center divide-x font-bold">
-      <span class="w-15 h-full flex items-center justify-center text-xl">
-        <UIcon name="pixelarticons:close" class="size-lg font-bold" />
-      </span>
-      <span v-if="team?.team_name" class="px-5 h-full flex items-center">
-        {{ team?.team_name }}
-      </span>
-      <span class="px-5 h-full flex items-center">
-        Hack4Krak CTF - Edycja dla szkół podstawowych
-      </span>
-      <span class="px-5 h-full flex items-center justify-end flex-1 text-xl">
-        {{ now }}
-      </span>
-    </div>
+  <div class="grid h-screen-without-header w-full grid-rows-[auto_minmax(0,1fr)] gap-6 px-6 py-6 lg:gap-7 lg:px-10 lg:py-8">
+    <!-- Header: Krakow skyline anchored bottom-right, bleeds to viewport edge, fades left+top -->
+    <header class="relative isolate overflow-visible">
+      <div class="pointer-events-none absolute bottom-0 right-[-1.5rem] top-0 z-0 w-full overflow-hidden lg:right-[-2.5rem]" aria-hidden="true">
+        <img
+          src="/img/krakow_skyline.png"
+          alt=""
+          class="absolute bottom-0 right-0 h-auto w-[68%] rendering-pixelated"
+          draggable="false"
+        >
+        <div class="absolute inset-0 bg-[linear-gradient(to_right,var(--color-surface-default)_0%,var(--color-surface-default)_36%,rgba(17,17,17,0.85)_43%,rgba(17,17,17,0.3)_60%,rgba(17,17,17,0)_72%)]" />
+        <div class="absolute inset-0 bg-[linear-gradient(to_bottom,var(--color-surface-default)_0%,var(--color-surface-default)_10%,rgba(17,17,17,0.6)_40%,rgba(17,17,17,0)_60%)]" />
+      </div>
 
-    <PanelTileEventProgressBar class="border-b" />
+      <div class="relative z-10 border-b-2 border-surface-muted pb-6">
+        <p class="mb-2 text-xs font-bold uppercase tracking-wider text-primary">
+          Hack4Krak 2026
+        </p>
+        <h1 class="font-pixelify text-4xl leading-none lg:text-5xl">
+          Panel CTF
+        </h1>
+        <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted">
+          <span v-if="team?.team_name">
+            Grasz jako <span class="font-bold text-primary">@{{ team.team_name }}</span>
+          </span>
+          <span v-if="team?.team_name" class="text-surface-muted">·</span>
+          <PanelTileClock />
+        </div>
+      </div>
+    </header>
 
-    <!-- Sidebar -->
-    <div v-if="team" class="row-span-3 p-4 flex flex-col justify-center space-y-2">
-      <span class="font-bold">Moja drużyna</span>
-      <USeparator :ui="{ border: 'border-neutral' }" />
-      <div v-for="member in team?.members" :key="member.name">
-        {{ member.name }}
+    <!-- Content grid -->
+    <div class="grid min-h-0 gap-5 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1.8fr)]">
+      <PanelTileTeamStatus
+        class="min-h-0"
+        :team-name="team?.team_name ?? undefined"
+        :rank="rank"
+        :total-teams="totalTeams"
+        :points="points"
+        :solved="solved"
+        :total-tasks="totalTasks"
+        :points-history="pointsHistory"
+      />
+
+      <div class="grid min-h-0 grid-rows-[auto_minmax(0,1fr)] gap-5">
+        <PanelTileFlagForm @submitted="refreshPanelStats" />
+        <div class="grid min-h-0 gap-5 lg:grid-cols-2">
+          <PanelTileTimeline class="min-h-0" />
+          <PanelTileAnnouncements class="min-h-0" />
+        </div>
       </div>
     </div>
-
-    <!-- Top two boxes -->
-    <div class="flex divide-x border-b font-pixelify" :class="{ 'col-span-2': !team }">
-      <div class="flex flex-1 flex-col shadow items-center justify-center">
-        <PanelTileFlagForm class="mx-20" />
-      </div>
-      <PanelTileLinks class="w-2/5 m-5" />
-    </div>
-
-    <PanelTileStats v-if="team_stats" :team-stats="team_stats" class="col-span-1" />
   </div>
 </template>
+
+<style scoped>
+</style>
