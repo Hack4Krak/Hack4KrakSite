@@ -160,11 +160,28 @@ impl teams::Model {
         database: &DatabaseConnection,
         user: users::Model,
     ) -> Result<(), Error> {
+        if user.is_leader {
+            // Theoretically it shouldn't happen, because in all current calls for this method we check it beforehand,
+            // however we want to be sure that in future we don't miss it in any route
+            return Err(Error::Team(CannotRemoveTeamLeaderFromTeam));
+        }
+
         let mut active_user: users::ActiveModel = user.into();
         active_user.team = Set(None);
         active_user.update(database).await?;
 
         Ok(())
+    }
+
+    pub async fn leave_team(
+        database: &DatabaseConnection,
+        user: users::Model,
+    ) -> Result<(), Error> {
+        if user.is_leader {
+            return Err(Error::Team(CannotRemoveTeamLeaderFromTeam));
+        }
+
+        Self::remove_user(database, user).await
     }
 
     pub async fn rename(

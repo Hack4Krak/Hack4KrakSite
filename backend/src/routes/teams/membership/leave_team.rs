@@ -22,7 +22,7 @@ pub async fn leave_team(
     app_state: web::Data<app_state::AppState>,
     user: users::Model,
 ) -> Result<HttpResponse, Error> {
-    teams::Model::remove_user(&app_state.database, user).await?;
+    teams::Model::leave_team(&app_state.database, user).await?;
 
     Ok(SuccessResponse::default().http_response())
 }
