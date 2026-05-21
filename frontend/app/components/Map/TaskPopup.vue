@@ -1,48 +1,67 @@
 <script setup lang="ts">
-defineProps<{
+import type { TaskStats } from '~/utils/taskPresentation'
+import { taskDifficultyClass, taskDifficultyLabel, taskLabelText } from '~/utils/taskPresentation'
+
+const props = defineProps<{
   id: string
   name: string
   difficultyEstimate: string
   labels: string[]
   isCompleted: boolean
+  stats?: TaskStats
+  compact?: boolean
+  hideName?: boolean
 }>()
+
+const labelDescription = useTaskLabelDescription()
+const visibleLabelLimit = computed(() => props.compact ? 1 : 4)
 </script>
 
 <template>
   <div
-    class="bg-default p-3 rounded-md border border-border hover:bg-muted cursor-pointer transition-all"
+    class="pointer-events-none relative border-2 border-surface-muted bg-default/95 shadow-lg shadow-black/30 transition-all before:absolute before:-top-1.5 before:left-5 before:size-2 before:rotate-45 before:border-l-2 before:border-t-2 before:border-surface-muted before:bg-default"
+    :class="compact ? 'w-max max-w-64 p-2.5' : 'w-72 p-4'"
   >
-    <div class="flex items-start justify-between gap-2 mb-2">
-      <h3 class="font-semibold text-sm flex-1">
+    <div v-if="!hideName" class="mb-2 flex items-start justify-between gap-3">
+      <span class="font-bold leading-tight" :class="compact ? 'text-sm' : 'text-base'">
         {{ name }}
-      </h3>
-      <span
+      </span>
+      <UIcon
         v-if="isCompleted"
-        class="px-2 py-0.5 rounded bg-green-100 dark:bg-green-900 text-xs text-green-700 dark:text-green-300 whitespace-nowrap"
-        aria-label="Zadanie rozwiązane"
-      >
-        ✓
-      </span>
+        name="i-lucide-check"
+        class="mt-0.5 size-4 shrink-0 text-primary"
+      />
     </div>
-    <div class="flex items-center gap-2 mb-2">
-      <span class="text-xs text-muted-foreground">Trudność:</span>
-      <span class="px-2 py-0.5 rounded bg-muted text-xs text-muted-foreground">
-        {{ difficultyEstimate }}
-      </span>
-    </div>
-    <div class="flex flex-wrap gap-1">
+
+    <div class="flex flex-wrap items-center gap-2">
       <span
-        v-for="label in labels.slice(0, 3)"
+        v-if="difficultyEstimate"
+        class="border px-1.5 py-px text-[9px] font-bold uppercase tracking-wider"
+        :class="taskDifficultyClass(difficultyEstimate)"
+      >
+        {{ taskDifficultyLabel(difficultyEstimate) }}
+      </span>
+      <UTooltip
+        v-for="label in labels.slice(0, visibleLabelLimit)"
         :key="label"
-        class="px-1.5 py-0.5 rounded bg-muted text-xs text-muted-foreground"
+        :text="labelDescription(label)"
+        :disabled="!labelDescription(label)"
+        :delay-duration="100"
       >
-        {{ label }}
+        <span class="text-[9px] font-bold uppercase tracking-wider text-muted">
+          {{ taskLabelText(label) }}
+        </span>
+      </UTooltip>
+      <span v-if="labels.length > visibleLabelLimit" class="text-[9px] font-bold text-muted">
+        +{{ labels.length - visibleLabelLimit }}
       </span>
-      <span
-        v-if="labels.length > 3"
-        class="px-1.5 py-0.5 rounded bg-muted text-xs text-muted-foreground"
-      >
-        +{{ labels.length - 3 }}
+      <span class="inline-flex items-center gap-1 text-xs text-muted" title="Punkty">
+        <UIcon name="pixelarticons:trophy" class="size-3.5 text-primary" />
+        <span class="font-bold text-default">{{ stats?.points ?? 500 }}</span>
+      </span>
+      <span class="inline-flex items-center gap-1 text-xs text-muted" title="Rozwiązania">
+        <UIcon name="pixelarticons:users" class="size-3.5 text-primary" />
+        <span class="font-bold text-default">{{ stats?.solveCount ?? 0 }}</span>
       </span>
     </div>
   </div>

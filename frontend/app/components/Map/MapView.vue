@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import type { ApiResponse } from '#open-fetch'
+import type { TaskStatsMap } from '~/utils/taskPresentation'
 
 export type Tasks = ApiResponse<'task_list'>
 
-defineProps<{
+const props = defineProps<{
   tasks: Tasks
   completedTasks: string[]
+  taskStats: TaskStatsMap
 }>()
 
 const MAP_STYLE = '/maplibre_style.json'
@@ -16,6 +18,7 @@ const MAP_MAX_BOUNDS: [[number, number], [number, number]] = [[19.774, 49.965], 
 
 const flyToTarget = inject('flyToTarget') as Ref<{ lng: number, lat: number } | null>
 const mapInstance = useMglMap()
+const completedTaskSet = computed(() => new Set(props.completedTasks))
 
 watch(flyToTarget, (target) => {
   if (target && mapInstance.map) {
@@ -35,13 +38,14 @@ watch(flyToTarget, (target) => {
   >
     <MglMarker
       v-for="task in tasks"
-      :key="`${task.display.icon_coordinates.lng}-${task.display.icon_coordinates.lat}`"
+      :key="task.id"
       :coordinates="[task.display.icon_coordinates.lng, task.display.icon_coordinates.lat]"
     >
       <template #marker>
         <MapTaskMarker
           :task="task"
-          :is-completed="completedTasks.includes(task.id)"
+          :is-completed="completedTaskSet.has(task.id)"
+          :stats="taskStats[task.id]"
         />
       </template>
     </MglMarker>
@@ -49,8 +53,8 @@ watch(flyToTarget, (target) => {
 </template>
 
 <style>
-// for some reason maplibre ignores tailwind classes
 .maplibregl-map {
-  width: 100vw !important;
+  width: 100% !important;
+  height: 100% !important;
 }
 </style>

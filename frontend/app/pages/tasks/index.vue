@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ApiResponse } from '#open-fetch'
+import { buildTaskStats } from '~/utils/taskPresentation'
 
 type Tasks = ApiResponse<'task_list'>
 
@@ -15,6 +16,7 @@ useSeoMeta({
 })
 
 const { data } = await useApi('/tasks/list')
+const { data: teams } = await useLazyApi('/leaderboard/teams_with_tasks')
 
 const { data: completedTasksRaw } = await useAuth('/teams/membership/completed_tasks', {
   onResponseError: undefined,
@@ -26,8 +28,9 @@ const completedTaskNames = computed(() =>
 )
 
 const elements = ref<Tasks>(data.value ?? [])
+const taskStats = computed(() => buildTaskStats(elements.value, teams.value ?? []))
 </script>
 
 <template>
-  <Map :elements="elements" :completed-task-names="completedTaskNames" />
+  <Map :elements="elements" :completed-task-names="completedTaskNames" :task-stats="taskStats" />
 </template>

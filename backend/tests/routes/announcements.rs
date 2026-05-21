@@ -6,9 +6,7 @@ use actix_web::test;
 use actix_web::test::TestRequest;
 use hack4krak_backend::entities::sea_orm_active_enums::UserRoles;
 use hack4krak_backend::entities::users;
-use hack4krak_backend::models::announcement::TaskStatus;
 use hack4krak_backend::models::task_manager::task_config::{TaskConfig, TaskMeta};
-use hack4krak_backend::services::task_manager::TaskWithStatus;
 use serde_json::json;
 
 #[actix_web::test]
@@ -66,12 +64,9 @@ async fn test_announcements_e2e_flow() {
     let request = TestRequest::get().uri("/tasks/list").to_request();
     let response = test::call_service(&service, request).await;
     assert!(response.status().is_success());
-    let body: Vec<TaskWithStatus> = test::read_body_json(response).await;
-    assert_eq!(body[0].status, TaskStatus::Broken);
-    assert_eq!(
-        body[0].task.description.clone().unwrap().id,
-        "simple-task-example"
-    );
+    let body: Vec<serde_json::Value> = test::read_body_json(response).await;
+    assert_eq!(body[0]["status"], "broken");
+    assert_eq!(body[0]["id"], "simple-task-example");
 }
 
 #[actix_web::test]
@@ -204,6 +199,6 @@ async fn test_announcements_cache_invalidated() {
     let request = TestRequest::get().uri("/tasks/list").to_request();
 
     let response = test::call_service(&service, request).await;
-    let body: Vec<TaskWithStatus> = test::read_body_json(response).await;
-    assert!(body.iter().all(|task| task.status != TaskStatus::Broken));
+    let body: Vec<serde_json::Value> = test::read_body_json(response).await;
+    assert!(body.iter().all(|task| task["status"] != "broken"));
 }

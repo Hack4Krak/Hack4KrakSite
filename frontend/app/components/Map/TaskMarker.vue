@@ -1,66 +1,62 @@
 <script setup lang="ts">
 import type { ApiResponse } from '#open-fetch'
+import type { TaskStats } from '~/utils/taskPresentation'
 
 export type Tasks = ApiResponse<'task_list'>
 
 const props = defineProps<{
   task: Tasks[number]
   isCompleted: boolean
+  stats?: TaskStats
 }>()
 
-const taskIconBaseUrl = `${useRuntimeConfig().public.openFetch.api.baseURL}/tasks/icon/`
-
 const showPopup = ref(false)
-const iconErrored = ref(false)
+const fallbackName = 'Zadanie niedostępne'
 
-const imgSrc = computed(() => {
-  if (iconErrored.value || !props.task.id)
-    return '/img/task_unavailable.png'
-  return taskIconBaseUrl + props.task.id
-})
-
-function onImgError() {
-  iconErrored.value = true
-}
-
-const now = useTimestamp({ interval: 1000 })
-
-const countdownText = computed(() => {
-  if (!props.task.available_since)
-    return null
-  const diff = new Date(props.task.available_since).getTime() - now.value
-  if (diff <= 0)
-    return null
-  return humanizeDifference(diff)
-})
+const { imgSrc, onImgError } = useTaskIcon(() => props.task.id)
+const countdownText = useTaskCountdown(() => props.task.available_since)
+const markerLabel = computed(() => props.task.name ?? countdownText.value ?? fallbackName)
 </script>
 
 <template>
-  <div class="flex flex-col items-center gap-1 cursor-pointer" @mouseenter="showPopup = true" @mouseleave="showPopup = false">
+  <div class="relative flex flex-col items-center cursor-pointer" @mouseenter="showPopup = true" @mouseleave="showPopup = false">
     <NuxtLink
       :to="{ name: 'tasks-description-id', params: { id: task.id } }"
-      class="flex flex-col items-center gap-1 group"
+      class="flex flex-col items-center group"
       :class="{ 'opacity-60': isCompleted }"
     >
-      <NuxtImg
-        :src="imgSrc"
-        :alt="task.name ?? 'Cóż to może być???'"
-        class="w-8 h-8 transition-transform"
-        @error="onImgError"
-      />
-      <span class="text-xs text-center text-toned">
-        {{ task.name ?? countdownText }}
+      <span class="relative block size-12 sm:size-14">
+        <span class="absolute inset-x-3 bottom-0 h-1.5 bg-black/55 blur-md" />
+        <span
+          v-if="isCompleted"
+          class="absolute -right-1 -top-1 z-10 grid size-5 place-items-center border border-surface-muted bg-default/90 text-muted shadow-sm shadow-black/40"
+          title="Ukończone"
+        >
+          <UIcon name="i-lucide-check" class="size-3.5" />
+        </span>
+        <NuxtImg
+          :src="imgSrc"
+          :alt="task.name ?? fallbackName"
+          class="relative h-full w-full object-contain transition-transform group-hover:scale-105 rendering-pixelated drop-shadow-[0_8px_12px_rgba(0,0,0,0.55)]"
+          @error="onImgError"
+        />
+      </span>
+      <span class="-mt-0.5 max-w-32 text-center text-[10px] font-semibold leading-tight text-default drop-shadow-[0_2px_2px_rgba(0,0,0,0.9)] sm:max-w-40 sm:text-[11px]">
+        {{ markerLabel }}
       </span>
     </NuxtLink>
 
-    <div v-if="task.id" class="absolute z-40 pointer-events-none">
+    <div v-if="task.id" class="absolute left-1/2 top-14 z-40 -translate-x-1/2 pointer-events-none transition-all duration-150 sm:top-16">
       <MapTaskPopup
         :id="task.id"
-        :name="task.name"
+        :name="markerLabel"
         :difficulty-estimate="task.difficulty_estimate"
         :labels="task.labels"
         :is-completed="isCompleted"
-        :class="showPopup ? 'mt-10 opacity-100' : 'mt-5 opacity-0'"
+        :stats="stats"
+        compact
+        hide-name
+        :class="showPopup ? 'mt-3 opacity-100 translate-y-0' : 'mt-1 opacity-0 -translate-y-1'"
       />
     </div>
   </div>
