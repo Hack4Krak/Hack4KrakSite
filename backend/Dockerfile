@@ -30,11 +30,12 @@ RUN apt-get update && apt-get install -y libssl3 ca-certificates git
 # Download TasksTemplate or other tasks repository
 ARG GIT_USER=Hack4Krak
 ARG GIT_REPO=TasksTemplate
-ARG GIT_ACCESS_TOKEN=token
 ARG BRANCH=master
+# Pass --build-arg CACHEBUST=$(date +%s) to invalidate cache when tasks repo updates
+ARG CACHEBUST=0
 
-ADD https://$GIT_ACCESS_TOKEN:x-oauth-basic@api.github.com/repos/$GIT_USER/$GIT_REPO/git/refs/heads/$BRANCH version.json
-RUN git clone -b $BRANCH https://$GIT_USER:$GIT_ACCESS_TOKEN@github.com/$GIT_USER/$GIT_REPO.git TasksRepo/
+RUN --mount=type=secret,id=GIT_ACCESS_TOKEN,env=GIT_ACCESS_TOKEN \
+  git clone -b $BRANCH "https://${GIT_USER}:${GIT_ACCESS_TOKEN}@github.com/${GIT_USER}/${GIT_REPO}.git" TasksRepo/
 
 ENV TASKS_BASE_PATH=TasksRepo/
 
