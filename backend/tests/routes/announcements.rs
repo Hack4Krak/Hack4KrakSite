@@ -68,7 +68,10 @@ async fn test_announcements_e2e_flow() {
     assert!(response.status().is_success());
     let body: Vec<TaskWithStatus> = test::read_body_json(response).await;
     assert_eq!(body[0].status, TaskStatus::Broken);
-    assert_eq!(body[0].task.description.clone().unwrap().id, "simple-task-example");
+    assert_eq!(
+        body[0].task.description.clone().unwrap().id,
+        "simple-task-example"
+    );
 }
 
 #[actix_web::test]

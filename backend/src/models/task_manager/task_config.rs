@@ -7,7 +7,7 @@ pub struct LabelsConfig {
     pub labels: Vec<Label>,
 }
 
-#[derive(Serialize, Deserialize, ToSchema, Default, Debug)]
+#[derive(Serialize, Deserialize, ToSchema, Default, Debug, Clone)]
 #[serde(rename_all(deserialize = "kebab-case"))]
 pub struct Label {
     pub id: String,

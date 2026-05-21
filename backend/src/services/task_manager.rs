@@ -1,4 +1,3 @@
-use std::cmp::Ordering;
 use crate::entities::announcement;
 use crate::models::announcement::{AnnouncementAction, TaskStatus};
 use crate::models::task_manager::event_config::EventConfig;
@@ -16,6 +15,7 @@ use dashmap::mapref::one::Ref;
 use sea_orm::DatabaseConnection;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
+use std::cmp::Ordering;
 use std::collections::HashMap;
 use tokio::fs;
 use tokio::sync::RwLock;
@@ -75,11 +75,8 @@ impl LabelsConfig {
             .join("config/assets/labels")
             .join(format!("{id}.png"));
 
-        if !asset_path.exists() || !asset_path.is_file() {
-            return Err(TaskError::CouldNotLoadTaskAsset { id: id.to_string() }.into());
-        }
-
-        let named_file = NamedFile::open(asset_path)?;
+        let named_file = NamedFile::open(&asset_path)
+            .map_err(|_| TaskError::CouldNotLoadTaskAsset { id: id.to_string() })?;
 
         Ok(named_file)
     }
@@ -132,10 +129,12 @@ impl TaskManager {
         let mut tasks = self.available_tasks().await;
 
         tasks.sort_by(|a, b| {
-            if let Some(a_description) = &a.description && let Some(b_description) = &b.description {
-                return a_description.cmp(&b_description);
+            if let Some(a_description) = &a.description
+                && let Some(b_description) = &b.description
+            {
+                return a_description.cmp(b_description);
             }
-            return Ordering::Equal;
+            Ordering::Equal
         });
 
         tasks
@@ -244,11 +243,8 @@ impl TaskManager {
             .join(id)
             .join(path);
 
-        if !asset_path.exists() || !asset_path.is_file() {
-            return Err(TaskError::CouldNotLoadTaskAsset { id: id.to_string() }.into());
-        }
-
-        let named_file = NamedFile::open(asset_path)?;
+        let named_file = NamedFile::open(&asset_path)
+            .map_err(|_| TaskError::CouldNotLoadTaskAsset { id: id.to_string() })?;
 
         Ok(named_file)
     }
