@@ -5,7 +5,7 @@ use crate::test_utils::task_manager::create_task_manager_with_participant_tags;
 use actix_web::test;
 use actix_web::test::read_body_json;
 use hack4krak_backend::entities::sea_orm_active_enums::{TeamStatus, UserRoles};
-use hack4krak_backend::entities::{teams, users};
+use hack4krak_backend::entities::{event_registration, teams, users};
 use hack4krak_backend::routes::teams::MyTeamWithMembers;
 use hack4krak_backend::services::identification::IdentifiedUserInfo;
 use sea_orm::EntityTrait;
@@ -23,6 +23,12 @@ async fn identify_user_success() {
         .await;
 
     let user = test_database.with_default_user().await;
+    test_database
+        .with_event_registration(event_registration::UpdatableModel {
+            user_id: Some(user.id),
+            ..Default::default()
+        })
+        .await;
     let identification_code = user.identification_code;
 
     let app = TestApp::default()
