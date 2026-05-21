@@ -117,6 +117,14 @@ export const LANDING_PARTNERS: LandingPartner[] = [
     variant: 'standard',
   },
   {
+    name: 'CyberDot',
+    url: 'https://cyberdot.pl/',
+    tagline: 'Patronat medialny',
+    logo: '/img/partners/cyberdot.png',
+    logoAlt: 'CyberDot',
+    variant: 'standard',
+  },
+  {
     name: 'CERT Polska',
     url: 'https://cert.pl/',
     tagline: 'Patronat merytoryczny',
