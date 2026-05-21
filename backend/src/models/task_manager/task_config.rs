@@ -27,7 +27,9 @@ pub struct TaskConfig {
     pub task_release_phase: String,
 }
 
-#[derive(Serialize, Deserialize, ToSchema, Debug, Clone, Default, Eq, Ord, PartialEq, PartialOrd)]
+#[derive(
+    Serialize, Deserialize, ToSchema, Debug, Clone, Default, Eq, Ord, PartialEq, PartialOrd,
+)]
 pub struct TaskMeta {
     pub id: String,
     pub name: String,
@@ -37,7 +39,9 @@ pub struct TaskMeta {
     pub authors: Vec<TaskAuthor>,
 }
 
-#[derive(Serialize, Deserialize, ToSchema, Debug, Clone, Default)]
+#[derive(
+    Serialize, Deserialize, ToSchema, Debug, Clone, Default, Eq, Ord, PartialEq, PartialOrd,
+)]
 pub struct TaskAuthor {
     pub name: String,
     #[serde(default)]

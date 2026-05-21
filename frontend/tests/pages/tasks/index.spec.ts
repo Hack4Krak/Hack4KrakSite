@@ -6,7 +6,20 @@ import TasksPage from '@/pages/tasks/index.vue'
 vi.mock('@indoorequal/vue-maplibre-gl', () => ({
   MglMap: { template: '<div />' },
   MglMarker: { template: '<div />' },
+  useMap: vi.fn(() => ({ map: null })),
 }))
+
+// reka-ui tooltip components require a provider context that isn't available in tests
+vi.mock('reka-ui', async (importOriginal) => {
+  const actual = await importOriginal() as Record<string, unknown>
+  return {
+    ...actual,
+    TooltipRoot: { template: '<div><slot /></div>' },
+    TooltipProvider: { template: '<div><slot /></div>' },
+    TooltipTrigger: { template: '<button><slot /></button>' },
+    TooltipContent: { template: '<div><slot /></div>' },
+  }
+})
 
 vi.mock('@/composables/useApi', () => ({
   useApi: vi.fn().mockResolvedValue({ data: { value: [] } }),
