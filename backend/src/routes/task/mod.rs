@@ -8,6 +8,7 @@ mod assets;
 mod count;
 mod description;
 mod icon;
+mod labels;
 mod list;
 mod name;
 mod solution;
@@ -15,6 +16,7 @@ mod status;
 
 pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(list::list);
+    config.service(labels::labels);
     config.service(icon::icon);
     config.service(description::description);
     config.service(solution::solution);
