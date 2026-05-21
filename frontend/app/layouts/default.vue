@@ -2,19 +2,14 @@
 import LANDING_CONTENT from '~~/content/landing/page'
 
 const event = LANDING_CONTENT.event
-
-const { data: registrationInformation } = await useApi('/event/registration')
-
-const registrationOpen = useRegistrationOpen(registrationInformation)
 </script>
 
 <template>
   <UBanner
-    v-if="registrationOpen"
-    id="hack4krak-edition-3"
-    icon="pixelarticons:flag"
+    id="hack4krak-location-updated"
+    icon="pixelarticons:map-pin"
     color="primary"
-    :title="`Zapisy otwarte! Hack4Krak CTF dla uczniów szkół ponadpodstawowych - ${event.dateDisplay}, ${event.venue.city}`"
+    :title="`Uwaga! Zmieniono miejsce wydarzenia na ${event.venue.name}`"
     close
   />
   <Navbar />

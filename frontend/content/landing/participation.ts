@@ -25,7 +25,7 @@ export const LANDING_PARTICIPATION_STEPS: LandingParticipationStep[] = [
   },
   {
     title: 'Przyjedź do Krakowa',
-    description: `${LANDING_CONTENT.event.dateDisplay} przyjedź na UKEN. Zabierz sprzęt potrzebny do pracy, chęć do nauki i swoją drużynę - o resztę zadbamy na miejscu.`,
+    description: `${LANDING_CONTENT.event.dateDisplay} przyjedź do XXXI Liceum Ogólnokształcącego im. Romana Ingardena w Krakowie. Zabierz sprzęt potrzebny do pracy, chęć do nauki i swoją drużynę - o resztę zadbamy na miejscu.`,
     color: '#ffdf26',
     icon: 'pixelarticons:map-pin',
     highlight: true,
