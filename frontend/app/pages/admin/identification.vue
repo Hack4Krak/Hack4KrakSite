@@ -176,6 +176,12 @@ function onCameraError(error: Error) {
                 {{ userInfo.username }}
               </h1>
               <p class="mt-2 break-words text-sm text-muted">
+                {{ userInfo.full_name }}
+              </p>
+              <p class="mt-2 break-words text-sm text-muted">
+                {{ userInfo.is_underage ? 'niepełnoletni' : 'pełnoetni' }}
+              </p>
+              <p class="mt-2 break-words text-sm text-muted">
                 {{ userInfo.email }}
               </p>
             </div>

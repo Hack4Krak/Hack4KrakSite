@@ -1,5 +1,6 @@
-use crate::entities::users;
+use crate::entities::{event_registration, users};
 use crate::models::task_manager::participant_tags_config::ParticipantTag;
+use crate::routes::event::ParticipationError::NotRegistered;
 use crate::services::authorization::{AuthorizationService, UserIdentificationInfo};
 use crate::services::emails::RegistrationConfirmation;
 use crate::services::task_manager::TaskManager;
@@ -17,6 +18,8 @@ use uuid::Uuid;
 pub struct IdentifiedUserInfo {
     pub user_id: Uuid,
     pub username: String,
+    pub full_name: String,
+    pub is_underage: bool,
     pub email: String,
     pub team_name: Option<String>,
     pub tags: Vec<ParticipantTag>,
@@ -67,10 +70,17 @@ impl IdentificationService {
 
         let team_name = user.get_team(database).await?.map(|team| team.name);
         let tags = AuthorizationService::user_tags(database, task_manager, user.id).await?;
+        let event_registration = event_registration::Entity::find()
+            .filter(event_registration::Column::UserId.eq(user.id))
+            .one(database)
+            .await?
+            .ok_or(Error::Participation(NotRegistered))?;
 
         Ok(IdentifiedUserInfo {
             user_id: user.id,
             username: user.username,
+            full_name: event_registration.full_name,
+            is_underage: event_registration.is_underage,
             email: user.email,
             team_name,
             tags,
