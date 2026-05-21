@@ -62,11 +62,15 @@ async function onDetect(detectedCodes: DetectedBarcode[]) {
 
   const code = detectedCodes[0]!.rawValue
   currentId.value = code
-  isLoading.value = true
 
+  identify()
+}
+
+async function identify() {
+  isLoading.value = true
   try {
     userInfo.value = await $auth('/admin/identification/identify/{id}', {
-      path: { id: code },
+      path: { id: currentId.value },
       ignoreResponseError: false,
     })
   } catch (error: unknown) {
@@ -147,6 +151,12 @@ function onCameraError(error: Error) {
         value-key="value"
         class="w-full"
       />
+      <UInput v-model="currentId" placeholder="Ręczne wpisywanie kodu" size="sm" class="w-full" />
+      <UButton
+        size="sm" class="w-full" :loading="isLoading" @click="identify"
+      >
+        Zidentyfikuj
+      </UButton>
     </div>
 
     <div class="flex-1 relative min-h-0 bg-background">
