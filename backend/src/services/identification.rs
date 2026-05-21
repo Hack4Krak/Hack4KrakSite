@@ -1,5 +1,7 @@
-use crate::entities::users;
+use crate::entities::sea_orm_active_enums::FoodPreference;
+use crate::entities::{event_registration, users};
 use crate::models::task_manager::participant_tags_config::ParticipantTag;
+use crate::routes::event::ParticipationError::NotRegistered;
 use crate::services::authorization::{AuthorizationService, UserIdentificationInfo};
 use crate::services::emails::RegistrationConfirmation;
 use crate::services::task_manager::TaskManager;
@@ -17,7 +19,13 @@ use uuid::Uuid;
 pub struct IdentifiedUserInfo {
     pub user_id: Uuid,
     pub username: String,
+    pub full_name: String,
+    pub school: String,
+    pub birth_year: String,
+    pub is_underage: bool,
     pub email: String,
+    pub food_preference: FoodPreference,
+    pub food_allergies: Option<String>,
     pub team_name: Option<String>,
     pub tags: Vec<ParticipantTag>,
 }
@@ -67,11 +75,22 @@ impl IdentificationService {
 
         let team_name = user.get_team(database).await?.map(|team| team.name);
         let tags = AuthorizationService::user_tags(database, task_manager, user.id).await?;
+        let event_registration = event_registration::Entity::find()
+            .filter(event_registration::Column::UserId.eq(user.id))
+            .one(database)
+            .await?
+            .ok_or(Error::Participation(NotRegistered))?;
 
         Ok(IdentifiedUserInfo {
             user_id: user.id,
             username: user.username,
+            full_name: event_registration.full_name,
+            school: event_registration.school,
+            birth_year: event_registration.birth_year,
+            is_underage: event_registration.is_underage,
             email: user.email,
+            food_preference: event_registration.food_preference,
+            food_allergies: event_registration.food_allergies,
             team_name,
             tags,
         })
