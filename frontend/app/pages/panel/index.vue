@@ -47,6 +47,13 @@ const pointsHistory = computed(() => {
   }))
 })
 
+const now = useNow({
+  scheduler: callback => useIntervalFn(callback, 1000, { immediate: true }),
+})
+const currentHour = computed(() => now.value.getHours())
+const isNight = computed(() => currentHour.value < 6 || currentHour.value >= 20)
+const skylineImage = computed(() => isNight.value ? '/img/cracow_skyline_night.png' : '/img/cracow_skyline.png')
+
 async function refreshPanelStats() {
   await Promise.allSettled([
     refreshTeamStats(),
@@ -58,11 +65,11 @@ async function refreshPanelStats() {
 <template>
   <div class="grid h-screen-without-header w-full grid-rows-[auto_minmax(0,1fr)] gap-6 px-6 py-6 lg:gap-7 lg:px-10 lg:py-8">
     <header class="relative isolate border-b-2 border-surface-muted pb-6">
-      <div class="pointer-events-none absolute inset-y-0 right-[-1.5rem] z-0 w-[70%] overflow-hidden lg:right-[-2.5rem]" aria-hidden="true">
+      <div class="pointer-events-none absolute inset-y-0 -right-6 z-0 w-[70%] overflow-hidden lg:-right-10" aria-hidden="true">
         <img
-          src="/img/krakow_skyline.png"
+          :src="skylineImage"
           alt=""
-          class="absolute bottom-0 right-[-8%] h-auto w-[100%] max-w-none rendering-pixelated"
+          class="absolute bottom-0 right-[-8%] h-auto w-full max-w-none rendering-pixelated"
           draggable="false"
         >
         <div class="absolute inset-0 bg-[linear-gradient(to_right,var(--color-surface-default)_0%,var(--color-surface-default)_12%,rgba(17,17,17,0.85)_18%,rgba(17,17,17,0.4)_25%,rgba(17,17,17,0)_33%)]" />
@@ -85,7 +92,6 @@ async function refreshPanelStats() {
       </div>
     </header>
 
-    <!-- Content grid -->
     <div class="grid min-h-0 gap-5 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1.8fr)]">
       <PanelTileTeamStatus
         class="min-h-0"
@@ -108,6 +114,3 @@ async function refreshPanelStats() {
     </div>
   </div>
 </template>
-
-<style scoped>
-</style>
