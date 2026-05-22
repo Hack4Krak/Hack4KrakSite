@@ -42,11 +42,11 @@ function startResize(e: MouseEvent) {
 
 <template>
   <div
-    class="flex flex-1 h-screen-without-header overflow-hidden"
+    class="flex h-[calc(100vh-var(--ui-header-height))] w-full overflow-hidden"
     :class="{ 'select-none': isResizing }"
   >
     <!-- Map area -->
-    <div class="flex-1 relative min-w-0">
+    <div class="relative h-[calc(100vh-var(--ui-header-height))] min-w-0 flex-1 overflow-hidden">
       <ClientOnly>
         <MapView :tasks="props.elements" :completed-tasks="completedTaskNames" :task-stats="taskStats" />
       </ClientOnly>
@@ -77,7 +77,7 @@ function startResize(e: MouseEvent) {
 
     <!-- Sidebar -->
     <div
-      class="h-full shrink-0 overflow-hidden border-l-2 border-surface-muted bg-default transition-[width] duration-300"
+      class="h-[calc(100vh-var(--ui-header-height))] shrink-0 overflow-hidden border-l-2 border-surface-muted bg-default transition-[width] duration-300"
       :style="{ width: isPanelOpen ? `${sidebarWidth}px` : '0px' }"
     >
       <MapSidebar

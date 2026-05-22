@@ -155,7 +155,7 @@ const sortItems = computed(() => [
 </script>
 
 <template>
-  <div class="flex h-full flex-col overflow-hidden bg-default text-default">
+  <div class="grid h-[calc(100vh-var(--ui-header-height))] grid-rows-[auto_minmax(0,1fr)] overflow-hidden bg-default text-default">
     <!-- Header -->
     <div class="shrink-0 border-b-2 border-surface-muted px-5 pb-4 pt-5">
       <div class="flex items-end justify-between gap-4">
@@ -305,7 +305,7 @@ const sortItems = computed(() => [
     </div>
 
     <!-- Task list -->
-    <div class="flex-1 overflow-y-auto scrollbar-hide">
+    <div class="h-full overflow-y-auto scrollbar-hide">
       <div v-if="filteredTasks.length === 0" class="flex h-40 flex-col items-center justify-center gap-2 text-muted">
         <UIcon name="i-lucide-search-x" class="size-8 opacity-40" />
         <p class="text-xs uppercase tracking-[0.24em]">
