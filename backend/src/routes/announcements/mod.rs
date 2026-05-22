@@ -3,9 +3,10 @@ use actix_web::{HttpResponse, error};
 use hack4krak_macros::error_with_messages;
 
 pub mod latest;
+pub mod list;
 
 pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
-    config.service(latest::latest);
+    config.service(latest::latest).service(list::list);
 }
 
 #[error_with_messages]
