@@ -4,12 +4,12 @@
   "event": {
     "dateDisplay": "23-24 maja 2026",
     "venue": {
-      "name": "XXXI Liceum Ogólnokształcące im. Romana Ingardena w Krakowie",
-      "address": "Kazimierza Odnowiciela 2, 31-481 Kraków",
+      "name": "Uniwersytet Komisji Edukacji Narodowej w Krakowie",
+      "address": "ul. Podchorążych 2, 30-084 Kraków",
       "city": "Kraków",
-      "mapsUrl": "https://www.openstreetmap.org/?mlat=50.08754&mlon=19.97082#map=17/50.08754/19.97082",
-      "lat": 50.08754,
-      "lon": 19.97082
+      "mapsUrl": "https://www.openstreetmap.org/?mlat=50.073806556912345&mlon=19.908402799575054#map=17/50.073806556912345/19.908402799575054",
+      "lat": 50.073806556912345,
+      "lon": 19.908402799575054
     }
   }
 }

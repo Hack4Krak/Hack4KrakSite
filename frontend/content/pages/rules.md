@@ -32,7 +32,7 @@ description: Regulamin Hack4Krak - edycja dla Szkół Średnich w Małopolsce
 
 ## 3. Przebieg CTF
 
-1. CTF odbywa się w dniach 23.05.2026-24.05.2026 w budynku XXXI Liceum Ogólnokształcącego im. Romana Ingardena w Krakowie, ul. Kazimierza Odnowiciela 2, 31-481 Kraków.
+1. CTF odbywa się w dniach 23.05.2026-24.05.2026 w budynku Uniwersytetu Komisji Edukacji Narodowej w Krakowie, ul. Podchorążych 2, 30-084 Kraków.
 2. Harmonogram wydarzenia:
    - Sobota, 23.05.2026 – pierwszy dzień zawodów:
      - 08:30-09:30 – rejestracja uczestników
