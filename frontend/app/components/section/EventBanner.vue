@@ -5,15 +5,12 @@ const event = LANDING_CONTENT.event
 const { proxy } = useScriptUmamiAnalytics()
 
 const { data: registrationInformation } = await useApi('/event/registration')
-const registrationStarted = computed(() => {
-  const startDate = registrationInformation.value?.start_date
-  return startDate ? Date.now() >= new Date(startDate).getTime() : false
-})
+const registrationOpen = computed(() => registrationInformation.value?.is_open ?? false)
 
 function trackRegistrationCta() {
   proxy.track('registration_cta_click', {
     location: 'event_banner',
-    registration_open: registrationStarted.value,
+    registration_open: registrationOpen.value,
   })
 }
 </script>
@@ -54,8 +51,8 @@ function trackRegistrationCta() {
         <ElevatedButton
           to="/register"
           class="text-base"
-          :disabled="!registrationStarted"
-          :aria-label="registrationStarted ? 'Zapisz się teraz' : 'Rejestracja jeszcze się nie rozpoczęła'"
+          :disabled="!registrationOpen"
+          :aria-label="registrationOpen ? 'Zapisz się teraz' : 'Rejestracja nie jest otwarta'"
           @click="trackRegistrationCta"
         >
           Zapisz się teraz
