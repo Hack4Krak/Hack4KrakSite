@@ -1,3 +1,4 @@
+use crate::TaskReleasePhaseMiddleware;
 use crate::entities::{flag_capture, teams, users};
 use crate::routes::flag::FlagError;
 use crate::routes::teams::TeamError;
@@ -37,7 +38,7 @@ struct SubmitResponse {
     ),
     tag = "flag"
 )]
-#[post("/submit")]
+#[post("/submit", wrap = "TaskReleasePhaseMiddleware")]
 pub async fn submit(
     app_state: Data<AppState>,
     model: Validated<Json<SubmitModel>>,
