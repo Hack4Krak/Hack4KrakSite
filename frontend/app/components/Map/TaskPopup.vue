@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { TaskStats } from '~/utils/taskPresentation'
-import { taskDifficultyClass, taskDifficultyLabel, taskLabelText } from '~/utils/taskPresentation'
+import type { TaskStats, TaskStatusDetails } from '~/utils/taskPresentation'
+import { taskDifficultyClass, taskDifficultyLabel, taskLabelText, taskStatusClass, taskStatusIcon, taskStatusLabel } from '~/utils/taskPresentation'
 
 const props = defineProps<{
   id: string
@@ -9,6 +9,7 @@ const props = defineProps<{
   labels: string[]
   isCompleted: boolean
   stats?: TaskStats
+  status?: TaskStatusDetails
   compact?: boolean
   hideName?: boolean
 }>()
@@ -62,6 +63,15 @@ const visibleLabelLimit = computed(() => props.compact ? 1 : 4)
       <span class="inline-flex items-center gap-1 text-xs text-muted" title="Rozwiązania">
         <UIcon name="pixelarticons:users" class="size-3.5 text-primary" />
         <span class="font-bold text-default">{{ stats?.solveCount ?? 0 }}</span>
+      </span>
+      <span
+        v-if="status"
+        class="inline-flex items-center gap-1 border px-1.5 py-px text-[9px] font-bold uppercase tracking-wider"
+        :class="taskStatusClass(status.status)"
+        :title="status.comment ?? taskStatusLabel(status.status)"
+      >
+        <UIcon :name="taskStatusIcon(status.status)" class="size-3" />
+        {{ taskStatusLabel(status.status) }}
       </span>
     </div>
   </div>

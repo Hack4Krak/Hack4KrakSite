@@ -16,13 +16,41 @@ type AnnouncementAction
   = | { type: 'task_status_update', task_id: string, status: string, comment?: string | null }
     | { type: 'normal', text: string }
 
+type TaskStatus = 'up' | 'broken' | 'down'
+
+const taskStatusLabel: Record<TaskStatus, string> = {
+  up: 'Sprawne',
+  broken: 'Problemy',
+  down: 'Niedostępne',
+}
+
+function getTaskStatusLabel(status: string) {
+  return taskStatusLabel[status as TaskStatus] ?? status
+}
+
+function getTaskStatusIcon(status: string) {
+  if (status === 'up')
+    return 'pixelarticons:check'
+  if (status === 'down')
+    return 'pixelarticons:close'
+  return 'pixelarticons:alert'
+}
+
+function getTaskStatusTone(status: string) {
+  if (status === 'up')
+    return 'text-emerald-300'
+  if (status === 'down')
+    return 'text-red-450'
+  return 'text-primary'
+}
+
 function formatAction(action: AnnouncementAction) {
   if (action.type === 'task_status_update') {
     return {
-      title: `Status zadania ${action.task_id}: ${action.status}`,
-      description: action.comment ?? 'Bez dodatkowego komentarza.',
-      icon: action.status === 'up' ? 'pixelarticons:check' : 'pixelarticons:alert',
-      tone: action.status === 'up' ? 'text-emerald-300' : 'text-primary',
+      title: `Zadanie ${action.task_id}: ${getTaskStatusLabel(action.status)}`,
+      description: action.comment ?? `Status: ${getTaskStatusLabel(action.status)}.`,
+      icon: getTaskStatusIcon(action.status),
+      tone: getTaskStatusTone(action.status),
     }
   }
 

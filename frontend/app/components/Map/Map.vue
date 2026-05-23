@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ApiResponse } from '#open-fetch'
-import type { TaskStatsMap } from '~/utils/taskPresentation'
+import type { TaskStatsMap, TaskStatusMap, TaskStatusUpdate } from '~/utils/taskPresentation'
 
 export type Tasks = ApiResponse<'task_list'>
 
@@ -8,6 +8,8 @@ const props = defineProps<{
   elements: Tasks
   completedTaskNames: string[]
   taskStats: TaskStatsMap
+  taskStatuses: TaskStatusMap
+  taskStatusUpdates: TaskStatusUpdate[]
 }>()
 
 const isPanelOpen = ref(true)
@@ -48,7 +50,7 @@ function startResize(e: MouseEvent) {
     <!-- Map area -->
     <div class="relative h-[calc(100vh-var(--ui-header-height))] min-w-0 flex-1 overflow-hidden">
       <ClientOnly>
-        <MapView :tasks="props.elements" :completed-tasks="completedTaskNames" :task-stats="taskStats" />
+        <MapView :tasks="props.elements" :completed-tasks="completedTaskNames" :task-stats="taskStats" :task-statuses="taskStatuses" />
       </ClientOnly>
 
       <!-- Toggle / resize handle zone -->
@@ -85,6 +87,8 @@ function startResize(e: MouseEvent) {
         :completed-tasks="completedTaskNames"
         :sidebar-width="sidebarWidth"
         :task-stats="taskStats"
+        :task-statuses="taskStatuses"
+        :task-status-updates="taskStatusUpdates"
       />
     </div>
   </div>

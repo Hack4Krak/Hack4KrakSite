@@ -1,6 +1,8 @@
 <script setup lang="ts">
 type AnnouncementLevel = 'info' | 'warning' | 'success' | 'critical'
 
+type TaskStatus = 'up' | 'broken' | 'down'
+
 interface Announcement {
   id: string
   level: AnnouncementLevel
@@ -18,27 +20,48 @@ const announcementDetailsOpen = computed({
   },
 })
 
-const { data: latestAnnouncement } = await useLazyApi('/announcements/latest', {
-  onResponseError: () => {},
+const { data: fetchedAnnouncements } = await useLazyApi('/announcements/', {
+  query: { limit: 10 },
 })
 
+const taskStatusLabel: Record<TaskStatus, string> = {
+  up: 'Sprawne',
+  broken: 'Problemy',
+  down: 'Niedostępne',
+}
+
+function getTaskStatusLabel(status: string) {
+  return taskStatusLabel[status as TaskStatus] ?? status
+}
+
+function getTaskStatusLevel(status: string): AnnouncementLevel {
+  if (status === 'up')
+    return 'success'
+  if (status === 'down')
+    return 'critical'
+  return 'warning'
+}
+
 const announcements = computed<Announcement[]>(() => {
-  if (!latestAnnouncement.value)
+  if (!fetchedAnnouncements.value?.length)
     return []
 
-  const action = latestAnnouncement.value.action
-  const isTaskUpdate = action.type === 'task_status_update'
-  return [{
-    id: latestAnnouncement.value.id,
-    level: isTaskUpdate && action.status !== 'up' ? 'warning' : 'info',
-    title: isTaskUpdate
-      ? `Status zadania ${action.task_id}: ${action.status}${action.comment ? ` - ${action.comment}` : ''}`
-      : action.text,
-    details: isTaskUpdate
-      ? action.comment ?? `Aktualny status zadania ${action.task_id}: ${action.status}.`
-      : action.text,
-    publishedAt: new Date(latestAnnouncement.value.created_at),
-  }]
+  return fetchedAnnouncements.value.map((announcement) => {
+    const action = announcement.action
+    const isTaskUpdate = action.type === 'task_status_update'
+
+    return {
+      id: announcement.id,
+      level: isTaskUpdate ? getTaskStatusLevel(action.status) : 'info',
+      title: isTaskUpdate
+        ? `Zadanie ${action.task_id}: ${getTaskStatusLabel(action.status)}`
+        : action.text,
+      details: isTaskUpdate
+        ? action.comment ?? `Status: ${getTaskStatusLabel(action.status)}.`
+        : action.text,
+      publishedAt: new Date(announcement.created_at),
+    }
+  })
 })
 
 const accent: Record<AnnouncementLevel, string> = {

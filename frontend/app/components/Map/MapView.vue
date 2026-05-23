@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ApiResponse } from '#open-fetch'
-import type { TaskStatsMap } from '~/utils/taskPresentation'
+import type { TaskStatsMap, TaskStatusMap } from '~/utils/taskPresentation'
 
 export type Tasks = ApiResponse<'task_list'>
 
@@ -8,6 +8,7 @@ const props = defineProps<{
   tasks: Tasks
   completedTasks: string[]
   taskStats: TaskStatsMap
+  taskStatuses: TaskStatusMap
 }>()
 
 const MAP_STYLE = '/maplibre_style.json'
@@ -46,6 +47,7 @@ watch(flyToTarget, (target) => {
           :task="task"
           :is-completed="completedTaskSet.has(task.id)"
           :stats="taskStats[task.id]"
+          :status="taskStatuses[task.id]"
         />
       </template>
     </MglMarker>

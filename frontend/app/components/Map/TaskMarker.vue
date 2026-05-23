@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ApiResponse } from '#open-fetch'
-import type { TaskStats } from '~/utils/taskPresentation'
+import type { TaskStats, TaskStatusDetails } from '~/utils/taskPresentation'
+import { taskStatusClass, taskStatusIcon, taskStatusLabel } from '~/utils/taskPresentation'
 
 export type Tasks = ApiResponse<'task_list'>
 
@@ -8,6 +9,7 @@ const props = defineProps<{
   task: Tasks[number]
   isCompleted: boolean
   stats?: TaskStats
+  status?: TaskStatusDetails
 }>()
 
 const showPopup = ref(false)
@@ -34,6 +36,14 @@ const markerLabel = computed(() => props.task.name ?? countdownText.value ?? fal
         >
           <UIcon name="i-lucide-check" class="size-3.5" />
         </span>
+        <span
+          v-if="status"
+          class="absolute -left-1 -top-1 z-10 grid size-5 place-items-center border bg-default/90 shadow-sm shadow-black/40"
+          :class="taskStatusClass(status.status)"
+          :title="taskStatusLabel(status.status)"
+        >
+          <UIcon :name="taskStatusIcon(status.status)" class="size-3.5" />
+        </span>
         <NuxtImg
           :src="imgSrc"
           :alt="task.name ?? fallbackName"
@@ -54,6 +64,7 @@ const markerLabel = computed(() => props.task.name ?? countdownText.value ?? fal
         :labels="task.labels"
         :is-completed="isCompleted"
         :stats="stats"
+        :status="status"
         compact
         hide-name
         :class="showPopup ? 'mt-3 opacity-100 translate-y-0' : 'mt-1 opacity-0 -translate-y-1'"

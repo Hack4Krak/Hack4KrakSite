@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ApiResponse } from '#open-fetch'
-import type { TaskStatsMap } from '~/utils/taskPresentation'
-import { getTaskStats, taskDifficultyClass, taskDifficultyLabel, taskDifficultyOrder, taskLabelText } from '~/utils/taskPresentation'
+import type { TaskStatsMap, TaskStatusMap, TaskStatusUpdate } from '~/utils/taskPresentation'
+import { getTaskStats, taskDifficultyClass, taskDifficultyLabel, taskDifficultyOrder, taskLabelText, taskStatusClass, taskStatusIcon, taskStatusLabel } from '~/utils/taskPresentation'
 
 export type Tasks = ApiResponse<'task_list'>
 type Task = Tasks[number]
@@ -11,6 +11,8 @@ const props = defineProps<{
   completedTasks: string[]
   sidebarWidth: number
   taskStats: TaskStatsMap
+  taskStatuses: TaskStatusMap
+  taskStatusUpdates: TaskStatusUpdate[]
 }>()
 
 const labelDescription = useTaskLabelDescription()
@@ -130,8 +132,14 @@ const completedCount = computed(
   () => props.tasks.filter(task => completedTaskIds.value.has(task.id)).length,
 )
 
+const recentStatusUpdates = computed(() => props.taskStatusUpdates.slice(0, 3))
+
 function isTaskCompleted(task: Task) {
   return completedTaskIds.value.has(task.id)
+}
+
+function getTaskStatus(taskId: string) {
+  return props.taskStatuses[taskId]
 }
 
 const sortItems = computed(() => [
@@ -174,6 +182,33 @@ const sortItems = computed(() => [
           <p class="mt-1 font-pixelify text-2xl leading-none">
             <span class="text-primary">{{ completedCount }}</span><span class="text-muted">/{{ tasks.length }}</span>
           </p>
+        </div>
+      </div>
+
+      <div v-if="recentStatusUpdates.length" class="mt-4 space-y-2 border-t-2 border-surface-muted pt-3">
+        <p class="text-[10px] font-bold uppercase tracking-widest text-muted">
+          Ostatnie statusy
+        </p>
+        <div class="space-y-1.5">
+          <div
+            v-for="update in recentStatusUpdates"
+            :key="update.id"
+            class="flex items-start gap-2 text-xs"
+          >
+            <UIcon
+              :name="taskStatusIcon(update.action.status)"
+              class="mt-0.5 size-3.5 shrink-0"
+              :class="taskStatusClass(update.action.status)"
+            />
+            <div class="min-w-0 flex-1">
+              <p class="truncate font-bold text-default">
+                {{ update.action.task_id }}: {{ taskStatusLabel(update.action.status) }}
+              </p>
+              <p v-if="update.action.comment" class="truncate text-muted">
+                {{ update.action.comment }}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -361,6 +396,15 @@ const sortItems = computed(() => [
               >
                 {{ taskDifficultyLabel(task.difficulty_estimate) }}
               </span>
+              <span
+                v-if="getTaskStatus(task.id)"
+                class="inline-flex items-center gap-1 border-2 px-1.5 py-0.5 font-bold"
+                :class="taskStatusClass(getTaskStatus(task.id)?.status)"
+                :title="getTaskStatus(task.id)?.comment ?? taskStatusLabel(getTaskStatus(task.id)?.status)"
+              >
+                <UIcon :name="taskStatusIcon(getTaskStatus(task.id)?.status)" class="size-3" />
+                {{ taskStatusLabel(getTaskStatus(task.id)?.status) }}
+              </span>
               <UTooltip
                 v-for="label in task.labels?.slice(0, visibleLabelLimit)"
                 :key="label"
@@ -406,6 +450,7 @@ const sortItems = computed(() => [
           :task="selectedTask"
           :is-completed="selectedTask ? isTaskCompleted(selectedTask) : false"
           :stats="selectedTask ? getTaskStats(taskStats, selectedTask.id) : undefined"
+          :status="selectedTask ? getTaskStatus(selectedTask.id) : undefined"
           @close="isSlideOpen = false"
         />
       </template>

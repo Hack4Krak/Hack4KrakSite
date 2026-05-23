@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ApiResponse } from '#open-fetch'
-import type { TaskStats } from '~/utils/taskPresentation'
+import type { TaskStats, TaskStatusDetails } from '~/utils/taskPresentation'
+import { taskStatusClass, taskStatusIcon, taskStatusLabel } from '~/utils/taskPresentation'
 
 type Task = ApiResponse<'task_list'>[number]
 
@@ -8,6 +9,7 @@ const props = defineProps<{
   task: Task | null
   isCompleted: boolean
   stats?: TaskStats
+  status?: TaskStatusDetails
 }>()
 
 const emit = defineEmits<{
@@ -74,6 +76,27 @@ const baseAssetsPath = `${apiBaseURL}/tasks/assets/get`
 
     <!-- Body -->
     <div class="flex-1 overflow-y-auto space-y-6 px-6 py-5 scrollbar-hide">
+      <div
+        v-if="status"
+        class="border-2 px-4 py-3"
+        :class="taskStatusClass(status.status)"
+      >
+        <div class="flex items-start gap-3">
+          <UIcon :name="taskStatusIcon(status.status)" class="mt-0.5 size-5 shrink-0" />
+          <div class="min-w-0 flex-1">
+            <p class="font-pixelify text-lg leading-none">
+              Status: {{ taskStatusLabel(status.status) }}
+            </p>
+            <p v-if="status.comment" class="mt-2 text-sm leading-relaxed">
+              {{ status.comment }}
+            </p>
+            <p class="mt-2 text-[10px] font-bold uppercase tracking-widest opacity-80">
+              {{ new Date(status.createdAt).toLocaleString('pl-PL') }}
+            </p>
+          </div>
+        </div>
+      </div>
+
       <div v-if="isLocked" class="flex flex-col items-center justify-center gap-2 py-12 text-center text-muted">
         <UIcon name="i-lucide-lock" class="size-10 text-warning/70" />
         <p class="text-sm uppercase tracking-widest">

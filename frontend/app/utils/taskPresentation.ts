@@ -1,3 +1,11 @@
+import type {
+  SchemaAnnouncementAction,
+  SchemaAnnouncementResponse,
+  SchemaTaskMeta,
+  SchemaTaskStatus,
+  SchemaTeamRankingWithTasks,
+} from '#open-fetch-schemas/api'
+
 export interface TaskStats {
   solveCount: number
   points: number
@@ -5,13 +13,29 @@ export interface TaskStats {
 
 export type TaskStatsMap = Record<string, TaskStats>
 
-interface TaskLike {
-  id: string
+export type TaskStatus = SchemaTaskStatus
+
+export type TaskStatusUpdateAction = Extract<SchemaAnnouncementAction, { type: 'task_status_update' }>
+
+export type TaskStatusUpdate = SchemaAnnouncementResponse & { action: TaskStatusUpdateAction }
+
+export interface TaskStatusDetails {
+  status: TaskStatus
+  comment?: string | null
+  createdAt: string
 }
 
-interface TeamWithTasksLike {
-  tasks?: Record<string, unknown> | null
+export type TaskStatusMap = Record<string, TaskStatusDetails>
+
+type AnnouncementLike = Pick<SchemaAnnouncementResponse, 'created_at' | 'action'>
+
+export function isTaskStatusUpdate<T extends AnnouncementLike>(update: T): update is T & TaskStatusUpdate {
+  return update.action.type === 'task_status_update'
 }
+
+type TaskLike = Pick<SchemaTaskMeta, 'id'>
+
+type TeamWithTasksLike = Partial<Pick<SchemaTeamRankingWithTasks, 'tasks'>>
 
 const DIFFICULTY_LABELS: Record<string, string> = {
   easy: 'Łatwe',
@@ -101,4 +125,52 @@ export function buildTaskStats(tasks: TaskLike[] = [], teams: TeamWithTasksLike[
 
 export function getTaskStats(stats: TaskStatsMap | undefined, taskId: string): TaskStats {
   return stats?.[taskId] ?? { solveCount: 0, points: 500 }
+}
+
+export function buildTaskStatusMap(updates: AnnouncementLike[] = []): TaskStatusMap {
+  return updates.reduce<TaskStatusMap>((acc, update) => {
+    if (!isTaskStatusUpdate(update))
+      return acc
+
+    const action = update.action
+    if (acc[action.task_id])
+      return acc
+
+    acc[action.task_id] = {
+      status: action.status,
+      comment: action.comment,
+      createdAt: update.created_at,
+    }
+    return acc
+  }, {})
+}
+
+export function taskStatusLabel(status?: TaskStatus | null) {
+  if (status === 'up')
+    return 'Działa'
+  if (status === 'broken')
+    return 'Problemy'
+  if (status === 'down')
+    return 'Niedostępne'
+  return 'Brak statusu'
+}
+
+export function taskStatusClass(status?: TaskStatus | null) {
+  if (status === 'up')
+    return 'border-emerald-400/70 bg-emerald-400/10 text-emerald-300'
+  if (status === 'broken')
+    return 'border-primary/80 bg-primary/10 text-primary'
+  if (status === 'down')
+    return 'border-error/80 bg-error/10 text-error'
+  return 'border-surface-muted bg-default text-muted'
+}
+
+export function taskStatusIcon(status?: TaskStatus | null) {
+  if (status === 'up')
+    return 'pixelarticons:check'
+  if (status === 'broken')
+    return 'pixelarticons:alert'
+  if (status === 'down')
+    return 'pixelarticons:close'
+  return 'pixelarticons:notification'
 }
