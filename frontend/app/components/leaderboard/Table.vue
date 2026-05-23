@@ -3,6 +3,8 @@ import type { ApiResponse } from '#open-fetch'
 import type { TableColumn } from '@nuxt/ui'
 import type { Row, TableMeta } from '@tanstack/vue-table'
 import dayjs from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
 
 export type Team = ApiResponse<'teams_with_tasks'>[0]
 
@@ -10,6 +12,11 @@ const UIcon = resolveComponent('UIcon')
 
 const { data: teams } = await useLazyApi('/leaderboard/teams_with_tasks')
 const { data: tasks } = await useLazyApi('/tasks/list')
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
+
+const targetTimezone = 'Europe/Warsaw'
 
 const top3PerTask = computed(() => {
   if (!teams.value?.length || !tasks.value?.length)
@@ -147,7 +154,7 @@ function getTaskIcon(teamId: string, taskId: string) {
         <UIcon
           :name="getTaskIcon(row.original.team_id, task.id).icon"
           :class="`${getTaskIcon(row.original.team_id, task.id).color} text-xl`"
-          :title="dayjs(row.original.tasks[task.id]).format('DD.MM.YYYY HH:mm')"
+          :title="dayjs.utc(row.original.tasks[task.id]).tz(targetTimezone).format('DD.MM.YYYY HH:mm')"
         />
       </div>
     </template>
