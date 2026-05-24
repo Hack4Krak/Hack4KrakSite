@@ -3,7 +3,7 @@ export default defineNuxtRouteMiddleware(async () => {
     onResponseError: undefined,
   })
 
-  if (data.value?.is_live)
+  if (data.value?.is_live || data.value?.is_after_event)
     return
 
   if (error.value)
@@ -11,7 +11,7 @@ export default defineNuxtRouteMiddleware(async () => {
 
   return showError({
     status: 403,
-    message: 'Panel CTF będzie dostępny podczas wydarzenia.',
+    message: 'Panel CTF będzie dostępny po rozpoczęciu wydarzenia.',
     data: {
       error: 'AccessBeforeEventStart',
       ...data.value,
