@@ -76,6 +76,7 @@ pub async fn submit(
                 target: "flag_submit",
                 %username,
                 team_name,
+                submitted_flag = flag,
                 "Rejected flag submission: invalid flag"
             );
             return Err(Flag(FlagError::InvalidFlag));
@@ -115,6 +116,8 @@ pub async fn submit(
                     target: "flag_submit",
                     %username,
                     %team_name,
+                    %task_id,
+                    task_name,
                     "Rejected flag submission: already submitted"
                 );
                 return Err(Flag(FlagError::AlreadySubmittedFlag));
@@ -126,6 +129,8 @@ pub async fn submit(
             target: "flag_submit",
             %username,
             %team_name,
+            %task_id,
+            task_name,
             "Accepted flag submission"
         );
 
@@ -158,16 +163,21 @@ pub async fn submit(
         }));
     }
 
+    let task_id = task.key().to_string();
+    let task_name = task.value().meta.name.to_string();
+
     info!(
         target: "flag_submit",
         %username,
         team_name,
+        %task_id,
+        task_name,
         "Accepted flag submission after event"
     );
 
     Ok(HttpResponse::Ok().json(SubmitResponse {
-        task_id: task.key().clone(),
-        task_title: task.value().meta.name.clone(),
+        task_id,
+        task_title: task_name,
         points: 0,
     }))
 }
