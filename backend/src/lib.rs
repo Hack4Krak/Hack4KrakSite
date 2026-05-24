@@ -4,10 +4,9 @@ use crate::middlewares::status_code_drain_middleware::StatusCodeDrain;
 use crate::services::env::EnvConfig;
 use crate::utils::error::Error::{InvalidUuid, JsonDeserializationError, RouteNotFound, Validator};
 use crate::utils::openapi::ApiDoc;
+use crate::utils::real_ip::RealIpKeyExtractor;
 use actix_cors::Cors;
-use actix_governor::governor::clock::QuantaInstant;
-use actix_governor::governor::middleware::NoOpMiddleware;
-use actix_governor::{Governor, GovernorConfig, GovernorConfigBuilder, PeerIpKeyExtractor};
+use actix_governor::{Governor, GovernorConfigBuilder};
 use actix_web::body::MessageBody;
 use actix_web::dev::{ServiceFactory, ServiceRequest, ServiceResponse};
 use actix_web::middleware::Logger;
@@ -44,12 +43,20 @@ pub fn setup_actix_app(
         .supports_credentials()
         .max_age(3600);
 
+    let logger = if EnvConfig::get().trusted_proxy {
+        Logger::new(
+            r#"%{CF-Connecting-IP}i (peer: %a) "%r" %s %b "%{Referer}i" "%{User-Agent}i" %T"#,
+        )
+    } else {
+        Logger::default()
+    };
+
     let mut app = App::new()
         .validator_error_handler(Arc::new(|errors, _| Validator(errors).into()))
         .app_data(web::JsonConfig::default().error_handler(|_, _| JsonDeserializationError.into()))
         .app_data(web::PathConfig::default().error_handler(|_, _| InvalidUuid.into()))
         .wrap(StatusCodeDrain)
-        .wrap(Logger::default())
+        .wrap(logger)
         .wrap(cors_middleware)
         .into_utoipa_app()
         .openapi(ApiDoc::with_server())
@@ -85,8 +92,12 @@ pub fn setup_actix_app(
         .openapi_service(|api| Scalar::with_url("/docs", api));
 
     if enable_governor {
-        let auth_governor: GovernorConfig<PeerIpKeyExtractor, NoOpMiddleware<QuantaInstant>> =
-            GovernorConfig::secure();
+        let auth_governor = GovernorConfigBuilder::default()
+            .key_extractor(RealIpKeyExtractor)
+            .seconds_per_request(4)
+            .burst_size(2)
+            .finish()
+            .unwrap();
         app = app.service(
             scope("/auth")
                 .wrap(Governor::new(&auth_governor))
@@ -94,6 +105,7 @@ pub fn setup_actix_app(
         );
 
         let flag_governor = GovernorConfigBuilder::default()
+            .key_extractor(RealIpKeyExtractor)
             .seconds_per_request(5)
             .burst_size(2)
             .finish()

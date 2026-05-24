@@ -11,5 +11,6 @@ pub mod oauth;
 pub mod openapi;
 pub mod points_counter;
 pub mod qr_code;
+pub mod real_ip;
 pub mod sse_event;
 pub mod success_response;
