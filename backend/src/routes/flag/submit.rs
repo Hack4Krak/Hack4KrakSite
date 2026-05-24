@@ -12,7 +12,7 @@ use actix_web::{HttpResponse, post};
 use actix_web_validation::Validated;
 use sea_orm::{ColumnTrait, EntityTrait, PaginatorTrait, QueryFilter};
 use serde::{Deserialize, Serialize};
-use tracing::error;
+use tracing::{error, info, warn};
 use utoipa::ToSchema;
 use validator::Validate;
 
@@ -44,24 +44,48 @@ pub async fn submit(
     model: Validated<Json<SubmitModel>>,
     user: users::Model,
 ) -> Result<HttpResponse, Error> {
+    let username = user.username.clone();
+    let team_id = user.team;
+    let team_name = match team_id {
+        Some(team_id) => teams::Entity::find_by_id(team_id)
+            .one(&app_state.database)
+            .await?
+            .map(|team| team.name),
+        None => None,
+    };
+
     let flag = model
         .flag
         .strip_prefix("hack4KrakCTF{")
         .and_then(|value| value.strip_suffix("}"));
 
     let Some(flag) = flag else {
+        warn!(
+            target: "flag_submit",
+            %username,
+            team_name,
+            "Rejected flag submission: invalid format"
+        );
         return Err(FlagError::InvalidFlagFormat.into());
     };
 
-    let task = app_state
-        .task_manager
-        .find_by_flag(flag)
-        .ok_or(Flag(FlagError::InvalidFlag))?;
+    let task = match app_state.task_manager.find_by_flag(flag) {
+        Some(task) => task,
+        None => {
+            warn!(
+                target: "flag_submit",
+                %username,
+                team_name,
+                "Rejected flag submission: invalid flag"
+            );
+            return Err(Flag(FlagError::InvalidFlag));
+        }
+    };
 
     let event_config = app_state.task_manager.event_config.read().await;
 
     if !event_config.is_after_event() {
-        let Some(team_id) = user.team else {
+        let Some(team_id) = team_id else {
             return Err(Team(TeamError::UserDoesntBelongToAnyTeam {
                 username: user.username,
             }));
@@ -74,15 +98,39 @@ pub async fn submit(
 
         team.assert_is_confirmed()?;
 
-        let is_first_submission = !flag_capture::Model::completed(
+        let task_id = task.key().to_string();
+        let task_name = task.value().meta.name.to_string();
+        let team_name = team.name.clone();
+
+        let is_first_submission = match flag_capture::Model::completed(
             &app_state.database,
-            team.clone(),
-            task.key().to_string(),
+            team,
+            task_id.clone(),
         )
-        .await?;
+        .await
+        {
+            Ok(is_first_submission) => !is_first_submission,
+            Err(Error::Flag(FlagError::AlreadySubmittedFlag)) => {
+                warn!(
+                    target: "flag_submit",
+                    %username,
+                    %team_name,
+                    "Rejected flag submission: already submitted"
+                );
+                return Err(Flag(FlagError::AlreadySubmittedFlag));
+            }
+            Err(err) => return Err(err),
+        };
+
+        info!(
+            target: "flag_submit",
+            %username,
+            %team_name,
+            "Accepted flag submission"
+        );
 
         let solve_count = flag_capture::Entity::find()
-            .filter(flag_capture::Column::Task.eq(task.key().to_string()))
+            .filter(flag_capture::Column::Task.eq(task_id.clone()))
             .count(&app_state.database)
             .await? as usize;
         let team_count = teams::Entity::find().count(&app_state.database).await? as usize;
@@ -93,22 +141,29 @@ pub async fn submit(
         if let Err(err) = app_state
             .sse_event_sender
             .send(SseEvent::LeaderboardUpdate {
-                task_id: task.key().to_string(),
-                task_name: task.value().meta.name.to_string(),
+                task_id: task_id.clone(),
+                task_name: task_name.clone(),
                 is_first_flag_submission: is_first_submission,
-                team_name: team.name,
-                username: user.username,
+                team_name,
+                username,
             })
         {
             error!("Failed to broadcast leaderboard update: {err}");
         }
 
         return Ok(HttpResponse::Ok().json(SubmitResponse {
-            task_id: task.key().clone(),
-            task_title: task.value().meta.name.clone(),
+            task_id,
+            task_title: task_name,
             points,
         }));
     }
+
+    info!(
+        target: "flag_submit",
+        %username,
+        team_name,
+        "Accepted flag submission after event"
+    );
 
     Ok(HttpResponse::Ok().json(SubmitResponse {
         task_id: task.key().clone(),
