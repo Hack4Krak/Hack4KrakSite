@@ -136,6 +136,7 @@ async fn auth_flow() {
 
 #[actix_web::test]
 async fn email_confirmation_success() {
+    use crate::mocks::smtp_mock::MockSmtpClient;
     use hack4krak_backend::entities::email_verification_request::UpdatableModel;
     use hack4krak_backend::entities::{email_verification_request, users};
     use hack4krak_backend::services::authentication::AuthenticationService;
@@ -148,11 +149,17 @@ async fn email_confirmation_success() {
         .await;
     let confirmation_code = email_confirmation.id;
 
-    let app_state = AppState::with_database(test_database.database);
+    let mock_smtp_client = MockSmtpClient::default();
+
+    let app_state =
+        AppState::with_database_and_smtp_client(test_database.database, mock_smtp_client.clone());
 
     let result = AuthenticationService::confirm_email(&app_state, confirmation_code).await;
 
     assert!(result.is_ok());
+    // Confirmation creates the user and consumes the verification request;
+    // it doesn't send emails (those are sent during registration / reset flows).
+    assert_eq!(mock_smtp_client.send_count(), 0);
 
     let user = users::Model::find_by_email(&app_state.database, "example@gmail.com")
         .await
