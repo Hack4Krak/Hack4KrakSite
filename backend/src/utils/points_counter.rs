@@ -48,7 +48,7 @@ pub struct LeaderboardChart {
 #[derive(Default, Debug, Clone)]
 pub struct PointsCounter {
     event_timestamps: Vec<NaiveDateTime>,
-    pub(crate) team_time_series: HashMap<Uuid, TeamTimeSeriesData>,
+    pub team_time_series: HashMap<Uuid, TeamTimeSeriesData>,
 }
 
 impl PointsCounter {
@@ -150,7 +150,7 @@ impl PointsCounter {
 
     /// Calculates point value for a task based on solve count using linear decay.
     /// Points range from 500 (max) to 100 (min), decreasing linearly as more teams solve it.
-    pub(crate) fn calculate_task_value(solve_count: usize, total_teams: usize) -> usize {
+    pub fn calculate_task_value(solve_count: usize, total_teams: usize) -> usize {
         const MAX_POINTS: f64 = 500f64;
         const MIN_POINTS: f64 = 100f64;
         const DECAY_RANGE: f64 = MAX_POINTS - MIN_POINTS;

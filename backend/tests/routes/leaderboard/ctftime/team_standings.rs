@@ -4,6 +4,8 @@ use actix_web::test;
 use hack4krak_backend::entities::teams::UpdatableModel;
 use hack4krak_backend::models::task_manager::task_config::TaskConfig;
 use hack4krak_backend::services::task_manager::TaskManager;
+use hack4krak_backend::utils::ctftime::{SingleTeamStanding, TaskTeamStat, TeamStandings};
+use std::collections::HashMap;
 
 #[actix_web::test]
 async fn team_standings() {
@@ -22,16 +24,16 @@ async fn team_standings() {
         })
         .await;
 
-    test_database
+    let team_capture = test_database
         .with_flag_capture(&team, "simple-task-example".parse().unwrap())
         .await;
-    test_database
+    let team2_capture = test_database
         .with_flag_capture(&team2, "task2".parse().unwrap())
         .await;
-    test_database
+    let team_task2_capture = test_database
         .with_flag_capture(&team, "task2".parse().unwrap())
         .await;
-    test_database
+    let team3_capture = test_database
         .with_flag_capture(&team3, "task2".parse().unwrap())
         .await;
 
@@ -63,41 +65,63 @@ async fn team_standings() {
         String::from_utf8_lossy(&body)
     );
 
-    let standalone: serde_json::Value = serde_json::from_slice(&body).unwrap();
+    let mut standings: TeamStandings = serde_json::from_slice(&body).unwrap();
+    standings.standings.sort_by(|a, b| a.team.cmp(&b.team));
 
-    assert!(
-        !standalone
-            .get("tasks")
-            .unwrap()
-            .as_array()
-            .unwrap()
-            .is_empty()
-    );
-
-    let standings = standalone.get("standings").unwrap().as_array().unwrap();
-
-    assert!(!standings.is_empty());
-
-    let dziengiel_standing = standings
-        .iter()
-        .find(|s| s.get("team").unwrap().as_str().unwrap() == "Dziengiel")
-        .expect("team should be in standings");
-
-    assert!(dziengiel_standing.get("score").unwrap().as_u64().unwrap() > 0);
-    assert!(
-        !dziengiel_standing
-            .get("taskStats")
-            .unwrap()
-            .as_object()
-            .unwrap()
-            .is_empty()
-    );
-    assert!(
-        dziengiel_standing
-            .get("lastAccept")
-            .unwrap()
-            .as_i64()
-            .unwrap()
-            > 0
+    let timestamp = |capture: &hack4krak_backend::entities::flag_capture::Model| {
+        capture.submitted_at.and_utc().timestamp()
+    };
+    assert_eq!(
+        standings,
+        TeamStandings {
+            tasks: vec!["simple-task-example".to_string(), "task2".to_string()],
+            standings: vec![
+                SingleTeamStanding {
+                    team: "Dziengiel".to_string(),
+                    score: 600,
+                    task_stats: HashMap::from([
+                        (
+                            "simple-task-example".to_string(),
+                            TaskTeamStat {
+                                points: 500,
+                                time: timestamp(&team_capture),
+                            },
+                        ),
+                        (
+                            "task2".to_string(),
+                            TaskTeamStat {
+                                points: 100,
+                                time: timestamp(&team_task2_capture),
+                            },
+                        ),
+                    ]),
+                    last_accept: timestamp(&team_task2_capture),
+                },
+                SingleTeamStanding {
+                    team: "test team 2".to_string(),
+                    score: 100,
+                    task_stats: HashMap::from([(
+                        "task2".to_string(),
+                        TaskTeamStat {
+                            points: 100,
+                            time: timestamp(&team2_capture),
+                        },
+                    )]),
+                    last_accept: timestamp(&team2_capture),
+                },
+                SingleTeamStanding {
+                    team: "test team 3".to_string(),
+                    score: 100,
+                    task_stats: HashMap::from([(
+                        "task2".to_string(),
+                        TaskTeamStat {
+                            points: 100,
+                            time: timestamp(&team3_capture),
+                        },
+                    )]),
+                    last_accept: timestamp(&team3_capture),
+                },
+            ],
+        }
     );
 }
