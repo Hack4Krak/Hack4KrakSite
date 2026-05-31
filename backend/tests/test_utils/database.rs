@@ -1,8 +1,11 @@
 use crate::test_utils;
 use chrono::Utc;
 use hack4krak_backend::entities::sea_orm_active_enums::{TeamStatus, UserRoles};
-use hack4krak_backend::entities::{email_verification_request, team_invites, teams, users};
-use sea_orm::{DatabaseConnection, EntityTrait, Set};
+use hack4krak_backend::entities::teams::Model;
+use hack4krak_backend::entities::{
+    email_verification_request, event_registration, flag_capture, team_invites, teams, users,
+};
+use sea_orm::{DatabaseConnection, EntityTrait, QueryOrder, Set};
 use serde_json::json;
 use uuid::Uuid;
 
@@ -99,6 +102,25 @@ impl TestDatabase {
             .unwrap()
     }
 
+    pub async fn with_flag_capture(&self, team: &Model, task: String) -> flag_capture::Model {
+        flag_capture::Entity::insert(flag_capture::ActiveModel {
+            team: Set(team.id),
+            task: Set(task),
+            submitted_at: Set(Utc::now().naive_utc()),
+            ..Default::default()
+        })
+        .exec(&self.database)
+        .await
+        .unwrap();
+
+        flag_capture::Entity::find()
+            .order_by_desc(flag_capture::Column::Id)
+            .one(&self.database)
+            .await
+            .unwrap()
+            .unwrap()
+    }
+
     pub async fn with_email_verification_request(
         &self,
         updatable_model: email_verification_request::UpdatableModel,
@@ -126,6 +148,40 @@ impl TestDatabase {
             .unwrap();
 
         email_verification_request::Entity::find_by_id(confirmation_code)
+            .one(&self.database)
+            .await
+            .unwrap()
+            .unwrap()
+    }
+
+    pub async fn with_event_registration(
+        &self,
+        updatable_model: event_registration::UpdatableModel,
+    ) -> event_registration::Model {
+        let id = Uuid::new_v4();
+
+        let updated = updatable_model.update(event_registration::Model {
+            id,
+            user_id: id,
+            full_name: "dziengiel".to_string(),
+            school: "zerya".to_string(),
+            birth_year: "2001".to_string(),
+            phone: "+909090909090".to_string(),
+            is_underage: false,
+            emergency_contact_name: None,
+            emergency_contact_phone: None,
+            emergency_contact_email: None,
+            food_preference: Default::default(),
+            food_allergies: None,
+            registered_at: Utc::now().naive_utc(),
+        });
+
+        event_registration::Entity::insert(updated)
+            .exec(&self.database)
+            .await
+            .unwrap();
+
+        event_registration::Entity::find_by_id(id)
             .one(&self.database)
             .await
             .unwrap()

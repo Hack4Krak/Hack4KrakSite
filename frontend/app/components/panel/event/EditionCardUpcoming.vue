@@ -10,10 +10,7 @@ const event = LANDING_CONTENT.event
 const { data: registrationInformation } = await useApi('/event/registration')
 const { isRegistered } = useEventRegistration()
 
-const registrationStarted = computed(() => {
-  const startDate = registrationInformation.value?.start_date
-  return startDate ? Date.now() >= new Date(startDate).getTime() : false
-})
+const registrationOpen = computed(() => registrationInformation.value?.is_open ?? false)
 const canOpenSubmission = computed(() => isRegistered.value)
 </script>
 
@@ -55,7 +52,7 @@ const canOpenSubmission = computed(() => isRegistered.value)
           <template v-if="!canOpenSubmission">
             <ElevatedButton
               to="/panel/event/register"
-              :disabled="!registrationStarted"
+              :disabled="!registrationOpen"
             >
               Zarejestruj się na wydarzenie
             </ElevatedButton>

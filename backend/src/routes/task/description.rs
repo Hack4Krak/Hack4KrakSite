@@ -1,3 +1,4 @@
+use crate::TaskReleasePhaseMiddleware;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::web::{Data, Path};
@@ -12,7 +13,7 @@ use actix_web::{HttpRequest, HttpResponse, get};
     ),
     tag = "tasks"
 )]
-#[get("/description/{task_id}")]
+#[get("/description/{task_id}", wrap = "TaskReleasePhaseMiddleware")]
 pub async fn description(
     app_state: Data<AppState>,
     request: HttpRequest,

@@ -1,3 +1,4 @@
+use crate::TaskReleasePhaseMiddleware;
 use crate::utils::app_state::AppState;
 use crate::utils::error::Error;
 use actix_web::web::{Data, Path};
@@ -12,7 +13,7 @@ use actix_web::{HttpRequest, HttpResponse, get};
     ),
     tag = "tasks"
 )]
-#[get("/icon/{task_id}")]
+#[get("/icon/{task_id}", wrap = "TaskReleasePhaseMiddleware")]
 pub async fn icon(
     app_state: Data<AppState>,
     task_id: Path<String>,

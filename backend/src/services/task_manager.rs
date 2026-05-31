@@ -8,12 +8,14 @@ use crate::routes::task::TaskError;
 use crate::services::env::EnvConfig;
 use crate::utils::error::Error;
 use actix_files::NamedFile;
+use chrono::{DateTime, FixedOffset, Utc};
 use dashmap::DashMap;
 use dashmap::mapref::multiple::RefMulti;
 use dashmap::mapref::one::Ref;
 use sea_orm::DatabaseConnection;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
+use std::cmp::Ordering;
 use std::collections::HashMap;
 use tokio::fs;
 use tokio::sync::RwLock;
@@ -23,8 +25,9 @@ use utoipa::ToSchema;
 #[derive(Serialize, Deserialize, ToSchema, Clone)]
 pub struct SimpleTask {
     #[serde(flatten)]
-    pub description: TaskMeta,
+    pub description: Option<TaskMeta>,
     pub display: TaskDisplay,
+    pub available_since: Option<DateTime<FixedOffset>>,
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Clone)]
@@ -41,9 +44,10 @@ impl TaskWithStatus {
     ) -> Vec<TaskWithStatus> {
         tasks
             .into_iter()
+            .filter(|task| task.description.is_some())
             .map(|task| {
                 let status = statuses
-                    .get(&task.description.id)
+                    .get(&task.description.clone().unwrap().id)
                     .cloned()
                     .unwrap_or(TaskStatus::Up);
                 TaskWithStatus { task, status }
@@ -71,11 +75,8 @@ impl LabelsConfig {
             .join("config/assets/labels")
             .join(format!("{id}.png"));
 
-        if !asset_path.exists() || !asset_path.is_file() {
-            return Err(TaskError::CouldNotLoadTaskAsset { id: id.to_string() }.into());
-        }
-
-        let named_file = NamedFile::open(asset_path)?;
+        let named_file = NamedFile::open(&asset_path)
+            .map_err(|_| TaskError::CouldNotLoadTaskAsset { id: id.to_string() })?;
 
         Ok(named_file)
     }
@@ -89,23 +90,52 @@ impl TaskManager {
         self.invalidate_task_status_cache().await;
     }
 
-    pub fn tasks(&self) -> Vec<SimpleTask> {
-        let tasks: Vec<SimpleTask> = self
+    pub async fn available_tasks(&self) -> Vec<SimpleTask> {
+        let now = Utc::now().fixed_offset();
+        let event_config = self.event_config.read().await;
+
+        let mut tasks = self
             .tasks
             .iter()
-            .map(|task| SimpleTask {
-                description: task.meta.clone(),
-                display: task.display.clone(),
+            .map(|task| {
+                let phase_time = event_config
+                    .task_release_phases
+                    .get(&task.task_release_phase);
+                SimpleTask {
+                    description: if phase_time.is_some_and(|time| time < &now) {
+                        Some(task.meta.clone())
+                    } else {
+                        None
+                    },
+                    display: task.display.clone(),
+                    available_since: phase_time.copied(),
+                }
             })
-            .collect();
+            .collect::<Vec<_>>();
+
+        tasks.sort_by(|a, b| {
+            if let Some(a_description) = &a.description
+                && let Some(b_description) = &b.description
+            {
+                return a_description.id.cmp(&b_description.id);
+            }
+            a.available_since.cmp(&b.available_since)
+        });
 
         tasks
     }
 
-    pub fn tasks_sorted(&self) -> Vec<SimpleTask> {
-        let mut tasks = self.tasks();
+    pub async fn available_tasks_sorted(&self) -> Vec<SimpleTask> {
+        let mut tasks = self.available_tasks().await;
 
-        tasks.sort_by(|a, b| a.description.id.cmp(&b.description.id));
+        tasks.sort_by(|a, b| {
+            if let Some(a_description) = &a.description
+                && let Some(b_description) = &b.description
+            {
+                return a_description.cmp(b_description);
+            }
+            Ordering::Equal
+        });
 
         tasks
     }
@@ -213,11 +243,8 @@ impl TaskManager {
             .join(id)
             .join(path);
 
-        if !asset_path.exists() || !asset_path.is_file() {
-            return Err(TaskError::CouldNotLoadTaskAsset { id: id.to_string() }.into());
-        }
-
-        let named_file = NamedFile::open(asset_path)?;
+        let named_file = NamedFile::open(&asset_path)
+            .map_err(|_| TaskError::CouldNotLoadTaskAsset { id: id.to_string() })?;
 
         Ok(named_file)
     }
@@ -280,7 +307,7 @@ impl TaskManager {
         &self,
         database: &DatabaseConnection,
     ) -> Result<Vec<TaskWithStatus>, Error> {
-        let tasks = self.tasks_sorted();
+        let tasks = self.available_tasks_sorted().await;
         self.tasks_with_statuses(tasks, database).await
     }
 }

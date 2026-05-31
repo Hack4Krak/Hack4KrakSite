@@ -1,0 +1,151 @@
+{
+  "version": 8,
+  "name": "Hack4Krak",
+  "metadata": { "maputnik:renderer": "mlgljs" },
+  "sources": {
+    "openmaptiles": {
+      "type": "vector",
+      "url": "https://tiles.openfreemap.org/planet"
+    }
+  },
+  "sprite": "https://tiles.openfreemap.org/sprites/ofm_f384/ofm",
+  "glyphs": "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf",
+  "layers": [
+    {
+      "id": "bg",
+      "type": "background",
+      "paint": { "background-color": "#171717" }
+    },
+    {
+      "id": "landcover-green",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "filter": ["in", "subclass", "park", "wood", "forest", "grass", "scrub"],
+      "paint": { "fill-color": "#1a211a", "fill-opacity": 0.9 }
+    },
+    {
+      "id": "landuse-park",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "landuse",
+      "filter": ["in", "class", "park", "pitch", "cemetery"],
+      "paint": { "fill-color": "#1a211a", "fill-opacity": 0.7 }
+    },
+    {
+      "id": "water",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "water",
+      "filter": ["all", ["!=", "intermittent", 1], ["!=", "brunnel", "tunnel"]],
+      "paint": { "fill-color": "#759FB6" }
+    },
+    {
+      "id": "waterway",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "waterway",
+      "filter": ["all", ["!=", "intermittent", 1], ["!=", "brunnel", "tunnel"]],
+      "paint": {
+        "line-color": "#759FB6",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 10, 1, 14, 3, 18, 5]
+      }
+    },
+    {
+      "id": "buildings",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "building",
+      "minzoom": 14,
+      "paint": {
+        "fill-color": "#1c1c1c",
+        "fill-opacity": ["interpolate", ["linear"], ["zoom"], 14, 0, 15, 0.9]
+      }
+    },
+    {
+      "id": "buildings-outline",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "building",
+      "minzoom": 14,
+      "paint": {
+        "line-color": "#2c2c2c",
+        "line-width": 0.5,
+        "line-opacity": ["interpolate", ["linear"], ["zoom"], 14, 0, 15, 0.7]
+      }
+    },
+    {
+      "id": "road-service",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "filter": ["all", ["in", "class", "service", "track"], ["!=", "brunnel", "tunnel"]],
+      "minzoom": 15,
+      "paint": {
+        "line-color": "#292929",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 15, 0.8, 18, 3]
+      }
+    },
+    {
+      "id": "road-minor",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "filter": ["all", ["==", "class", "minor"], ["!=", "brunnel", "tunnel"]],
+      "minzoom": 14,
+      "paint": {
+        "line-color": "#303030",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 14, 1, 16, 2.5, 18, 5]
+      }
+    },
+    {
+      "id": "road-tertiary",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "filter": ["all", ["==", "class", "tertiary"], ["!=", "brunnel", "tunnel"]],
+      "minzoom": 12,
+      "paint": {
+        "line-color": "#3a3a3a",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 12, 0.8, 14, 2, 16, 4, 18, 7]
+      }
+    },
+    {
+      "id": "road-secondary",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "filter": ["all", ["==", "class", "secondary"], ["!=", "brunnel", "tunnel"]],
+      "minzoom": 11,
+      "paint": {
+        "line-color": "#484848",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 11, 1, 13, 2, 14, 3.5, 16, 6, 18, 10]
+      }
+    },
+    {
+      "id": "road-primary",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "filter": ["all", ["==", "class", "primary"], ["!=", "brunnel", "tunnel"]],
+      "minzoom": 10,
+      "paint": {
+        "line-color": "#585858",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 10, 1, 12, 2, 14, 4, 16, 7, 18, 12]
+      }
+    },
+    {
+      "id": "road-trunk",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "filter": ["all", ["in", "class", "trunk", "motorway"], ["!=", "brunnel", "tunnel"]],
+      "minzoom": 10,
+      "paint": {
+        "line-color": "#636363",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 10, 1.5, 12, 3, 14, 5, 16, 8, 18, 14]
+      }
+    }
+  ],
+  "id": "3o82wox"
+}

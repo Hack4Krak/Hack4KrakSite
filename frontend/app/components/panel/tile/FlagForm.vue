@@ -6,7 +6,10 @@ const { showHeading = true } = defineProps<{
   showHeading?: boolean
 }>()
 
-const emit = defineEmits<{ success: [] }>()
+const emit = defineEmits<{
+  success: []
+  submitted: []
+}>()
 
 const flagPattern = /^hack4KrakCTF\{.*\}$/
 const schema = z.object({
@@ -23,19 +26,40 @@ const state = reactive<Partial<Schema>>({
 const toast = useToast()
 const { $auth } = useNuxtApp()
 
+const formRef = ref<HTMLElement | null>(null)
+const shaking = ref(false)
+const submitting = ref(false)
+const burstPoints = ref<{ id: number, value: number, task: string } | null>(null)
+
+let burstTimer: ReturnType<typeof setTimeout> | null = null
+
+function triggerShake() {
+  shaking.value = false
+  requestAnimationFrame(() => {
+    shaking.value = true
+    setTimeout(() => {
+      shaking.value = false
+    }, 500)
+  })
+}
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
+  submitting.value = true
+
   const response = await $auth('/flag/submit', {
     method: 'POST',
-    body: {
-      flag: event.data.flag,
-    },
-  }).catch()
+    body: { flag: event.data.flag },
+  }).catch(() => undefined)
 
-  if ((response as any).error) {
+  submitting.value = false
+
+  if (!response) {
+    triggerShake()
     return
   }
 
   const target = event.target as HTMLElement | undefined
+
   if (target) {
     party.confetti(target, {
       count: party.variation.range(300, 700),
@@ -43,23 +67,41 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     })
   }
 
-  toast.add({ title: 'Brawo! To była poprawna flaga', description: getRandomJoke(), color: 'success', duration: 12500 })
+  const earned = response.points
+  const taskName = response.task_title
+
+  burstPoints.value = {
+    id: Date.now(),
+    value: earned,
+    task: taskName,
+  }
+
+  if (burstTimer)
+    clearTimeout(burstTimer)
+
+  burstTimer = setTimeout(() => {
+    burstPoints.value = null
+  }, 2600)
+
+  toast.add({
+    title: `+${earned} punktów`,
+    description: getRandomJoke(),
+    color: 'success',
+    duration: 8000,
+    icon: 'pixelarticons:trophy',
+  })
+
   state.flag = undefined
+
   emit('success')
 }
+
+function onError() {
+  triggerShake()
+}
+
+onBeforeUnmount(() => {
+  if (burstTimer)
+    clearTimeout(burstTimer)
+})
 </script>
-
-<template>
-  <UForm :schema="schema" :state="state" class="space-y-3 flex flex-col text-center items-center justify-center" @submit="onSubmit">
-    <h3 v-if="showHeading" class="font-bold text-xl">
-      Podaj Flagę
-    </h3>
-    <UFormField name="flag">
-      <UInput v-model="state.flag" class="w-80" :ui="{ base: 'h-12 rounded-none' }" placeholder="hack4KrakCTF{...}" />
-    </UFormField>
-
-    <ElevatedButton class="w-40 mt-3" type="submit">
-      Sprawdź
-    </ElevatedButton>
-  </UForm>
-</template>

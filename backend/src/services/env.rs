@@ -25,6 +25,7 @@ pub struct EnvConfig {
     pub google_oauth_client_secret: String,
     pub smtp_connection_url: String,
     pub metrics_access_token: String,
+    pub trusted_proxy: bool,
 }
 
 impl Default for EnvConfig {
@@ -45,6 +46,7 @@ impl Default for EnvConfig {
             jwt_secret: Default::default(),
             smtp_connection_url: Default::default(),
             metrics_access_token: Default::default(),
+            trusted_proxy: false,
         }
     }
 }

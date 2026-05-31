@@ -17,6 +17,7 @@ use sea_orm::EntityTrait;
 use std::cmp::PartialEq;
 use std::future::{Ready, ready};
 use std::rc::Rc;
+use tracing::debug;
 
 /// Middleware responsible for verifying authenticated users
 /// It also has options to insert corresponding extensions to the request
@@ -153,6 +154,12 @@ impl<S> AuthMiddlewareService<S> {
             .one(database)
             .await?
             .ok_or(Error::Unauthorized)?;
+
+        debug!(
+            target: "authenticated_request",
+            username = %user.username,
+            "Authenticated request"
+        );
 
         match config.team_requirement {
             TeamRequirement::None => (),

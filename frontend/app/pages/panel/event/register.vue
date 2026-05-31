@@ -1,7 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   layout: 'panel',
-  middleware: ['only-unregistered-participants'],
+  middleware: ['only-unregistered-participants', 'registration-open'],
 })
 
 useSeoMeta({
