@@ -2,7 +2,6 @@ use crate::entities::{flag_capture, teams};
 use crate::services::task_manager::TaskManager;
 use crate::utils::error::Error;
 use crate::utils::points_counter::PointsCounter;
-use actix_web::web::Query;
 use sea_orm::EntityTrait;
 use sea_orm::{ColumnTrait, DatabaseConnection};
 use sea_orm::{QueryFilter, QueryOrder};
@@ -30,19 +29,11 @@ pub struct TeamStandings {
     pub standings: Vec<SingleTeamStanding>,
 }
 
-/// Capture log request params for https://ctftime.org/json-scoreboard-feed
-#[derive(serde::Deserialize, utoipa::ToSchema)]
-#[allow(dead_code)]
-pub struct CaptureLogQuery {
-    #[serde(rename = "lastId")]
-    pub last_id: Option<i32>,
-}
-
 pub async fn get_capture_log(
     db: &DatabaseConnection,
-    query: Query<CaptureLogQuery>,
+    last_id: Option<i32>,
 ) -> Result<Vec<CaptureLogEvent>, Error> {
-    let last_id = query.last_id.unwrap_or(0);
+    let last_id = last_id.unwrap_or(0);
 
     let captures: Vec<(flag_capture::Model, Option<teams::Model>)> = flag_capture::Entity::find()
         .filter(flag_capture::Column::Id.gt(last_id))
@@ -51,23 +42,23 @@ pub async fn get_capture_log(
         .all(db)
         .await?;
 
-    Ok(captures
+    captures
         .into_iter()
-        .map(|(capture, team_opt)| {
-            let team_name = team_opt
-                .map(|t| t.name)
-                .unwrap_or_else(|| "unknown".to_string());
-            CaptureLogEvent {
+        .map(|(capture, team)| {
+            let team = team.ok_or(Error::MissingTeamForFlagCapture {
+                capture_id: capture.id,
+            })?;
+            Ok(CaptureLogEvent {
                 id: capture.id,
                 time: Some(capture.submitted_at.and_utc().timestamp()),
                 r#type: Some("taskCorrect".to_string()),
-                team: team_name,
+                team: team.name,
                 task: Some(capture.task),
                 points_delta: None,
                 ..Default::default()
-            }
+            })
         })
-        .collect())
+        .collect()
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Default, Debug, PartialEq)]
@@ -96,16 +87,16 @@ impl PointsCounter {
             teams::Model::get_tasks_by_team(db, self.team_time_series.keys().copied().collect())
                 .await?;
 
-        let mut task_solve_counts: HashMap<String, usize> = HashMap::new();
+        let mut task_solve_counts: HashMap<&str, usize> = HashMap::new();
         let mut task_points: HashMap<String, usize> = HashMap::new();
         let total_teams = self.team_time_series.len();
         for task_map in tasks_by_team.values() {
             for task_name in task_map.keys() {
-                *task_solve_counts.entry(task_name.clone()).or_default() += 1;
+                *task_solve_counts.entry(task_name).or_default() += 1;
             }
         }
         for task in task_manager.tasks.iter() {
-            let solves = *task_solve_counts.get(task.key()).unwrap_or(&0);
+            let solves = *task_solve_counts.get(task.key().as_str()).unwrap_or(&0);
             task_points.insert(
                 task.key().clone(),
                 Self::calculate_task_value(solves, total_teams),
