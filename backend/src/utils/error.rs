@@ -108,6 +108,9 @@ pub enum Error {
         tag_id: String,
     },
     FailedToGenerateQrCode(String),
+    MissingTeamForFlagCapture {
+        capture_id: i32,
+    },
 
     #[serde(skip)]
     FailedToParseUrl(#[from] url::ParseError),
@@ -158,6 +161,7 @@ impl error::ResponseError for Error {
             | Error::ConflictInDatabase
             | Error::Metrics(_)
             | Error::FailedToGenerateQrCode(_)
+            | Error::MissingTeamForFlagCapture { .. }
             | Error::FailedToRenderTemplate(_)
             | Error::ServerEventSendingError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Unauthorized => StatusCode::UNAUTHORIZED,

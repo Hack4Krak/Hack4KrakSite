@@ -9,14 +9,15 @@ use serde::{Deserialize, Serialize, Serializer};
 use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
+use std::vec;
 use tracing::error;
 use utoipa::ToSchema;
 use uuid::Uuid;
 
 #[derive(Debug, Default, Clone)]
-struct TeamTimeSeriesData {
-    name: String,
-    points: Vec<usize>,
+pub struct TeamTimeSeriesData {
+    pub name: String,
+    pub points: Vec<usize>,
     color: String,
     solve_timestamps: Vec<NaiveDateTime>,
     current_flags: usize,
@@ -47,7 +48,7 @@ pub struct LeaderboardChart {
 #[derive(Default, Debug, Clone)]
 pub struct PointsCounter {
     event_timestamps: Vec<NaiveDateTime>,
-    team_time_series: HashMap<Uuid, TeamTimeSeriesData>,
+    pub team_time_series: HashMap<Uuid, TeamTimeSeriesData>,
 }
 
 impl PointsCounter {
