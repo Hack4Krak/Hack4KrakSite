@@ -6,10 +6,7 @@ const { showHeading = true } = defineProps<{
   showHeading?: boolean
 }>()
 
-const emit = defineEmits<{
-  success: []
-  submitted: []
-}>()
+const emit = defineEmits<{ success: [] }>()
 
 const flagPattern = /^hack4KrakCTF\{.*\}$/
 const schema = z.object({
@@ -35,6 +32,7 @@ let burstTimer: ReturnType<typeof setTimeout> | null = null
 
 function triggerShake() {
   shaking.value = false
+  // restart animation cleanly
   requestAnimationFrame(() => {
     shaking.value = true
     setTimeout(() => {
@@ -70,11 +68,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   const earned = response.points
   const taskName = response.task_title
 
-  burstPoints.value = {
-    id: Date.now(),
-    value: earned,
-    task: taskName,
-  }
+  burstPoints.value = { id: Date.now(), value: earned, task: taskName }
 
   if (burstTimer)
     clearTimeout(burstTimer)
@@ -92,7 +86,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   })
 
   state.flag = undefined
-
   emit('success')
 }
 
@@ -105,3 +98,100 @@ onBeforeUnmount(() => {
     clearTimeout(burstTimer)
 })
 </script>
+
+<template>
+  <UForm
+    ref="formRef"
+    :schema="schema"
+    :state="state"
+    class="relative space-y-3 flex flex-col text-center items-center justify-center"
+    :class="{ 'shake-x': shaking }"
+    @submit="onSubmit"
+    @error="onError"
+  >
+    <h3 v-if="showHeading" class="font-bold text-xl">
+      Podaj Flagę
+    </h3>
+
+    <UFormField name="flag">
+      <UInput
+        v-model="state.flag"
+        class="w-80"
+        :ui="{ base: 'h-12 rounded-none' }"
+        placeholder="hack4KrakCTF{...}"
+      />
+    </UFormField>
+
+    <ElevatedButton class="w-40 mt-3" type="submit" :disabled="submitting">
+      Sprawdź
+    </ElevatedButton>
+
+    <Transition name="burst">
+      <div
+        v-if="burstPoints"
+        :key="burstPoints.id"
+        class="pointer-events-none absolute inset-0 flex items-center justify-center"
+      >
+        <div class="rotate-[-3deg] border-2 border-emerald-400 bg-default px-8 py-4 text-center">
+          <p class="font-pixelify text-xs uppercase tracking-[0.3em] text-emerald-300">
+            Flaga zaliczona
+          </p>
+          <p class="mt-1 font-pixelify text-5xl text-emerald-300">
+            +{{ burstPoints.value }}
+          </p>
+          <p class="mt-1 truncate text-sm text-muted">
+            {{ burstPoints.task }}
+          </p>
+        </div>
+      </div>
+    </Transition>
+  </UForm>
+</template>
+
+<style scoped>
+.shake-x {
+  animation: shake-x 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shake-x {
+  10%,
+  90% {
+    transform: translateX(-2px);
+  }
+  20%,
+  80% {
+    transform: translateX(4px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-8px);
+  }
+  40%,
+  60% {
+    transform: translateX(8px);
+  }
+}
+
+.burst-enter-active {
+  transition:
+    transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.4),
+    opacity 0.25s ease-out;
+}
+
+.burst-leave-active {
+  transition:
+    transform 0.45s ease-in,
+    opacity 0.4s ease-in;
+}
+
+.burst-enter-from {
+  transform: scale(0.4);
+  opacity: 0;
+}
+
+.burst-leave-to {
+  transform: translateY(-30px) scale(0.95);
+  opacity: 0;
+}
+</style>
