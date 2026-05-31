@@ -2,6 +2,10 @@
 import type { FormSubmitEvent } from '@nuxt/ui'
 import * as party from 'party-js'
 
+const { showHeading = true } = defineProps<{
+  showHeading?: boolean
+}>()
+
 const emit = defineEmits<{
   submitted: []
 }>()
@@ -92,7 +96,7 @@ onBeforeUnmount(() => {
 
 <template>
   <section class="relative overflow-hidden border-2 border-primary bg-default p-5 lg:p-6">
-    <div class="mb-4 flex items-center gap-2">
+    <div v-if="showHeading" class="mb-4 flex items-center gap-2">
       <UIcon name="pixelarticons:flag" class="size-5 text-primary" />
       <PanelSectionTitle>
         Prześlij flagę

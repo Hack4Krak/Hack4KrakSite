@@ -5,7 +5,7 @@ const isOpen = defineModel<boolean>({ default: false })
 <template>
   <UModal v-model:open="isOpen" title="Złóż flagę" description="Wpisz flagę w formacie hack4KrakCTF{...}" :ui="{ body: 'p-3 sm:p-4' }">
     <template #body>
-      <PanelTileFlagForm :show-heading="false" @success="isOpen = false" />
+      <PanelTileFlagForm :show-heading="false" @submitted="isOpen = false" />
     </template>
   </UModal>
 </template>
