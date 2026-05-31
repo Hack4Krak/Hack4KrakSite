@@ -1,5 +1,5 @@
 use crate::entities::sea_orm_active_enums::TeamStatus;
-use crate::entities::{teams, users};
+use crate::entities::{team_invites, users};
 use crate::middlewares::auth::AuthMiddleware;
 use crate::utils::app_state;
 use crate::utils::error::Error;
@@ -17,6 +17,7 @@ pub struct MyTeamWithMembers {
     pub created_at: DateTime,
     pub members: Vec<TeamMember>,
     pub status: TeamStatus,
+    pub invited_users: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, ToSchema)]
@@ -27,8 +28,7 @@ pub struct TeamMember {
 
 #[utoipa::path(
     responses(
-        (status = 200, description = "Team successfully retrieved.", body = MyTeamWithMembers),
-        (status = 403, description = "User doesn't belong to any team."),
+        (status = 200, description = "Team successfully retrieved.", body = Option<MyTeamWithMembers>),
         (status = 404, description = "Team not found."),
         (status = 500, description = "Internal server error.")
     ),
@@ -37,11 +37,15 @@ pub struct TeamMember {
     ),
     tag = "teams/membership"
 )]
-#[get("/my_team", wrap = "AuthMiddleware::with_team_as_member()")]
+#[get("/my_team", wrap = "AuthMiddleware::with_user()")]
 pub async fn my_team(
     app_state: web::Data<app_state::AppState>,
-    team: teams::Model,
+    user: users::Model,
 ) -> Result<HttpResponse, Error> {
+    let Some(team) = user.get_team(&app_state.database).await? else {
+        return Ok(HttpResponse::Ok().json(None::<MyTeamWithMembers>));
+    };
+
     let users = users::Entity::find()
         .filter(users::Column::Team.eq(team.id))
         .all(&app_state.database)
@@ -55,11 +59,18 @@ pub async fn my_team(
         })
         .collect();
 
+    let invited_users = if user.is_leader {
+        Some(team_invites::Model::get_invited_users(&app_state.database, team.id).await?)
+    } else {
+        None
+    };
+
     let team_response = MyTeamWithMembers {
         team_name: team.name,
         created_at: team.created_at,
         members,
         status: team.status,
+        invited_users,
     };
 
     Ok(HttpResponse::Ok().json(team_response))

@@ -1,13 +1,8 @@
 use crate::test_utils::TestApp;
-
 use crate::test_utils::database::TestDatabase;
 use actix_web::test;
 use actix_web::test::read_body_json;
-use chrono::Utc;
-use hack4krak_backend::entities::email_verification_request;
-use sea_orm::{EntityTrait, Set};
 use serde_json::json;
-use uuid::Uuid;
 
 #[cfg(feature = "full-test-suite")]
 #[actix_web::test]
@@ -27,6 +22,7 @@ async fn register() {
         .set_json(json!({
             "email": "test@example.com",
             "name": "test_user",
+            "first_name": "Test",
             "password": "password123"
         }))
         .to_request();
@@ -46,6 +42,7 @@ async fn register_invalid_email() {
         .set_json(json!({
             "email": "this_!isn'taemaill",
             "name": "test_user",
+            "first_name": "Test",
             "password": "password123"
         }))
         .to_request();
@@ -65,6 +62,7 @@ async fn register_invalid_username() {
         .set_json(json!({
             "email": "email@example.com",
             "name": "test ﷽ user",
+            "first_name": "Test",
             "password": "password123"
         }))
         .to_request();
@@ -93,6 +91,7 @@ async fn auth_flow() {
         .set_json(json!({
             "email": "test@example.com",
             "name": "test_user",
+            "first_name": "Test",
             "password": "password123"
         }))
         .to_request();
@@ -137,73 +136,57 @@ async fn auth_flow() {
 
 #[actix_web::test]
 async fn email_confirmation_success() {
-    let test_database = TestDatabase::new().await;
+    use crate::mocks::smtp_mock::MockSmtpClient;
+    use hack4krak_backend::entities::email_verification_request::UpdatableModel;
+    use hack4krak_backend::entities::{email_verification_request, users};
+    use hack4krak_backend::services::authentication::AuthenticationService;
+    use hack4krak_backend::utils::app_state::AppState;
+    use sea_orm::EntityTrait;
 
-    let confirmation_code = Uuid::new_v4();
-    let email_confirmation = email_verification_request::ActiveModel {
-        id: Set(confirmation_code),
-        email: Set("".to_string()),
-        action_type: Set("confirm_email_address".to_string()),
-        additional_data: Set(Some(json!({
-            "user_information": {
-                "name": "test_user",
-                "email": "example@gmail.com",
-                "password_hash": "$argon2id$v=19$m=19456,t=2,p=1$nTzWdmrtGEOnwCocrg76xg$yv16FfDT5+meKwPmSiV+MF9kP8Man6bXZs+BloFTKIk"
-            }
-        }))),
-        expiration_time: Set(Some(Utc::now().naive_utc() + chrono::Duration::minutes(30))),
-        created_at: Set(Utc::now().naive_utc()),
-    };
-    email_verification_request::Entity::insert(email_confirmation)
-        .exec(&test_database.database)
+    let test_database = TestDatabase::new().await;
+    let email_confirmation = test_database
+        .with_email_verification_request(UpdatableModel::default())
+        .await;
+    let confirmation_code = email_confirmation.id;
+
+    let mock_smtp_client = MockSmtpClient::default();
+
+    let app_state =
+        AppState::with_database_and_smtp_client(test_database.database, mock_smtp_client.clone());
+
+    let result = AuthenticationService::confirm_email(&app_state, confirmation_code).await;
+
+    assert!(result.is_ok());
+    // Confirmation creates the user and consumes the verification request;
+    // it doesn't send emails (those are sent during registration / reset flows).
+    assert_eq!(mock_smtp_client.send_count(), 0);
+
+    let user = users::Model::find_by_email(&app_state.database, "example@gmail.com")
         .await
         .unwrap();
+    assert!(user.is_some());
 
-    let app = TestApp::default()
-        .with_database(test_database)
-        .build_app()
-        .await;
-
-    let path = format!("/auth/confirm/{confirmation_code}");
-    let request = test::TestRequest::get().uri(&path).to_request();
-    let response = test::call_service(&app, request).await;
-    assert!(response.status().is_success());
-
-    let refresh_header = response
-        .headers()
-        .get("Refresh")
-        .unwrap()
-        .to_str()
-        .unwrap()
-        .to_string();
-    assert!(
-        !refresh_header.contains("callback"),
-        "Redirect should NOT contain callback parameter, got: {refresh_header}"
-    );
+    let req = email_verification_request::Entity::find_by_id(confirmation_code)
+        .one(&app_state.database)
+        .await
+        .unwrap();
+    assert!(req.is_none());
 }
 
 #[actix_web::test]
 async fn email_confirmation_expired() {
+    use chrono::Utc;
+    use hack4krak_backend::entities::email_verification_request::UpdatableModel;
+
     let test_database = TestDatabase::new().await;
 
-    // todo: move it to proper place
-    let confirmation_code = Uuid::new_v4();
-    let email_confirmation = email_verification_request::ActiveModel {
-        id: Set(confirmation_code),
-        email: Set("".to_string()),
-        action_type: Set("confirm_email_address".to_string()),
-        additional_data: Set(Some(json![{
-            "name": "test_user",
-            "email": "example@gmail.com",
-            "password_hash": "$argon2id$v=19$m=19456,t=2,p=1$nTzWdmrtGEOnwCocrg76xg$yv16FfDT5+meKwPmSiV+MF9kP8Man6bXZs+BloFTKIk".to_string(),
-        }])),
-        expiration_time: Set(Some(Utc::now().naive_utc())),
-        created_at: Set(Utc::now().naive_utc()),
-    };
-    email_verification_request::Entity::insert(email_confirmation)
-        .exec(&test_database.database)
-        .await
-        .unwrap();
+    let email_confirmation = test_database
+        .with_email_verification_request(UpdatableModel {
+            expiration_time: Some(Some(Utc::now().naive_utc() - chrono::Duration::minutes(1))),
+            ..Default::default()
+        })
+        .await;
+    let confirmation_code = email_confirmation.id;
 
     let app = TestApp::default()
         .with_database(test_database)
@@ -260,6 +243,11 @@ async fn reset_password_flow() {
 
 #[actix_web::test]
 async fn email_confirmation_with_callback() {
+    use chrono::Utc;
+    use hack4krak_backend::entities::email_verification_request;
+    use sea_orm::{EntityTrait, Set};
+    use uuid::Uuid;
+
     let test_database = TestDatabase::new().await;
 
     let confirmation_code = Uuid::new_v4();
@@ -324,6 +312,7 @@ async fn register_with_callback_persists_to_confirmation() {
         .set_json(json!({
             "email": "test@example.com",
             "name": "test_user",
+            "first_name": "Test",
             "password": "password123",
             "callback": "/panel/tasks"
         }))
@@ -360,6 +349,7 @@ async fn register_with_invalid_callback_rejected() {
         .set_json(json!({
             "email": "test@example.com",
             "name": "test_user",
+            "first_name": "Test",
             "password": "password123",
             "callback": "https://evil.com"
         }))

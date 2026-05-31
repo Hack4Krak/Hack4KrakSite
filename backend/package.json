@@ -12,6 +12,7 @@
     "db:generate-entities": "sea-orm-cli generate entity --with-serde both -o src/entities/ --model-extra-derives hack4krak_macros::DeriveUpdatableModel,utoipa::ToSchema,Default",
     "db:rollback": "cd migration/ && cargo run -- down",
     "db:migration": "cd migration/ && cargo run -- generate",
+    "db:migrate": "cd migration/ && cargo run -- up",
     "db:fresh": "cd migration/ && cargo run -- fresh",
     "db:cli": "cd migration/ && cargo run -- generate",
     "openapi-cli": "cargo run -p openapi-cli"

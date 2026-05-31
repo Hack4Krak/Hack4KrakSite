@@ -11,6 +11,7 @@ mod icon;
 mod list;
 mod name;
 mod solution;
+mod status;
 
 pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(list::list);
@@ -20,6 +21,7 @@ pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(scope("/assets").configure(assets::config));
     config.service(count::count);
     config.service(name::name);
+    config.service(status::updates::updates);
 }
 
 #[error_with_messages]

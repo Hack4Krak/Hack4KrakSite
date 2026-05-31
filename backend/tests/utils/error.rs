@@ -58,6 +58,7 @@ async fn correct_validation_error_format() {
         .set_json(json!({
             "email": "this_!isn'taemaill",
             "name": "test_user",
+            "first_name": "Test",
             "password": "password123"
         }))
         .to_request();

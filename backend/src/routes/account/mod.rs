@@ -5,34 +5,35 @@ use hack4krak_macros::error_with_messages;
 use utoipa_actix_web::service_config::ServiceConfig;
 
 mod delete;
-mod get_personal_information;
+mod get_onboarding;
+mod identification;
 pub mod index;
-mod submit_personal_information;
+mod submit_onboarding;
 pub mod update;
 
-pub use submit_personal_information::UserPersonalInformationSubmissionRequest;
+pub use submit_onboarding::UserOnboardingSubmissionRequest;
 
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(index::index);
     cfg.service(delete::delete);
     cfg.service(update::update);
     cfg.service(update::change_password);
-    cfg.service(submit_personal_information::submit_personal_information);
-    cfg.service(get_personal_information::get_personal_information);
+    cfg.service(submit_onboarding::submit_onboarding);
+    cfg.service(get_onboarding::get_onboarding);
+    cfg.service(identification::identification);
 }
 
 #[error_with_messages]
 pub enum AccountError {
-    BirthYearNotInRange { min: i32, max: i32 },
     InvalidReferralSource,
+    OnboardingAlreadySubmitted,
 }
 
 impl error::ResponseError for AccountError {
     fn status_code(&self) -> StatusCode {
         match self {
-            AccountError::BirthYearNotInRange { .. } | AccountError::InvalidReferralSource => {
-                StatusCode::BAD_REQUEST
-            }
+            AccountError::InvalidReferralSource => StatusCode::BAD_REQUEST,
+            AccountError::OnboardingAlreadySubmitted => StatusCode::CONFLICT,
         }
     }
 

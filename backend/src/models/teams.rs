@@ -1,7 +1,7 @@
 use crate::entities::sea_orm_active_enums::TeamStatus;
 use crate::entities::teams::ActiveModel;
 use crate::entities::{external_team_invitation, flag_capture, teams, users};
-use crate::models::task::RegistrationConfig;
+use crate::models::task_manager::registration_config::RegistrationConfig;
 use crate::routes::flag::FlagError::TeamNotConfirmed;
 use crate::routes::teams::TeamError::*;
 use crate::utils::colors::TEAM_COLORS;
@@ -26,7 +26,6 @@ pub struct TeamWithMembers {
     pub team_name: String,
     pub created_at: DateTime,
     pub members: Vec<(Uuid, String)>,
-    pub confirmation_code: Option<Uuid>,
     pub status: TeamStatus,
     pub organization: Option<String>,
 }
@@ -83,7 +82,6 @@ impl teams::Model {
             status: Set(TeamStatus::Absent),
             organization: Set(organization),
             color: Set(TEAM_COLORS[team_count as usize % TEAM_COLORS.len()].to_string()),
-            ..Default::default()
         })
         .exec(transaction)
         .await?;
@@ -258,7 +256,6 @@ impl teams::Model {
                     team_name: team.name,
                     created_at: team.created_at,
                     members,
-                    confirmation_code: team.confirmation_code,
                     status: team.status,
                     organization: team.organization,
                 }
@@ -288,57 +285,6 @@ impl teams::Model {
         active_user.update(&transaction).await?;
 
         transaction.commit().await?;
-
-        Ok(())
-    }
-
-    pub async fn confirm(
-        database: &DatabaseConnection,
-        confirmation_code: Uuid,
-    ) -> Result<(), Error> {
-        let team = teams::Entity::find()
-            .filter(teams::Column::ConfirmationCode.eq(confirmation_code))
-            .one(database)
-            .await?
-            .ok_or(Error::InvalidEmailConfirmationCode)?;
-
-        let mut active_team: ActiveModel = team.clone().into();
-        active_team.status = Set(TeamStatus::Confirmed);
-        active_team.update(database).await?;
-
-        Self::clear_confirmation_code(database, team.id).await?;
-
-        Ok(())
-    }
-
-    pub async fn clear_confirmation_code(
-        database: &DatabaseConnection,
-        id: Uuid,
-    ) -> Result<(), Error> {
-        let mut team: ActiveModel = teams::Entity::find_by_id(id)
-            .one(database)
-            .await?
-            .ok_or(Error::Team(TeamNotFound))?
-            .into();
-
-        team.confirmation_code = Set(None);
-        team.update(database).await?;
-
-        Ok(())
-    }
-
-    pub async fn generate_confirmation_code(
-        database: &DatabaseConnection,
-        id: Uuid,
-    ) -> Result<(), Error> {
-        let mut team: ActiveModel = teams::Entity::find_by_id(id)
-            .one(database)
-            .await?
-            .ok_or(Error::Team(TeamNotFound))?
-            .into();
-
-        team.confirmation_code = Set(Some(Uuid::new_v4()));
-        team.update(database).await?;
 
         Ok(())
     }
@@ -383,6 +329,24 @@ impl teams::Model {
         if self.status != TeamStatus::Confirmed {
             return Err(Flag(TeamNotConfirmed));
         }
+
+        Ok(())
+    }
+
+    pub async fn confirm(
+        database_connection: &DatabaseConnection,
+        team_id: Uuid,
+    ) -> Result<(), Error> {
+        let team = teams::Entity::find_by_id(team_id)
+            .one(database_connection)
+            .await?
+            .ok_or(Error::Team(TeamNotFound))?;
+
+        if team.status != TeamStatus::Confirmed {
+            let mut team: teams::ActiveModel = team.into();
+            team.status = Set(TeamStatus::Confirmed);
+            team.update(database_connection).await?;
+        };
 
         Ok(())
     }

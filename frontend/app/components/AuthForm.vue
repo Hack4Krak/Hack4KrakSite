@@ -7,18 +7,29 @@ const props = defineProps<{
 
 type Schema = zInfer<typeof schema>
 const schema = z.object({
-  ...(props.isLogin ? {} : { name: zUsername() }),
-  email: z.email({ error: 'Niepoprawny adres e-mail' }).meta({ title: 'Adres e-mail' }),
+  ...(props.isLogin
+    ? {}
+    : {
+        name: zUsername()
+          .meta({ title: 'Nazwa użytkownika', input: { props: { placeholder: 'lajkonik' } } }),
+        first_name: zFirstName()
+          .meta({ title: 'Jak mamy się do Ciebie zwracać?', input: { props: { placeholder: 'Lajkonik' } } }),
+      }),
+  email: z.email({ error: 'Niepoprawny adres e-mail' }).meta({ title: 'Adres e-mail', input: { props: { placeholder: 'lajkonik@hack4krak.pl' } } }),
   password: zPassword(),
 })
 
 const loading = ref(false)
 const toast = useToast()
+const { proxy } = useScriptUmamiAnalytics()
 
 const OAuthBaseUrl = `${useRuntimeConfig().public.openFetch.api.baseURL}/auth/oauth`
 
 const route = useRoute()
-const callback = route.query.callback?.toString()
+const callback = computed(() => {
+  const value = route.query.callback?.toString()
+  return value?.startsWith('/') ? value : undefined
+})
 
 if (route.query.redirect_from_confirmation === 'true' && import.meta.client) {
   toast.add({
@@ -33,6 +44,9 @@ if (route.query.redirect_from_confirmation === 'true' && import.meta.client) {
 
 async function onSubmit(event: Schema) {
   loading.value = true
+  proxy.track(props.isLogin ? 'account_login_submit' : 'account_registration_submit', {
+    method: 'email',
+  })
 
   try {
     const address = props.isLogin ? '/auth/login' : '/auth/register'
@@ -42,7 +56,7 @@ async function onSubmit(event: Schema) {
 
     const body = props.isLogin
       ? event
-      : { ...event, callback }
+      : { ...event, callback: callback.value }
 
     await useNuxtApp().$api(address, {
       method: 'POST',
@@ -51,30 +65,47 @@ async function onSubmit(event: Schema) {
     })
 
     if (props.isLogin) {
+      proxy.track('account_login_success', {
+        method: 'email',
+      })
       toast.add({ title: 'Sukces', description: 'Pomyślnie zalogowano!', color: 'success' })
-      await navigateTo(callback || '/panel/')
+      await navigateTo(callback.value || '/panel/event')
     } else {
+      proxy.track('account_registration_success', {
+        method: 'email',
+      })
       toast.add({ title: 'Sukces', description: 'Pomyślnie zarejestrowano! Wysłaliśmy Ci na podany adres email link do aktywacji konta', color: 'success' })
-      await navigateTo({ path: '/login', query: { callback } })
+      await navigateTo({ path: '/login', query: callback.value ? { callback: callback.value } : undefined })
     }
   } catch (error) {
+    proxy.track(props.isLogin ? 'account_login_error' : 'account_registration_error', {
+      method: 'email',
+      error_type: error instanceof FetchError ? 'fetch_error' : 'unknown',
+    })
     console.error(error)
     if (!(error instanceof FetchError)) {
       throw error
     }
+    toast.add({ title: 'Nie udało się wysłać formularza', description: error.data?.message, color: 'error' })
   } finally {
     loading.value = false
   }
+}
+
+function trackOAuth(provider: 'google' | 'github') {
+  proxy.track(props.isLogin ? 'account_login_submit' : 'account_registration_submit', {
+    method: provider,
+  })
 }
 </script>
 
 <template>
   <div class="space-y-4">
-    <h1 class="text-2xl font-medium">
+    <h1 class="text-xl font-medium sm:text-2xl">
       {{ isLogin ? 'Zaloguj się' : 'Zarejestruj się' }}
     </h1>
 
-    <AutoForm :schema="schema" class="text-center" :config="{ submit: { props: { label: isLogin ? 'Zaloguj' : 'Zarejestruj' } } }" @submit="onSubmit">
+    <AutoForm :schema="schema" class="text-center text-sm sm:text-base" :config="{ submit: { props: { label: isLogin ? 'Zaloguj' : 'Zarejestruj' } } }" @submit="onSubmit">
       <template #email-hint>
         <NuxtLink v-if="isLogin" class="link-without-underline" to="/request_password_reset" tabindex="-1">
           Zresetuj hasło
@@ -85,7 +116,7 @@ async function onSubmit(event: Schema) {
     <div class="flex flex-col gap-1 w-full text-center">
       <span class="text-sm text-neutral-400">
         {{ isLogin ? 'Nie masz konta?' : 'Masz już konto?' }}
-        <NuxtLink class="link" :to="{ path: isLogin ? '/register' : '/login', query: { callback } }">
+        <NuxtLink class="link" :to="{ path: isLogin ? '/register' : '/login', query: callback ? { callback } : undefined }">
           {{ isLogin ? 'Załóż je' : 'Zaloguj się' }}
         </NuxtLink>
       </span>
@@ -95,8 +126,8 @@ async function onSubmit(event: Schema) {
       <USeparator class="my-3" label="Albo kontynuuj z" :ui="{ label: 'text-zinc-400' }" />
 
       <div class="flex text-center gap-2 justify-center items-center">
-        <a :href="`${OAuthBaseUrl}/google`" aria-label="Login with Google"><UIcon name="logos:google-icon" size="45" class="cursor-pointer hover:scale-110 duration-300" mode="svg" /></a>
-        <a :href="`${OAuthBaseUrl}/github`" aria-label="Login with GitHub"><UIcon name="mdi:github" size="50" class="cursor-pointer hover:scale-110 duration-300" /></a>
+        <a :href="`${OAuthBaseUrl}/google`" aria-label="Login with Google" @click="trackOAuth('google')"><UIcon name="logos:google-icon" size="45" class="cursor-pointer hover:scale-110 duration-300" mode="svg" /></a>
+        <a :href="`${OAuthBaseUrl}/github`" aria-label="Login with GitHub" @click="trackOAuth('github')"><UIcon name="mdi:github" size="50" class="cursor-pointer hover:scale-110 duration-300" /></a>
       </div>
     </div>
   </div>

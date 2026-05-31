@@ -1,5 +1,5 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  if (to.path.startsWith('/panel') || to.path === '/account/submit_personal_info') {
+  if (to.path.startsWith('/panel') || to.path.startsWith('/account')) {
     try {
       const { data, error } = await useAuth('/account/', {
         redirect: 'error',
@@ -8,8 +8,17 @@ export default defineNuxtRouteMiddleware(async (to) => {
         return await navigateTo({ name: 'login', query: { callback: to.fullPath } })
       }
       if (to.path.startsWith('/panel')) {
-        if (data.value.has_personal_information === false) {
-          return await navigateTo({ path: '/account/submit_personal_info', query: { callback: to.fullPath } })
+        if (data.value.has_completed_onboarding === false) {
+          return await navigateTo({ path: '/account/onboarding', query: { callback: to.fullPath } })
+        }
+      }
+      if (to.path === '/account/onboarding') {
+        if (data.value.has_completed_onboarding === true) {
+          const callback = to.query.callback?.toString()
+          if (callback?.startsWith('/')) {
+            return callback
+          }
+          return '/panel'
         }
       }
     } catch {

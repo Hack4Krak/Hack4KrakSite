@@ -21,10 +21,12 @@ struct GitHubUser {
     email: Option<String>,
 }
 
+/// https://docs.github.com/en/rest/users/emails#list-email-addresses-for-the-authenticated-user
 #[derive(Deserialize, Debug)]
 struct GitHubEmail {
     email: String,
     primary: bool,
+    verified: bool,
 }
 
 async fn send_github_request(url: Url, token: &String) -> Result<Response, reqwest::Error> {
@@ -80,7 +82,10 @@ pub async fn github_callback(
         .json()
         .await?;
 
-        if let Some(primary_email) = email_response.iter().find(|email| email.primary) {
+        if let Some(primary_email) = email_response
+            .iter()
+            .find(|email| email.primary && email.verified)
+        {
             user.email = Some(primary_email.email.clone());
         }
     }

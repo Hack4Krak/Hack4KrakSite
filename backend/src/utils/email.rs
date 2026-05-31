@@ -2,12 +2,13 @@ use crate::services::env::EnvConfig;
 use crate::utils::error::Error;
 use askama::DynTemplate;
 use lettre::message::header::{HeaderName, HeaderValue};
-use lettre::message::{Mailbox, SinglePart, header};
+use lettre::message::{Attachment, Mailbox, MultiPart, SinglePart, header};
 use lettre::{Message, SmtpTransport, Transport};
 use serde::{Deserialize, Serialize};
 use std::any::type_name;
 use std::collections::HashMap;
 use std::str::FromStr;
+use tracing::info;
 use utoipa::ToSchema;
 
 pub const UNDISCLOSED_RECIPIENTS: &str = "undisclosed-recipients:;";
@@ -36,6 +37,38 @@ pub trait EmailTemplate: DynTemplate {
     }
 }
 
+pub trait SmtpClient: Send + Sync {
+    fn send(&self, email: &Message) -> Result<(), Error>;
+}
+
+#[derive(Clone)]
+pub struct EmailAttachment {
+    pub filename: String,
+    pub content_type: header::ContentType,
+    pub body: Vec<u8>,
+}
+
+impl EmailAttachment {
+    pub fn new(
+        filename: impl Into<String>,
+        content_type: header::ContentType,
+        body: Vec<u8>,
+    ) -> Self {
+        Self {
+            filename: filename.into(),
+            content_type,
+            body,
+        }
+    }
+}
+
+impl SmtpClient for SmtpTransport {
+    fn send(&self, email: &Message) -> Result<(), Error> {
+        Transport::send(self, email).map_err(Error::FailedToSendEmail)?;
+        Ok(())
+    }
+}
+
 pub struct Email {
     /// By default, the meta is loaded from `email/config.yaml`.
     /// When this field is not None, it overrides original behaviour
@@ -46,6 +79,7 @@ pub struct Email {
     pub recipients: Vec<String>,
     pub bcc: Vec<String>,
     pub template: Box<dyn EmailTemplate>,
+    pub attachments: Vec<EmailAttachment>,
 }
 
 impl Email {
@@ -72,13 +106,25 @@ impl Email {
             recipients,
             bcc,
             template,
+            attachments: Vec::new(),
         }
     }
 
-    pub async fn send(&self, smtp_client: &SmtpTransport) -> Result<(), Error> {
-        let email = self.build_email()?;
-        smtp_client.send(&email).map_err(Error::FailedToSendEmail)?;
+    pub fn with_attachment(mut self, attachment: EmailAttachment) -> Self {
+        self.attachments.push(attachment);
+        self
+    }
 
+    pub async fn send(&self, smtp_client: &dyn SmtpClient) -> Result<(), Error> {
+        let email = self.build_email()?;
+        info!(
+            template = self.template.id(),
+            recipients = ?self.recipients,
+            bcc_count = self.bcc.len(),
+            "Sending email"
+        );
+        smtp_client.send(&email)?;
+        info!(template = self.template.id(), "Email sent successfully");
         Ok(())
     }
 
@@ -114,13 +160,28 @@ impl Email {
             email_builder = email_builder.bcc(Self::parse_address(bcc)?);
         }
 
-        let email = email_builder
-            .singlepart(
-                SinglePart::builder()
-                    .header(header::ContentType::TEXT_HTML)
-                    .body(rendered_email),
-            )
-            .map_err(Error::FailedToBuildEmail)?;
+        let html_content = SinglePart::builder()
+            .header(header::ContentType::TEXT_HTML)
+            .body(rendered_email);
+
+        let email = if self.attachments.is_empty() {
+            email_builder
+                .singlepart(html_content)
+                .map_err(Error::FailedToBuildEmail)?
+        } else {
+            let mut body = MultiPart::mixed().singlepart(html_content);
+
+            for attachment in &self.attachments {
+                body = body.singlepart(
+                    Attachment::new(attachment.filename.clone())
+                        .body(attachment.body.clone(), attachment.content_type.clone()),
+                );
+            }
+
+            email_builder
+                .multipart(body)
+                .map_err(Error::FailedToBuildEmail)?
+        };
 
         Ok(email)
     }

@@ -1,9 +1,9 @@
 name: CI
 on: 
   push:
-    branches: [master]
+    branches: [master, staging]
   pull_request:
-    branches: [master]
+    branches: [master, staging]
   workflow_dispatch:
 
 permissions:
@@ -18,13 +18,21 @@ env:
 
 jobs:
   frontend:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     steps:
       - uses: actions/checkout@v6
 
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: ".bun-version"
+
+      - name: Cache Bun package cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-${{ runner.arch }}-bun-${{ hashFiles('**/bun.lock', '**/bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ runner.arch }}-bun-
 
       - name: Install dependencies
         run: |
@@ -60,12 +68,9 @@ jobs:
         run: bun frontend:e2e
 
   backend:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     steps:
       - uses: actions/checkout@v6
-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
 
       - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:

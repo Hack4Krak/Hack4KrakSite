@@ -1,4 +1,4 @@
-use crate::entities::users;
+use crate::entities::{event_registration, users};
 use crate::services::emails;
 use crate::utils::app_state;
 use crate::utils::email::{Email, EmailMeta, UNDISCLOSED_RECIPIENTS};
@@ -24,6 +24,8 @@ pub struct EmailSendingModel {
 #[derive(Serialize, Deserialize, ToSchema)]
 pub enum EmailSendTarget {
     AllUsers,
+    UsersInTeams,
+    UsersRegisteredOnEvent,
     SpecificUsernames(Vec<String>),
     SpecificEmails(Vec<String>),
 }
@@ -47,6 +49,24 @@ pub async fn send_informational(
     let mut recipients = match &model.send_target {
         EmailSendTarget::AllUsers => {
             users::Entity::find()
+                .select_only()
+                .column(users::Column::Email)
+                .into_tuple()
+                .all(&app_state.database)
+                .await?
+        }
+        EmailSendTarget::UsersInTeams => {
+            users::Entity::find()
+                .filter(users::Column::Team.is_not_null())
+                .select_only()
+                .column(users::Column::Email)
+                .into_tuple()
+                .all(&app_state.database)
+                .await?
+        }
+        EmailSendTarget::UsersRegisteredOnEvent => {
+            users::Entity::find()
+                .inner_join(event_registration::Entity)
                 .select_only()
                 .column(users::Column::Email)
                 .into_tuple()
@@ -84,7 +104,7 @@ pub async fn send_informational(
         }),
         Some(model.meta.clone()),
     )
-    .send(&app_state.smtp_client)
+    .send(app_state.smtp_client.as_ref())
     .await?;
 
     Ok(SuccessResponse::default().http_response())

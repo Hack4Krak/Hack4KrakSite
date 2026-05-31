@@ -28,3 +28,10 @@ pub struct ExternalRegistrationForm {
     pub organization: String,
     pub link: String,
 }
+
+#[derive(Template, Serialize, Deserialize, ToSchema)]
+#[template(path = "email/registration_confirmation.html")]
+pub struct RegistrationConfirmation {
+    pub user: String,
+    pub identification_code: String,
+}

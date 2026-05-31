@@ -3,7 +3,7 @@ use crate::entities::users::{ActiveModel, UpdatableModel};
 use crate::entities::{teams, users};
 use crate::routes::auth::AuthError::UserAlreadyExists;
 use crate::routes::auth::RegisterModel;
-use crate::services::auth::AuthService;
+use crate::services::authentication::AuthenticationService;
 use crate::utils::error::Error;
 use crate::utils::handle_database_error::handle_database_error;
 use actix_web::dev::Payload;
@@ -39,6 +39,8 @@ impl fmt::Debug for Password {
 #[derive(Serialize, Deserialize, Debug, Default)]
 pub struct UserInformation {
     pub name: String,
+    #[serde(default)]
+    pub first_name: String,
     pub email: String,
     pub password_hash: String,
 }
@@ -54,6 +56,7 @@ impl UserInformation {
 
         let user_info = UserInformation {
             name: credentials.name.clone(),
+            first_name: credentials.first_name.clone(),
             email: credentials.email.clone(),
             password_hash: password_hash.clone(),
         };
@@ -141,6 +144,7 @@ impl users::Model {
                     id: Set(uuid_gen::new_v4()),
                     username: Set(username),
                     email: Set(email.clone()),
+                    first_name: Set(None),
                     password: Set(None),
                     ..Default::default()
                 }
@@ -155,23 +159,25 @@ impl users::Model {
     pub async fn create_from_user_info(
         database: &DatabaseConnection,
         user_info: UserInformation,
-    ) -> Result<(), Error> {
+    ) -> Result<Self, Error> {
         users::Model::assert_is_unique(database, &user_info.email, &user_info.name, None).await?;
 
-        users::ActiveModel {
+        let user = users::ActiveModel {
             id: Set(uuid_gen::new_v4()),
             username: Set(user_info.name.clone()),
+            first_name: Set(Some(user_info.first_name.clone())),
             email: Set(user_info.email.clone()),
             password: Set(Some(user_info.password_hash.clone())),
             created_at: Set(Utc::now().naive_utc()),
             is_leader: Set(false),
             roles: Set(UserRoles::Default),
+            identification_code: Set(uuid_gen::new_v4()),
             ..Default::default()
         }
         .insert(database)
         .await?;
 
-        Ok(())
+        Ok(user)
     }
 
     pub async fn delete(
@@ -220,8 +226,9 @@ impl users::Model {
         }
 
         if let Some(Some(password)) = updatable_user_model.password {
-            updatable_user_model.password =
-                Some(Some(AuthService::hash_password(Password(password))?));
+            updatable_user_model.password = Some(Some(AuthenticationService::hash_password(
+                Password(password),
+            )?));
         }
 
         let active_user = updatable_user_model.update(updated_user);

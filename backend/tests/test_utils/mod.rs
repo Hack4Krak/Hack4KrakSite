@@ -1,6 +1,7 @@
 pub mod database;
 pub mod header;
 pub mod mail;
+pub mod task_manager;
 
 use actix_http::Request;
 use actix_web::body::MessageBody;
@@ -13,11 +14,12 @@ use hack4krak_backend::services::env::EnvConfig;
 use hack4krak_backend::services::task_manager::TaskManager;
 use hack4krak_backend::setup_actix_app;
 use hack4krak_backend::utils::app_state::AppState;
-use lettre::SmtpTransport;
+use hack4krak_backend::utils::email::SmtpClient;
 use migration::TableCreateStatement;
 use sea_orm::{
     ConnectionTrait, Database, DatabaseConnection, DbBackend, DbConn, EntityTrait, Schema,
 };
+use std::sync::Arc;
 
 pub async fn setup_schema(database: &DbConn, entity: impl EntityTrait) {
     let schema = Schema::new(DbBackend::Sqlite);
@@ -35,10 +37,14 @@ pub async fn setup_database_with_schema() -> DatabaseConnection {
     setup_schema(&database, team_invites::Entity).await;
     setup_schema(&database, teams::Entity).await;
     setup_schema(&database, users::Entity).await;
-    setup_schema(&database, user_personal_info::Entity).await;
+    setup_schema(&database, user_onboarding::Entity).await;
     setup_schema(&database, email_verification_request::Entity).await;
     setup_schema(&database, external_team_invitation::Entity).await;
     setup_schema(&database, flag_capture::Entity).await;
+    setup_schema(&database, event_registration::Entity).await;
+    setup_schema(&database, announcement::Entity).await;
+
+    setup_schema(&database, user_participant_tags::Entity).await;
 
     // We have to manually create all indexes
     database
@@ -52,7 +58,7 @@ pub async fn setup_database_with_schema() -> DatabaseConnection {
 #[derive(Default)]
 pub struct TestApp {
     pub database: Option<TestDatabase>,
-    pub smtp_client: Option<SmtpTransport>,
+    pub smtp_client: Option<Arc<dyn SmtpClient>>,
     pub task_manager: Option<TaskManager>,
 }
 
@@ -67,8 +73,8 @@ impl TestApp {
         self
     }
 
-    pub fn with_smtp_client(mut self, smtp_client: SmtpTransport) -> Self {
-        self.smtp_client = Some(smtp_client);
+    pub fn with_smtp_client(mut self, smtp_client: impl SmtpClient + 'static) -> Self {
+        self.smtp_client = Some(Arc::new(smtp_client));
         self
     }
 

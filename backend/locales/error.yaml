@@ -33,6 +33,10 @@ Error:
   RecipientNotFound: "Nie ma użytkownika o nazwie: {username}"
   AccessDuringStage: "Nie możesz uzyskać dostępu do tego punktu w trakcie etapu"
   FailedToParseStage: "Nie udało się znaleźć etapu o identyfikatorze {stage_identifier}"
+  InvalidIdentificationCode: "Nieprawidłowy kod identyfikacyjny"
+  InvalidTagId: "Nieprawidłowy identyfikator tagu: {tag_id}"
+  TagAlreadyApplied: "Użytkownik ma już przypisany tag: {tag_id}"
+  FailedToGenerateQrCode: "Nie udało się wygenerować kodu QR: {0}"
   FailedToParseUrl: "Nie udało się sparsować URL {0}"
   ServerEventSendingError: "Błąd wysyłania zdarzenia serwera {0}"
   Validator: "Niepoprawne pola w zapytaniu"
@@ -42,14 +46,18 @@ Error:
   EmailConfirmationCodeExpired: "Kod z tego e-mail wygasł. Spróbuj ponownie!"
 
 AccountError:
-  BirthYearNotInRange: "Rok urodzenia musi być pomiędzy {min} a {max}"
   InvalidReferralSource: "Nieprawidłowe źródło polecenia"
+  OnboardingAlreadySubmitted: "Pytania onboardingowe zostały już wysłane"
 
 AuthError:
   UserAlreadyExists: "Użytkownik już istnieje"
   InvalidCredentials: "Nieprawidłowa nazwa użytkownika i/lub hasło"
   InvalidEmailAddress: "Nieprawidłowy adres e-mail"
   PasswordAuthNotAvailable: "Uwierzytelnianie hasłem i e-mailem jest niedostępne dla tego konta"
+
+AnnouncementsError:
+  NoAnnouncementsFound: "Nie znaleziono żadnych ogłoszeń"
+  AnnouncementNotFound: "Nie znaleziono ogłoszenia"
 
 FlagError:
   InvalidFlagFormat: "Flaga musi być w określonym formacie: hack4KrakCTF{{...}}"
@@ -74,6 +82,12 @@ TeamError:
   TeamIsFull: "Zespół jest pełny. Maksymalna liczba członków to {max_size}"
   TeamLeaderNotFound: "Lider zespołu nie został znaleziony"
   InvalidNumberOfTeams: "Nieprawidłowa liczba zespołów. Maksymalna liczba zespołów to {max_teams}"
+
+ParticipationError:
+  AlreadyRegistered: "Jesteś już zarejestrowany/a na to wydarzenie"
+  NotRegistered: "Nie jesteś zarejestrowany/a na to wydarzenie"
+  RegistrationNotOpen: "Rejestracja jest aktualnie zamknięta"
+  StillInTeam: "Przed wypisaniem się z wydarzenia opuść lub usuń drużynę"
 
 TaskError:
   InvalidTaskId: "Identyfikator zadania może zawierać tylko znaki a-Z, A-Z, 0-9, - oraz _"

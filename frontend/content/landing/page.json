@@ -1,0 +1,15 @@
+{
+  "title": "Hack4Krak",
+  "subTitle": "Największy w Małopolsce konkurs CTF \n dla uczniów szkół ponadpodstawowych!",
+  "event": {
+    "dateDisplay": "23-24 maja 2026",
+    "venue": {
+      "name": "XXXI Liceum Ogólnokształcące im. Romana Ingardena w Krakowie",
+      "address": "Kazimierza Odnowiciela 2, 31-481 Kraków",
+      "city": "Kraków",
+      "mapsUrl": "https://www.openstreetmap.org/?mlat=50.08754&mlon=19.97082#map=17/50.08754/19.97082",
+      "lat": 50.08754,
+      "lon": 19.97082
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import dotenv from 'dotenv'
+import { defineOrganization } from 'nuxt-schema-org/schema'
 import { shikiLangNames, shikiTheme } from './app/utils/shiki'
 import { getNodeTransforms } from './app/utils/vite-node-transforms'
 
@@ -14,6 +15,7 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxt/eslint',
     '@nuxt/image',
+    '@nuxt/scripts',
     '@nuxt/content',
     '@nuxt/test-utils/module',
     '@nuxtjs/seo',
@@ -81,9 +83,21 @@ export default defineNuxtConfig({
     },
   },
 
+  $production: {
+    // https://scripts.nuxt.com/
+    scripts: {
+      registry: {
+        // https://scripts.nuxt.com/scripts/umami-analytics
+        umamiAnalytics: { trigger: 'onNuxtReady' },
+      },
+      // Send the real IP adress to get more detailed localization analytics
+      privacy: { ip: false },
+    },
+  },
+
   routeRules: {
     '/panel/**': { appLayout: 'panel' },
-    '/account/**': { appLayout: 'centered' },
+    '/account': { redirect: '/account/events' },
     '/tasks/description/**': { swr: true },
     // For now, we have to manually list all docs to prerender them
     // due to some issues with Nitro crawling dynamic routes
@@ -91,7 +105,7 @@ export default defineNuxtConfig({
     '/docs/faq': { prerender: true },
     '/docs/rules': { prerender: true },
     '/docs/privacy-policy': { prerender: true },
-    '/': { prerender: true },
+    '/': { swr: 60 * 5 },
     '/about_us': { prerender: true },
     '/faq': { redirect: '/docs/faq' },
     '/rules': { redirect: '/docs/rules' },
@@ -135,6 +149,9 @@ export default defineNuxtConfig({
   // https://nuxt-open-fetch.norbiros.dev/setup/configuration
   openFetch: {
     disableNuxtPlugin: true,
+    openAPITS: {
+      rootTypes: true,
+    },
     clients: {
       api: {
         baseURL: backendAddress,
@@ -173,13 +190,37 @@ export default defineNuxtConfig({
   },
   // https://nuxtseo.com/docs/schema-org/getting-started/introduction
   schemaOrg: {
+    identity: defineOrganization({
+      name: 'Hack4Krak',
+      description: 'Inicjatywa młodych liderów cyberbezpieczeństwa, których połączyła pasja do technologii, wyzwań i ciągłego rozwoju. Tworzymy wydarzenia, które uczą, inspirują i integrują młodzież zainteresowaną światem IT i bezpieczeństwa cyfrowego.',
+      url: 'https://hack4krak.pl',
+      logo: '/img/logo.png',
+
+      email: 'kontakt@hack4krak.pl',
+      foundingDate: '2024-10-14',
+      numberOfEmployees: {
+        '@type': 'QuantitativeValue',
+        'minValue': 10,
+        'maxValue': 25,
+      },
+
+      sameAs: [
+        'https://www.instagram.com/hack4krak/',
+        'https://www.linkedin.com/company/hack4krak/',
+        'https://www.facebook.com/profile.php?id=61573226541589',
+        'https://github.com/Hack4Krak',
+      ],
+    }),
+  },
+  // Temporarily disable nuxt-ogimage (#559)
+  ogImage: {
     enabled: false,
   },
   linkChecker: {
     runOnBuild: false,
   },
   robots: {
-    disallow: ['/admin'],
+    disallow: ['/admin', '/panel', '/account'],
   },
   // https://nuxtseo.com/docs/site-config/guides/setting-site-config
   site: {

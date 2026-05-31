@@ -1,6 +1,6 @@
 use crate::models::user::Password;
 use crate::models::user::validate_name_chars;
-use crate::services::auth::AuthService;
+use crate::services::authentication::AuthenticationService;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::validation::validate_callback;
@@ -15,6 +15,8 @@ use validator::Validate;
 pub struct RegisterModel {
     #[validate(length(min = 3, max = 32), custom(function = "validate_name_chars"))]
     pub name: String,
+    #[validate(length(min = 1, max = 64))]
+    pub first_name: String,
     #[validate(email)]
     pub email: String,
     #[validate(length(min = 8, max = 32))]
@@ -37,5 +39,5 @@ pub async fn register(
     app_state: web::Data<app_state::AppState>,
     Validated(model): Validated<Json<RegisterModel>>,
 ) -> Result<HttpResponse, Error> {
-    AuthService::register_with_password(&app_state, model.into_inner()).await
+    AuthenticationService::register_with_password(&app_state, model.into_inner()).await
 }

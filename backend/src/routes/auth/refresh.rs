@@ -1,5 +1,5 @@
 use crate::entities::users;
-use crate::services::auth::AuthService;
+use crate::services::authentication::AuthenticationService;
 use crate::utils::app_state;
 use crate::utils::cookies::REFRESH_TOKEN_COOKIE;
 use crate::utils::error::Error;
@@ -32,6 +32,7 @@ pub async fn refresh(
         .await?
         .ok_or(Error::Unauthorized)?;
 
-    let response = AuthService::response_with_cookies(claims.claims.id, claims.claims.email)?;
+    let response =
+        AuthenticationService::response_with_cookies(claims.claims.id, claims.claims.email)?;
     Ok(response)
 }

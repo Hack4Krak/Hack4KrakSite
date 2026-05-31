@@ -1,10 +1,23 @@
 <script setup lang="ts">
 import { NAVBAR_ITEMS } from '~~/content/navbar'
 
-const { data: isLoggedIn } = useAuth('/auth/status', {
+const { data: user } = useAuth('/account/', {
   redirect: 'error',
   onResponseError: undefined,
 })
+
+const { data: registrationInformation } = await useApi('/event/registration')
+const { data: participationData } = useAuth('/event/participate', {
+  redirect: 'error',
+  onResponseError: undefined,
+})
+const { data: eventStatus } = await useApi('/event/status', {
+  onResponseError: undefined,
+})
+
+const registrationOpen = computed(() => registrationInformation.value?.is_open ?? false)
+const isRegistered = computed(() => Boolean(participationData.value))
+const isEventLive = computed(() => eventStatus.value?.is_live ?? false)
 
 const navigationMenuProperties = computed(() => ({
   'content-orientation': 'vertical' as const,
@@ -18,6 +31,43 @@ const navigationMenuProperties = computed(() => ({
     list: 'gap-8',
   },
 }))
+
+const userMenuItems = computed(() => [
+  [
+    {
+      label: user.value?.username ?? 'Użytkownik',
+      type: 'label' as const,
+    },
+  ],
+  [
+    ...(isRegistered.value
+      ? [{
+          label: 'Moje zgłoszenie',
+          icon: 'pixelarticons:notes',
+          onSelect: () => navigateTo('/panel/event'),
+        }]
+      : []),
+    {
+      label: 'Panel CTF',
+      icon: 'pixelarticons:dashboard',
+      disabled: !isEventLive.value,
+      onSelect: () => navigateTo('/panel'),
+    },
+    {
+      label: 'Profil',
+      icon: 'pixelarticons:user',
+      onSelect: () => navigateTo('/account'),
+    },
+  ],
+  [
+    {
+      label: 'Wyloguj się',
+      icon: 'pixelarticons:logout',
+      color: 'error' as const,
+      onSelect: () => useSession().logout(),
+    },
+  ],
+])
 </script>
 
 <template>
@@ -29,13 +79,91 @@ const navigationMenuProperties = computed(() => ({
     <UNavigationMenu v-bind="navigationMenuProperties" />
 
     <template #right>
-      <NuxtLink to="/login" class="text-md font-semibold flex grow-0" :aria-label="isLoggedIn ? 'Otwórz panel' : 'Zaloguj się'">
-        <UIcon :name="isLoggedIn ? 'pixelarticons:user' : 'pixelarticons:login'" class="icon-md lg:hidden" />
+      <div class="flex items-center gap-3 lg:gap-4">
+        <template v-if="user">
+          <!-- Event live: show Panel CTF CTA -->
+          <template v-if="isEventLive">
+            <NuxtLink
+              to="/panel"
+              class="hidden lg:inline-flex items-center gap-2 text-md font-semibold text-primary hover:text-primary/85 transition-colors"
+              aria-label="Otwórz Panel CTF"
+            >
+              <UIcon name="pixelarticons:dashboard" class="size-4.5" />
+              <span>Panel CTF</span>
+            </NuxtLink>
+            <div class="hidden lg:block h-5 w-px bg-white/25" />
+          </template>
 
-        <span class="hidden lg:inline">
-          {{ isLoggedIn ? "Otwórz panel" : "Zaloguj się" }}
-        </span>
-      </NuxtLink>
+          <!-- Registration open + registered: show Moje zgłoszenie -->
+          <template v-else-if="registrationOpen && isRegistered">
+            <NuxtLink
+              to="/panel/event"
+              class="hidden lg:inline-flex items-center gap-2 text-md font-semibold text-primary hover:text-primary/85 transition-colors"
+              aria-label="Otwórz moje zgłoszenie"
+            >
+              <UIcon name="pixelarticons:notes" class="size-4.5" />
+              <span>Moje zgłoszenie</span>
+            </NuxtLink>
+            <div class="hidden lg:block h-5 w-px bg-white/25" />
+          </template>
+
+          <!-- Registration open + not registered: show Zapisy otwarte -->
+          <template v-else-if="registrationOpen">
+            <NuxtLink
+              to="/panel/event/register"
+              class="hidden lg:inline-flex items-center gap-2 text-md font-semibold text-primary hover:text-primary/85 transition-colors"
+              aria-label="Zapisz drużynę na Hack4Krak CTF"
+            >
+              <UIcon name="pixelarticons:users" class="size-4.5" />
+              <span>Zapisy otwarte</span>
+            </NuxtLink>
+            <div class="hidden lg:block h-5 w-px bg-white/25" />
+          </template>
+        </template>
+
+        <template v-else-if="registrationOpen">
+          <NuxtLink
+            to="/panel/event/register"
+            class="hidden lg:inline-flex items-center gap-2 text-md font-semibold text-primary hover:text-primary/85 transition-colors"
+            aria-label="Zapisz drużynę na Hack4Krak CTF"
+          >
+            <UIcon name="pixelarticons:users" class="size-4.5" />
+            <span>Zapisy otwarte</span>
+          </NuxtLink>
+          <div class="hidden lg:block h-5 w-px bg-white/25" />
+        </template>
+
+        <template v-if="user">
+          <NuxtLink
+            to="/account"
+            class="flex items-center gap-2 cursor-pointer font-semibold text-md lg:hidden"
+            aria-label="Profil użytkownika"
+          >
+            <UIcon name="pixelarticons:user" class="icon-md" />
+          </NuxtLink>
+
+          <UDropdownMenu
+            :items="userMenuItems"
+            :content="{ align: 'end', sideOffset: 8 }"
+            :ui="{ content: 'w-48', item: 'cursor-pointer' }"
+          >
+            <button class="hidden lg:flex items-center gap-2 cursor-pointer font-semibold text-md" aria-label="Menu użytkownika">
+              <UIcon name="pixelarticons:user" class="icon-md" />
+              <span class="hidden lg:inline">{{ user.username }}</span>
+            </button>
+          </UDropdownMenu>
+        </template>
+
+        <NuxtLink
+          v-else
+          to="/login"
+          class="text-md font-semibold flex grow-0 items-center"
+          aria-label="Zaloguj się"
+        >
+          <UIcon name="pixelarticons:login" class="icon-md lg:hidden" />
+          <span class="hidden lg:inline">Zaloguj się</span>
+        </NuxtLink>
+      </div>
     </template>
 
     <template #toggle="{ open, toggle }">

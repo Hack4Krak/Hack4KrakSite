@@ -1,4 +1,7 @@
-use crate::entities::{external_team_invitation, flag_capture, teams, user_personal_info, users};
+use crate::entities::sea_orm_active_enums::TeamStatus;
+use crate::entities::{
+    event_registration, external_team_invitation, flag_capture, teams, user_onboarding, users,
+};
 use crate::services::env::EnvConfig;
 use crate::utils::app_state::AppState;
 use crate::utils::bearer::verify_bearer_token;
@@ -6,10 +9,11 @@ use crate::utils::error::Error;
 use actix_web::{HttpResponse, get, web};
 use prometheus::core::Collector;
 use prometheus::proto::MetricFamily;
-use prometheus::{Encoder, Gauge, Opts, TextEncoder};
-use sea_orm::PaginatorTrait;
-use sea_orm::QueryFilter;
-use sea_orm::{ColumnTrait, EntityTrait};
+use prometheus::{Encoder, Gauge, GaugeVec, Opts, TextEncoder};
+use sea_orm::sea_query::Expr;
+use sea_orm::{
+    ColumnTrait, DatabaseConnection, EntityTrait, PaginatorTrait, QueryFilter, QuerySelect,
+};
 
 #[utoipa::path(responses((status = OK, body = String)))]
 #[get("/metrics")]
@@ -19,60 +23,99 @@ pub async fn metrics(
 ) -> Result<HttpResponse, Error> {
     verify_bearer_token(&request, &EnvConfig::get().metrics_access_token)?;
 
-    let users_in_teams = &users::Entity::find()
+    let database = &app_state.database;
+
+    let users_total = count::<users::Entity>(database).await?;
+    let users_in_teams = users::Entity::find()
         .filter(users::Column::Team.is_not_null())
-        .count(&app_state.database)
+        .count(database)
         .await?;
-    let tasks = app_state.task_manager.tasks.len();
+    let users_teamless = users::Entity::find()
+        .filter(users::Column::Team.is_null())
+        .count(database)
+        .await?;
+
+    let unique_tasks_solved = flag_capture::Entity::find()
+        .select_only()
+        .expr(Expr::cust("COUNT(DISTINCT task)"))
+        .into_tuple::<i64>()
+        .one(database)
+        .await?
+        .unwrap_or(0) as u64;
+
+    let teams_confirmed = teams::Entity::find()
+        .filter(teams::Column::Status.eq(TeamStatus::Confirmed))
+        .count(database)
+        .await?;
+    let teams_absent = teams::Entity::find()
+        .filter(teams::Column::Status.eq(TeamStatus::Absent))
+        .count(database)
+        .await?;
 
     let metric_families = [
-        add_simple_metric::<users::Entity>("app_count_users", &app_state).await?,
-        add_metric("app_count_users_in_teams", *users_in_teams).await?,
-        add_metric("app_count_tasks", tasks as u64).await?,
-        add_simple_metric::<teams::Entity>("app_count_teams", &app_state).await?,
-        add_simple_metric::<user_personal_info::Entity>("app_count_personal_info", &app_state)
-            .await?,
-        add_simple_metric::<flag_capture::Entity>("app_count_flag_capture", &app_state).await?,
-        add_simple_metric::<external_team_invitation::Entity>(
+        gauge("app_count_users", users_total)?,
+        gauge("app_count_users_in_teams", users_in_teams)?,
+        gauge("app_count_users_teamless", users_teamless)?,
+        gauge("app_count_tasks", app_state.task_manager.tasks.len() as u64)?,
+        gauge("app_count_teams", teams_confirmed + teams_absent)?,
+        gauge_vec(
+            "app_count_teams_by_status",
+            "status",
+            &[("confirmed", teams_confirmed), ("absent", teams_absent)],
+        )?,
+        gauge(
+            "app_count_onboarding",
+            count::<user_onboarding::Entity>(database).await?,
+        )?,
+        gauge(
+            "app_count_flag_capture",
+            count::<flag_capture::Entity>(database).await?,
+        )?,
+        gauge("app_count_flag_capture_unique_tasks", unique_tasks_solved)?,
+        gauge(
             "app_count_external_team_invitation",
-            &app_state,
-        )
-        .await?,
+            count::<external_team_invitation::Entity>(database).await?,
+        )?,
+        gauge(
+            "app_count_event_registrations",
+            count::<event_registration::Entity>(database).await?,
+        )?,
+        gauge(
+            "app_count_sse_receivers",
+            app_state.sse_event_sender.receiver_count() as u64,
+        )?,
     ]
     .concat();
 
     let encoder = TextEncoder::new();
     let mut buffer = Vec::new();
-    encoder.encode(&metric_families, &mut buffer).unwrap();
+    encoder.encode(&metric_families, &mut buffer)?;
     Ok(HttpResponse::Ok().body(buffer))
 }
 
-async fn add_simple_metric<T>(
-    metric_name: &str,
-    app_state: &AppState,
-) -> Result<Vec<MetricFamily>, Error>
+async fn count<T>(database: &DatabaseConnection) -> Result<u64, Error>
 where
     T: EntityTrait,
-    <T as EntityTrait>::Model: Sync,
+    T::Model: Sync,
 {
-    let gauge = Gauge::with_opts(Opts::new(
-        metric_name,
-        format!("Current number of {metric_name}"),
-    ))?;
-
-    let count =
-        <sea_orm::Select<T> as PaginatorTrait<_>>::count(T::find(), &app_state.database).await?;
-
-    gauge.set(count as f64);
-    Ok(gauge.collect())
+    Ok(<sea_orm::Select<T> as PaginatorTrait<_>>::count(T::find(), database).await?)
 }
 
-async fn add_metric(metric_name: &str, count: u64) -> Result<Vec<MetricFamily>, Error> {
-    let gauge = Gauge::with_opts(Opts::new(
-        metric_name,
-        format!("Current number of {metric_name}"),
-    ))?;
+fn gauge(name: &str, value: u64) -> Result<Vec<MetricFamily>, Error> {
+    let gauge_metric = Gauge::with_opts(Opts::new(name, format!("Current number of {name}")))?;
+    gauge_metric.set(value as f64);
+    Ok(gauge_metric.collect())
+}
 
-    gauge.set(count as f64);
-    Ok(gauge.collect())
+fn gauge_vec(name: &str, label: &str, entries: &[(&str, u64)]) -> Result<Vec<MetricFamily>, Error> {
+    let gauge_metric = GaugeVec::new(
+        Opts::new(name, format!("Current number of {name}")),
+        &[label],
+    )?;
+    for (label_value, count) in entries {
+        gauge_metric
+            .with_label_values(&[label_value])
+            .set(*count as f64);
+    }
+    Ok(gauge_metric.collect())
 }

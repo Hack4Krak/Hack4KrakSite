@@ -15,14 +15,14 @@ async fn account_delete() {
 
     let request = test::TestRequest::delete()
         .uri("/account/delete")
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id, user.email.clone()))
         .to_request();
     let response = test::call_service(&app, request).await;
     assert!(response.status().is_success());
 
     let request = test::TestRequest::get()
         .uri("/account/")
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id, user.email))
         .to_request();
     let response = test::call_service(&app, request).await;
     assert!(response.status().is_client_error());
@@ -40,7 +40,7 @@ async fn account_update() {
 
     let request = test::TestRequest::patch()
         .uri("/account/update")
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id, user.email.clone()))
         .set_json(serde_json::json!({
             "username": "Salieri",
         }))
@@ -50,17 +50,17 @@ async fn account_update() {
 
     let request = test::TestRequest::get()
         .uri("/account/")
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id, user.email.clone()))
         .to_request();
     let response = test::call_and_read_body(&app, request).await;
     assert_eq!(
         response,
-        r#"{"username":"Salieri","email":"example@gmail.com","has_personal_information":false}"#
+        r#"{"username":"Salieri","first_name":null,"email":"example@gmail.com","has_completed_onboarding":false}"#
     );
 
     let request = test::TestRequest::patch()
         .uri("/account/update/password")
-        .insert_header(TestAuthHeader::new(user.clone()))
+        .insert_header(TestAuthHeader::new(user.id, user.email))
         .set_json(serde_json::json!({
             "old_password": "Dziengiel",
             "new_password": "Dziengiel2"

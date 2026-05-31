@@ -4,27 +4,23 @@ use actix_web::{HttpResponse, error};
 use hack4krak_macros::error_with_messages;
 use utoipa_actix_web::scope;
 
-mod confirm;
 mod create;
 mod external_invitations;
 mod invitations;
 mod management;
 mod membership;
 
+pub use membership::MyTeamWithMembers;
+
 pub fn config(config: &mut utoipa_actix_web::service_config::ServiceConfig) {
     config.service(create::create);
-    config.service(confirm::confirm);
     config.service(scope("/external_invitations").configure(external_invitations::config));
     config.service(
         scope("/invitations")
             .wrap(AuthMiddleware::with_user())
             .configure(invitations::config),
     );
-    config.service(
-        scope("/membership")
-            .wrap(AuthMiddleware::with_team_as_member())
-            .configure(membership::config),
-    );
+    config.service(scope("/membership").configure(membership::config));
     config.service(
         scope("/management")
             .wrap(AuthMiddleware::with_team_as_leader())

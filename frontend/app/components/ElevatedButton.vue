@@ -1,34 +1,52 @@
 <script setup lang="ts">
-import { tv } from 'tailwind-variants'
+import { NuxtLink } from '#components'
 
-const { variant = 'dark' } = defineProps<{
+defineOptions({ inheritAttrs: false })
+
+const props = withDefaults(defineProps<{
   background?: string
   variant?: 'dark' | 'light'
-}>()
+  to?: string
+  target?: string
+  ui?: {
+    inner?: string
+    label?: string
+  }
+}>(), {
+  variant: 'dark',
+})
 
-const innerClass = tv({
-  base: '',
-  variants: {
-    button: {
-      light: 'border-dark bg-inverted text-inverted border-dark',
-      dark: 'font-pixelify bg-default border-white',
-    },
-  },
+const attrs = useAttrs()
+
+const isDisabled = computed(() => attrs.disabled === '' || attrs.disabled === true)
+const buttonType = computed(() => (attrs.type as string | undefined) ?? 'button')
+const forwardedAttrs = computed(() => {
+  const { type: _, ...rest } = attrs
+  return rest
 })
 </script>
 
 <template>
-  <button
-    class="bg-primary-500 text-white text-md font-bold"
-    :style="{ backgroundColor: background }"
+  <component
+    :is="props.to && !isDisabled ? NuxtLink : 'button'"
+    v-bind="forwardedAttrs"
+    :to="props.to && !isDisabled ? props.to : undefined"
+    :target="props.to && !isDisabled ? props.target : undefined"
+    :type="props.to && !isDisabled ? undefined : buttonType"
+    class="inline-block bg-primary-500 text-white text-md font-bold"
+    :style="{ backgroundColor: props.background }"
   >
     <span
-      class="block px-4 py-2 shadow-cream -translate-x-1 -translate-y-1
-      bg-default border-2 duration-300 hover:-translate-y-1.5
-      hover:-translate-x-1.5 hover:cursor-pointer active:translate-x-0 active:translate-y-0"
-      :class="innerClass({ button: variant })"
+      class="block px-4 py-2 shadow-cream -translate-x-1 -translate-y-1 border-2 duration-300 hover:-translate-y-1.5 hover:-translate-x-1.5 hover:cursor-pointer active:translate-x-0 active:translate-y-0"
+      :class="[variant === 'light' ? 'border-dark bg-inverted text-inverted' : 'font-pixelify bg-default border-white', props.ui?.inner]"
     >
-      <slot />
+      <span class="inline-flex items-center gap-3">
+        <slot name="leading" />
+        <span class="inline-flex items-center leading-none" :class="props.ui?.label">
+          <slot />
+        </span>
+        <slot name="trailing" />
+      </span>
     </span>
-  </button>
+  </component>
 </template>

@@ -1,6 +1,8 @@
 use crate::entities::sea_orm_active_enums::UserRoles;
 use crate::routes::account::AccountError;
+use crate::routes::announcements::AnnouncementsError;
 use crate::routes::auth::AuthError;
+use crate::routes::event::ParticipationError;
 use crate::routes::flag::FlagError;
 use crate::routes::task::TaskError;
 use crate::routes::teams::TeamError;
@@ -98,6 +100,14 @@ pub enum Error {
     FailedToParseStage {
         stage_identifier: String,
     },
+    InvalidIdentificationCode,
+    InvalidTagId {
+        tag_id: String,
+    },
+    TagAlreadyApplied {
+        tag_id: String,
+    },
+    FailedToGenerateQrCode(String),
 
     #[serde(skip)]
     FailedToParseUrl(#[from] url::ParseError),
@@ -115,11 +125,15 @@ pub enum Error {
     #[error(transparent)]
     Auth(#[from] AuthError),
     #[error(transparent)]
+    Announcements(#[from] AnnouncementsError),
+    #[error(transparent)]
     Team(#[from] TeamError),
     #[error(transparent)]
     Task(#[from] TaskError),
     #[error(transparent)]
     Flag(#[from] FlagError),
+    #[error(transparent)]
+    Participation(#[from] ParticipationError),
 }
 
 impl error::ResponseError for Error {
@@ -143,6 +157,7 @@ impl error::ResponseError for Error {
             | Error::FailedToParseUrl(_)
             | Error::ConflictInDatabase
             | Error::Metrics(_)
+            | Error::FailedToGenerateQrCode(_)
             | Error::FailedToRenderTemplate(_)
             | Error::ServerEventSendingError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Unauthorized => StatusCode::UNAUTHORIZED,
@@ -154,6 +169,8 @@ impl error::ResponseError for Error {
             Error::UserNotFound | Error::RouteNotFound | Error::RecipientNotFound { .. } => {
                 StatusCode::NOT_FOUND
             }
+            Error::InvalidIdentificationCode | Error::InvalidTagId { .. } => StatusCode::NOT_FOUND,
+            Error::TagAlreadyApplied { .. } => StatusCode::CONFLICT,
             Error::Forbidden { .. }
             | Error::UserMustHaveHigherRoleThanAffectedUser
             | Error::AccessDuringStage
@@ -163,10 +180,12 @@ impl error::ResponseError for Error {
             Error::AccessAfterStage { .. } => StatusCode::GONE,
             Error::FailedToParseStage { .. } => StatusCode::INTERNAL_SERVER_ERROR,
             Error::Account(account_err) => account_err.status_code(),
+            Error::Announcements(announcements_err) => announcements_err.status_code(),
             Error::Team(team_err) => team_err.status_code(),
             Error::Auth(auth_err) => auth_err.status_code(),
             Error::Task(error) => error.status_code(),
             Error::Flag(error) => error.status_code(),
+            Error::Participation(error) => error.status_code(),
         }
     }
 

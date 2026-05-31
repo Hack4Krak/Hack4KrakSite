@@ -22,7 +22,7 @@ export const aboutUsTimeline: EventCardProps[] = [
   {
     title: 'Hack4Krak CTF dla uczniów szkół podstawowych',
     subtitle: 'Maj 2025',
-    description: 'Ponad **123 uczniów** szkół podstawowych z Krakowa wzięło udział w drugiej edycji Hack4Krak CTF. \n\n'
+    description: 'Ponad **120 uczniów** szkół podstawowych z Krakowa wzięło udział w drugiej edycji Hack4Krak CTF. \n\n'
       + 'Dla wielu było to pierwsze zetknięcie z tematyką cyberbezpieczeństwa. Zadania, dostosowane do ich poziomu, '
       + 'rozwijały kluczowe kompetencje przyszłości i uczyły przez zabawę, inspirując do dalszej nauki.',
     participants: '120+',
@@ -30,7 +30,7 @@ export const aboutUsTimeline: EventCardProps[] = [
   },
   {
     title: 'Przygotowania do największej edycji Hack4Krak CTF',
-    subtitle: 'Marzec 2026',
+    subtitle: 'Maj 2026',
     participants: '150+',
     description: 'Trzecia edycja **Hack4Krak CTF** będzie stacjonarnym wydarzeniem dla uczniów szkół średnich. \n\n'
       + 'Planujemy przyciągnąć ponad setkę uczestników, oferując angażujące zadania i rozwijając kluczowe umiejętności. '

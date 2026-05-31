@@ -23,7 +23,7 @@ interface TeamData {
 const targetTimezone = 'Europe/Warsaw'
 
 const { data: chartData } = useLazyApi('/leaderboard/chart')
-const { data: eventInformation } = useLazyApi('/event/info')
+const [start, end] = await useEventStartAndEnd()
 
 const adjustedTimestamps = computed(() =>
   chartData.value?.event_timestamps?.map((ts: string) =>
@@ -32,11 +32,9 @@ const adjustedTimestamps = computed(() =>
 )
 
 const chartOption = computed<EChartsOption>(() => {
-  if (!chartData.value?.team_points_over_time?.length || !eventInformation.value) {
+  if (!chartData.value?.team_points_over_time?.length || !start || !end) {
     return { series: [] }
   }
-
-  const [start, end] = useEventStartAndEnd()
 
   return {
     tooltip: {
@@ -128,7 +126,7 @@ const chartOption = computed<EChartsOption>(() => {
 <template>
   <div class="h-full w-full">
     <VChart
-      v-if="chartData && eventInformation"
+      v-if="chartData && start && end"
       :option="chartOption"
       autoresize
       :init-options="initOptions"

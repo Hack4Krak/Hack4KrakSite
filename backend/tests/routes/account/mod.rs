@@ -1,2 +1,2 @@
-mod submit_personal_information;
+mod onboarding;
 mod update;

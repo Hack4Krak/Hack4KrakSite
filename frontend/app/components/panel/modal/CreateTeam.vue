@@ -12,6 +12,7 @@ async function onSubmit(data: zInfer<typeof schema>) {
   })
 
   useToast().add({ title: 'Sukces', description: 'Pomyślnie stworzono team', color: 'success' })
+  await refreshNuxtData()
   open.value = false
 }
 </script>

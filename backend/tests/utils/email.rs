@@ -24,6 +24,7 @@ async fn send_mail() {
             content: "Le Corbusier and his crimes".to_string(),
         }),
         sender_email: "user@domain.tld".to_string(),
+        attachments: Vec::new(),
     };
 
     email.send(&mail_client.smtp_client).await.unwrap();

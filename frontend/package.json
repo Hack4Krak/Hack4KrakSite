@@ -1,7 +1,7 @@
 {
   "name": "hack4krak-frontend",
   "type": "module",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "private": true,
   "scripts": {
     "build": "nuxt build",
@@ -24,6 +24,7 @@
     "@nuxt/content": "3.12.0",
     "@nuxt/hints": "1.0.0-alpha.6",
     "@nuxt/image": "2.0.0",
+    "@nuxt/scripts": "^1.0.6",
     "@nuxt/ui": "4.5.1",
     "@nuxtjs/mdc": "0.18.2",
     "@nuxtjs/seo": "4.0.2",
@@ -51,7 +52,7 @@
     "@iconify-json/pixelarticons": "~1.2.2",
     "@nuxt/devtools": "3.0.1",
     "@nuxt/eslint": "1.15.2",
-    "@nuxt/test-utils": "4.0.0",
+    "@nuxt/test-utils": "4.0.3",
     "@playwright/test": "1.58.2",
     "@tailwindcss/typography": "0.5.19",
     "@vue/test-utils": "2.4.6",

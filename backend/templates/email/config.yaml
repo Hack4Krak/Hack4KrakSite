@@ -13,3 +13,7 @@ ResetPassword:
 Informational:
   subject: Informacje o Hack4Krak
   sender_name: Kontakt Hack4Krak
+
+IdentificationQrCode:
+  subject: Potwierdzenie zgłoszenia na Hack4Krak 2026
+  sender_name: Organizatorzy Hack4Krak

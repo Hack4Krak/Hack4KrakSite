@@ -2,11 +2,15 @@
 import useEventStartAndEnd from '~/composables/useEventStartAndEnd'
 import { dayjs, humanizeDifference } from '~/utils/duration'
 
+const [eventStart, eventEnd] = await useEventStartAndEnd()
 const { data: timeLeft, refresh: updateTimeLeft } = useAsyncData('timeLeft', async () => getEventState())
 
 function getEventState() {
   const now = dayjs()
-  const [eventStart, eventEnd] = useEventStartAndEnd()
+
+  if (!eventStart || !eventEnd) {
+    return null
+  }
 
   if (now.isBetween(eventStart, eventEnd)) {
     const totalDuration = dayjs(eventEnd).diff(eventStart)
@@ -24,13 +28,13 @@ useRafFn(() => updateTimeLeft())
 </script>
 
 <template>
-  <div
-    class="col-span-2 justify-center items-center flex-col flex font-pixelify py-3"
+  <PanelSubCard
+    class="flex flex-col items-center justify-center px-3 py-4 text-center font-pixelify"
     :style="{
       background: `linear-gradient(to right, ${timeLeft?.color} ${timeLeft?.percentage}%, transparent ${timeLeft?.percentage}%)`,
     }"
   >
-    <span class="text-5xl">{{ timeLeft?.diff }}</span>
-    <span v-if="!timeLeft?.hidePercentage">{{ timeLeft?.percentage }}%</span>
-  </div>
+    <span class="text-3xl lg:text-4xl tabular-nums">{{ timeLeft?.diff }}</span>
+    <span v-if="!timeLeft?.hidePercentage" class="text-xs uppercase tracking-wider text-muted mt-1 tabular-nums">{{ timeLeft?.percentage }}%</span>
+  </PanelSubCard>
 </template>

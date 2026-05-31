@@ -9,7 +9,7 @@ const parallaxStyle = computed(() => {
   const scrollProgress = Math.min(Math.max(y.value / maxScroll, 0), 1)
   return {
     opacity: 1 - scrollProgress,
-    backgroundPosition: `0 -${scrollProgress * 250}px`,
+    backgroundPosition: `0 -${scrollProgress * 150}px`,
     transform: `scale(${1 + scrollProgress * 0.15})`,
   }
 })

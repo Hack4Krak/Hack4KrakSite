@@ -113,6 +113,10 @@ and more.
   ```sh
   bun db:migration <migration_name>
   ```
+- Apply all pending migrations to the database
+  ```sh
+  bun db:migrate
+  ```
 - Rollback last applied migration
   ```sh
   bun db:rollbkack
