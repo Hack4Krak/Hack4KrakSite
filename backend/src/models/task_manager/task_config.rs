@@ -7,7 +7,7 @@ pub struct LabelsConfig {
     pub labels: Vec<Label>,
 }
 
-#[derive(Serialize, Deserialize, ToSchema, Default, Debug)]
+#[derive(Serialize, Deserialize, ToSchema, Default, Debug, Clone)]
 #[serde(rename_all(deserialize = "kebab-case"))]
 pub struct Label {
     pub id: String,
@@ -24,9 +24,12 @@ pub struct TaskConfig {
     #[serde(default)]
     pub assets: Vec<TaskAsset>,
     pub display: TaskDisplay,
+    pub task_release_phase: String,
 }
 
-#[derive(Serialize, Deserialize, ToSchema, Debug, Clone, Default)]
+#[derive(
+    Serialize, Deserialize, ToSchema, Debug, Clone, Default, Eq, Ord, PartialEq, PartialOrd,
+)]
 pub struct TaskMeta {
     pub id: String,
     pub name: String,
@@ -36,7 +39,9 @@ pub struct TaskMeta {
     pub authors: Vec<TaskAuthor>,
 }
 
-#[derive(Serialize, Deserialize, ToSchema, Debug, Clone, Default)]
+#[derive(
+    Serialize, Deserialize, ToSchema, Debug, Clone, Default, Eq, Ord, PartialEq, PartialOrd,
+)]
 pub struct TaskAuthor {
     pub name: String,
     #[serde(default)]
@@ -50,8 +55,10 @@ pub struct TaskDisplay {
 
 #[derive(Serialize, Deserialize, ToSchema, Debug, Clone, Default)]
 pub struct Coordinates {
-    pub x: f32,
-    pub y: f32,
+    #[serde(rename(deserialize = "x"))]
+    pub lng: f32,
+    #[serde(rename(deserialize = "y"))]
+    pub lat: f32,
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Debug)]

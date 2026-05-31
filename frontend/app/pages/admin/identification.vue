@@ -25,6 +25,25 @@ const selectedTagLabel = computed(() =>
   availableTags.value?.find(t => t.id === selectedTagId.value)?.name ?? selectedTagId.value,
 )
 
+const foodPreferenceLabel = computed(() => {
+  switch (userInfo.value?.food_preference) {
+    case 'Standard':
+      return 'Standardowe'
+    case 'Vegetarian':
+      return 'Wegetariańskie'
+    default:
+      return userInfo.value?.food_preference ?? '—'
+  }
+})
+
+const participantAge = computed(() => {
+  const birthYear = Number(userInfo.value?.birth_year)
+  if (!birthYear || Number.isNaN(birthYear))
+    return '—'
+
+  return String(new Date().getFullYear() - birthYear)
+})
+
 function dismiss() {
   userInfo.value = null
   currentId.value = ''
@@ -43,11 +62,15 @@ async function onDetect(detectedCodes: DetectedBarcode[]) {
 
   const code = detectedCodes[0]!.rawValue
   currentId.value = code
-  isLoading.value = true
 
+  identify()
+}
+
+async function identify() {
+  isLoading.value = true
   try {
     userInfo.value = await $auth('/admin/identification/identify/{id}', {
-      path: { id: code },
+      path: { id: currentId.value },
       ignoreResponseError: false,
     })
   } catch (error: unknown) {
@@ -128,6 +151,12 @@ function onCameraError(error: Error) {
         value-key="value"
         class="w-full"
       />
+      <UInput v-model="currentId" placeholder="Ręczne wpisywanie kodu" size="sm" class="w-full" />
+      <UButton
+        size="sm" class="w-full" :loading="isLoading" @click="identify"
+      >
+        Zidentyfikuj
+      </UButton>
     </div>
 
     <div class="flex-1 relative min-h-0 bg-background">
@@ -173,14 +202,68 @@ function onCameraError(error: Error) {
                 zeskanowano
               </p>
               <h1 class="mt-2 break-words text-3xl font-bold tracking-tight">
-                {{ userInfo.username }}
+                {{ userInfo.full_name }}
               </h1>
               <p class="mt-2 break-words text-sm text-muted">
+                {{ userInfo.username }}
+              </p>
+              <p class="mt-1 break-words text-sm text-muted">
                 {{ userInfo.email }}
+              </p>
+              <p class="mt-3 inline-flex items-center border px-2 py-1 text-sm font-medium" :class="userInfo.is_underage ? 'border-warning text-warning bg-warning/10' : 'border-success text-success bg-success/10'">
+                {{ userInfo.is_underage ? 'Niepełnoletni' : 'Pełnoletni' }}
               </p>
             </div>
 
             <div class="space-y-px">
+              <div class="bg-default p-5 flex items-center justify-between gap-4">
+                <div>
+                  <p class="font-medium">
+                    Dane uczestnika
+                  </p>
+                  <dl class="mt-2 grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
+                    <div>
+                      <dt class="text-muted">
+                        Szkoła
+                      </dt>
+                      <dd class="break-words">
+                        {{ userInfo.school || '—' }}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt class="text-muted">
+                        Wiek / rok urodzenia
+                      </dt>
+                      <dd>
+                        {{ participantAge }} / {{ userInfo.birth_year || '—' }}
+                      </dd>
+                    </div>
+                  </dl>
+                </div>
+                <UIcon
+                  name="mdi:account-details"
+                  class="size-5 shrink-0 text-muted"
+                />
+              </div>
+
+              <div class="bg-default p-5 flex items-center justify-between gap-4">
+                <div>
+                  <p class="font-medium">
+                    Preferencje żywieniowe
+                  </p>
+                  <p class="text-sm text-muted mt-1">
+                    {{ foodPreferenceLabel }}
+                  </p>
+                  <p v-if="userInfo.food_allergies" class="text-sm text-muted mt-1 break-words">
+                    Alergie: {{ userInfo.food_allergies }}
+                  </p>
+                </div>
+                <UIcon
+                  name="mdi:food-apple"
+                  class="size-5 shrink-0 text-muted"
+                />
+              </div>
+
               <div class="bg-default p-5 flex items-center justify-between gap-4">
                 <div>
                   <p class="font-medium">
