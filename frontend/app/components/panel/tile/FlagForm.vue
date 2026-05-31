@@ -2,12 +2,9 @@
 import type { FormSubmitEvent } from '@nuxt/ui'
 import * as party from 'party-js'
 
-const { showHeading = true } = defineProps<{
-  showHeading?: boolean
+const emit = defineEmits<{
+  submitted: []
 }>()
-
-const emit = defineEmits<{ success: [] }>()
-
 const flagPattern = /^hack4KrakCTF\{.*\}$/
 const schema = z.object({
   flag: z.string({ error: 'Wpisz flagę' })
@@ -43,12 +40,10 @@ function triggerShake() {
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   submitting.value = true
-
   const response = await $auth('/flag/submit', {
     method: 'POST',
     body: { flag: event.data.flag },
   }).catch(() => undefined)
-
   submitting.value = false
 
   if (!response) {
@@ -57,7 +52,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   }
 
   const target = event.target as HTMLElement | undefined
-
   if (target) {
     party.confetti(target, {
       count: party.variation.range(300, 700),
@@ -69,10 +63,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   const taskName = response.task_title
 
   burstPoints.value = { id: Date.now(), value: earned, task: taskName }
-
   if (burstTimer)
     clearTimeout(burstTimer)
-
   burstTimer = setTimeout(() => {
     burstPoints.value = null
   }, 2600)
@@ -84,9 +76,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     duration: 8000,
     icon: 'pixelarticons:trophy',
   })
-
   state.flag = undefined
-  emit('success')
+  emit('submitted')
 }
 
 function onError() {
@@ -100,31 +91,44 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <UForm
-    ref="formRef"
-    :schema="schema"
-    :state="state"
-    class="relative space-y-3 flex flex-col text-center items-center justify-center"
-    :class="{ 'shake-x': shaking }"
-    @submit="onSubmit"
-    @error="onError"
-  >
-    <h3 v-if="showHeading" class="font-bold text-xl">
-      Podaj Flagę
-    </h3>
+  <section class="relative overflow-hidden border-2 border-primary bg-default p-5 lg:p-6">
+    <div class="mb-4 flex items-center gap-2">
+      <UIcon name="pixelarticons:flag" class="size-5 text-primary" />
+      <PanelSectionTitle>
+        Prześlij flagę
+      </PanelSectionTitle>
+    </div>
 
-    <UFormField name="flag">
-      <UInput
-        v-model="state.flag"
-        class="w-80"
-        :ui="{ base: 'h-12 rounded-none' }"
-        placeholder="hack4KrakCTF{...}"
-      />
-    </UFormField>
+    <UForm
+      ref="formRef"
+      :schema="schema"
+      :state="state"
+      class="flex flex-col gap-3 sm:flex-row sm:items-start"
+      :class="{ 'shake-x': shaking }"
+      @submit="onSubmit"
+      @error="onError"
+    >
+      <UFormField name="flag" class="flex-1">
+        <UInput
+          v-model="state.flag"
+          placeholder="hack4KrakCTF{...}"
+          autocomplete="off"
+          class="w-full"
+          :ui="{ base: 'h-12 font-pixelify text-base tracking-wider' }"
+        />
+      </UFormField>
 
-    <ElevatedButton class="w-40 mt-3" type="submit" :disabled="submitting">
-      Sprawdź
-    </ElevatedButton>
+      <ElevatedButton type="submit" :disabled="submitting">
+        <template #leading>
+          <UIcon
+            :name="submitting ? 'pixelarticons:loader' : 'pixelarticons:check'"
+            class="size-4"
+            :class="{ 'animate-spin': submitting }"
+          />
+        </template>
+        {{ submitting ? 'Sprawdzam' : 'Sprawdź flagę' }}
+      </ElevatedButton>
+    </UForm>
 
     <Transition name="burst">
       <div
@@ -145,7 +149,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </Transition>
-  </UForm>
+  </section>
 </template>
 
 <style scoped>
@@ -178,18 +182,15 @@ onBeforeUnmount(() => {
     transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.4),
     opacity 0.25s ease-out;
 }
-
 .burst-leave-active {
   transition:
     transform 0.45s ease-in,
     opacity 0.4s ease-in;
 }
-
 .burst-enter-from {
   transform: scale(0.4);
   opacity: 0;
 }
-
 .burst-leave-to {
   transform: translateY(-30px) scale(0.95);
   opacity: 0;
