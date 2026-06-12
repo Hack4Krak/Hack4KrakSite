@@ -35,6 +35,7 @@ pub enum TeamError {
     TeamNotFound,
     InvalidRegistrationPeriod,
     CannotRegisterInInternalMode,
+    CannotRemoveTeamLeaderFromTeam,
     UserDoesntBelongToAnyTeam { username: String },
     UserDoesntHaveAnyInvitations,
     UserDoesntBelongToYourTeam,
@@ -45,6 +46,7 @@ pub enum TeamError {
     UserAlreadyInvited,
     TeamIsFull { max_size: u16 },
     TeamLeaderNotFound,
+    TeamLeaderCannotLeaveTeam,
     InvalidNumberOfTeams { max_teams: usize },
 }
 
@@ -62,11 +64,13 @@ impl error::ResponseError for TeamError {
             | TeamError::UserDoesntBelongToAnyTeam { .. }
             | TeamError::UserDoesntBelongToYourTeam
             | TeamError::UserIsNotTeamLeader
-            | TeamError::UserCantRemoveTeamLeader => StatusCode::FORBIDDEN,
+            | TeamError::UserCantRemoveTeamLeader
+            | TeamError::TeamLeaderCannotLeaveTeam => StatusCode::FORBIDDEN,
             TeamError::TeamNotFound
             | TeamError::UserDoesntHaveAnyInvitations
             | TeamError::UserDoesntHaveInvitationsFromTeam { .. }
             | TeamError::TeamLeaderNotFound => StatusCode::NOT_FOUND,
+            TeamError::CannotRemoveTeamLeaderFromTeam => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 

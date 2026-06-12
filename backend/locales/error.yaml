@@ -72,6 +72,7 @@ TeamError:
   TeamNotFound: "Zespół nie został znaleziony"
   InvalidRegistrationPeriod: "Rejestracja jest niedostępna poza wyznaczonym okresem"
   CannotRegisterInInternalMode: "Nie możesz samemu stworzyć drużyny na to wydarzenie"
+  CannotRemoveTeamLeaderFromTeam: "Nie można usunąć lidera z zespołu."
   UserDoesntBelongToAnyTeam: "Użytkownik {username} nie należy do żadnego zespołu"
   UserDoesntHaveAnyInvitations: "Użytkownik nie ma żadnych zaproszeń"
   UserDoesntBelongToYourTeam: "Użytkownik nie należy do twojego zespołu"
@@ -82,6 +83,7 @@ TeamError:
   UserAlreadyInvited: "Użytkownik już ma zaproszenie do tego zespołu"
   TeamIsFull: "Zespół jest pełny. Maksymalna liczba członków to {max_size}"
   TeamLeaderNotFound: "Lider zespołu nie został znaleziony"
+  TeamLeaderCannotLeaveTeam: "Lider zespołu nie może opuścić zespołu."
   InvalidNumberOfTeams: "Nieprawidłowa liczba zespołów. Maksymalna liczba zespołów to {max_teams}"
 
 ParticipationError:
