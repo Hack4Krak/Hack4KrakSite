@@ -9,11 +9,10 @@
     <img alt="Last commit" src="https://img.shields.io/github/last-commit/Hack4Krak/Hack4KrakSite?color=ffb900&label=last%20commit&style=for-the-badge" />
 </p>
 
-**Welcome to the official Hack4Krak website repository!**
+**Welcome to the source code of [hack4krak.pl](https://hack4krak.pl/) - the official Hack4Krak website!**
 
-Hack4Krak is the largest Capture The Flag (CTF) competition for high schools in Poland, bringing together the brightest
-young minds in cybersecurity. This event challenges participants with exciting puzzles and security challenges,
-fostering learning and collaboration in the world of ethical hacking!
+Hack4Krak organizes Capture The Flag (CTF) competitions in Poland, where students solve cybersecurity-related
+challenges. Our 2026 edition was the largest on-site CTF for high schoolers in the country.
 
 ## 📅 Project status
 
