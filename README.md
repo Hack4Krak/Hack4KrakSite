@@ -17,12 +17,15 @@ fostering learning and collaboration in the world of ethical hacking!
 
 ## 📅 Project status
 
-We managed to host our first event, but website is still **in development**!
-We have to complete more features and fix some bugs before we can call it a day.
+We have already hosted three events, but the website is still **in development**!
 
-- ✅ `28/02/2025` - Successfully completed CTF for [31st highschool](https://www.lo31.krakow.pl/) in Kraków
-- ✅ `30/05/2025` - CTF for all primary schools in Kraków.
-- 🚧 `Q2 2026` - CTF for all high schools in Poland. In development
+There are many ideas and improvements planned for upcoming editions.
+Check out the [issues](https://github.com/Hack4Krak/Hack4KrakSite/issues) page to see the current status.
+
+* ✅ `28/02/2025` – Successfully completed CTF for [31st High School](https://www.lo31.krakow.pl/) in Kraków.
+* ✅ `30/05/2025` – CTF for all primary schools in Kraków.
+* ✅ `23/05/2026` – The largest on-site CTF competition for high school students in Poland.
+* ❓ `???` – Possible future editions?
 
 ## 🚜 Development
 
