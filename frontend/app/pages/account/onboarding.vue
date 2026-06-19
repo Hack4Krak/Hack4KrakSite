@@ -14,6 +14,11 @@ const STEP_TITLES = ['Powitanie', 'Pytania profilujące', 'Jak nas znalazłeś?'
 const stepIndex = ref(0)
 const direction = ref<'forward' | 'backward'>('forward')
 const submitting = ref(false)
+const route = useRoute()
+const callback = computed(() => {
+  const value = route.query.callback?.toString()
+  return value?.startsWith('/') ? value : undefined
+})
 
 const form = reactive<FormState>({
   organization: '',
@@ -73,7 +78,7 @@ async function onSubmit() {
     })
 
     await refreshNuxtData()
-    await navigateTo('/account/events')
+    await navigateTo(callback.value || '/account/events')
   } catch (error) {
     if (!(error instanceof FetchError)) {
       throw error

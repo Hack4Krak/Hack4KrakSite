@@ -15,3 +15,4 @@ pub mod qr_code;
 pub mod real_ip;
 pub mod sse_event;
 pub mod success_response;
+pub mod validation;
