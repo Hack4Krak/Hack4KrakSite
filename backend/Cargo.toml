@@ -29,12 +29,12 @@ migration = { path = "migration" }
 hack4krak-macros = { path = "macros" }
 
 # Web
-actix-web = { version = "4.13.0", features = ["cookies"] }
+actix-web = { version = "4.14.0", features = ["cookies"] }
 actix-web-validation = { version = "0.8.0", features = ["validator"] }
 actix-cors = "0.7.1"
 actix-governor = "0.10.0"
 actix-files = "0.6.10"
-actix-http = "3.12.1"
+actix-http = "3.13.1"
 
 # Serde
 serde = { version = "1.0.228", features = ["derive"] }
@@ -46,10 +46,10 @@ sea-orm.workspace = true
 tokio.workspace = true
 
 # Utils
-regex = "1.12.3"
+regex = "1.12.4"
 futures-util = "0.3.32"
 reqwest = { version = "0.13.4", features = ["json"] }
-uuid = { version = "1.23.2", features = ["serde", "v4"] }
+uuid = { version = "1.23.4", features = ["serde", "v4"] }
 envy = "0.4.2"
 dotenvy = "0.15.7"
 thiserror = "2.0.18"
@@ -57,7 +57,7 @@ tracing = "0.1.44"
 tracing-subscriber = "0.3.23"
 argon2 = { version =  "0.6.0-rc.8", features = ["password-hash"] }
 jsonwebtoken = {  version = "10.4.0", features = ["rust_crypto"] }
-chrono = "0.4.44"
+chrono = "0.4.45"
 oauth2 = { version = "5.0.0", features = ["reqwest"] }
 lettre = "0.11.22"
 dashmap = "6.2.1"
@@ -65,7 +65,7 @@ validator = { version = "0.20.0", features = ["derive"] }
 sha2 = "0.11.0"
 url = "2.5.8"
 async-stream = "0.3.6"
-rand = "0.10.1"
+rand = "0.10.2"
 prometheus = "0.14.0"
 askama = "0.16.0"
 qrcode = { version = "0.14.1", default-features = false, features = ["image"] }
@@ -74,4 +74,4 @@ image = { version = "0.25.10", default-features = false, features = ["png"] }
 [dev-dependencies]
 quoted_printable = "0.5.2"
 testcontainers = "0.27.3"
-mockall = "0.14.0"
+mockall = "0.15.0"
