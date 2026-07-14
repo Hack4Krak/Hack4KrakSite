@@ -7,6 +7,10 @@ const { proxy } = useScriptUmamiAnalytics()
 const { data: registrationInformation } = await useApi('/event/registration')
 const registrationOpen = computed(() => registrationInformation.value?.is_open ?? false)
 
+const { data: eventInformation } = await useApi('/event/info')
+const [, eventEnd] = await useEventStartAndEnd(eventInformation)
+const eventEnded = computed(() => eventEnd ? Date.now() >= eventEnd.getTime() : false)
+
 function trackRegistrationCta() {
   proxy.track('registration_cta_click', {
     location: 'event_banner',
@@ -48,7 +52,11 @@ function trackRegistrationCta() {
       </div>
 
       <div class="flex flex-col items-center justify-center gap-3 px-6 py-6 lg:px-8 lg:py-8">
+        <p v-if="eventEnded" class="text-center text-sm text-muted">
+          Dziękujemy za udział. Do zobaczenia na kolejnej edycji!
+        </p>
         <ElevatedButton
+          v-else
           to="/register"
           class="text-base"
           :disabled="!registrationOpen"
