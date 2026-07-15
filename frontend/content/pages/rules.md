@@ -2,7 +2,9 @@
 title: Regulamin Hack4Krak - edycja dla Szkół Średnich w Małopolsce
 description: Regulamin Hack4Krak - edycja dla Szkół Średnich w Małopolsce
 ---
-
+::caution
+Ten regulamin dotyczy poprzedniej edycji wydarzenia, która odbyła się w **Maju 2025**.
+::
 ## 1. Postanowienia ogólne
 
 1. Organizatorem Hack4Krak - edycji dla Szkół Średnich w Małopolsce (zwanego dalej CTF) jest Fundacja Ambasada Społeczności z siedzibą przy ul. Zabłocie 20.22/207, 30-701 Kraków, wpisana do KRS pod numerem 0000764613.
