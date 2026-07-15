@@ -9,20 +9,22 @@
     <img alt="Last commit" src="https://img.shields.io/github/last-commit/Hack4Krak/Hack4KrakSite?color=ffb900&label=last%20commit&style=for-the-badge" />
 </p>
 
-**Welcome to the official Hack4Krak website repository!**
+**Welcome to the source code of [hack4krak.pl](https://hack4krak.pl/) - the official Hack4Krak website!**
 
-Hack4Krak is the largest Capture The Flag (CTF) competition for high schools in Poland, bringing together the brightest
-young minds in cybersecurity. This event challenges participants with exciting puzzles and security challenges,
-fostering learning and collaboration in the world of ethical hacking!
+Hack4Krak organizes Capture The Flag (CTF) competitions in Poland, where students solve cybersecurity-related
+challenges. Our 2026 edition was the largest on-site CTF for high schoolers in the country.
 
 ## 📅 Project status
 
-We managed to host our first event, but website is still **in development**!
-We have to complete more features and fix some bugs before we can call it a day.
+We have already hosted three events, but the website is still **in development**!
 
-- ✅ `28/02/2025` - Successfully completed CTF for [31st highschool](https://www.lo31.krakow.pl/) in Kraków
-- ✅ `30/05/2025` - CTF for all primary schools in Kraków.
-- 🚧 `Q2 2026` - CTF for all high schools in Poland. In development
+There are many ideas and improvements planned for upcoming editions.
+Check out the [issues](https://github.com/Hack4Krak/Hack4KrakSite/issues) page to see the current status.
+
+* ✅ `28/02/2025` – Successfully completed CTF for [31st High School](https://www.lo31.krakow.pl/) in Kraków.
+* ✅ `30/05/2025` – CTF for all primary schools in Kraków.
+* ✅ `23/05/2026` – The largest on-site CTF competition for high school students in Poland.
+* ❓ `???` – Possible future editions?
 
 ## 🚜 Development
 

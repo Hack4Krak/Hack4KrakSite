@@ -149,22 +149,39 @@ impl teams::Model {
             return Err(Error::Team(UserDoesntBelongToYourTeam));
         }
 
-        if user_to_remove.is_leader {
-            return Err(Error::Team(UserCantRemoveTeamLeader));
+        match Self::remove_user(database, user).await {
+            Err(Error::Team(CannotRemoveTeamLeaderFromTeam)) => {
+                Err(Error::Team(UserCantRemoveTeamLeader))
+            }
+            result => result,
         }
-
-        Self::remove_user(database, user_to_remove).await
     }
 
     pub async fn remove_user(
         database: &DatabaseConnection,
         user: users::Model,
     ) -> Result<(), Error> {
+        if user.is_leader {
+            return Err(Error::Team(CannotRemoveTeamLeaderFromTeam));
+        }
+
         let mut active_user: users::ActiveModel = user.into();
         active_user.team = Set(None);
         active_user.update(database).await?;
 
         Ok(())
+    }
+
+    pub async fn leave_team(
+        database: &DatabaseConnection,
+        user: users::Model,
+    ) -> Result<(), Error> {
+        match Self::remove_user(database, user).await {
+            Err(Error::Team(CannotRemoveTeamLeaderFromTeam)) => {
+                Err(Error::Team(TeamLeaderCannotLeaveTeam))
+            }
+            result => result,
+        }
     }
 
     pub async fn rename(
