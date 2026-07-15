@@ -12,6 +12,15 @@ function close() {
 
 const { data: tasks } = useLazyApi('/tasks/list')
 
+const { data: completedTasks } = useAuth('/teams/membership/completed_tasks', {
+  onResponseError: undefined,
+  redirect: 'error',
+})
+
+const completedTaskIds = computed(() => new Set(
+  Array.isArray(completedTasks.value) ? completedTasks.value : [],
+))
+
 function openFlagModal() {
   close()
   openFlagSubmitModal()
@@ -55,10 +64,12 @@ const groups = computed(() => {
         ...(isLoggedIn.value && team.value?.team_name
           ? [{ label: 'Złóż flagę', icon: 'pixelarticons:flag', kbds: ['S', 'F'], onSelect: openFlagModal }]
           : []),
-        ...(tasks.value ?? []).map(task => ({
+        ...(tasks.value ?? []).filter(task => task.id).map(task => ({
+          id: `task-${task.id}`,
+          taskId: task.id,
           label: task.name,
           icon: 'pixelarticons:flag',
-          to: `/tasks/story/${task.id}`,
+          to: `/tasks/description/${task.id}`,
           onSelect: close,
         })),
       ],
@@ -119,7 +130,12 @@ const groups = computed(() => {
       items: [headerItem, ...group.items],
       postFilter(searchTerm: string, filteredItems: any[]) {
         const rest = filteredItems.filter(i => i.id !== headerItem.id)
-        return (!searchTerm && isCollapsed(group.id)) ? [headerItem] : [headerItem, ...rest]
+        if (!searchTerm && isCollapsed(group.id)) return [headerItem]
+        if (!searchTerm && group.id === 'tasks') {
+          const incomplete = rest.filter((i: any) => !i.taskId || !completedTaskIds.value.has(i.taskId))
+          return [headerItem, ...incomplete]
+        }
+        return [headerItem, ...rest]
       },
     }
   })
