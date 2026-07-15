@@ -3,7 +3,7 @@ title: Regulamin Hack4Krak - edycja dla Szkół Średnich w Małopolsce
 description: Regulamin Hack4Krak - edycja dla Szkół Średnich w Małopolsce
 ---
 ::caution
-Ten regulamin dotyczy poprzedniej edycji wydarzenia, która odbyła się w **Maju 2025**.
+Ten regulamin dotyczy poprzedniej edycji wydarzenia, która odbyła się w **Maju 2026**.
 ::
 ## 1. Postanowienia ogólne
 
