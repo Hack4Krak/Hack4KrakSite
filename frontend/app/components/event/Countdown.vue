@@ -15,9 +15,10 @@ const { data: eventInformation } = await useApi('/event/info', {
   onResponseError: undefined,
 })
 
-const [eventStart] = await useEventStartAndEnd(eventInformation)
+const [eventStart, eventEnd] = await useEventStartAndEnd(eventInformation)
 const now = ref(Date.now())
 const eventStarted = computed(() => eventStart ? now.value >= eventStart.getTime() : false)
+const eventEnded = computed(() => eventEnd ? now.value >= eventEnd.getTime() : false)
 </script>
 
 <template>
@@ -62,6 +63,23 @@ const eventStarted = computed(() => eventStart ? now.value >= eventStart.getTime
   </template>
 
   <div
+    v-else-if="eventEnded"
+    class="font-pixelify text-primary text-center"
+    :class="{
+      'text-xl': size === 'sm',
+      'text-2xl': size === 'md' || size === 'lg',
+    }"
+  >
+    <template v-if="size === 'lg'">
+      Wydarzenie się zakończyło! <br>
+      Do zobaczenia w przyszłości
+    </template>
+    <template v-else>
+      Wydarzenie się zakończyło!
+    </template>
+  </div>
+
+  <div
     v-else-if="eventStarted"
     class="font-pixelify text-primary text-center"
     :class="{
@@ -69,6 +87,9 @@ const eventStarted = computed(() => eventStart ? now.value >= eventStart.getTime
       'text-2xl': size === 'md' || size === 'lg',
     }"
   >
+    <Timer v-if="eventEnd" :target="eventEnd" @complete="now = Date.now()">
+      <template #default />
+    </Timer>
     <template v-if="size === 'lg'">
       W trakcie! <br>
       Trzymamy za Was kciuki
