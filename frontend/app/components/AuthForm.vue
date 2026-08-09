@@ -62,7 +62,8 @@ async function onSubmit(event: Schema) {
       })
       toast.add({ title: 'Sukces', description: 'Pomyślnie zalogowano!', color: 'success' })
       await navigateTo('/panel/event')
-    } else {
+    }
+    else {
       proxy.track('account_registration_success', {
         method: 'email',
       })
