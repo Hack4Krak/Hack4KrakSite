@@ -25,7 +25,7 @@
     "@nuxt/hints": "1.0.0-alpha.6",
     "@nuxt/image": "2.0.0",
     "@nuxt/scripts": "^1.0.6",
-    "@nuxt/ui": "4.5.1",
+    "@nuxt/ui": "4.8.1",
     "@nuxtjs/mdc": "0.18.2",
     "@nuxtjs/seo": "4.0.2",
     "@takumi-rs/core": "^0.73.1",
