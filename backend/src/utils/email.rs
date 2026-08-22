@@ -98,7 +98,7 @@ impl Email {
         template: Box<dyn EmailTemplate>,
         meta: Option<EmailMeta>,
     ) -> Self {
-        let full_email = format!("{local_email_part}@{}", &EnvConfig::get().domain);
+        let full_email = format!("{local_email_part}@{}", EnvConfig::get().domain);
 
         Email {
             meta,
