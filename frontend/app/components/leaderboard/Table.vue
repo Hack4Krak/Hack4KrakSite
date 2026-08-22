@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { ApiResponse } from '#open-fetch'
 import type { TableColumn } from '@nuxt/ui'
 import type { Row, TableMeta } from '@tanstack/vue-table'
+import type { ApiResponse } from '#open-fetch'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
@@ -153,7 +153,8 @@ function getTaskIcon(teamId: string, taskId: string) {
       <div v-if="row.original.tasks?.[task.id]">
         <UIcon
           :name="getTaskIcon(row.original.team_id, task.id).icon"
-          :class="`${getTaskIcon(row.original.team_id, task.id).color} text-xl`"
+          class="text-xl"
+          :class="getTaskIcon(row.original.team_id, task.id).color"
           :title="dayjs.utc(row.original.tasks[task.id]).tz(targetTimezone).format('DD.MM.YYYY HH:mm')"
         />
       </div>
