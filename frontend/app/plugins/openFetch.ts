@@ -76,7 +76,7 @@ export default defineNuxtPlugin((nuxtApp) => {
             return
           }
 
-          const response = await $fetch.raw('/auth/refresh', {
+          const response = await globalThis.$fetch.raw('/auth/refresh', {
             method: 'POST',
             baseURL: clients.auth.baseURL,
             headers,

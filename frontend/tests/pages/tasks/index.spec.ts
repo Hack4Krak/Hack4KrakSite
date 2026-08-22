@@ -1,5 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi } from 'vitest'
+import { ref } from 'vue'
 import TasksPage from '@/pages/tasks/index.vue'
 
 // Maplibre GL seems to have problems with tests, so we have to mock it
@@ -18,6 +19,9 @@ vi.mock('reka-ui', async (importOriginal) => {
     TooltipProvider: { template: '<div><slot /></div>' },
     TooltipTrigger: { template: '<button><slot /></button>' },
     TooltipContent: { template: '<div><slot /></div>' },
+    // @nuxt/ui >= 4.11 calls this in `Tooltip.vue`'s setup, and the stubbed
+    // provider above no longer supplies the real context
+    injectTooltipProviderContext: () => ({ content: ref({}) }),
   }
 })
 
