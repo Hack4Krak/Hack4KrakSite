@@ -28,7 +28,7 @@ jobs:
           install: false
 
       - name: Install dependencies
-        run: pnpm frontend:install --frozen-lockfile
+        run: pnpm --filter hack4krak-frontend install --frozen-lockfile
 
       - name: Run lint
         run: pnpm frontend:lint
