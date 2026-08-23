@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-bun backend:openapi-cli
-bun lint
+pnpm backend:openapi-cli
+pnpm lint

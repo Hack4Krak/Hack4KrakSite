@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.10.0",
-    "@norbiros/nuxt-auto-form": "0.6.2",
+    "@norbiros/nuxt-auto-form": "0.6.3",
     "@nuxt/content": "3.15.2",
     "@nuxt/hints": "1.1.4",
     "@nuxt/image": "2.1.0",
@@ -47,7 +47,7 @@
     "@iconify-json/hugeicons": "~1.2.33",
     "@iconify-json/ic": "~1.2.4",
     "@iconify-json/logos": "~1.2.13",
-    "@iconify-json/lucide": "~1.2.125",
+    "@iconify-json/lucide": "~1.2.124",
     "@iconify-json/mdi": "~1.2.3",
     "@iconify-json/pixel": "~1.2.2",
     "@iconify-json/pixelarticons": "~1.2.9",
