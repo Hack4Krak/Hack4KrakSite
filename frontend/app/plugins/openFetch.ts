@@ -33,7 +33,12 @@ async function handleResponseError(
 }
 
 export default defineNuxtPlugin((nuxtApp) => {
-  const clients = useRuntimeConfig().public.openFetch
+  const openFetch = useRuntimeConfig().public.openFetch
+  // Override both URLs using NUXT_PUBLIC_OPEN_FETCH_API_BASE_URL
+  const clients = {
+    api: openFetch.api,
+    auth: { ...openFetch.auth, baseURL: openFetch.api.baseURL },
+  }
   const localFetch = useRequestFetch()
 
   const headers = import.meta.server ? useRequestHeaders(['cookie']) || {} : {}
