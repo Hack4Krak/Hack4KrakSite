@@ -1,0 +1,17 @@
+packages:
+  - frontend
+  - backend
+
+# Nuxt and its module ecosystem expect a flat node_modules layout
+shamefullyHoist: true
+strictPeerDependencies: false
+
+allowBuilds:
+  esbuild: false
+  unrs-resolver: false
+  vue-demi: false
+
+# Our own package, released to carry the nuxt/ui#6791 fix; safe to take before
+# it clears the minimum release age. Remove once it is a day old.
+minimumReleaseAgeExclude:
+  - '@norbiros/nuxt-auto-form@0.6.3'

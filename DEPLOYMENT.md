@@ -78,7 +78,7 @@ Requirements for running the production servers are:
 To start the production services, you can use the following command:
 
 ```bash
-bun docker:<PROFILE-NAME>
+pnpm docker:<PROFILE-NAME>
 ```
 
 ### Environment variables
