@@ -1,13 +1,17 @@
 use crate::entities::{teams, users};
+use crate::models::user::validate_no_edge_whitespace;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::success_response::SuccessResponse;
 use actix_web::{HttpResponse, patch, web};
+use actix_web_validation::Validated;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
+use validator::Validate;
 
-#[derive(Serialize, Deserialize, ToSchema)]
+#[derive(Serialize, Deserialize, ToSchema, Validate, Debug)]
 pub struct ChangeLeaderModel {
+    #[validate(custom(function = "validate_no_edge_whitespace"))]
     pub new_leader_username: String,
 }
 
@@ -27,7 +31,7 @@ pub struct ChangeLeaderModel {
 #[patch("/change_leader")]
 pub async fn change_leader(
     app_state: web::Data<app_state::AppState>,
-    model: web::Json<ChangeLeaderModel>,
+    Validated(model): Validated<web::Json<ChangeLeaderModel>>,
     user: users::Model,
 ) -> Result<HttpResponse, Error> {
     let new_leader =

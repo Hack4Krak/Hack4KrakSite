@@ -1,6 +1,7 @@
 use crate::entities::{teams, users};
 use crate::models::task_manager::registration_config::RegistrationMode;
 use crate::models::user::validate_name_chars;
+use crate::models::user::validate_no_edge_whitespace;
 use crate::routes::teams::AuthMiddleware;
 use crate::routes::teams::TeamError;
 use crate::utils::app_state;
@@ -16,9 +17,9 @@ use validator::Validate;
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, Validate)]
 pub struct CreateTeamModel {
-    #[validate(length(min = 3, max = 32), custom(function = "validate_name_chars"))]
+    #[validate(length(min = 3, max = 32), custom(function = "validate_name_chars"), custom(function = "validate_no_edge_whitespace"))]
     pub team_name: String,
-    #[validate(length(min = 3, max = 128), custom(function = "validate_name_chars"))]
+    #[validate(length(min = 3, max = 128), custom(function = "validate_name_chars"), custom(function = "validate_no_edge_whitespace"))]
     pub organization: Option<String>,
 }
 

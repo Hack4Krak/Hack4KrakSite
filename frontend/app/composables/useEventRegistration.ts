@@ -165,10 +165,10 @@ export default function useEventRegistration() {
       await $auth('/event/participate', {
         method: 'POST',
         body: {
-          full_name: personal.fullName,
-          school: personal.school,
-          birth_year: personal.birthYear,
-          phone: personal.phone,
+          full_name: personal.fullName.trim(),
+          school: personal.school.trim(),
+          birth_year: personal.birthYear.trim(),
+          phone: personal.phone.trim(),
           is_underage: personal.isUnderage,
           emergency_contact_name: personal.emergencyContactName.trim() || null,
           emergency_contact_phone: personal.emergencyContactPhone.trim() || null,
