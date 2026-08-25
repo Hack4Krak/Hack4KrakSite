@@ -26,7 +26,7 @@ pub async fn setup_schema(database: &DbConn, entity: impl EntityTrait) {
 
     let stmt: TableCreateStatement = schema.create_table_from_entity(entity);
     database
-        .execute(database.get_database_backend().build(&stmt))
+        .execute_raw(database.get_database_backend().build(&stmt))
         .await
         .unwrap();
 }

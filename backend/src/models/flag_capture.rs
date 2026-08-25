@@ -3,9 +3,7 @@ use crate::routes::flag::FlagError;
 use crate::utils::error::Error;
 use chrono::Utc;
 use sea_orm::ActiveValue::Set;
-use sea_orm::{
-    ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, TryInsertResult, sea_query,
-};
+use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, TryInsertResult};
 
 impl flag_capture::Model {
     pub async fn completed(
@@ -21,15 +19,7 @@ impl flag_capture::Model {
             submitted_at: Set(Utc::now().naive_utc()),
             ..Default::default()
         })
-        .on_conflict(
-            sea_query::OnConflict::columns(vec![
-                flag_capture::Column::Team,
-                flag_capture::Column::Task,
-            ])
-            .do_nothing()
-            .to_owned(),
-        )
-        .do_nothing()
+        .on_conflict_do_nothing_on(vec![flag_capture::Column::Team, flag_capture::Column::Task])
         .exec(database)
         .await?;
 

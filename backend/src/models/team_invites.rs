@@ -8,7 +8,7 @@ use crate::utils::error::Error;
 use sea_orm::ActiveValue::Set;
 use sea_orm::QueryFilter;
 use sea_orm::{
-    ActiveModelTrait, DatabaseConnection, EntityTrait, PaginatorTrait, TransactionTrait,
+    ActiveModelTrait, DatabaseConnection, EntityTrait, ExprTrait, PaginatorTrait, TransactionTrait,
 };
 use sea_orm::{ColumnTrait, ModelTrait};
 use uuid::Uuid;
