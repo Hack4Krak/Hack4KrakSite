@@ -10,8 +10,8 @@ const FOOD_OPTIONS = [
 ]
 
 const schema = z.object({
-  fullName: z.string().min(2, 'Podaj imię i nazwisko'),
-  school: z.string().min(3, 'Podaj nazwę szkoły'),
+  fullName: z.string().trim().min(2, 'Podaj imię i nazwisko'),
+  school: z.string().trim().min(3, 'Podaj nazwę szkoły'),
   birthYear: z.string()
     .regex(/^\d{4}$/, 'Podaj rok w formacie RRRR')
     .refine((y) => {
@@ -23,9 +23,9 @@ const schema = z.object({
   isUnderage: z.boolean(),
   foodPreference: z.union([z.literal('standard'), z.literal('vegetarian'), z.literal('')])
     .refine(Boolean, 'Wybierz preferencję żywieniową'),
-  emergencyContactName: z.string(),
-  emergencyContactPhone: z.string(),
-  emergencyContactEmail: z.union([z.string().email('Nieprawidłowy adres e-mail'), z.literal('')]),
+  emergencyContactName: z.string().trim(),
+  emergencyContactPhone: z.string().trim(),
+  emergencyContactEmail: z.union([z.string().trim().email('Nieprawidłowy adres e-mail'), z.literal('')]),
 }).superRefine((value, ctx) => {
   if (!value.isUnderage)
     return

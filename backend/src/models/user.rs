@@ -288,3 +288,10 @@ pub fn validate_name_chars(username: &str) -> Result<(), ValidationError> {
     }
     Err(ValidationError::new("invalid_username_chars"))
 }
+
+pub fn validate_no_edge_whitespace(value: &str) -> Result<(), ValidationError> {
+    if value.starts_with(char::is_whitespace) || value.ends_with(char::is_whitespace) {
+        return Err(ValidationError::new("edge_whitespace"));
+    }
+    Ok(())
+}

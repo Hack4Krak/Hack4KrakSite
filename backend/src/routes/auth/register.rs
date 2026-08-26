@@ -1,5 +1,6 @@
 use crate::models::user::Password;
 use crate::models::user::validate_name_chars;
+use crate::models::user::validate_no_edge_whitespace;
 use crate::services::authentication::AuthenticationService;
 use crate::utils::app_state;
 use crate::utils::error::Error;
@@ -12,11 +13,11 @@ use validator::Validate;
 
 #[derive(Serialize, Deserialize, ToSchema, Validate, Debug)]
 pub struct RegisterModel {
-    #[validate(length(min = 3, max = 32), custom(function = "validate_name_chars"))]
+    #[validate(length(min = 3, max = 32), custom(function = "validate_name_chars"), custom(function = "validate_no_edge_whitespace"))]
     pub name: String,
-    #[validate(length(min = 1, max = 64))]
+    #[validate(length(min = 1, max = 64), custom(function = "validate_no_edge_whitespace"))]
     pub first_name: String,
-    #[validate(email)]
+    #[validate(email, custom(function = "validate_no_edge_whitespace"))]
     pub email: String,
     #[validate(length(min = 8, max = 32))]
     pub password: Password,

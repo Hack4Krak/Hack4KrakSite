@@ -4,6 +4,7 @@ const NAME_CHARS_REGEX = /^[\p{Script=Latin}\p{N}\p{P} ]*$/u
 
 function zNameChars() {
   return z.string({ error: 'Pole jest wymagane' })
+    .trim()
     .regex(NAME_CHARS_REGEX, 'Pole może zawierać tylko litery alfabetu łacińskiego, cyfry, spacje i znaki interpunkcyjne')
 }
 
@@ -30,6 +31,7 @@ export function zUsername() {
 
 export function zFirstName() {
   return z.string({ error: 'Imię jest wymagane' })
+    .trim()
     .min(1, 'Pole nie może być puste')
     .max(64, 'Pole może mieć maksymalnie 64 znaki')
 }

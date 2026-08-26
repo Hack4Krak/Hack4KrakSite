@@ -1,5 +1,6 @@
 use crate::entities::teams;
 use crate::models::user::validate_name_chars;
+use crate::models::user::validate_no_edge_whitespace;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::success_response::SuccessResponse;
@@ -12,7 +13,7 @@ use validator::Validate;
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, Validate)]
 pub struct ChangeNameModel {
-    #[validate(length(min = 3, max = 32), custom(function = "validate_name_chars"))]
+    #[validate(length(min = 3, max = 32), custom(function = "validate_name_chars"), custom(function = "validate_no_edge_whitespace"))]
     pub new_name: String,
 }
 

@@ -1,14 +1,18 @@
 use crate::entities::{team_invites, teams, users};
+use crate::models::user::validate_no_edge_whitespace;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::success_response::SuccessResponse;
 use actix_web::{HttpResponse, post, web};
+use actix_web_validation::Validated;
 use serde::{Deserialize, Serialize};
 use std::ops::Deref;
 use utoipa::ToSchema;
+use validator::Validate;
 
-#[derive(Serialize, Deserialize, ToSchema)]
+#[derive(Serialize, Deserialize, ToSchema, Validate, Debug)]
 pub struct AddUserModel {
+    #[validate(custom(function = "validate_no_edge_whitespace"))]
     pub username: String,
 }
 
@@ -28,7 +32,7 @@ pub struct AddUserModel {
 #[post("/invite_user")]
 pub async fn invite_user(
     app_state: web::Data<app_state::AppState>,
-    model: web::Json<AddUserModel>,
+    Validated(model): Validated<web::Json<AddUserModel>>,
     team: teams::Model,
 ) -> Result<HttpResponse, Error> {
     let invited_user = users::Model::find_by_username(&app_state.database, &model.username)
