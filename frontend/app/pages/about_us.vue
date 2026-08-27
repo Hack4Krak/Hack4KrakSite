@@ -99,6 +99,11 @@ useSeoMeta({
         />
       </UContainer>
     </section>
+    <section id="about">
+      <UContainer>
+        <SectionOrganizers />
+      </UContainer>
+    </section>
     <Footer />
   </div>
 </template>
