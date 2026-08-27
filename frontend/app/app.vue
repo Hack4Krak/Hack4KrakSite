@@ -3,6 +3,13 @@ import { setFavicon } from '~/utils/setFavicon'
 
 useOgImage()
 
+const isCommandPaletteOpen = useCommandPaletteState()
+const isFlagModalOpen = useFlagModalState()
+
+if (import.meta.client) {
+  useCommandPaletteShortcuts()
+}
+
 onMounted(() => {
   setFavicon()
 })
@@ -16,5 +23,8 @@ onMounted(() => {
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
+
+    <LazyCommandPalette v-if="isCommandPaletteOpen" v-model="isCommandPaletteOpen" hydrate-on-idle />
+    <LazyFlagSubmitModal v-model="isFlagModalOpen" hydrate-on-idle />
   </UApp>
 </template>
