@@ -3,40 +3,44 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "frontend:build": "cd frontend/ && bun run build",
-    "frontend:install": "cd frontend/ && bun install",
-    "frontend:test": "cd frontend/ && bun run test",
-    "frontend:e2e": "cd frontend/ && bun run e2e",
-    "frontend:typecheck": "cd frontend/ && bun typecheck",
-    "frontend:dev": "cd frontend/ && bun dev",
-    "frontend:lint": "cd frontend/ && bun lint",
-    "frontend:lint:fix": "cd frontend/ && bun lint:fix",
-    "backend:build": "cd backend/ && bun run build",
-    "backend:install": "cd backend/ && bun install",
-    "backend:test": "cd backend/ && bun run test",
-    "backend:test:full": "cd backend/ && bun test:full",
-    "backend:dev": "cd backend/ && bun dev",
-    "backend:lint": "cd backend/ && bun lint",
-    "backend:lint:fix": "cd backend/ && bun lint:fix",
-    "backend:openapi-cli": "cd backend/ && bun openapi-cli",
+    "frontend:build": "pnpm -F hack4krak-frontend run build",
+    "frontend:install": "pnpm -F hack4krak-frontend install",
+    "frontend:test": "pnpm -F hack4krak-frontend run test",
+    "frontend:e2e": "pnpm -F hack4krak-frontend run e2e",
+    "frontend:typecheck": "pnpm -F hack4krak-frontend run typecheck",
+    "frontend:dev": "pnpm -F hack4krak-frontend run dev",
+    "frontend:lint": "pnpm -F hack4krak-frontend run lint",
+    "frontend:lint:fix": "pnpm -F hack4krak-frontend run lint:fix",
+    "backend:build": "pnpm -F hack4krak-backend run build",
+    "backend:install": "pnpm -F hack4krak-backend run install",
+    "backend:test": "pnpm -F hack4krak-backend run test",
+    "backend:test:full": "pnpm -F hack4krak-backend run test:full",
+    "backend:dev": "pnpm -F hack4krak-backend run dev",
+    "backend:lint": "pnpm -F hack4krak-backend run lint",
+    "backend:lint:fix": "pnpm -F hack4krak-backend run lint:fix",
+    "backend:openapi-cli": "pnpm -F hack4krak-backend run openapi-cli",
     "docker:all": "docker compose --profile all up",
     "docker:backend": "docker compose --profile backend up",
     "docker:frontend": "docker compose --profile frontend up",
     "docker:db": "docker compose --profile db up",
-    "test": "bun --filter '*' test",
-    "dev": "bun --filter '*' dev",
-    "lint": "bun --filter '*' lint",
-    "lint:fix": "bun --filter '*' lint:fix",
+    "test": "pnpm -r run test",
+    "dev": "pnpm -r --parallel run dev",
+    "lint": "pnpm -r run lint",
+    "lint:fix": "pnpm -r run lint:fix",
     "prepare": "husky"
   },
   "devDependencies": {
     "husky": "^9.1.7"
   },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "^24.0.0"
+    }
+  },
+  "packageManager": "pnpm@12.0.0-rc.8",
   "workspaces": [
     "frontend",
     "backend"
-  ],
-  "engines": {
-    "node": ">=22.5.1"
-  }
+  ]
 }

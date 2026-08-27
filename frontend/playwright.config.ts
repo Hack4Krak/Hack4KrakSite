@@ -53,7 +53,7 @@ export default defineConfig<ConfigOptions>({
     // },
   ],
   webServer: {
-    command: isCI ? 'bun preview' : 'bun dev',
+    command: isCI ? 'pnpm preview' : 'pnpm dev',
     port: 3000,
     reuseExistingServer: !isCI,
   },

@@ -1,6 +1,6 @@
 ## Overview
 
-**Monorepo** using **Bun** as package manager (Node runtime):
+**Monorepo** using **pnpm**:
 - **Frontend**: Nuxt (TypeScript + Vue)
 - **Backend**: Rust (Actix-web + SeaORM)
 
@@ -29,9 +29,9 @@ package.json          # Root package with workspace commands
 
 Commands you'll commonly use:
 
-- **Linting**: `bun lint:fix` - format and lint all packages
-- **Testing**: `bun test` - run unit and integration tests; `bun frontend:e2e` - run frontend e2e tests (requires frontend running); `bun backend:test:full` - run backend full test suite
-- **OpenAPI**: `bun backend:openapi-cli -- write` - regenerate API specification from code
+- **Linting**: `pnpm lint:fix` - format and lint all packages
+- **Testing**: `pnpm test` - run unit and integration tests; `pnpm frontend:e2e` - run frontend e2e tests (requires frontend running); `pnpm backend:test:full` - run backend full test suite
+- **OpenAPI**: `pnpm backend:openapi-cli -- write` - regenerate API specification from code
 
 ## Key Architecture Patterns
 

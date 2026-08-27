@@ -31,12 +31,12 @@ To learn more about code architecture and our crates refer to [ARCHITECTURE.md](
 4. And after that you can finally start the backend in two different ways:
     ```shell
     # From our project root directory
-    bun backend:dev
+    pnpm backend:dev
     ```
 
     ```shell
     # From backend directory
-    bun dev
+    pnpm dev
     # Or if you don't want to use Node package manger
     cargo run
     ```
@@ -72,12 +72,12 @@ git submodule update --remote
 
 ```shell
 # Run normal tests
-bun run test
+pnpm run test
 ```
 
 ```shell
 # Run all tests, even expensive ones that spin up docker containers
-bun test:full
+pnpm test:full
 ```
 
 > [!TIP]
@@ -90,12 +90,12 @@ bun test:full
 
 ```shell
 # Run linter and formatter
-bun lint:fix
+pnpm lint:fix
 ```
 
 ```shell
 # Generate openapi specification from code
-bun openapi-cli -- write
+pnpm openapi-cli -- write
 ```
 
 ## 👣 Managing database
@@ -107,25 +107,25 @@ and more.
   To run this command you have to install SeaORM CLI (`cargo install sea-orm-cli`)
   ```sh
   # You should run this command from `backend/` directory
-  bun db:generate-entities
+  pnpm db:generate-entities
   ```
 - Generate a new migration file
   ```sh
-  bun db:migration <migration_name>
+  pnpm db:migration <migration_name>
   ```
 - Apply all pending migrations to the database
   ```sh
-  bun db:migrate
+  pnpm db:migrate
   ```
 - Rollback last applied migration
   ```sh
-  bun db:rollbkack
+  pnpm db:rollbkack
   ```
 - Drop all tables from the database, then reapply all migrations
   ```sh
-  bun db:fresh
+  pnpm db:fresh
   ```
 - Run the migration CLI directly
   ```sh
-  bun db:cli
+  pnpm db:cli
   ```
