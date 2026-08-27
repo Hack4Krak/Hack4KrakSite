@@ -58,7 +58,7 @@ the frontend app.
 ### Environment variables
 
 - `NUXT_SITE_URL` - Frontend website URL
-- `BACKEND_ADDRESS` - address of the backend server (accessible from the frontend server and global network)
+- `NUXT_PUBLIC_OPEN_FETCH_API_BASE_URL` - URL of the backend server
 - `NUXT_PUBLIC_SCRIPTS_UMAMI_ANALYTICS_WEBSITE_ID` - optional website id for analytics powered by Umami
 
 ## 🐋 Docker compose
@@ -78,7 +78,7 @@ Requirements for running the production servers are:
 To start the production services, you can use the following command:
 
 ```bash
-bun docker:<PROFILE-NAME>
+pnpm docker:<PROFILE-NAME>
 ```
 
 ### Environment variables
@@ -91,4 +91,8 @@ postgres://backend:password@db:5432/hack4krak
 If you want to run `frontend` and `backend` locally using docker compose, you should set your `BACKEND_ADDRESS` env as:
 ```
 0.0.0.0:8080
+```
+and point the frontend at the published backend port:
+```
+NUXT_PUBLIC_OPEN_FETCH_API_BASE_URL=http://localhost:8080
 ```

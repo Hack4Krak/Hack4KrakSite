@@ -4,7 +4,8 @@ Technical documentation for Hack4Krak frontend.
 
 ## 🛫 Requirements
 
-- [Bun](https://bun.sh/) used only as a package manager
+- [pnpm](https://pnpm.io/
+- [Node.js](https://nodejs.org/) - the version pinned in `.node-version`
 
 ## 🛖 Architecture
 
@@ -21,19 +22,19 @@ Technical documentation for Hack4Krak frontend.
 2. Install all packages
 
    ```shell
-   bun install
+   pnpm install
    ```
 
 3. Start development server
 
    ```shell
    # From our project root directory
-   bun backend:dev
+   pnpm backend:dev
    ```
 
    ```shell
    # From frontend directory
-   bun dev
+   pnpm dev
    ```
 
 ## 🧪 Testing
@@ -44,12 +45,12 @@ For simple tests you can use this command. It will use `@nuxt/test-utils` and `v
 
 ```shell
 # Run normal tests
-bun run test
+pnpm run test
 ```
 
 ```shell
 # Run tests with hot reloading
-bun test:dev
+pnpm test:dev
 ```
 
 ### e2e
@@ -62,31 +63,31 @@ They should be placed in [`tests/e2e`](tests/e2e) directory.
 
 ```shell
 # Run playwright tests
-bun e2e
+pnpm e2e
 ```
 
 It comes with a lot of awesome commands like
 
 ```shell
 # Run tests in Playwright UI, with options to monitor console, screenshots, etc.
-bun e2e:ui
+pnpm e2e:ui
 ```
 
 ```shell
 # Generate tests based on interaction with website
-bun e2e:codegen
+pnpm e2e:codegen
 ```
 
 ## 🌸 Other commands
 
 ```shell
 # Run linter and formatter
-bun lint:fix
+pnpm lint:fix
 ```
 
 ```shell
 # Verify TypeScript definitions
-bun typecheck
+pnpm typecheck
 ```
 
 ## ⚙️ Configuring your IDE

@@ -10,6 +10,7 @@
     ":preserveSemverRanges"
   ],
   "dependencyDashboard": false,
+  "minimumReleaseAge": "1 day",
   "regexManagers": [
     {
       "fileMatch": ["(^|/)rust-toolchain\\.toml?$"],
@@ -24,7 +25,7 @@
   "packageRules": [
     {
       "groupName": "Frontend dependencies",
-      "matchManagers": ["bun"],
+      "matchManagers": ["npm"],
       "matchPaths": ["frontend/**"]
     },
     {
@@ -45,9 +46,9 @@
       "separateMultipleMajor": false
     },
     {
-      "groupName": "Bun",
-      "matchManagers": ["bun-version", "dockerfile"],
-      "matchDepNames": ["imbios/bun-node", "bun"],
+      "groupName": "Node.js",
+      "matchManagers": ["node-version", "dockerfile", "custom.regex"],
+      "matchDepNames": ["node"],
       "separateMultipleMajor": false,
       "rangeStrategy": "bump"
     }

@@ -11,7 +11,7 @@ use actix_web::{FromRequest, HttpMessage, HttpRequest};
 use chrono::Utc;
 use sea_orm::ActiveValue::Set;
 use sea_orm::prelude::Uuid as SeaOrmUuid;
-use sea_orm::{ActiveModelTrait, EntityTrait};
+use sea_orm::{ActiveModelTrait, EntityTrait, ExprTrait};
 use sea_orm::{ColumnTrait, DatabaseConnection};
 use sea_orm::{ModelTrait, QueryFilter};
 use serde::{Deserialize, Serialize};
