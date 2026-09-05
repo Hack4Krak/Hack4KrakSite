@@ -21,7 +21,7 @@
   "dependencies": {
     "@formkit/auto-animate": "^0.10.0",
     "@norbiros/nuxt-auto-form": "0.6.3",
-    "@nuxt/content": "3.15.2",
+    "@nuxt/content": "3.16.0",
     "@nuxt/hints": "1.1.4",
     "@nuxt/image": "2.1.0",
     "@nuxt/scripts": "2.0.0-beta.5",
@@ -39,11 +39,11 @@
     "party-js": "2.2.0",
     "rehype-katex": "7.0.1",
     "remark-math": "6.0.0",
-    "zod": "4.4.3"
+    "zod": "4.5.4"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "9.3.0",
-    "@compodium/nuxt": "0.1.0-beta.13",
+    "@antfu/eslint-config": "9.5.1",
+    "@compodium/nuxt": "0.1.0-beta.14",
     "@iconify-json/hugeicons": "~1.2.33",
     "@iconify-json/ic": "~1.2.4",
     "@iconify-json/logos": "~1.2.13",
@@ -52,11 +52,11 @@
     "@iconify-json/pixel": "~1.2.2",
     "@iconify-json/pixelarticons": "~1.2.9",
     "@nuxt/eslint": "1.17.0",
-    "@nuxt/test-utils": "4.1.0",
+    "@nuxt/test-utils": "4.2.0",
     "@playwright/test": "1.62.1",
     "@tailwindcss/typography": "0.5.20",
-    "@vue/test-utils": "2.4.11",
-    "eslint": "10.9.0",
+    "@vue/test-utils": "2.5.0",
+    "eslint": "10.10.0",
     "eslint-plugin-format": "2.0.1",
     "happy-dom": "^20.11.6",
     "playwright-core": "1.62.1",
