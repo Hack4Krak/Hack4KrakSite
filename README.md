@@ -14,6 +14,8 @@
 Hack4Krak organizes Capture The Flag (CTF) competitions in Poland, where students solve cybersecurity-related
 challenges. Our 2026 edition was the largest on-site CTF for high schoolers in the country.
 
+Hack4Krak organizer is [Zerya Foundation](https://foundation.zerya.dev). Checkout our website for more amazing projects or if you have idea for and event!
+
 ## 📅 Project status
 
 We have already hosted three events, but the website is still **in development**!
