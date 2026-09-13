@@ -1,6 +1,7 @@
 use crate::entities::sea_orm_active_enums::{CtfExperience, SchoolGrade};
 use crate::entities::{user_onboarding, users};
 use crate::models::user::validate_name_chars;
+use crate::models::user::validate_no_edge_whitespace;
 use crate::models::user_onboarding::ALLOWED_REFERRAL_SOURCES;
 use crate::utils::app_state;
 use crate::utils::error::Error;
@@ -14,9 +15,9 @@ use validator::{Validate, ValidationError};
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, Validate)]
 pub struct UserOnboardingSubmissionRequest {
-    #[validate(length(min = 3, max = 128), custom(function = "validate_name_chars"))]
+    #[validate(length(min = 3, max = 128), custom(function = "validate_name_chars"), custom(function = "validate_no_edge_whitespace"))]
     pub organization: String,
-    #[validate(length(min = 2, max = 128), custom(function = "validate_name_chars"))]
+    #[validate(length(min = 2, max = 128), custom(function = "validate_name_chars"), custom(function = "validate_no_edge_whitespace"))]
     pub location: String,
     pub ctf_experience: CtfExperience,
     pub school_grade: SchoolGrade,

@@ -63,7 +63,11 @@ async function onSubmit() {
     await useNuxtApp().$auth('/account/onboarding', {
       method: 'POST',
       credentials: 'include',
-      body: { ...form },
+      body: {
+        ...form,
+        organization: form.organization.trim(),
+        location: form.location.trim(),
+      },
     })
 
     useToast().add({

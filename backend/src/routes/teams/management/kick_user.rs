@@ -1,13 +1,17 @@
 use crate::entities::{teams, users};
+use crate::models::user::validate_no_edge_whitespace;
 use crate::utils::app_state;
 use crate::utils::error::Error;
 use crate::utils::success_response::SuccessResponse;
 use actix_web::{HttpResponse, delete, web};
+use actix_web_validation::Validated;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
+use validator::Validate;
 
-#[derive(Serialize, Deserialize, ToSchema)]
+#[derive(Serialize, Deserialize, ToSchema, Validate, Debug)]
 pub struct RemoveUserModel {
+    #[validate(custom(function = "validate_no_edge_whitespace"))]
     pub username: String,
 }
 
@@ -27,7 +31,7 @@ pub struct RemoveUserModel {
 #[delete("/kick_user")]
 pub async fn kick_user(
     app_state: web::Data<app_state::AppState>,
-    model: web::Json<RemoveUserModel>,
+    Validated(model): Validated<web::Json<RemoveUserModel>>,
     user: users::Model,
 ) -> Result<HttpResponse, Error> {
     let user_to_remove = users::Model::find_by_username(&app_state.database, &model.username)

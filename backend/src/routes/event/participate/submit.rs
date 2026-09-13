@@ -2,6 +2,7 @@ use super::{FoodPreferenceInput, ParticipationError};
 use crate::entities::{event_registration, users};
 use crate::middlewares::event::EventMiddleware;
 use crate::models::user::validate_name_chars;
+use crate::models::user::validate_no_edge_whitespace;
 use crate::services::identification::IdentificationService;
 use crate::utils::app_state;
 use crate::utils::error::Error;
@@ -19,20 +20,20 @@ use validator::Validate;
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, Validate)]
 struct ParticipateRequest {
-    #[validate(length(min = 2, max = 256), custom(function = "validate_name_chars"))]
+    #[validate(length(min = 2, max = 256), custom(function = "validate_name_chars"), custom(function = "validate_no_edge_whitespace"))]
     pub full_name: String,
-    #[validate(length(min = 2, max = 256), custom(function = "validate_name_chars"))]
+    #[validate(length(min = 2, max = 256), custom(function = "validate_name_chars"), custom(function = "validate_no_edge_whitespace"))]
     pub school: String,
     #[validate(length(min = 4, max = 4))]
     pub birth_year: String,
-    #[validate(length(min = 5, max = 20))]
+    #[validate(length(min = 5, max = 20), custom(function = "validate_no_edge_whitespace"))]
     pub phone: String,
     pub is_underage: bool,
-    #[validate(length(max = 128), custom(function = "validate_name_chars"))]
+    #[validate(length(max = 128), custom(function = "validate_name_chars"), custom(function = "validate_no_edge_whitespace"))]
     pub emergency_contact_name: Option<String>,
-    #[validate(length(max = 20))]
+    #[validate(length(max = 20), custom(function = "validate_no_edge_whitespace"))]
     pub emergency_contact_phone: Option<String>,
-    #[validate(email)]
+    #[validate(email, custom(function = "validate_no_edge_whitespace"))]
     pub emergency_contact_email: Option<String>,
     pub food_preference: FoodPreferenceInput,
 }

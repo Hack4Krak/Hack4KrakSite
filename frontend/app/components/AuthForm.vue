@@ -15,7 +15,7 @@ const schema = z.object({
         first_name: zFirstName()
           .meta({ title: 'Jak mamy się do Ciebie zwracać?', input: { props: { placeholder: 'Lajkonik' } } }),
       }),
-  email: z.email({ error: 'Niepoprawny adres e-mail' }).meta({ title: 'Adres e-mail', input: { props: { placeholder: 'lajkonik@hack4krak.pl' } } }),
+  email: z.email({ error: 'Niepoprawny adres e-mail' }).trim().meta({ title: 'Adres e-mail', input: { props: { placeholder: 'lajkonik@hack4krak.pl' } } }),
   password: zPassword(),
 })
 
