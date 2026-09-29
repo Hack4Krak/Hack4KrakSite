@@ -192,7 +192,7 @@ export default defineNuxtConfig({
   schemaOrg: {
     identity: defineOrganization({
       name: 'Hack4Krak',
-      description: 'Inicjatywa młodych liderów cyberbezpieczeństwa, których połączyła pasja do technologii, wyzwań i ciągłego rozwoju. Tworzymy wydarzenia, które uczą, inspirują i integrują młodzież zainteresowaną światem IT i bezpieczeństwa cyfrowego.',
+      description: 'Bezpłatny konkurs CTF z cyberbezpieczeństwa dla uczniów szkół średnich z Polski, Czech, Słowacji i Węgier, organizowany przez Fundację Zerya.',
       url: 'https://hack4krak.pl',
       logo: '/img/logo.png',
 
@@ -227,7 +227,7 @@ export default defineNuxtConfig({
     // Use NUXT_SITE_NAME to override
     url: 'https://hack4krak.pl',
     name: 'Hack4Krak CTF',
-    description: 'Hack4Krak to największy w Polsce CTF dla uczniów szkół średnich! Sprawdź swoje umiejętności w cyberbezpieczeństwie, zgłoś swoją drużynę i rywalizuj o nagrody!',
+    description: 'Hack4Krak to bezpłatny konkurs CTF dla uczniów szkół średnich z Polski, Czech, Słowacji i Węgier. 4. edycja: 20–21 marca 2027, Kraków.',
     defaultLocale: 'pl',
   },
   // https://content.nuxt.com/docs/getting-started
@@ -239,6 +239,16 @@ export default defineNuxtConfig({
           theme: shikiTheme,
           langs: shikiLangNames,
         },
+      },
+    },
+  },
+  // https://nuxt.com/modules/icon
+  icon: {
+    // Bundle every icon used in the app so it renders during SSR instead of popping in after hydration.
+    // Content files are scanned too, because icon names like the social links live in `content/*.ts`
+    clientBundle: {
+      scan: {
+        globInclude: ['app/**/*.{vue,ts}', 'content/**/*.{ts,json,md}'],
       },
     },
   },

@@ -4,6 +4,8 @@ import LANDING_CONTENT from '~~/content/landing/page'
 useSeoMeta({
   title: 'Strona Główna',
 })
+
+const { proxy } = useScriptUmamiAnalytics()
 </script>
 
 <template>
@@ -14,37 +16,31 @@ useSeoMeta({
     <template #content>
       {{ LANDING_CONTENT.subTitle }}
     </template>
+    <template #cta>
+      <div class="flex flex-wrap items-center justify-center gap-6 lg:justify-start">
+        <ElevatedButton
+          to="#partnerzy"
+          background="var(--ui-primary)"
+          class="text-base lg:text-lg"
+          @click="proxy.track('partner_cta_click', { location: 'hero' })"
+        >
+          Zostań partnerem
+        </ElevatedButton>
+        <ElevatedButton to="#spolecznosc" variant="light" background="var(--ui-primary)" class="text-base lg:text-lg">
+          Poznaj nas
+        </ElevatedButton>
+      </div>
+    </template>
   </HeroSection>
 
-  <UContainer class="w-full mb-2">
-    <LandingSection compact>
-      <SectionEventBanner />
-    </LandingSection>
+  <LandingCommunity />
 
-    <LandingSection
-      id="jak-wziac-udzial"
-      subtitle="Krok po kroku"
-      title="Jak wziąć udział?"
-      section-class="scroll-mt-[15vh]"
-    >
-      <SectionHowToParticipate />
-    </LandingSection>
+  <LandingNextEdition />
 
-    <LandingSection subtitle="Gdzie i kiedy" title="Lokalizacja i harmonogram">
-      <SectionEventDetails />
-    </LandingSection>
+  <LandingPartnerCall />
 
-    <LandingSection
-      subtitle="Edycja 2026"
-      title="Co na Was czeka?"
-    >
-      <SectionHighlights />
-    </LandingSection>
+  <LandingFinale />
 
-    <LandingSection subtitle="Partnerzy i Sponsorzy" title="Wspierają nas" :separator="false">
-      <SectionPartners />
-    </LandingSection>
-
-    <Footer class="mt-8 lg:mt-12" />
-  </UContainer>
+  <!-- The skyline above already closes the page, so the footer sits right under it -->
+  <Footer :separator="false" />
 </template>

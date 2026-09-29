@@ -41,12 +41,7 @@ const { root, content, header, separator } = section({
       <section :id="props.id" :class="[content(), props.sectionClass]">
         <div v-if="props.subtitle || props.title || $slots.header" :class="header()">
           <slot name="header">
-            <p v-if="props.subtitle" class="text-xs font-bold tracking-[0.25em] uppercase text-muted mb-3">
-              {{ props.subtitle }}
-            </p>
-            <h2 v-if="props.title" class="font-pixelify text-3xl lg:text-5xl text-default">
-              {{ props.title }}
-            </h2>
+            <SectionHeading :subtitle="props.subtitle" :title="props.title" />
           </slot>
         </div>
 

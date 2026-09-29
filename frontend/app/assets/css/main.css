@@ -10,7 +10,6 @@
   /* https://kyleshevlin.com/tailwind-minimum-full-height-layout/ */
   html {
     height: 100%;
-    scroll-behavior: smooth;
   }
   body {
     min-height: 100%;
@@ -57,6 +56,40 @@
   --font-pixelify: Pixelify Sans Hack4Krak; /* Pixelify Sans font with changed number "5", "2", "7"; letters "T", "Z", "H", "j"; slash "/" and modified polish diacritic characters */
   --font-roboto: 'Roboto', sans-serif;
   --color-red-450: #fb4d3d;
+
+  --color-ink: #0b1426;
+
+  --animate-twinkle: twinkle 3s steps(2) infinite;
+  --animate-drift: drift 60s linear infinite;
+  --animate-fly: fly 26s linear infinite;
+  --animate-bob: bob 1.2s steps(2) infinite;
+
+  @keyframes twinkle {
+    50% {
+      opacity: 0.2;
+    }
+  }
+
+  @keyframes drift {
+    50% {
+      translate: 6vw 0;
+    }
+  }
+
+  @keyframes fly {
+    from {
+      translate: -20vw 0;
+    }
+    to {
+      translate: 120vw 0;
+    }
+  }
+
+  @keyframes bob {
+    50% {
+      translate: 0 -4px;
+    }
+  }
 }
 
 @utility icon-sm {
@@ -123,4 +156,14 @@
   @variant hover {
     color: var(--ui-primary);
   }
+}
+
+/* Stepped underline drawn as pixels rather than a smooth wave, for the key phrase of a paragraph */
+@utility pixel-underline {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 4' shape-rendering='crispEdges'%3E%3Cpath fill='%23d08700' d='M0 2h2V1h2v1h2v1h2v1H6V3H4V2H2v1H0z'/%3E%3C/svg%3E")
+    repeat-x left bottom / 16px 8px;
+  padding-bottom: 8px;
+  box-decoration-break: clone;
+  font-weight: 700;
+  color: var(--ui-text);
 }

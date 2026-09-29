@@ -1,8 +1,11 @@
 {
   "title": "Hack4Krak",
-  "subTitle": "Największy w Małopolsce konkurs CTF \n dla uczniów szkół ponadpodstawowych!",
+  "subTitle": "Bezpłatny konkurs CTF dla uczniów z Polski, Czech, Słowacji i Węgier.\nNastępna edycja: 20–21 marca 2027, Kraków.",
   "event": {
-    "dateDisplay": "23-24 maja 2026",
+    "edition": 4,
+    "dateDisplay": "20–21 marca 2027",
+    "startDate": "2027-03-20T09:00:00+01:00",
+    "expectedParticipants": 200,
     "venue": {
       "name": "Uniwersytet Komisji Edukacji Narodowej w Krakowie",
       "address": "ul. Podchorążych 2, 30-084 Kraków",
