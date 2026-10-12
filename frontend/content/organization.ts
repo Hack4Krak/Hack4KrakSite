@@ -1,3 +1,5 @@
+export const TAGLINE = 'Stacjonarne zawody CTF w Krakowie\ndla uczniów szkół średnich.'
+
 export const CONTACT_MAIL = 'kontakt@hack4krak.pl'
 export const CONTACT_PHONE = '+48 571 493 707'
 

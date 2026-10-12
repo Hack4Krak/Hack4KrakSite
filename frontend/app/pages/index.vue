@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import LANDING_CONTENT from '~~/content/landing/page'
+import { TAGLINE } from '~~/content/organization'
 
 useSeoMeta({
   title: 'Strona Główna',
@@ -14,7 +15,7 @@ const { proxy } = useScriptUmamiAnalytics()
       {{ LANDING_CONTENT.title }}
     </template>
     <template #content>
-      {{ LANDING_CONTENT.subTitle }}
+      {{ TAGLINE }}
     </template>
     <template #cta>
       <div class="flex flex-wrap items-center justify-center gap-6 lg:justify-start">
