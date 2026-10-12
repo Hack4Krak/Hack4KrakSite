@@ -4,8 +4,9 @@
     <UContainer class="flex flex-col justify-center items-center mt-10 lg:mt-30 bg-default rounded-t-2xl">
       <slot />
     </UContainer>
-    <div class="w-full">
-      <Footer class="mt-8 lg:mt-12 bg-default" />
+    <!-- The background spans the whole width, the footer itself stays in its container -->
+    <div class="w-full mt-8 lg:mt-12 bg-default">
+      <Footer />
     </div>
   </NuxtLayout>
 </template>
