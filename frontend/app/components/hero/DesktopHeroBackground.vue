@@ -1,6 +1,10 @@
 <script setup lang="ts">
+import useSeasonalBackground from '~/composables/useSeasonalBackground'
+
 const { y } = useWindowScroll()
 const { height: windowHeight } = useWindowSize()
+
+const background = useSeasonalBackground()
 
 const parallaxStyle = computed(() => {
   if (!import.meta.client)
@@ -18,7 +22,10 @@ useHead({
   link: [{
     rel: 'preload',
     as: 'image',
-    href: '/img/landing_background.webp',
+    href: background,
+    fetchpriority: 'high',
+    // Matches the `lg` breakpoint below which the background is hidden
+    media: '(min-width: 64rem)',
   }],
 })
 </script>
@@ -26,8 +33,8 @@ useHead({
 <template>
   <div class="-z-10 hidden lg:grid w-full place-items-center overflow-hidden">
     <div
-      class="bg-[url(/img/landing_background.webp)] rendering-pixelated bg-cover bg-no-repeat w-full h-full will-change-transform"
-      :style="parallaxStyle"
+      class="rendering-pixelated bg-cover bg-no-repeat w-full h-full will-change-transform"
+      :style="[{ backgroundImage: `url(${background})` }, parallaxStyle]"
     />
   </div>
 </template>
