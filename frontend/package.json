@@ -27,9 +27,9 @@
     "@nuxt/scripts": "2.0.0-beta.5",
     "@nuxt/ui": "4.11.0",
     "@nuxtjs/mdc": "0.23.1",
-    "@nuxtjs/seo": "5.3.14",
+    "@nuxtjs/seo": "6.0.1",
     "@takumi-rs/core": "^2.10.0",
-    "@vueuse/nuxt": "14.4.0",
+    "@vueuse/nuxt": "15.0.0",
     "dayjs-nuxt": "2.1.11",
     "nuxt": "4.5.2",
     "nuxt-echarts": "^1.0.1",
@@ -42,7 +42,7 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "9.3.0",
+    "@antfu/eslint-config": "10.0.0",
     "@compodium/nuxt": "0.1.0-beta.13",
     "@iconify-json/hugeicons": "~1.2.33",
     "@iconify-json/ic": "~1.2.4",
@@ -58,10 +58,10 @@
     "@vue/test-utils": "2.4.11",
     "eslint": "10.9.0",
     "eslint-plugin-format": "2.0.1",
-    "happy-dom": "^20.11.6",
+    "happy-dom": "^21.0.0",
     "playwright-core": "1.62.1",
-    "typescript": "~6.0.3",
-    "vitest": "4.1.11",
+    "typescript": "~7.0.0",
+    "vitest": "5.0.5",
     "vitest-fail-on-console": "0.10.1",
     "vue-tsc": "3.3.11"
   }
